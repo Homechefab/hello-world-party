@@ -17,6 +17,7 @@ import PartnershipPage from "./pages/PartnershipPage";
 import HowItWorks from "./pages/HowItWorks";
 import SecurePayments from "./pages/SecurePayments";
 import CustomerService from "./pages/CustomerService";
+import About from "./pages/About";
 import { ChefDashboard } from "./pages/chef/ChefDashboard";
 import { ChefOnboarding } from "./pages/chef/ChefOnboarding";
 import { KitchenPartnerDashboard } from "./pages/kitchen-partner/KitchenPartnerDashboard";
@@ -44,6 +45,7 @@ const App = () => {
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/secure-payments" element={<SecurePayments />} />
               <Route path="/customer-service" element={<CustomerService />} />
+              <Route path="/about" element={<About />} />
               <Route path="/search-chefs" element={<ChefSearch />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/chef/onboarding" element={<ChefOnboarding />} />
