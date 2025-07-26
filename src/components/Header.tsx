@@ -1,7 +1,14 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChefHat, Search, User, ShoppingBag } from "lucide-react";
+import { ChefHat, Search, ShoppingBag } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { AuthDialog } from "./auth/AuthDialog";
+import { UserMenu } from "./UserMenu";
 
 const Header = () => {
+  const { user } = useAuth();
+  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+
   return (
     <header className="bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 shadow-soft">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -27,14 +34,29 @@ const Header = () => {
           <Button variant="ghost" size="icon">
             <ShoppingBag className="w-5 h-5" />
           </Button>
-          <Button variant="ghost" size="icon">
-            <User className="w-5 h-5" />
-          </Button>
+          
+          {user ? (
+            <UserMenu />
+          ) : (
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => setAuthDialogOpen(true)}
+            >
+              Logga in
+            </Button>
+          )}
+          
           <Button variant="hero" size="sm">
             Sälj mat
           </Button>
         </div>
       </div>
+      
+      <AuthDialog 
+        open={authDialogOpen} 
+        onOpenChange={setAuthDialogOpen} 
+      />
     </header>
   );
 };
