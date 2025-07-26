@@ -7,8 +7,8 @@ const businessServices = [
   {
     image: sellFoodImage,
     title: "Sälj din mat",
-    description: "Börja sälja hemlagad mat och tjäna extra pengar",
-    href: "/sell",
+    description: "Ansök för att bli kock och börja sälja hemlagad mat",
+    href: "/chef/onboarding",
     color: "from-green-500 to-green-600"
   },
   {
