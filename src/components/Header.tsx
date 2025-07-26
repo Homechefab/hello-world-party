@@ -12,7 +12,7 @@ const Header = () => {
           <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
             <ChefHat className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Hemlagat</h1>
+          <h1 className="text-2xl font-bold text-foreground">Homechef</h1>
         </div>
         
         <div className="hidden md:flex items-center gap-4 flex-1 max-w-md mx-8">

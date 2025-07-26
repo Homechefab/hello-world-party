@@ -1,7 +1,8 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Categories from "@/components/Categories";
-import FoodGrid from "@/components/FoodGrid";
+import DishDetails from "@/components/DishDetails";
+import Features from "@/components/Features";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -10,7 +11,8 @@ const Index = () => {
       <Header />
       <Hero />
       <Categories />
-      <FoodGrid />
+      <DishDetails />
+      <Features />
       <Footer />
     </div>
   );
