@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 import { useRole } from '@/hooks/useRole';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -66,7 +66,13 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
         </div>
       </div>
       
-      {children}
+      {React.cloneElement(children as React.ReactElement, { 
+        user, 
+        isChef, 
+        isCustomer, 
+        isKitchenPartner, 
+        isAdmin 
+      })}
     </div>
   );
 };

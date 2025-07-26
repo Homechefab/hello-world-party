@@ -17,9 +17,14 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const AppContent = () => {
-  const { user, isChef, isKitchenPartner, isAdmin } = useRole();
+interface AppContentProps {
+  user: any;
+  isChef: boolean;
+  isKitchenPartner: boolean;
+  isAdmin: boolean;
+}
 
+const AppContent = ({ user, isChef, isKitchenPartner, isAdmin }: AppContentProps) => {
   console.log('AppContent: user=', user, 'isChef=', isChef, 'isKitchenPartner=', isKitchenPartner, 'isAdmin=', isAdmin);
 
   // Role-based routing
@@ -78,7 +83,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <RoleBasedLayout>
-          <AppContent />
+          <AppContent user={undefined} isChef={false} isKitchenPartner={false} isAdmin={false} />
         </RoleBasedLayout>
       </BrowserRouter>
     </TooltipProvider>
