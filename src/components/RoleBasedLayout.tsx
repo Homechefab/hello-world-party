@@ -36,17 +36,20 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
     switchRole(roleId);
     toast.success(`Bytte till ${roleNames[roleId as keyof typeof roleNames]} roll`);
     
-    // Navigate to appropriate dashboard if not on homepage
-    if (location.pathname !== '/') {
-      if (roleId === 'chef1') {
+    // Navigate to appropriate page based on role
+    switch (roleId) {
+      case 'chef1':
         navigate('/chef/dashboard');
-      } else if (roleId === 'kitchen_partner1') {
+        break;
+      case 'kitchen_partner1':
         navigate('/kitchen-partner/dashboard');
-      } else if (roleId === 'admin1') {
+        break;
+      case 'admin1':
         navigate('/admin/dashboard');
-      } else {
-        navigate('/dashboard');
-      }
+        break;
+      default: // customer1
+        navigate('/');
+        break;
     }
   };
 
