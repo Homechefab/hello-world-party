@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Search, MapPin, ShoppingCart, ChefHat } from "lucide-react";
+import { Search, MapPin, ShoppingCart, ChefHat, Building } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-food.jpg";
 
@@ -61,6 +61,18 @@ const Hero = () => {
                 Sälj din mat
               </Button>
             </Link>
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="bg-white/10 border-white/30 text-white hover:bg-white/20 flex items-center gap-2"
+              onClick={() => {
+                // Switch to kitchen partner role to access their dashboard
+                window.location.href = '/kitchen-partner/dashboard';
+              }}
+            >
+              <Building className="w-5 h-5" />
+              Hyr ut ditt kök
+            </Button>
           </div>
         </div>
       </div>
