@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Search, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-food.jpg";
 
 const Hero = () => {
@@ -53,9 +54,11 @@ const Hero = () => {
             <Button variant="hero" size="lg">
               Börja handla
             </Button>
-            <Button variant="outline" size="lg" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
-              Bli säljare
-            </Button>
+            <Link to="/sell">
+              <Button variant="outline" size="lg" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
+                Bli säljare
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

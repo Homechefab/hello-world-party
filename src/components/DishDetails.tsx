@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Clock, MapPin, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface Dish {
   id: string;
@@ -129,9 +130,11 @@ const DishDetailCard = ({ dish }: { dish: Dish }) => {
           <div className="text-2xl font-bold text-primary">
             {dish.price} kr
           </div>
-          <Button variant="food" size="sm">
-            Beställ
-          </Button>
+          <Link to={`/dish/${dish.id}`}>
+            <Button variant="food" size="sm">
+              Beställ
+            </Button>
+          </Link>
         </div>
       </CardContent>
     </Card>

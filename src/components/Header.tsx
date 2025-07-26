@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ChefHat, Search, ShoppingBag, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
@@ -35,9 +36,11 @@ const Header = () => {
             <User className="w-5 h-5" />
           </Button>
           
-          <Button variant="hero" size="sm">
-            Sälj mat
-          </Button>
+          <Link to="/sell">
+            <Button variant="hero" size="sm">
+              Sälj mat
+            </Button>
+          </Link>
         </div>
       </div>
     </header>
