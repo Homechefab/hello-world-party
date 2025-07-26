@@ -11,6 +11,7 @@ import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import ReviewSection from "@/components/ReviewSection";
 import PaymentComponent from "@/components/PaymentComponent";
+import { KlarnaPayment } from "@/components/KlarnaPayment";
 import { VideoDisplay } from "@/components/VideoDisplay";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
@@ -264,14 +265,47 @@ const DishPage = () => {
                       </Button>
                     </DialogTrigger>
                     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-                      <PaymentComponent
-                        dishTitle={dishData.title}
-                        dishPrice={dishData.price}
-                        quantity={quantity}
-                        pickupTime={selectedTime}
-                        pickupAddress={dishData.cookAddress}
-                        specialRequests={specialRequests}
-                      />
+                      <DialogHeader>
+                        <DialogTitle>Välj betalningssätt</DialogTitle>
+                        <DialogDescription>
+                          Slutför din beställning med ditt föredragna betalningssätt
+                        </DialogDescription>
+                      </DialogHeader>
+                      
+                      <div className="space-y-6">
+                        <KlarnaPayment
+                          dishTitle={dishData.title}
+                          dishPrice={dishData.price}
+                          quantity={quantity}
+                          onPaymentSuccess={() => {
+                            setShowPayment(false);
+                            toast({
+                              title: "Beställning genomförd!",
+                              description: "Du kommer att få en bekräftelse via e-post"
+                            });
+                          }}
+                        />
+                        
+                        <div className="relative">
+                          <div className="absolute inset-0 flex items-center">
+                            <span className="w-full border-t" />
+                          </div>
+                          <div className="relative flex justify-center text-xs uppercase">
+                            <span className="bg-background px-2 text-muted-foreground">
+                              Eller
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <PaymentComponent
+                          dishTitle={dishData.title}
+                          dishPrice={dishData.price}
+                          quantity={quantity}
+                          pickupTime={selectedTime}
+                          pickupAddress={dishData.cookAddress}
+                          specialRequests={specialRequests}
+                        />
+                      </div>
                     </DialogContent>
                   </Dialog>
                 </div>
