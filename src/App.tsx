@@ -20,6 +20,8 @@ const queryClient = new QueryClient();
 const AppContent = () => {
   const { user, isChef, isKitchenPartner, isAdmin } = useRole();
 
+  console.log('AppContent: user=', user, 'isChef=', isChef, 'isKitchenPartner=', isKitchenPartner, 'isAdmin=', isAdmin);
+
   // Role-based routing
   if (isChef && !user?.onboarding_completed) {
     return <ChefOnboarding />;
