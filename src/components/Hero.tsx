@@ -19,7 +19,7 @@ const Hero = () => {
         <div className="max-w-2xl text-white">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
             Homechef
-            <span className="block text-xl md:text-2xl font-normal text-yellow-cream">hemlagat mat nära dig</span>
+            <span className="block text-xl md:text-2xl font-normal text-yellow-cream">hemlagad mat nära dig</span>
           </h1>
           <p className="text-xl mb-8 text-white/90 leading-relaxed">
             Hitta unika maträtter tillagade av passionerade hemkockar. 
