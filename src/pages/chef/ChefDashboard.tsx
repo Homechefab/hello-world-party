@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { HygieneQuestionnaire } from '@/components/HygieneQuestionnaire';
 import { 
   CheckCircle, 
   AlertCircle, 
@@ -138,34 +139,7 @@ export const ChefDashboard = () => {
         </TabsContent>
 
         <TabsContent value="hygiene" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="w-5 h-5" />
-                Daglig Hygienplan
-              </CardTitle>
-              <CardDescription>
-                Följ hygienplanen för att säkerställa matsäkerhet
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {hygienePlan.map((item, index) => (
-                  <div key={index} className="flex items-center gap-3 p-3 border border-border rounded-lg">
-                    <input 
-                      type="checkbox" 
-                      checked={item.completed}
-                      className="w-4 h-4 text-primary bg-background border-border rounded focus:ring-primary"
-                    />
-                    <span className={item.completed ? 'line-through text-muted-foreground' : ''}>
-                      {item.task}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <Button className="w-full mt-6">Ladda upp hygienbevis</Button>
-            </CardContent>
-          </Card>
+          <HygieneQuestionnaire />
         </TabsContent>
 
         <TabsContent value="kitchen" className="space-y-6">
