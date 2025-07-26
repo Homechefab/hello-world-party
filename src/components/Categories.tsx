@@ -70,7 +70,7 @@ const popularChefs = [
 
 const PopularChefs = () => {
   return (
-    <section className="py-12 bg-secondary/30">
+    <section id="popular-chefs" className="py-12 bg-secondary/30">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-8 text-foreground">
           Populära kockar i närområdet
