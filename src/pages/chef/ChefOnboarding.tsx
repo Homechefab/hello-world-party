@@ -210,7 +210,7 @@ export const ChefOnboarding = () => {
             <div>
               <h3 className="text-xl font-semibold mb-2">Ansökan skickad!</h3>
               <p className="text-muted-foreground">
-                Din ansökan är nu under granskning. Vi kommer att kontakta dig inom 2 arbetsdagar.
+                Din ansökan är nu under granskning. Du får besked inom 2 arbetsdagar.
               </p>
             </div>
             
