@@ -1,12 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChefHat, Search, ShoppingBag } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-import { AuthDialog } from "./auth/AuthDialog";
-import { UserMenu } from "./UserMenu";
+import { ChefHat, Search, ShoppingBag, User } from "lucide-react";
 
 const Header = () => {
-  const { user } = useAuth();
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
 
   return (
@@ -35,28 +31,15 @@ const Header = () => {
             <ShoppingBag className="w-5 h-5" />
           </Button>
           
-          {user ? (
-            <UserMenu />
-          ) : (
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => setAuthDialogOpen(true)}
-            >
-              Logga in
-            </Button>
-          )}
+          <Button variant="ghost" size="icon">
+            <User className="w-5 h-5" />
+          </Button>
           
           <Button variant="hero" size="sm">
             Sälj mat
           </Button>
         </div>
       </div>
-      
-      <AuthDialog 
-        open={authDialogOpen} 
-        onOpenChange={setAuthDialogOpen} 
-      />
     </header>
   );
 };
