@@ -66,13 +66,7 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
         </div>
       </div>
       
-      {React.cloneElement(children as React.ReactElement, { 
-        user, 
-        isChef, 
-        isCustomer, 
-        isKitchenPartner, 
-        isAdmin 
-      })}
+      {children}
     </div>
   );
 };

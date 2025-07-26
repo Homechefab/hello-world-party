@@ -76,18 +76,30 @@ const AppContent = ({ user, isChef, isKitchenPartner, isAdmin }: AppContentProps
   );
 };
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <RoleBasedLayout>
-          <AppContent user={undefined} isChef={false} isKitchenPartner={false} isAdmin={false} />
-        </RoleBasedLayout>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <BrowserRouter>
+          <RoleBasedLayout>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/dish/:id" element={<DishPage />} />
+              <Route path="/sell" element={<SellPage />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/chef/dashboard" element={<ChefDashboard />} />
+              <Route path="/chef/onboarding" element={<ChefOnboarding />} />
+              <Route path="/kitchen-partner/dashboard" element={<KitchenPartnerDashboard />} />
+              <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </RoleBasedLayout>
+        </BrowserRouter>
+        <Toaster />
+        <Sonner />
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
