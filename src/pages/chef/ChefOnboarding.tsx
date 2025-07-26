@@ -223,10 +223,6 @@ export const ChefOnboarding = () => {
                 </li>
                 <li className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-muted-foreground rounded-full" />
-                  Köksinspektion bokas in (3-5 dagar)
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-muted-foreground rounded-full" />
                   Slutgodkännande och aktivering
                 </li>
               </ul>
