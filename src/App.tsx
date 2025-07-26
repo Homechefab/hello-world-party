@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import DishPage from "./pages/DishPage";
 import SellPage from "./pages/SellPage";
 import Dashboard from "./pages/Dashboard";
+import ChefSearch from "./pages/ChefSearch";
 import { ChefDashboard } from "./pages/chef/ChefDashboard";
 import { ChefOnboarding } from "./pages/chef/ChefOnboarding";
 import { KitchenPartnerDashboard } from "./pages/kitchen-partner/KitchenPartnerDashboard";
@@ -29,6 +30,7 @@ const App = () => {
               <Route path="/" element={<Index />} />
               <Route path="/dish/:id" element={<DishPage />} />
               <Route path="/sell" element={<SellPage />} />
+              <Route path="/search-chefs" element={<ChefSearch />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/chef/onboarding" element={<ChefOnboarding />} />
               <Route path="/chef/dashboard" element={<ChefDashboard />} />
