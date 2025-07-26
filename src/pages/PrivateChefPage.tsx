@@ -80,7 +80,7 @@ const PrivateChefPage = () => {
               Anlita en privatkock
             </h1>
             <p className="text-xl text-white/90 mb-8">
-              Professionella kockar för dina speciella tillfällen
+              Få en kock hem till dig för speciella tillfällen, tillställningar, fest, kalas med mera
             </p>
             
             <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-xl">
