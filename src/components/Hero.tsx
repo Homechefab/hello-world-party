@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Search, MapPin } from "lucide-react";
+import { Search, MapPin, ShoppingCart, ChefHat } from "lucide-react";
 import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-food.jpg";
 
@@ -51,12 +51,14 @@ const Hero = () => {
           </div>
           
           <div className="flex flex-wrap gap-4 mt-8">
-            <Button variant="hero" size="lg">
-              Börja handla
+            <Button variant="hero" size="lg" className="flex items-center gap-2">
+              <ShoppingCart className="w-5 h-5" />
+              Beställ mat
             </Button>
             <Link to="/sell">
-              <Button variant="outline" size="lg" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
-                Bli säljare
+              <Button variant="outline" size="lg" className="bg-white/10 border-white/30 text-white hover:bg-white/20 flex items-center gap-2">
+                <ChefHat className="w-5 h-5" />
+                Sälj din mat
               </Button>
             </Link>
           </div>
