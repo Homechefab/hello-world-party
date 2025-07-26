@@ -29,7 +29,7 @@ const Header = () => {
             <Sparkles className="w-6 h-6 text-white" />
           </div>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            KöksMagi
+            Homechef
           </h1>
         </Link>
         
@@ -77,7 +77,7 @@ const Header = () => {
                     <Sparkles className="w-5 h-5 text-white" />
                   </div>
                   <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent font-bold">
-                    KöksMagi
+                    Homechef
                   </span>
                 </SheetTitle>
               </SheetHeader>
