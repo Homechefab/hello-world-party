@@ -1,4 +1,5 @@
 import { ChefHat, Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -33,11 +34,11 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground">För köpare</h4>
             <ul className="space-y-2 text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors">Sök mat</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Populära kategorier</a></li>
-              <li><a href="/how-it-works" className="hover:text-primary transition-colors">Så fungerar det</a></li>
-              <li><a href="/secure-payments" className="hover:text-primary transition-colors">Säkra betalningar</a></li>
-              <li><a href="/customer-service" className="hover:text-primary transition-colors">Kundservice</a></li>
+              <li><Link to="#" className="hover:text-primary transition-colors">Sök mat</Link></li>
+              <li><Link to="#" className="hover:text-primary transition-colors">Populära kategorier</Link></li>
+              <li><Link to="/how-it-works" className="hover:text-primary transition-colors">Så fungerar det</Link></li>
+              <li><Link to="/secure-payments" className="hover:text-primary transition-colors">Säkra betalningar</Link></li>
+              <li><Link to="/customer-service" className="hover:text-primary transition-colors">Kundservice</Link></li>
             </ul>
           </div>
 
@@ -45,11 +46,11 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground">För säljare</h4>
             <ul className="space-y-2 text-muted-foreground">
-              <li><a href="#" className="hover:text-primary transition-colors">Börja sälja</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Säljguide</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Prissättning</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Säkerhetsregler</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Säljarcommunityn</a></li>
+              <li><Link to="#" className="hover:text-primary transition-colors">Börja sälja</Link></li>
+              <li><Link to="#" className="hover:text-primary transition-colors">Säljguide</Link></li>
+              <li><Link to="#" className="hover:text-primary transition-colors">Prissättning</Link></li>
+              <li><Link to="#" className="hover:text-primary transition-colors">Säkerhetsregler</Link></li>
+              <li><Link to="#" className="hover:text-primary transition-colors">Säljarcommunityn</Link></li>
             </ul>
           </div>
 
@@ -57,11 +58,11 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground">För restauranger</h4>
             <ul className="space-y-2 text-muted-foreground">
-              <li><a href="/kitchen-partner/register" className="hover:text-primary transition-colors">Hyr ut ditt kök</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Så fungerar det</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Priser & villkor</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Säkerhet & försäkring</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Partnersupport</a></li>
+              <li><Link to="/kitchen-partner/register" className="hover:text-primary transition-colors">Hyr ut ditt kök</Link></li>
+              <li><Link to="#" className="hover:text-primary transition-colors">Så fungerar det</Link></li>
+              <li><Link to="#" className="hover:text-primary transition-colors">Priser & villkor</Link></li>
+              <li><Link to="#" className="hover:text-primary transition-colors">Säkerhet & försäkring</Link></li>
+              <li><Link to="#" className="hover:text-primary transition-colors">Partnersupport</Link></li>
             </ul>
           </div>
 
@@ -88,9 +89,9 @@ const Footer = () => {
         <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-muted-foreground text-sm">
           <p>&copy; 2024 Hemlagat. Alla rättigheter förbehållna.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
-            <a href="#" className="hover:text-primary transition-colors">Integritetspolicy</a>
-            <a href="#" className="hover:text-primary transition-colors">Användarvillkor</a>
-            <a href="#" className="hover:text-primary transition-colors">Cookies</a>
+            <Link to="#" className="hover:text-primary transition-colors">Integritetspolicy</Link>
+            <Link to="#" className="hover:text-primary transition-colors">Användarvillkor</Link>
+            <Link to="#" className="hover:text-primary transition-colors">Cookies</Link>
           </div>
         </div>
       </div>
