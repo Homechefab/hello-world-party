@@ -35,7 +35,22 @@ const Footer = () => {
             <h4 className="font-semibold text-foreground">För köpare</h4>
             <ul className="space-y-2 text-muted-foreground">
               <li><Link to="#" className="hover:text-primary transition-colors">Sök mat</Link></li>
-              <li><Link to="/#popular-chefs" className="hover:text-primary transition-colors">Populära kockar</Link></li>
+              <li>
+                <button 
+                  onClick={() => {
+                    const element = document.getElementById('popular-chefs');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                      // If not on homepage, navigate there first
+                      window.location.href = '/#popular-chefs';
+                    }
+                  }}
+                  className="hover:text-primary transition-colors text-left"
+                >
+                  Populära kockar
+                </button>
+              </li>
               <li><Link to="/how-it-works" className="hover:text-primary transition-colors">Så fungerar det</Link></li>
               <li><Link to="/secure-payments" className="hover:text-primary transition-colors">Säkra betalningar</Link></li>
               <li><Link to="/customer-service" className="hover:text-primary transition-colors">Kundservice</Link></li>
