@@ -1,8 +1,15 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { useRole } from '@/hooks/useRole';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ChefHat, Users, Building, Shield } from 'lucide-react';
+import { ChefHat, Users, Building, Shield, Menu } from 'lucide-react';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 interface RoleBasedLayoutProps {
   children: ReactNode;
@@ -10,6 +17,7 @@ interface RoleBasedLayoutProps {
 
 export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
   const { user, loading, switchRole, isChef, isCustomer, isKitchenPartner, isAdmin } = useRole();
+  const [roleMenuOpen, setRoleMenuOpen] = useState(false);
 
   console.log('RoleBasedLayout: Current user:', user, 'Loading:', loading);
 
@@ -38,6 +46,13 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
     return 'Kund';
   };
 
+  const roles = [
+    { id: 'customer1', name: 'Kund', icon: Users, active: isCustomer },
+    { id: 'chef1', name: 'Kock', icon: ChefHat, active: isChef },
+    { id: 'kitchen_partner1', name: 'Kökspartner', icon: Building, active: isKitchenPartner },
+    { id: 'admin1', name: 'Admin', icon: Shield, active: isAdmin },
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       {/* Demo role switcher - remove in production */}
@@ -49,19 +64,61 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
               {getRoleName()}: {user?.full_name}
             </Badge>
           </div>
-          <div className="flex gap-2 text-sm">
-            <Button size="sm" variant="ghost" onClick={() => switchRole('customer1')}>
-              Kund
-            </Button>
-            <Button size="sm" variant="ghost" onClick={() => switchRole('chef1')}>
-              Kock
-            </Button>
-            <Button size="sm" variant="ghost" onClick={() => switchRole('kitchen_partner1')}>
-              Kökspartner
-            </Button>
-            <Button size="sm" variant="ghost" onClick={() => switchRole('admin1')}>
-              Admin
-            </Button>
+          
+          {/* Desktop Role Buttons - hidden on mobile */}
+          <div className="hidden md:flex gap-2 text-sm">
+            {roles.map((role) => (
+              <Button 
+                key={role.id}
+                size="sm" 
+                variant={role.active ? "default" : "ghost"} 
+                onClick={() => switchRole(role.id)}
+              >
+                {role.name}
+              </Button>
+            ))}
+          </div>
+
+          {/* Mobile Role Menu */}
+          <div className="md:hidden">
+            <Sheet open={roleMenuOpen} onOpenChange={setRoleMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <Menu className="w-4 h-4 mr-1" />
+                  Roller
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-80 bg-background/95 backdrop-blur-sm">
+                <SheetHeader>
+                  <SheetTitle className="text-left">Välj roll</SheetTitle>
+                </SheetHeader>
+                
+                <div className="mt-6 space-y-2">
+                  {roles.map((role) => {
+                    const IconComponent = role.icon;
+                    return (
+                      <Button
+                        key={role.id}
+                        variant={role.active ? "default" : "outline"}
+                        className="w-full justify-start h-12"
+                        onClick={() => {
+                          switchRole(role.id);
+                          setRoleMenuOpen(false);
+                        }}
+                      >
+                        <IconComponent className="w-5 h-5 mr-3" />
+                        {role.name}
+                        {role.active && (
+                          <Badge variant="secondary" className="ml-auto">
+                            Aktiv
+                          </Badge>
+                        )}
+                      </Button>
+                    );
+                  })}
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>
