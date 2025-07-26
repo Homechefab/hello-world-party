@@ -3,6 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Star, Clock, MapPin, User } from "lucide-react";
 import { Link } from "react-router-dom";
+import meatballsImage from "@/assets/meatballs.jpg";
+import pastaImage from "@/assets/pasta.jpg";
+import soupImage from "@/assets/soup.jpg";
+import applePieImage from "@/assets/apple-pie.jpg";
 
 interface Dish {
   id: string;
@@ -24,12 +28,12 @@ const mockDishes: Dish[] = [
     title: "Mormors köttbullar",
     description: "Traditionella svenska köttbullar med gräddsås, lingonsylt och pressgurka. Receptet har gått i arv i tre generationer.",
     price: 89,
-    image: "/assets/meatballs.jpg",
+    image: meatballsImage,
     rating: 4.8,
     cookName: "Anna Lindström",
     cookLocation: "Södermalm, Stockholm",
     prepTime: "30 min",
-    tags: ["Vegetariskt", "Glutenfritt"],
+    tags: ["Svenskt", "Klassiskt"],
     available: 5
   },
   {
@@ -37,7 +41,7 @@ const mockDishes: Dish[] = [
     title: "Hemlagad carbonara",
     description: "Klassisk italiensk carbonara med äkta guanciale, pecorino romano och färska ägg. Enkel men perfekt.",
     price: 95,
-    image: "/assets/pasta.jpg",
+    image: pastaImage,
     rating: 4.9,
     cookName: "Marco Rossi",
     cookLocation: "Östermalm, Stockholm",
@@ -50,7 +54,7 @@ const mockDishes: Dish[] = [
     title: "Krämig tomatsoppa",
     description: "Hemkokt tomatsoppa med färska basilika och grädde. Serveras med hemgjort surdegsbröd.",
     price: 65,
-    image: "/assets/soup.jpg", 
+    image: soupImage, 
     rating: 4.7,
     cookName: "Lisa Andersson",
     cookLocation: "Vasastan, Stockholm",
@@ -63,7 +67,7 @@ const mockDishes: Dish[] = [
     title: "Äppelpaj farmors stil",
     description: "Traditionell äppelpaj med kanel och smördeg. Serveras varm med vaniljsås eller glass.",
     price: 75,
-    image: "/assets/apple-pie.jpg",
+    image: applePieImage,
     rating: 4.6,
     cookName: "Margareta Holm", 
     cookLocation: "Gamla Stan, Stockholm",
