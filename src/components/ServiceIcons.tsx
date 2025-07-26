@@ -1,19 +1,18 @@
 import { Link } from "react-router-dom";
-import orderFoodImage from "@/assets/service-order-food.jpg";
-import sellFoodImage from "@/assets/service-sell-food.jpg";
-import rentKitchenImage from "@/assets/service-rent-kitchen.jpg";
+import pickupImage from "@/assets/customer-pickup.jpg";
+import experienceImage from "@/assets/experience-dining.jpg";
+import privateChefImage from "@/assets/private-chef.jpg";
 
 const services = [
   {
-    image: orderFoodImage,
-    title: "Beställ mat",
-    description: "Upptäck hemlagade rätter",
+    image: pickupImage,
+    title: "Beställ mat för avhämtning",
+    description: "Hämta hemlagad mat direkt från kocken",
     href: "#",
     onClick: () => {
       const searchElement = document.getElementById('search');
       if (searchElement) {
         searchElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        // Fokusera på sökfältet efter scroll
         setTimeout(() => {
           const searchInput = searchElement.querySelector('input[type="text"]') as HTMLInputElement;
           if (searchInput) searchInput.focus();
@@ -23,18 +22,18 @@ const services = [
     color: "from-blue-500 to-blue-600"
   },
   {
-    image: sellFoodImage,
-    title: "Sälj din mat",
-    description: "Börja sälja hemlagad mat",
-    href: "/sell",
-    color: "from-green-500 to-green-600"
+    image: experienceImage,
+    title: "Upplevelsepaket, mat hos kocken",
+    description: "Njut av en middag hemma hos kocken",
+    href: "#experiences",
+    color: "from-purple-500 to-purple-600"
   },
   {
-    image: rentKitchenImage,
-    title: "Hyr ut ditt kök",
-    description: "Hyra ut kök till kockar",
-    href: "/kitchen-partner/register",
-    color: "from-purple-500 to-purple-600"
+    image: privateChefImage,
+    title: "Anlita en privatkock",
+    description: "Få en kock hem till dig för speciella tillfällen",
+    href: "#private-chef",
+    color: "from-gold-500 to-gold-600"
   }
 ];
 
@@ -42,9 +41,18 @@ const ServiceIcons = () => {
   return (
     <section className="py-12 bg-background">
       <div className="container mx-auto px-4">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold text-foreground mb-2">
+            Vad vill du göra idag?
+          </h2>
+          <p className="text-muted-foreground">
+            Välj från våra populära alternativ
+          </p>
+        </div>
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
           {services.map((service) => {
-            // Special handling for "Beställ mat" button
+            // Special handling for buttons with onClick
             if (service.onClick) {
               return (
                 <button
