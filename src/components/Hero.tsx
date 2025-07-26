@@ -66,8 +66,7 @@ const Hero = () => {
               size="lg" 
               className="bg-white/10 border-white/30 text-white hover:bg-white/20 flex items-center gap-2"
               onClick={() => {
-                // Switch to kitchen partner role to access their dashboard
-                window.location.href = '/kitchen-partner/dashboard';
+                window.location.href = '/kitchen-partner/register';
               }}
             >
               <Building className="w-5 h-5" />

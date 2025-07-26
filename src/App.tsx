@@ -12,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 import { ChefDashboard } from "./pages/chef/ChefDashboard";
 import { ChefOnboarding } from "./pages/chef/ChefOnboarding";
 import { KitchenPartnerDashboard } from "./pages/kitchen-partner/KitchenPartnerDashboard";
+import { KitchenPartnerOnboarding } from "./pages/kitchen-partner/KitchenPartnerOnboarding";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
@@ -90,6 +91,7 @@ const App = () => {
               <Route path="/chef/dashboard" element={<ChefDashboard />} />
               <Route path="/chef/onboarding" element={<ChefOnboarding />} />
               <Route path="/kitchen-partner/dashboard" element={<KitchenPartnerDashboard />} />
+              <Route path="/kitchen-partner/register" element={<KitchenPartnerOnboarding />} />
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
