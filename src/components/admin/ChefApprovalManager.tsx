@@ -32,7 +32,6 @@ interface ChefApplication {
   documents: {
     selfControlPlan?: string;
     businessLicense?: string;
-    kitchenPhotos?: string[];
   };
   notes?: string;
 }
@@ -56,8 +55,7 @@ export const ChefApprovalManager = () => {
       appliedDate: '2024-01-15',
       documents: {
         selfControlPlan: 'egenkontroll_anna.pdf',
-        businessLicense: 'f_skatt_anna.pdf',
-        kitchenPhotos: ['kitchen1.jpg', 'kitchen2.jpg', 'kitchen3.jpg']
+        businessLicense: 'f_skatt_anna.pdf'
       }
     },
     {
@@ -72,8 +70,7 @@ export const ChefApprovalManager = () => {
       appliedDate: '2024-01-12',
       documents: {
         selfControlPlan: 'egenkontroll_erik.pdf',
-        businessLicense: 'f_skatt_erik.pdf',
-        kitchenPhotos: ['erik_kitchen1.jpg', 'erik_kitchen2.jpg']
+        businessLicense: 'f_skatt_erik.pdf'
       }
     },
     {
@@ -88,8 +85,7 @@ export const ChefApprovalManager = () => {
       appliedDate: '2024-01-10',
       documents: {
         selfControlPlan: 'egenkontroll_maria.pdf',
-        businessLicense: 'f_skatt_maria.pdf',
-        kitchenPhotos: ['maria_kitchen1.jpg']
+        businessLicense: 'f_skatt_maria.pdf'
       }
     }
   ]);
@@ -301,18 +297,6 @@ export const ChefApprovalManager = () => {
                             </div>
                           )}
                           
-                          {application.documents.kitchenPhotos && application.documents.kitchenPhotos.length > 0 && (
-                            <div className="p-3 border rounded-lg">
-                              <p className="font-medium mb-2">Köksbilder ({application.documents.kitchenPhotos.length} st)</p>
-                              <div className="flex gap-2 flex-wrap">
-                                {application.documents.kitchenPhotos.map((photo, index) => (
-                                  <div key={index} className="w-20 h-20 bg-muted rounded-lg flex items-center justify-center">
-                                    <span className="text-xs">Bild {index + 1}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          )}
                         </CardContent>
                       </Card>
 

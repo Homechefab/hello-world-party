@@ -32,7 +32,6 @@ export const ChefOnboarding = () => {
     },
     documents: {
       selfControlPlan: null,
-      kitchenPhotos: [],
       businessLicense: null
     }
   });
@@ -197,20 +196,6 @@ export const ChefOnboarding = () => {
                   Ladda upp din F-skattsedel eller näringstillstånd (PDF)
                 </p>
                 <Button variant="outline" size="sm">Välj fil</Button>
-              </div>
-            </div>
-            
-            <div>
-              <Label>Köksbilder *</Label>
-              <p className="text-sm text-muted-foreground mb-2">
-                Bilder som visar ditt kök och arbetsytor (minst 3 bilder krävs)
-              </p>
-              <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
-                <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground mb-2">
-                  Ladda upp bilder på ditt kök (JPG eller PNG)
-                </p>
-                <Button variant="outline" size="sm">Välj bilder</Button>
               </div>
             </div>
           </div>
