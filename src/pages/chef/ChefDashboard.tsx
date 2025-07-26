@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { HygieneQuestionnaire } from '@/components/HygieneQuestionnaire';
+import { VideoUpload } from '@/components/VideoUpload';
 import { 
   CheckCircle, 
   AlertCircle, 
@@ -87,9 +88,10 @@ export const ChefDashboard = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Översikt</TabsTrigger>
           <TabsTrigger value="hygiene">Hygienplan</TabsTrigger>
+          <TabsTrigger value="videos">Videos</TabsTrigger>
           <TabsTrigger value="kitchen">Kök</TabsTrigger>
           <TabsTrigger value="menu">Meny</TabsTrigger>
           <TabsTrigger value="sales">Försäljning</TabsTrigger>
@@ -140,6 +142,10 @@ export const ChefDashboard = () => {
 
         <TabsContent value="hygiene" className="space-y-6">
           <HygieneQuestionnaire />
+        </TabsContent>
+
+        <TabsContent value="videos" className="space-y-6">
+          <VideoUpload />
         </TabsContent>
 
         <TabsContent value="kitchen" className="space-y-6">

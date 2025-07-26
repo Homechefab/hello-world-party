@@ -11,6 +11,7 @@ import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import ReviewSection from "@/components/ReviewSection";
 import PaymentComponent from "@/components/PaymentComponent";
+import { VideoDisplay } from "@/components/VideoDisplay";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 
@@ -34,7 +35,25 @@ const dishData = {
   pickupTimes: ["17:30", "18:00", "18:30", "19:00", "19:30"],
   cookImage: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
   cookRating: 4.9,
-  cookDescription: "Passionerad hemkock med 15 års erfarenhet. Specialiserad på traditionell svensk husmanskost."
+  cookDescription: "Passionerad hemkock med 15 års erfarenhet. Specialiserad på traditionell svensk husmanskost.",
+  videos: [
+    {
+      id: "1",
+      title: "Så gör jag mina köttbullar",
+      description: "Steg-för-steg guide till perfekta köttbullar",
+      socialUrl: "https://www.tiktok.com/@anna_kok/video/123456789",
+      platform: "tiktok" as const,
+      createdAt: "2024-01-15T10:00:00Z"
+    },
+    {
+      id: "2", 
+      title: "Hemlagad gräddsås",
+      description: "Min hemliga gräddsås till köttbullarna",
+      socialUrl: "https://www.instagram.com/p/ABC123/",
+      platform: "instagram" as const,
+      createdAt: "2024-01-10T14:30:00Z"
+    }
+  ]
 };
 
 const DishPage = () => {
@@ -264,6 +283,13 @@ const DishPage = () => {
             </Card>
           </div>
         </div>
+
+        {/* Videos från kocken */}
+        {dishData.videos && dishData.videos.length > 0 && (
+          <div className="mt-12">
+            <VideoDisplay videos={dishData.videos} />
+          </div>
+        )}
 
         {/* Recensioner */}
         <div className="mt-12">
