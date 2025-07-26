@@ -12,7 +12,7 @@ const Footer = () => {
               <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
                 <ChefHat className="w-5 h-5 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-foreground">Hemlagat</h3>
+              <h3 className="text-xl font-bold text-foreground">Homechef</h3>
             </div>
             <p className="text-muted-foreground leading-relaxed">
               Sveriges första marknadsplats för hemlagad mat. Upptäck unika rätter från passionerade hemkockar i ditt närområde.
@@ -102,7 +102,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-muted-foreground text-sm">
-          <p>&copy; 2024 Hemlagat. Alla rättigheter förbehållna.</p>
+          <p>&copy; 2024 Homechef. Alla rättigheter förbehållna.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link to="#" className="hover:text-primary transition-colors">Integritetspolicy</Link>
             <Link to="#" className="hover:text-primary transition-colors">Användarvillkor</Link>
