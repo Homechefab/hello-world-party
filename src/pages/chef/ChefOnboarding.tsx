@@ -31,7 +31,7 @@ export const ChefOnboarding = () => {
       municipality: ''
     },
     documents: {
-      hygienecertificate: null,
+      selfControlPlan: null,
       kitchenPhotos: [],
       businessLicense: null
     }
@@ -159,14 +159,14 @@ export const ChefOnboarding = () => {
             </div>
 
             <div>
-              <Label>Hygienbevis *</Label>
+              <Label>Egenkontrollplan *</Label>
               <p className="text-sm text-muted-foreground mb-2">
-                Obligatoriskt dokument från kommunen som visar att du har genomgått hygienutbildning
+                Dokument som visar hur du säkerställer livsmedelssäkerhet i ditt kök
               </p>
               <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
                 <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
                 <p className="text-sm text-muted-foreground mb-2">
-                  Ladda upp ditt hygienbevis (PDF eller bild)
+                  Ladda upp din egenkontrollplan (PDF eller bild)
                 </p>
                 <Button variant="outline" size="sm">Välj fil</Button>
               </div>

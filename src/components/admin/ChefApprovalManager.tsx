@@ -30,7 +30,7 @@ interface ChefApplication {
   status: 'pending' | 'approved' | 'rejected' | 'under_review';
   appliedDate: string;
   documents: {
-    hygieneCertificate?: string;
+    selfControlPlan?: string;
     businessLicense?: string;
     kitchenPhotos?: string[];
   };
@@ -55,7 +55,7 @@ export const ChefApprovalManager = () => {
       status: 'pending',
       appliedDate: '2024-01-15',
       documents: {
-        hygieneCertificate: 'hygien_anna.pdf',
+        selfControlPlan: 'egenkontroll_anna.pdf',
         businessLicense: 'f_skatt_anna.pdf',
         kitchenPhotos: ['kitchen1.jpg', 'kitchen2.jpg', 'kitchen3.jpg']
       }
@@ -71,7 +71,7 @@ export const ChefApprovalManager = () => {
       status: 'under_review',
       appliedDate: '2024-01-12',
       documents: {
-        hygieneCertificate: 'hygien_erik.pdf',
+        selfControlPlan: 'egenkontroll_erik.pdf',
         businessLicense: 'f_skatt_erik.pdf',
         kitchenPhotos: ['erik_kitchen1.jpg', 'erik_kitchen2.jpg']
       }
@@ -87,7 +87,7 @@ export const ChefApprovalManager = () => {
       status: 'approved',
       appliedDate: '2024-01-10',
       documents: {
-        hygieneCertificate: 'hygien_maria.pdf',
+        selfControlPlan: 'egenkontroll_maria.pdf',
         businessLicense: 'f_skatt_maria.pdf',
         kitchenPhotos: ['maria_kitchen1.jpg']
       }
@@ -275,11 +275,11 @@ export const ChefApprovalManager = () => {
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
-                          {application.documents.hygieneCertificate && (
+                          {application.documents.selfControlPlan && (
                             <div className="flex items-center justify-between p-3 border rounded-lg">
                               <div>
-                                <p className="font-medium">Hygienbevis</p>
-                                <p className="text-sm text-muted-foreground">{application.documents.hygieneCertificate}</p>
+                                <p className="font-medium">Egenkontrollplan</p>
+                                <p className="text-sm text-muted-foreground">{application.documents.selfControlPlan}</p>
                               </div>
                               <Button variant="outline" size="sm">
                                 <Download className="w-4 h-4 mr-2" />
