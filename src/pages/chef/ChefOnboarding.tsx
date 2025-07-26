@@ -150,8 +150,19 @@ export const ChefOnboarding = () => {
       case 3:
         return (
           <div className="space-y-6">
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+              <h4 className="font-medium text-yellow-800 mb-2">Viktiga dokument krävs</h4>
+              <p className="text-sm text-yellow-700">
+                För att kunna sälja mat på vår plattform måste du ladda upp följande dokument. 
+                Alla ansökningar granskas manuellt av våra administratörer innan godkännande.
+              </p>
+            </div>
+
             <div>
-              <Label>Hygienbevis</Label>
+              <Label>Hygienbevis *</Label>
+              <p className="text-sm text-muted-foreground mb-2">
+                Obligatoriskt dokument från kommunen som visar att du har genomgått hygienutbildning
+              </p>
               <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
                 <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
                 <p className="text-sm text-muted-foreground mb-2">
@@ -162,24 +173,44 @@ export const ChefOnboarding = () => {
             </div>
             
             <div>
-              <Label>Köksbilder</Label>
+              <Label>Kommunens tillstånd för mathantering *</Label>
+              <p className="text-sm text-muted-foreground mb-2">
+                Tillstånd från din kommun att bedriva livsmedelsverksamhet i hemmet
+              </p>
               <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
                 <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
                 <p className="text-sm text-muted-foreground mb-2">
-                  Ladda upp bilder på ditt kök (minst 3 bilder)
+                  Ladda upp kommunens tillstånd (PDF)
                 </p>
-                <Button variant="outline" size="sm">Välj bilder</Button>
+                <Button variant="outline" size="sm">Välj fil</Button>
               </div>
             </div>
 
             <div>
-              <Label>F-skattsedel/Näringstillstånd</Label>
+              <Label>F-skattsedel/Näringstillstånd *</Label>
+              <p className="text-sm text-muted-foreground mb-2">
+                Bevis på att du har rätt att bedriva näringsverksamhet i Sverige
+              </p>
               <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
                 <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
                 <p className="text-sm text-muted-foreground mb-2">
-                  Ladda upp din F-skattsedel eller näringstillstånd
+                  Ladda upp din F-skattsedel eller näringstillstånd (PDF)
                 </p>
                 <Button variant="outline" size="sm">Välj fil</Button>
+              </div>
+            </div>
+            
+            <div>
+              <Label>Köksbilder *</Label>
+              <p className="text-sm text-muted-foreground mb-2">
+                Bilder som visar ditt kök och arbetsytor (minst 3 bilder krävs)
+              </p>
+              <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+                <Upload className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                <p className="text-sm text-muted-foreground mb-2">
+                  Ladda upp bilder på ditt kök (JPG eller PNG)
+                </p>
+                <Button variant="outline" size="sm">Välj bilder</Button>
               </div>
             </div>
           </div>

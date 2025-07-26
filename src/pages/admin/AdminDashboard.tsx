@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { ChefApprovalManager } from '@/components/admin/ChefApprovalManager';
 import { 
   Shield, 
   Users, 
@@ -142,46 +143,7 @@ export const AdminDashboard = () => {
         </TabsList>
 
         <TabsContent value="approvals" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Shield className="w-5 h-5" />
-                Väntande Godkännanden
-              </CardTitle>
-              <CardDescription>
-                Granska och godkänn nya kockar för plattformen
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {pendingChefs.map((chef) => (
-                  <div key={chef.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <div>
-                          <p className="font-medium">{chef.name}</p>
-                          <p className="text-sm text-muted-foreground">{chef.email}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <span>Ansökt: {chef.appliedDate}</span>
-                        <span>Kommun: {chef.municipality}</span>
-                        <Badge variant="outline">{chef.status}</Badge>
-                      </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm">
-                        <FileText className="w-4 h-4 mr-1" />
-                        Granska
-                      </Button>
-                      <Button size="sm">Godkänn</Button>
-                      <Button variant="destructive" size="sm">Avslå</Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+          <ChefApprovalManager />
         </TabsContent>
 
         <TabsContent value="complaints" className="space-y-6">

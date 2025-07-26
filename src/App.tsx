@@ -18,64 +18,6 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-interface AppContentProps {
-  user: any;
-  isChef: boolean;
-  isKitchenPartner: boolean;
-  isAdmin: boolean;
-}
-
-const AppContent = ({ user, isChef, isKitchenPartner, isAdmin }: AppContentProps) => {
-  console.log('AppContent: user=', user, 'isChef=', isChef, 'isKitchenPartner=', isKitchenPartner, 'isAdmin=', isAdmin);
-
-  // Role-based routing
-  if (isChef && !user?.onboarding_completed) {
-    return <ChefOnboarding />;
-  }
-
-  if (isChef) {
-    return (
-      <Routes>
-        <Route path="/" element={<ChefDashboard />} />
-        <Route path="/chef/dashboard" element={<ChefDashboard />} />
-        <Route path="/chef/onboarding" element={<ChefOnboarding />} />
-        <Route path="*" element={<ChefDashboard />} />
-      </Routes>
-    );
-  }
-
-  if (isKitchenPartner) {
-    return (
-      <Routes>
-        <Route path="/" element={<KitchenPartnerDashboard />} />
-        <Route path="/kitchen-partner/dashboard" element={<KitchenPartnerDashboard />} />
-        <Route path="*" element={<KitchenPartnerDashboard />} />
-      </Routes>
-    );
-  }
-
-  if (isAdmin) {
-    return (
-      <Routes>
-        <Route path="/" element={<AdminDashboard />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="*" element={<AdminDashboard />} />
-      </Routes>
-    );
-  }
-
-  // Customer routes (default)
-  return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/dish/:id" element={<DishPage />} />
-      <Route path="/sell" element={<SellPage />} />
-      <Route path="/dashboard" element={<Dashboard />} />
-      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-  );
-};
 
 const App = () => {
   return (
@@ -88,8 +30,8 @@ const App = () => {
               <Route path="/dish/:id" element={<DishPage />} />
               <Route path="/sell" element={<SellPage />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/chef/dashboard" element={<ChefDashboard />} />
               <Route path="/chef/onboarding" element={<ChefOnboarding />} />
+              <Route path="/chef/dashboard" element={<ChefDashboard />} />
               <Route path="/kitchen-partner/dashboard" element={<KitchenPartnerDashboard />} />
               <Route path="/kitchen-partner/register" element={<KitchenPartnerOnboarding />} />
               <Route path="/admin/dashboard" element={<AdminDashboard />} />

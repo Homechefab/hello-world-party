@@ -55,7 +55,7 @@ const Hero = () => {
               <ShoppingCart className="w-5 h-5" />
               Beställ mat
             </Button>
-            <Link to="/sell">
+            <Link to="/chef/onboarding">
               <Button variant="outline" size="lg" className="bg-white/10 border-white/30 text-white hover:bg-white/20 flex items-center gap-2">
                 <ChefHat className="w-5 h-5" />
                 Sälj din mat
