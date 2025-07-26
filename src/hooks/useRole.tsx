@@ -41,16 +41,18 @@ export const useRole = () => {
 
   useEffect(() => {
     // Simulate loading user data
+    console.log('useRole: Starting to load user data...');
     setTimeout(() => {
-      // For demo purposes, randomly assign a role
-      const users = Object.values(mockUsers);
-      const randomUser = users[Math.floor(Math.random() * users.length)];
-      setCurrentUser(randomUser);
+      // For demo purposes, start with customer role
+      const defaultUser = mockUsers['customer1'];
+      console.log('useRole: Setting default user:', defaultUser);
+      setCurrentUser(defaultUser);
       setLoading(false);
-    }, 1000);
+    }, 100); // Reduced loading time
   }, []);
 
   const switchRole = (userId: string) => {
+    console.log('useRole: Switching to role:', userId, mockUsers[userId]);
     setCurrentUser(mockUsers[userId] || null);
   };
 

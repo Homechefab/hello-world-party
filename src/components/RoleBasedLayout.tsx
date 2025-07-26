@@ -11,6 +11,8 @@ interface RoleBasedLayoutProps {
 export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
   const { user, loading, switchRole, isChef, isCustomer, isKitchenPartner, isAdmin } = useRole();
 
+  console.log('RoleBasedLayout: Current user:', user, 'Loading:', loading);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
