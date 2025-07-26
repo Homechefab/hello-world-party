@@ -8,21 +8,21 @@ const services = [
     image: pickupImage,
     title: "Beställ mat för avhämtning",
     description: "Hämta hemlagad mat direkt från kocken",
-    href: "/search-chefs",
+    href: "/pickup",
     color: "from-blue-500 to-blue-600"
   },
   {
     image: experienceImage,
     title: "Upplevelsepaket, mat hos kocken",
     description: "Njut av en middag hemma hos kocken",
-    href: "/search-chefs",
+    href: "/experiences",
     color: "from-purple-500 to-purple-600"
   },
   {
     image: privateChefImage,
     title: "Anlita en privatkock",
     description: "Få en kock hem till dig för speciella tillfällen",
-    href: "/search-chefs",
+    href: "/private-chef",
     color: "from-gold-500 to-gold-600"
   }
 ];

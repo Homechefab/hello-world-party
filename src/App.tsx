@@ -10,6 +10,9 @@ import DishPage from "./pages/DishPage";
 import SellPage from "./pages/SellPage";
 import Dashboard from "./pages/Dashboard";
 import ChefSearch from "./pages/ChefSearch";
+import PickupPage from "./pages/PickupPage";
+import ExperiencePage from "./pages/ExperiencePage";
+import PrivateChefPage from "./pages/PrivateChefPage";
 import { ChefDashboard } from "./pages/chef/ChefDashboard";
 import { ChefOnboarding } from "./pages/chef/ChefOnboarding";
 import { KitchenPartnerDashboard } from "./pages/kitchen-partner/KitchenPartnerDashboard";
@@ -30,6 +33,9 @@ const App = () => {
               <Route path="/" element={<Index />} />
               <Route path="/dish/:id" element={<DishPage />} />
               <Route path="/sell" element={<SellPage />} />
+              <Route path="/pickup" element={<PickupPage />} />
+              <Route path="/experiences" element={<ExperiencePage />} />
+              <Route path="/private-chef" element={<PrivateChefPage />} />
               <Route path="/search-chefs" element={<ChefSearch />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/chef/onboarding" element={<ChefOnboarding />} />
