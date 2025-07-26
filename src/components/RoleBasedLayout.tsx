@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ChefHat, Users, Building, Shield, Menu } from 'lucide-react';
 import { toast } from 'sonner';
+import LiveChat from '@/components/LiveChat';
 import {
   Sheet,
   SheetContent,
@@ -156,6 +157,9 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
       </div>
       
       {children}
+      
+      {/* Live Chat Widget */}
+      <LiveChat />
     </div>
   );
 };
