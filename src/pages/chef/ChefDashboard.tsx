@@ -14,6 +14,7 @@ import {
   Package
 } from 'lucide-react';
 
+// Chef Dashboard Component
 export const ChefDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
