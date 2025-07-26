@@ -9,6 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Star, Clock, MapPin, User, Minus, Plus, ArrowLeft } from "lucide-react";
 import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
+import ReviewSection from "@/components/ReviewSection";
+import PaymentComponent from "@/components/PaymentComponent";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 
 // Mock data för en specifik rätt
@@ -40,6 +43,7 @@ const DishPage = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedTime, setSelectedTime] = useState("");
   const [specialRequests, setSpecialRequests] = useState("");
+  const [showPayment, setShowPayment] = useState(false);
 
   const handleQuantityChange = (change: number) => {
     const newQuantity = quantity + change;
@@ -58,10 +62,7 @@ const DishPage = () => {
       return;
     }
 
-    toast({
-      title: "Beställning genomförd!",
-      description: `Du har beställt ${quantity}x ${dishData.title}. Hämta kl ${selectedTime} på ${dishData.cookAddress}.`
-    });
+    setShowPayment(true);
   };
 
   return (
@@ -232,14 +233,28 @@ const DishPage = () => {
                     <span className="text-xl font-bold">{dishData.price * quantity} kr</span>
                   </div>
                   
-                  <Button 
-                    className="w-full" 
-                    variant="food" 
-                    size="lg"
-                    onClick={handleOrder}
-                  >
-                    Lägg beställning
-                  </Button>
+                  <Dialog open={showPayment} onOpenChange={setShowPayment}>
+                    <DialogTrigger asChild>
+                      <Button 
+                        className="w-full" 
+                        variant="food" 
+                        size="lg"
+                        onClick={handleOrder}
+                      >
+                        Lägg beställning
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                      <PaymentComponent
+                        dishTitle={dishData.title}
+                        dishPrice={dishData.price}
+                        quantity={quantity}
+                        pickupTime={selectedTime}
+                        pickupAddress={dishData.cookAddress}
+                        specialRequests={specialRequests}
+                      />
+                    </DialogContent>
+                  </Dialog>
                 </div>
 
                 <div className="text-center text-sm text-muted-foreground">
@@ -248,6 +263,16 @@ const DishPage = () => {
               </CardContent>
             </Card>
           </div>
+        </div>
+
+        {/* Recensioner */}
+        <div className="mt-12">
+          <ReviewSection 
+            dishId={dishData.id}
+            averageRating={dishData.rating}
+            totalReviews={dishData.reviews}
+            reviews={[]}
+          />
         </div>
       </div>
     </div>
