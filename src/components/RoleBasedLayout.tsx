@@ -1,8 +1,10 @@
 import React, { ReactNode, useState } from 'react';
 import { useRole } from '@/hooks/useRole';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ChefHat, Users, Building, Shield, Menu } from 'lucide-react';
+import { toast } from 'sonner';
 import {
   Sheet,
   SheetContent,
@@ -18,8 +20,35 @@ interface RoleBasedLayoutProps {
 export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
   const { user, loading, switchRole, isChef, isCustomer, isKitchenPartner, isAdmin } = useRole();
   const [roleMenuOpen, setRoleMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   console.log('RoleBasedLayout: Current user:', user, 'Loading:', loading);
+
+  const handleRoleSwitch = (roleId: string) => {
+    const roleNames = {
+      'customer1': 'Kund',
+      'chef1': 'Kock', 
+      'kitchen_partner1': 'Kökspartner',
+      'admin1': 'Admin'
+    };
+    
+    switchRole(roleId);
+    toast.success(`Bytte till ${roleNames[roleId as keyof typeof roleNames]} roll`);
+    
+    // Navigate to appropriate dashboard if not on homepage
+    if (location.pathname !== '/') {
+      if (roleId === 'chef1') {
+        navigate('/chef/dashboard');
+      } else if (roleId === 'kitchen_partner1') {
+        navigate('/kitchen-partner/dashboard');
+      } else if (roleId === 'admin1') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
+    }
+  };
 
   if (loading) {
     return (
@@ -72,7 +101,7 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
                 key={role.id}
                 size="sm" 
                 variant={role.active ? "default" : "ghost"} 
-                onClick={() => switchRole(role.id)}
+                onClick={() => handleRoleSwitch(role.id)}
               >
                 {role.name}
               </Button>
@@ -102,7 +131,7 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
                         variant={role.active ? "default" : "outline"}
                         className="w-full justify-start h-12"
                         onClick={() => {
-                          switchRole(role.id);
+                          handleRoleSwitch(role.id);
                           setRoleMenuOpen(false);
                         }}
                       >

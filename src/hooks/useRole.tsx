@@ -53,7 +53,11 @@ export const useRole = () => {
 
   const switchRole = (userId: string) => {
     console.log('useRole: Switching to role:', userId, mockUsers[userId]);
-    setCurrentUser(mockUsers[userId] || null);
+    const newUser = mockUsers[userId];
+    if (newUser) {
+      setCurrentUser(newUser);
+      console.log('useRole: Successfully switched to:', newUser.role, newUser.full_name);
+    }
   };
 
   return {
