@@ -30,12 +30,6 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <Hero />
-      <div className="container mx-auto px-4 py-8">
-        <SearchAndFilters 
-          onFiltersChange={setFilters}
-          activeFilters={filters}
-        />
-      </div>
       <Categories />
       <DishDetails />
       <Features />
