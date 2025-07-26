@@ -21,8 +21,8 @@ const businessServices = [
   {
     image: orderFoodImage,
     title: "Samarbeta med oss",
-    description: "Bli en del av Homechef-familjen",
-    href: "#partnership",
+    description: "Bli en del av Homechef-familjen och väx tillsammans med oss",
+    href: "/partnership",
     color: "from-orange-500 to-orange-600"
   }
 ];
