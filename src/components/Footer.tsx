@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <footer className="bg-gradient-warm border-t border-border">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -50,6 +50,18 @@ const Footer = () => {
               <li><a href="#" className="hover:text-primary transition-colors">Prissättning</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">Säkerhetsregler</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">Säljarcommunityn</a></li>
+            </ul>
+          </div>
+
+          {/* För restauranger */}
+          <div className="space-y-4">
+            <h4 className="font-semibold text-foreground">För restauranger</h4>
+            <ul className="space-y-2 text-muted-foreground">
+              <li><a href="/kitchen-partner/register" className="hover:text-primary transition-colors">Hyr ut ditt kök</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Så fungerar det</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Priser & villkor</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Säkerhet & försäkring</a></li>
+              <li><a href="#" className="hover:text-primary transition-colors">Partnersupport</a></li>
             </ul>
           </div>
 
