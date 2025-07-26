@@ -33,7 +33,7 @@ const BusinessServices = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-foreground mb-4">
-            Starta ditt företag med oss
+            Bli partner med Homechef
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Bli en del av Sveriges största marknadsplats för hemlagad mat
