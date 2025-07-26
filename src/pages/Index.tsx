@@ -6,6 +6,7 @@ import DishDetails from "@/components/DishDetails";
 import Features from "@/components/Features";
 import Footer from "@/components/Footer";
 import SearchAndFilters from "@/components/SearchAndFilters";
+import ServiceIcons from "@/components/ServiceIcons";
 
 interface SearchFilters {
   query: string;
@@ -30,6 +31,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <Hero />
+      <ServiceIcons />
       <Categories />
       <DishDetails />
       <Features />
