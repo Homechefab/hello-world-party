@@ -45,7 +45,7 @@ const Hero = () => {
                 />
               </div>
               <Button variant="food" size="lg" className="px-8">
-                Sök mat
+                Beställ mat
               </Button>
             </div>
           </div>
