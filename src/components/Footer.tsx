@@ -1,4 +1,4 @@
-import { ChefHat, Facebook, Instagram, Twitter, Mail, Phone, MapPin } from "lucide-react";
+import { ChefHat, Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -25,7 +25,7 @@ const Footer = () => {
                 <Instagram className="w-5 h-5" />
               </button>
               <button className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-primary hover:text-white transition-colors shadow-soft">
-                <Twitter className="w-5 h-5" />
+                <Linkedin className="w-5 h-5" />
               </button>
             </div>
           </div>
