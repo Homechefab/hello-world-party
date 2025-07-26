@@ -20,7 +20,7 @@ const services = [
     icon: Building,
     title: "Hyr ut ditt kök",
     description: "Hyra ut kök till kockar",
-    href: "/kitchen-partner",
+    href: "/kitchen-partner/register",
     color: "from-purple-500 to-purple-600"
   }
 ];
