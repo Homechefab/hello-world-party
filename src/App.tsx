@@ -14,6 +14,9 @@ import PickupPage from "./pages/PickupPage";
 import ExperiencePage from "./pages/ExperiencePage";
 import PrivateChefPage from "./pages/PrivateChefPage";
 import PartnershipPage from "./pages/PartnershipPage";
+import HowItWorks from "./pages/HowItWorks";
+import SecurePayments from "./pages/SecurePayments";
+import CustomerService from "./pages/CustomerService";
 import { ChefDashboard } from "./pages/chef/ChefDashboard";
 import { ChefOnboarding } from "./pages/chef/ChefOnboarding";
 import { KitchenPartnerDashboard } from "./pages/kitchen-partner/KitchenPartnerDashboard";
@@ -38,6 +41,9 @@ const App = () => {
               <Route path="/experiences" element={<ExperiencePage />} />
               <Route path="/private-chef" element={<PrivateChefPage />} />
               <Route path="/partnership" element={<PartnershipPage />} />
+              <Route path="/how-it-works" element={<HowItWorks />} />
+              <Route path="/secure-payments" element={<SecurePayments />} />
+              <Route path="/customer-service" element={<CustomerService />} />
               <Route path="/search-chefs" element={<ChefSearch />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/chef/onboarding" element={<ChefOnboarding />} />

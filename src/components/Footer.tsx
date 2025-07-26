@@ -35,9 +35,9 @@ const Footer = () => {
             <ul className="space-y-2 text-muted-foreground">
               <li><a href="#" className="hover:text-primary transition-colors">Sök mat</a></li>
               <li><a href="#" className="hover:text-primary transition-colors">Populära kategorier</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Så fungerar det</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Säkra betalningar</a></li>
-              <li><a href="#" className="hover:text-primary transition-colors">Kundservice</a></li>
+              <li><a href="/how-it-works" className="hover:text-primary transition-colors">Så fungerar det</a></li>
+              <li><a href="/secure-payments" className="hover:text-primary transition-colors">Säkra betalningar</a></li>
+              <li><a href="/customer-service" className="hover:text-primary transition-colors">Kundservice</a></li>
             </ul>
           </div>
 
