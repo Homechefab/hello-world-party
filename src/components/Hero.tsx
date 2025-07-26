@@ -26,7 +26,7 @@ const Hero = () => {
             Från traditionella husmanskost till internationella delikatesser.
           </p>
           
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-6 shadow-xl">
+          <div id="search" className="bg-white/95 backdrop-blur-sm rounded-xl p-6 shadow-xl">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1 relative">
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />

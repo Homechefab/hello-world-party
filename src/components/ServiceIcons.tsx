@@ -8,7 +8,7 @@ const services = [
     image: orderFoodImage,
     title: "Beställ mat",
     description: "Upptäck hemlagade rätter",
-    href: "/",
+    href: "#search",
     color: "from-blue-500 to-blue-600"
   },
   {
