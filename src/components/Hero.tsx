@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Search, MapPin, ShoppingCart, ChefHat, Building } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-food.jpg";
 
 const Hero = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
   return (
     <section className="relative bg-gradient-hero min-h-[500px] flex items-center overflow-hidden">
       <div className="absolute inset-0">
@@ -27,19 +30,26 @@ const Hero = () => {
           </p>
           
           <div id="search" className="bg-white/95 backdrop-blur-sm rounded-xl p-6 shadow-xl">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder="Sök maträtter eller ange din stad/adress"
-                  className="w-full pl-12 pr-4 py-3 bg-white border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-foreground"
-                />
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              navigate(`/pickup?q=${encodeURIComponent(searchQuery)}`);
+            }}>
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Sök maträtter eller ange din stad/adress"
+                    className="w-full pl-12 pr-4 py-3 bg-white border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-foreground"
+                  />
+                </div>
+                <Button type="submit" variant="food" size="lg" className="px-8">
+                  Beställ mat
+                </Button>
               </div>
-              <Button variant="food" size="lg" className="px-8">
-                Beställ mat
-              </Button>
-            </div>
+            </form>
           </div>
         </div>
       </div>
