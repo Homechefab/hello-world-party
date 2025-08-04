@@ -96,7 +96,7 @@ const Header = () => {
             <User className="w-5 h-5" />
           </Button>
           
-          <Link to="/sell">
+          <Link to="/chef/application">
             <Button variant="hero" size="sm">
               Sälj mat
             </Button>
@@ -185,7 +185,7 @@ const Header = () => {
                 {/* Action Buttons */}
                 <div className="space-y-3 pt-4 border-t border-border">
                   <Link 
-                    to="/sell" 
+                    to="/chef/application" 
                     className="block"
                     onClick={() => setMenuOpen(false)}
                   >
