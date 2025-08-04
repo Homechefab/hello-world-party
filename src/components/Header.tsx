@@ -96,7 +96,7 @@ const Header = () => {
             <User className="w-5 h-5" />
           </Button>
           
-          <Link to="/seller-guide">
+          <Link to="/seller-guide" onClick={() => console.log('Navigating to seller guide')}>
             <Button variant="hero" size="sm">
               Börja sälja
             </Button>
@@ -187,7 +187,10 @@ const Header = () => {
                   <Link 
                     to="/seller-guide" 
                     className="block"
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => {
+                      console.log('Mobile: Navigating to seller guide');
+                      setMenuOpen(false);
+                    }}
                   >
                     <Button variant="hero" className="w-full justify-start" size="lg">
                       <UtensilsCrossed className="w-5 h-5 mr-2" />
