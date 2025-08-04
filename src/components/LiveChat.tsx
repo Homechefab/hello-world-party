@@ -39,7 +39,46 @@ const LiveChat = () => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = () => {
+  const generateAIResponse = async (userMessage: string): Promise<string> => {
+    try {
+      // Create a context about the Homechef service
+      const context = `Du är en AI-assistent för Homechef, en plattform där användare kan:
+      - Beställa hemlagad mat från lokala kockar
+      - Hyra kök för att laga mat
+      - Sälja sin egen mat som kock
+      - Boka privatkockar för events
+      - Delta i matlagningsupplevelser
+      
+      Kontaktinfo: Telefon 0734234686 för akut hjälp.
+      
+      Svara alltid vänligt och hjälpsamt på svenska. Om du inte kan svara på en specifik fråga, hänvisa till telefonnumret.`;
+
+      const messages = [
+        { role: 'system', content: context },
+        { role: 'user', content: userMessage }
+      ];
+
+      const response = await fetch('/functions/v1/chat-ai', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ messages }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get AI response');
+      }
+
+      const data = await response.json();
+      return data.message || 'Tack för ditt meddelande! Ring oss på 0734234686 för direkt hjälp.';
+    } catch (error) {
+      console.error('AI Response error:', error);
+      return 'Jag har lite tekniska problem just nu. Ring oss på 0734234686 så hjälper vi dig direkt!';
+    }
+  };
+
+  const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
 
     const userMessage: Message = {
@@ -51,21 +90,36 @@ const LiveChat = () => {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const currentMessage = newMessage;
     setNewMessage('');
     setIsTyping(true);
 
-    // Simulate support response
-    setTimeout(() => {
+    // Get AI response
+    try {
+      const aiResponse = await generateAIResponse(currentMessage);
+      
+      setTimeout(() => {
+        setIsTyping(false);
+        const supportMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          text: aiResponse,
+          sender: 'support',
+          timestamp: new Date(),
+          senderName: 'Emma från support'
+        };
+        setMessages(prev => [...prev, supportMessage]);
+      }, 1000);
+    } catch (error) {
       setIsTyping(false);
-      const supportMessage: Message = {
+      const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: 'Tack för ditt meddelande! En av våra supportagenter kommer att svara inom kort. Under tiden kan du också ringa oss på 0734234686 för akut hjälp.',
+        text: 'Jag har lite tekniska problem just nu. Ring oss på 0734234686 så hjälper vi dig direkt!',
         sender: 'support',
         timestamp: new Date(),
         senderName: 'Emma från support'
       };
-      setMessages(prev => [...prev, supportMessage]);
-    }, 2000);
+      setMessages(prev => [...prev, errorMessage]);
+    }
 
     toast.success('Meddelande skickat!');
   };
