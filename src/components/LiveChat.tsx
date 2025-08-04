@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { MessageCircle, X, Send, User, Bot, Clock, Minimize2 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
   id: string;
@@ -41,37 +42,33 @@ const LiveChat = () => {
 
   const generateAIResponse = async (userMessage: string): Promise<string> => {
     try {
-      // Create a context about the Homechef service
-      const context = `Du är en AI-assistent för Homechef, en plattform där användare kan:
-      - Beställa hemlagad mat från lokala kockar
-      - Hyra kök för att laga mat
-      - Sälja sin egen mat som kock
-      - Boka privatkockar för events
-      - Delta i matlagningsupplevelser
-      
-      Kontaktinfo: Telefon 0734234686 för akut hjälp.
-      
-      Svara alltid vänligt och hjälpsamt på svenska. Om du inte kan svara på en specifik fråga, hänvisa till telefonnumret.`;
-
-      const messages = [
-        { role: 'system', content: context },
-        { role: 'user', content: userMessage }
-      ];
-
-      const response = await fetch('/functions/v1/chat-ai', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ messages }),
+      const { data, error } = await supabase.functions.invoke('chat-ai', {
+        body: { 
+          messages: [
+            { 
+              role: 'system', 
+              content: `Du är en AI-assistent för Homechef, en plattform där användare kan:
+              - Beställa hemlagad mat från lokala kockar
+              - Hyra kök för att laga mat
+              - Sälja sin egen mat som kock
+              - Boka privatkockar för events
+              - Delta i matlagningsupplevelser
+              
+              Kontaktinfo: Telefon 0734234686 för akut hjälp.
+              
+              Svara alltid vänligt och hjälpsamt på svenska. Om du inte kan svara på en specifik fråga, hänvisa till telefonnumret.`
+            },
+            { role: 'user', content: userMessage }
+          ]
+        }
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to get AI response');
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
       }
 
-      const data = await response.json();
-      return data.message || 'Tack för ditt meddelande! Ring oss på 0734234686 för direkt hjälp.';
+      return data?.message || 'Tack för ditt meddelande! Ring oss på 0734234686 för direkt hjälp.';
     } catch (error) {
       console.error('AI Response error:', error);
       return 'Jag har lite tekniska problem just nu. Ring oss på 0734234686 så hjälper vi dig direkt!';
