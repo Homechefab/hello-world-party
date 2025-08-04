@@ -6,9 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Upload, DollarSign, Clock, MapPin, Star } from "lucide-react";
+import { CheckCircle, Upload, DollarSign, Clock, MapPin, Star, ImageIcon, AlertCircle } from "lucide-react";
 import Header from "@/components/Header";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const steps = [
   {
@@ -43,6 +44,8 @@ const categories = [
 const SellPage = () => {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -58,15 +61,119 @@ const SellPage = () => {
     pickupInstructions: ""
   });
 
-  const handleNext = () => {
-    if (currentStep < 3) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      // Slutför annons
+  const handleImageUpload = async (files: FileList) => {
+    const imageUrls: string[] = [];
+    
+    for (const file of Array.from(files)) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast({
+          title: "Fil för stor",
+          description: "Bilden får max vara 5MB",
+          variant: "destructive"
+        });
+        continue;
+      }
+
+      try {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `dishes/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from('images')
+          .upload(filePath, file);
+
+        if (uploadError) {
+          toast({
+            title: "Uppladdning misslyckades",
+            description: "Kunde inte ladda upp bilden",
+            variant: "destructive"
+          });
+          continue;
+        }
+
+        const { data } = supabase.storage
+          .from('images')
+          .getPublicUrl(filePath);
+
+        imageUrls.push(data.publicUrl);
+      } catch (error) {
+        console.error('Error uploading image:', error);
+      }
+    }
+
+    setUploadedImages([...uploadedImages, ...imageUrls]);
+  };
+
+  const saveDishToDatabase = async () => {
+    try {
+      setIsSubmitting(true);
+
+      const { data, error } = await supabase
+        .from('dishes')
+        .insert([
+          {
+            title: formData.title,
+            category: formData.category,
+            description: formData.description,
+            ingredients: formData.ingredients,
+            allergens: formData.allergens,
+            price: parseFloat(formData.price),
+            portions: parseInt(formData.portions),
+            prep_time: formData.prepTime,
+            available_from: formData.availableFrom,
+            available_until: formData.availableUntil,
+            pickup_address: formData.pickupAddress,
+            pickup_instructions: formData.pickupInstructions,
+            images: uploadedImages,
+            chef_id: 'current-user-id' // This should be the actual logged-in user ID
+          }
+        ]);
+
+      if (error) {
+        throw error;
+      }
+
       toast({
         title: "Annons skapad!",
         description: "Din rätt är nu tillgänglig för beställning."
       });
+
+      // Reset form
+      setFormData({
+        title: "",
+        category: "",
+        description: "",
+        ingredients: "",
+        allergens: "",
+        price: "",
+        portions: "",
+        prepTime: "",
+        availableFrom: "",
+        availableUntil: "",
+        pickupAddress: "",
+        pickupInstructions: ""
+      });
+      setUploadedImages([]);
+      setCurrentStep(1);
+
+    } catch (error) {
+      console.error('Error saving dish:', error);
+      toast({
+        title: "Fel uppstod",
+        description: "Kunde inte spara annonsen. Försök igen.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentStep < 3) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      saveDishToDatabase();
     }
   };
 
@@ -78,6 +185,20 @@ const SellPage = () => {
 
   const updateFormData = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const isStepValid = () => {
+    switch (currentStep) {
+      case 1:
+        return formData.title && formData.category && formData.description;
+      case 2:
+        return formData.price && formData.portions && formData.availableFrom && 
+               formData.availableUntil && formData.pickupAddress;
+      case 3:
+        return uploadedImages.length > 0;
+      default:
+        return false;
+    }
   };
 
   return (
@@ -288,18 +409,74 @@ const SellPage = () => {
                 <>
                   <div>
                     <Label>Ladda upp bilder *</Label>
-                    <div className="mt-2 border-2 border-dashed border-border rounded-lg p-8 text-center">
-                      <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <p className="text-muted-foreground mb-2">
-                        Dra och släpp dina bilder här eller klicka för att välja
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Rekommenderat: 2-4 bilder, max 5MB per bild
-                      </p>
-                      <Button variant="outline" className="mt-4">
-                        Välj bilder
-                      </Button>
+                    <div className="mt-2">
+                      <input
+                        type="file"
+                        id="image-upload"
+                        multiple
+                        accept="image/*"
+                        onChange={(e) => {
+                          if (e.target.files) {
+                            handleImageUpload(e.target.files);
+                          }
+                        }}
+                        className="hidden"
+                      />
+                      <label
+                        htmlFor="image-upload"
+                        className="border-2 border-dashed border-border rounded-lg p-8 text-center block cursor-pointer hover:border-primary/50 transition-colors"
+                      >
+                        <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                        <p className="text-muted-foreground mb-2">
+                          Dra och släpp dina bilder här eller klicka för att välja
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          Rekommenderat: 2-4 bilder, max 5MB per bild
+                        </p>
+                        <Button type="button" variant="outline" className="mt-4">
+                          Välj bilder
+                        </Button>
+                      </label>
                     </div>
+                    
+                    {uploadedImages.length > 0 && (
+                      <div className="mt-4">
+                        <Label>Uppladdade bilder ({uploadedImages.length})</Label>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2">
+                          {uploadedImages.map((image, index) => (
+                            <div key={index} className="relative">
+                              <img
+                                src={image}
+                                alt={`Bild ${index + 1}`}
+                                className="w-full h-32 object-cover rounded-lg border"
+                              />
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="sm"
+                                className="absolute top-1 right-1 h-6 w-6 p-0"
+                                onClick={() => {
+                                  setUploadedImages(uploadedImages.filter((_, i) => i !== index));
+                                }}
+                              >
+                                ×
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {uploadedImages.length === 0 && (
+                      <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <AlertCircle className="w-5 h-5 text-yellow-600" />
+                          <p className="text-sm text-yellow-800">
+                            Du måste ladda upp minst en bild för att kunna publicera annonsen.
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="bg-secondary/50 rounded-lg p-6">

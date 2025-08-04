@@ -1,10 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { HygieneQuestionnaire } from '@/components/HygieneQuestionnaire';
 import { VideoUpload } from '@/components/VideoUpload';
+import { OrderManagement } from '@/components/chef/OrderManagement';
 import { 
   CheckCircle, 
   AlertCircle, 
@@ -13,26 +17,105 @@ import {
   FileText, 
   ChefHat,
   TrendingUp,
-  Package
+  Package,
+  Edit,
+  Eye,
+  MoreHorizontal,
+  Plus,
+  Settings,
+  ClipboardList
 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { Link } from 'react-router-dom';
 
 // Chef Dashboard Component
 export const ChefDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const [dishes, setDishes] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   const stats = {
     totalSales: 15750,
     ordersThisWeek: 23,
     averageRating: 4.8,
-    totalDishes: 12
+    totalDishes: dishes.length
   };
 
-  const hygienePlan = [
-    { task: 'Tvätta händer', completed: true },
-    { task: 'Rengöra arbetsytor', completed: true },
-    { task: 'Kontrollera temperaturer', completed: false },
-    { task: 'Dokumentera rengöring', completed: false }
-  ];
+  useEffect(() => {
+    loadChefData();
+  }, []);
+
+  const loadChefData = async () => {
+    try {
+      // Load dishes
+      const { data: dishesData, error: dishesError } = await supabase
+        .from('dishes')
+        .select('*')
+        .eq('chef_id', 'current-user-id') // Replace with actual user ID
+        .order('created_at', { ascending: false });
+
+      if (dishesError) throw dishesError;
+      setDishes(dishesData || []);
+
+      // Load orders
+      const { data: ordersData, error: ordersError } = await supabase
+        .from('orders')
+        .select(`
+          *,
+          dishes (
+            title,
+            price
+          )
+        `)
+        .eq('chef_id', 'current-user-id')
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (ordersError) throw ordersError;
+      setOrders(ordersData || []);
+
+    } catch (error) {
+      console.error('Error loading chef data:', error);
+      toast({
+        title: "Fel vid laddning",
+        description: "Kunde inte ladda dina data. Försök igen.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const toggleDishStatus = async (dishId: string, isActive: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('dishes')
+        .update({ is_active: !isActive })
+        .eq('id', dishId);
+
+      if (error) throw error;
+
+      setDishes(dishes.map(dish => 
+        dish.id === dishId ? { ...dish, is_active: !isActive } : dish
+      ));
+
+      toast({
+        title: isActive ? "Rätt pausad" : "Rätt aktiverad",
+        description: isActive ? "Rätten är nu inaktiv och syns inte för kunder" : "Rätten är nu aktiv och synlig för kunder"
+      });
+
+    } catch (error) {
+      console.error('Error toggling dish status:', error);
+      toast({
+        title: "Fel uppstod",
+        description: "Kunde inte uppdatera rätten",
+        variant: "destructive"
+      });
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -88,12 +171,13 @@ export const ChefDashboard = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview">Översikt</TabsTrigger>
+          <TabsTrigger value="orders">Beställningar</TabsTrigger>
+          <TabsTrigger value="menu">Meny</TabsTrigger>
           <TabsTrigger value="hygiene">Hygienplan</TabsTrigger>
           <TabsTrigger value="videos">Videos</TabsTrigger>
           <TabsTrigger value="kitchen">Kök</TabsTrigger>
-          <TabsTrigger value="menu">Meny</TabsTrigger>
           <TabsTrigger value="sales">Försäljning</TabsTrigger>
         </TabsList>
 
@@ -105,15 +189,29 @@ export const ChefDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {[1, 2, 3].map((order) => (
-                    <div key={order} className="flex items-center justify-between p-4 border border-border rounded-lg">
-                      <div>
-                        <p className="font-medium">Beställning #{order}23</p>
-                        <p className="text-sm text-muted-foreground">Köttbullar med potatis</p>
-                      </div>
-                      <Badge variant="outline">Klar</Badge>
+                  {loading ? (
+                    <div className="text-center py-8">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                      <p className="text-muted-foreground mt-2">Laddar beställningar...</p>
                     </div>
-                  ))}
+                  ) : orders.length > 0 ? (
+                    orders.slice(0, 3).map((order) => (
+                      <div key={order.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+                        <div>
+                          <p className="font-medium">Beställning #{order.id?.slice(-6)}</p>
+                          <p className="text-sm text-muted-foreground">{order.dishes?.title}</p>
+                        </div>
+                        <Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>
+                          {order.status === 'completed' ? 'Klar' : 'Pågående'}
+                        </Badge>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8">
+                      <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                      <p className="text-muted-foreground">Inga beställningar än</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -138,6 +236,10 @@ export const ChefDashboard = () => {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="orders" className="space-y-6">
+          <OrderManagement />
         </TabsContent>
 
         <TabsContent value="hygiene" className="space-y-6">
@@ -182,21 +284,74 @@ export const ChefDashboard = () => {
         <TabsContent value="menu" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Hantera Meny</CardTitle>
-              <CardDescription>Lägg till och redigera dina rätter</CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Hantera Meny</CardTitle>
+                  <CardDescription>Lägg till och redigera dina rätter</CardDescription>
+                </div>
+                <Link to="/sell">
+                  <Button className="flex items-center gap-2">
+                    <Plus className="w-4 h-4" />
+                    Lägg till ny rätt
+                  </Button>
+                </Link>
+              </div>
             </CardHeader>
             <CardContent>
-              <Button className="w-full mb-6">Lägg till ny rätt</Button>
               <div className="space-y-4">
-                {['Köttbullar med potatis', 'Lax med dillsås', 'Vegetarisk lasagne'].map((dish, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 border border-border rounded-lg">
-                    <div>
-                      <p className="font-medium">{dish}</p>
-                      <p className="text-sm text-muted-foreground">150 kr</p>
-                    </div>
-                    <Button variant="outline" size="sm">Redigera</Button>
+                {loading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                    <p className="text-muted-foreground mt-2">Laddar rätter...</p>
                   </div>
-                ))}
+                ) : dishes.length > 0 ? (
+                  dishes.map((dish) => (
+                    <div key={dish.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
+                      <div className="flex items-center gap-4">
+                        {dish.images && dish.images[0] && (
+                          <img 
+                            src={dish.images[0]} 
+                            alt={dish.title}
+                            className="w-16 h-16 object-cover rounded-lg"
+                          />
+                        )}
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium">{dish.title}</p>
+                            <Badge variant={dish.is_active ? "default" : "secondary"}>
+                              {dish.is_active ? "Aktiv" : "Pausad"}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{dish.price} kr • {dish.portions} portioner</p>
+                          <p className="text-xs text-muted-foreground">{dish.category}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => toggleDishStatus(dish.id, dish.is_active)}
+                        >
+                          {dish.is_active ? "Pausa" : "Aktivera"}
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-12">
+                    <ChefHat className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground mb-4">Du har inga rätter än</p>
+                    <Link to="/sell">
+                      <Button>
+                        <Plus className="w-4 h-4 mr-2" />
+                        Lägg till din första rätt
+                      </Button>
+                    </Link>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
