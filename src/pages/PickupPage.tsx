@@ -76,28 +76,18 @@ const PickupPage = () => {
             </p>
             
             <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 shadow-xl">
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-6">
-                <div className="md:col-span-5 relative">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div className="md:col-span-3 relative">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
                   <input
                     type="text"
-                    placeholder="Vad har du lust på?"
+                    placeholder="Sök mat eller ange avhämtningsadress"
                     value={filters.query}
                     onChange={(e) => setFilters({...filters, query: e.target.value})}
                     className="w-full pl-12 pr-4 py-4 bg-white border-2 border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-foreground"
                   />
                 </div>
-                <div className="md:col-span-4 relative">
-                  <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                  <input
-                    type="text"
-                    placeholder="Avhämtningsadress"
-                    value={filters.location}
-                    onChange={(e) => setFilters({...filters, location: e.target.value})}
-                    className="w-full pl-12 pr-4 py-4 bg-white border-2 border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-foreground"
-                  />
-                </div>
-                <div className="md:col-span-3">
+                <div className="md:col-span-1">
                   <Button size="lg" className="w-full py-4 text-lg font-semibold">
                     Hitta mat
                   </Button>
