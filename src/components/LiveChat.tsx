@@ -40,42 +40,49 @@ const LiveChat = () => {
     scrollToBottom();
   }, [messages]);
 
-  const generateAIResponse = async (userMessage: string): Promise<string> => {
-    try {
-      const { data, error } = await supabase.functions.invoke('chat-ai', {
-        body: { 
-          messages: [
-            { 
-              role: 'system', 
-              content: `Du är en AI-assistent för Homechef, en plattform där användare kan:
-              - Beställa hemlagad mat från lokala kockar
-              - Hyra kök för att laga mat
-              - Sälja sin egen mat som kock
-              - Boka privatkockar för events
-              - Delta i matlagningsupplevelser
-              
-              Kontaktinfo: Telefon 0734234686 för akut hjälp.
-              
-              Svara alltid vänligt och hjälpsamt på svenska. Om du inte kan svara på en specifik fråga, hänvisa till telefonnumret.`
-            },
-            { role: 'user', content: userMessage }
-          ]
-        }
-      });
-
-      if (error) {
-        console.error('Supabase function error:', error);
-        throw error;
-      }
-
-      return data?.message || 'Tack för ditt meddelande! Ring oss på 0734234686 för direkt hjälp.';
-    } catch (error) {
-      console.error('AI Response error:', error);
-      return 'Jag har lite tekniska problem just nu. Ring oss på 0734234686 så hjälper vi dig direkt!';
+  const generateAIResponse = (userMessage: string): string => {
+    const message = userMessage.toLowerCase();
+    
+    if (message.includes('hej') || message.includes('hello') || message.includes('hallå')) {
+      return 'Hej och välkommen till Homechef! 🍽️ Jag hjälper dig gärna med frågor om våra tjänster - beställa mat, bli kock, hyra kök eller boka privatkock. Vad kan jag hjälpa dig med idag?';
     }
+    
+    if (message.includes('beställ') || message.includes('order') || message.includes('mat') || message.includes('köpa')) {
+      return 'För att beställa mat går du till vår hemsida och klickar på "Beställ mat". Där kan du söka bland lokala kockar och deras rätter. Har du problem med din beställning kan du ringa oss på 0734234686!';
+    }
+    
+    if (message.includes('kock') || message.includes('chef') || message.includes('sälja') || message.includes('sälja mat')) {
+      return 'Som kock på Homechef kan du sälja din hemlagade mat! Gå till "Sälja mat" för att registrera dig som kock. Vi har strikta hygienregler för att säkerställa kvalitet. Har du frågor om att bli kock? Ring 0734234686!';
+    }
+    
+    if (message.includes('kök') || message.includes('hyra') || message.includes('kitchen') || message.includes('hyra kök')) {
+      return 'Du kan hyra professionella kök genom vår plattform! Perfekt för catering, events eller större matlagning. Gå till "Hyra kök" för att se tillgängliga alternativ. För mer info, ring 0734234686!';
+    }
+    
+    if (message.includes('privatkock') || message.includes('private chef') || message.includes('event')) {
+      return 'Vi erbjuder privatkockar för events, middagar och speciella tillfällen! Gå till "Privatkock" för att se våra duktiga kockar och boka. Ring 0734234686 för personlig rådgivning!';
+    }
+    
+    if (message.includes('upplevelse') || message.includes('experience') || message.includes('matlagning')) {
+      return 'Våra matlagningsupplevelser är perfekta för teambuilding, dejter eller bara för kul! Du får laga mat tillsammans med professionella kockar. Boka under "Upplevelser". Frågor? Ring 0734234686!';
+    }
+    
+    if (message.includes('betala') || message.includes('betalning') || message.includes('payment') || message.includes('klarna')) {
+      return 'Vi använder säkra betalningar via Klarna. Du kan betala med kort, banköverföring eller delbetalning. All betalning sker säkert och krypterat. Problem med betalning? Ring 0734234686!';
+    }
+    
+    if (message.includes('problem') || message.includes('hjälp') || message.includes('support')) {
+      return 'Vi hjälper gärna till! För snabb hjälp ring oss på 0734234686 (vardagar 08:00-17:00). Du kan också maila oss eller använda denna chat. Vad behöver du hjälp med specifikt?';
+    }
+    
+    if (message.includes('tack') || message.includes('thanks')) {
+      return 'Så kul att jag kunde hjälpa! Om du har fler frågor är jag här. Du kan också alltid ringa oss på 0734234686 för direkt hjälp. Ha en fantastisk dag! 😊';
+    }
+    
+    return 'Tack för din fråga! Jag hjälper dig gärna med information om Homechef - beställa mat, bli kock, hyra kök, boka privatkock eller matlagningsupplevelser. För specifik hjälp kan du ringa oss på 0734234686 (vardagar 08:00-17:00). Vad behöver du veta mer om?';
   };
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = () => {
     if (!newMessage.trim()) return;
 
     const userMessage: Message = {
@@ -92,31 +99,19 @@ const LiveChat = () => {
     setIsTyping(true);
 
     // Get AI response
-    try {
-      const aiResponse = await generateAIResponse(currentMessage);
+    const aiResponse = generateAIResponse(currentMessage);
       
-      setTimeout(() => {
-        setIsTyping(false);
-        const supportMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          text: aiResponse,
-          sender: 'support',
-          timestamp: new Date(),
-          senderName: 'Emma från support'
-        };
-        setMessages(prev => [...prev, supportMessage]);
-      }, 1000);
-    } catch (error) {
+    setTimeout(() => {
       setIsTyping(false);
-      const errorMessage: Message = {
+      const supportMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: 'Jag har lite tekniska problem just nu. Ring oss på 0734234686 så hjälper vi dig direkt!',
+        text: aiResponse,
         sender: 'support',
         timestamp: new Date(),
         senderName: 'Emma från support'
       };
-      setMessages(prev => [...prev, errorMessage]);
-    }
+      setMessages(prev => [...prev, supportMessage]);
+    }, 1000);
 
     toast.success('Meddelande skickat!');
   };
