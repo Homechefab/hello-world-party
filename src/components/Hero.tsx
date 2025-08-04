@@ -32,15 +32,7 @@ const Hero = () => {
                 <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
                 <input
                   type="text"
-                  placeholder="Utforska dagens smaker"
-                  className="w-full pl-12 pr-4 py-3 bg-white border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-foreground"
-                />
-              </div>
-              <div className="flex-1 relative">
-                <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder="Ange din stad eller adress"
+                  placeholder="Sök maträtter eller ange din stad/adress"
                   className="w-full pl-12 pr-4 py-3 bg-white border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-foreground"
                 />
               </div>
