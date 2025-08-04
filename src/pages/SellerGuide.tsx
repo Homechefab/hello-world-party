@@ -298,12 +298,12 @@ const SellerGuide = () => {
               Gå med i tusentals kockar som redan tjänar pengar på sin passion
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/chef/application">
+              <Link to="/chef/application" onClick={() => console.log('Navigating to chef application')}>
                 <Button size="lg" className="bg-gradient-primary text-white hover:opacity-90">
                   Ansök som kock
                 </Button>
               </Link>
-              <Link to="/sell">
+              <Link to="/sell" onClick={() => console.log('Navigating to sell page')}>
                 <Button size="lg" variant="outline">
                   Sälj direkt (om du redan är godkänd)
                 </Button>
