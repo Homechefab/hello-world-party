@@ -32,6 +32,7 @@ const Hero = () => {
           <div id="search" className="bg-white/95 backdrop-blur-sm rounded-xl p-6 shadow-xl">
             <form onSubmit={(e) => {
               e.preventDefault();
+              console.log("Search submitted with query:", searchQuery);
               navigate(`/pickup?q=${encodeURIComponent(searchQuery)}`);
             }}>
               <div className="flex flex-col md:flex-row gap-4">
