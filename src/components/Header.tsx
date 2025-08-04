@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ChefHat, Search, ShoppingBag, User, Menu, X, Home, UtensilsCrossed, Info, Phone } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
+import { ChefHat, Search, ShoppingBag, User, Menu, X, Home, UtensilsCrossed, Info, Phone, Users, Building, Shield } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useRole } from "@/hooks/useRole";
+import { toast } from "sonner";
 import {
   Sheet,
   SheetContent,
@@ -12,13 +15,46 @@ import {
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user, switchRole, isChef, isCustomer, isKitchenPartner, isAdmin } = useRole();
+  const navigate = useNavigate();
 
   const menuItems = [
     { title: "Hem", href: "/", icon: Home },
     { title: "Kategorier", href: "#kategorier", icon: UtensilsCrossed },
-    { title: "Om oss", href: "#om-oss", icon: Info },
+    { title: "Om oss", href: "/about", icon: Info },
     { title: "Kontakt", href: "#kontakt", icon: Phone },
   ];
+
+  const roles = [
+    { id: 'customer1', name: 'Kund', icon: Users, active: isCustomer, dashboard: '/' },
+    { id: 'chef1', name: 'Kock', icon: ChefHat, active: isChef, dashboard: '/chef/dashboard' },
+    { id: 'kitchen_partner1', name: 'Kökspartner', icon: Building, active: isKitchenPartner, dashboard: '/kitchen-partner/dashboard' },
+    { id: 'admin1', name: 'Admin', icon: Shield, active: isAdmin, dashboard: '/admin/dashboard' },
+  ];
+
+  const handleRoleSwitch = (roleId: string) => {
+    const role = roles.find(r => r.id === roleId);
+    if (role) {
+      switchRole(roleId);
+      toast.success(`Bytte till ${role.name} roll`);
+      navigate(role.dashboard);
+      setMenuOpen(false);
+    }
+  };
+
+  const getRoleIcon = () => {
+    if (isChef) return <ChefHat className="w-4 h-4" />;
+    if (isKitchenPartner) return <Building className="w-4 h-4" />;
+    if (isAdmin) return <Shield className="w-4 h-4" />;
+    return <Users className="w-4 h-4" />;
+  };
+
+  const getRoleName = () => {
+    if (isChef) return 'Kock';
+    if (isKitchenPartner) return 'Kökspartner';
+    if (isAdmin) return 'Admin';
+    return 'Kund';
+  };
 
   return (
     <header className="bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 shadow-soft">
@@ -47,6 +83,11 @@ const Header = () => {
 
         {/* Desktop Actions - hidden on mobile */}
         <div className="hidden md:flex items-center gap-3">
+          <Badge variant="outline" className="flex items-center gap-2">
+            {getRoleIcon()}
+            {getRoleName()}: {user?.full_name}
+          </Badge>
+          
           <Button variant="ghost" size="icon">
             <ShoppingBag className="w-5 h-5" />
           </Button>
@@ -83,6 +124,39 @@ const Header = () => {
               </SheetHeader>
               
               <div className="mt-8 space-y-6">
+                {/* Current Role Display */}
+                <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
+                  {getRoleIcon()}
+                  <div>
+                    <p className="text-sm font-medium">{getRoleName()}</p>
+                    <p className="text-xs text-muted-foreground">{user?.full_name}</p>
+                  </div>
+                </div>
+
+                {/* Role Switcher */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-muted-foreground px-3">Byt roll</h3>
+                  {roles.map((role) => {
+                    const IconComponent = role.icon;
+                    return (
+                      <Button
+                        key={role.id}
+                        variant={role.active ? "default" : "outline"}
+                        className="w-full justify-start h-12"
+                        onClick={() => handleRoleSwitch(role.id)}
+                      >
+                        <IconComponent className="w-5 h-5 mr-3" />
+                        {role.name}
+                        {role.active && (
+                          <Badge variant="secondary" className="ml-auto">
+                            Aktiv
+                          </Badge>
+                        )}
+                      </Button>
+                    );
+                  })}
+                </div>
+
                 {/* Mobile Search */}
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
