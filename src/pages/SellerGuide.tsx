@@ -159,7 +159,7 @@ const SellerGuide = () => {
           </div>
 
           {/* Hur det fungerar */}
-          <section className="mb-16">
+          <section id="säljguide" className="mb-16">
             <h2 className="text-3xl font-bold text-center mb-8">Så här fungerar det</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {steps.map((step, index) => (
@@ -190,7 +190,7 @@ const SellerGuide = () => {
           </section>
 
           {/* Prissättningsguide */}
-          <section className="mb-16">
+          <section id="prissättning" className="mb-16">
             <h2 className="text-3xl font-bold text-center mb-8">Prissättningsguide</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               {pricingTips.map((tip, index) => (
@@ -230,7 +230,7 @@ const SellerGuide = () => {
           </section>
 
           {/* Säkerhetsregler */}
-          <section className="mb-16">
+          <section id="säkerhetsregler" className="mb-16">
             <h2 className="text-3xl font-bold text-center mb-8">Säkerhetsregler & Krav</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               {safetyRules.map((rule, index) => (
@@ -267,7 +267,7 @@ const SellerGuide = () => {
           </section>
 
           {/* Säljarcommunityn */}
-          <section className="mb-16">
+          <section id="community" className="mb-16">
             <h2 className="text-3xl font-bold text-center mb-8">Säljarcommunityn</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {communityFeatures.map((feature, index) => (
