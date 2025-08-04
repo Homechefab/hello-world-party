@@ -8,6 +8,7 @@ import { useRole } from "@/hooks/useRole";
 import Index from "./pages/Index";
 import DishPage from "./pages/DishPage";
 import SellPage from "./pages/SellPage";
+import SellerGuide from "./pages/SellerGuide";
 import Dashboard from "./pages/Dashboard";
 import ChefSearch from "./pages/ChefSearch";
 import PickupPage from "./pages/PickupPage";
@@ -40,6 +41,7 @@ const App = () => {
               <Route path="/" element={<Index />} />
               <Route path="/dish/:id" element={<DishPage />} />
               <Route path="/sell" element={<SellPage />} />
+              <Route path="/seller-guide" element={<SellerGuide />} />
               <Route path="/pickup" element={<PickupPage />} />
               <Route path="/experiences" element={<ExperiencePage />} />
               <Route path="/private-chef" element={<PrivateChefPage />} />
