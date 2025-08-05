@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Search, MapPin, Filter, Star, Calendar, Users, Clock } from "lucide-react";
+import { Search, MapPin, Filter, Star, Calendar, Users, Clock, ChefHat } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -24,47 +25,8 @@ const ExperiencePage = () => {
     { id: "10", label: "Större grupp", icon: "🎉" }
   ];
 
-  const mockExperiences = [
-    {
-      id: 1,
-      name: "Italiensk matlagningskurs & middag",
-      chef: "Anna Lindberg",
-      image: "https://images.unsplash.com/photo-1556909086-f3cae4bbf3a3?w=400&h=300&fit=crop",
-      price: 850,
-      rating: 4.9,
-      reviews: 34,
-      duration: "3.5 timmar",
-      maxGuests: 8,
-      location: "Södermalm, Stockholm",
-      description: "Lär dig laga autentisk pasta från scratch och njut av en 4-rätters middag"
-    },
-    {
-      id: 2,
-      name: "Vegansk gourmetmiddag",
-      chef: "Sofia Ahmed",
-      image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&h=300&fit=crop",
-      price: 695,
-      rating: 4.8,
-      reviews: 27,
-      duration: "2.5 timmar",
-      maxGuests: 6,
-      location: "Vasastan, Stockholm",
-      description: "Exklusiv 5-rätters vegansk meny med vin- och ciderpairing"
-    },
-    {
-      id: 3,
-      name: "Sushi & sake-upplevelse",
-      chef: "Marcus Johansson",
-      image: "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400&h=300&fit=crop",
-      price: 1200,
-      rating: 4.9,
-      reviews: 18,
-      duration: "4 timmar",
-      maxGuests: 4,
-      location: "Östermalm, Stockholm",
-      description: "Lär dig sushi-konsten och smaka premium sake i intim miljö"
-    }
-  ];
+  // Inga upplevelser registrerade än
+  const mockExperiences: never[] = [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -150,7 +112,7 @@ const ExperiencePage = () => {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-2xl font-bold text-foreground">
-              Tillgängliga matupplevelser
+              Matupplevelser
             </h2>
             <Button variant="outline" className="flex items-center gap-2">
               <Filter className="w-4 h-4" />
@@ -158,58 +120,29 @@ const ExperiencePage = () => {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockExperiences.map((experience) => (
-              <Card key={experience.id} className="hover:shadow-card transition-all duration-300 hover:-translate-y-1">
-                <CardContent className="p-0">
-                  <img
-                    src={experience.image}
-                    alt={experience.name}
-                    className="w-full h-48 object-cover rounded-t-lg"
-                  />
-                  <div className="p-6">
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-semibold text-lg text-foreground line-clamp-2">{experience.name}</h3>
-                      <Badge variant="secondary" className="text-lg font-bold whitespace-nowrap ml-2">
-                        {experience.price} kr
-                      </Badge>
-                    </div>
-                    
-                    <p className="text-primary text-sm mb-2">med {experience.chef}</p>
-                    
-                    <p className="text-muted-foreground text-sm mb-4">{experience.description}</p>
-                    
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm font-medium">{experience.rating}</span>
-                        <span className="text-sm text-muted-foreground">({experience.reviews})</span>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4 mb-4 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        {experience.duration}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Users className="w-4 h-4" />
-                        Max {experience.maxGuests} pers
-                      </div>
-                      <div className="flex items-center gap-1 col-span-2">
-                        <MapPin className="w-4 h-4" />
-                        {experience.location}
-                      </div>
-                    </div>
-                    
-                    <Button className="w-full">
-                      Boka upplevelse
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {mockExperiences.length === 0 && (
+            <div className="text-center py-16">
+              <ChefHat className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-2xl font-semibold text-foreground mb-4">
+                Inga matupplevelser registrerade än
+              </h3>
+              <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+                Vi arbetar på att få fler kockar att skapa matupplevelser. Bli den första att registrera dig som kock här!
+              </p>
+              <div className="flex gap-4 justify-center">
+                <Link to="/chef/application">
+                  <Button size="lg">
+                    Registrera dig som kock
+                  </Button>
+                </Link>
+                <Link to="/notification-signup">
+                  <Button variant="outline" size="lg">
+                    Få notifiering när kockar finns
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </section>
     </div>

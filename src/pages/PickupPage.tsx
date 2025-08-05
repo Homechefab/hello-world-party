@@ -74,9 +74,11 @@ const PickupPage = () => {
     }
   ];
 
-  // Logik för att visa kockar baserat på sökfrågan
-  // Om det finns en sökfråga, visa tom lista (inga kockar registrerade än)
-  const mockDishes = filters.query ? [] : allDishes;
+  // Inga kockar registrerade än - visa alltid tom lista
+  const mockDishes = [];
+
+  // Visa alltid meddelandet om inga kockar (oavsett sökfråga)
+  const showNoChefs = true;
 
   return (
     <div className="min-h-screen bg-background">
@@ -147,12 +149,15 @@ const PickupPage = () => {
             </Button>
           </div>
 
-          {/* Visa meddelande om sökt stad men inga kockar */}
-          {filters.query && mockDishes.length === 0 && (
+          {/* Visa meddelande när det inte finns kockar */}
+          {showNoChefs && (
             <div className="text-center py-16">
               <ChefHat className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-2xl font-semibold text-foreground mb-4">
-                Inga kockar registrerade i "{filters.query}" än
+                {filters.query 
+                  ? `Inga kockar registrerade i "${filters.query}" än`
+                  : "Inga kockar registrerade än"
+                }
               </h3>
               <p className="text-muted-foreground mb-8 max-w-md mx-auto">
                 Vi arbetar på att få fler kockar till ditt område. Bli den första att registrera dig som kock här!
@@ -172,65 +177,6 @@ const PickupPage = () => {
             </div>
           )}
 
-          {/* Visa meddelande om sökt stad och visa även kockar i närheten */}
-          {filters.query && mockDishes.length > 0 && (
-            <div className="bg-muted/50 rounded-xl p-6 mb-8">
-              <h3 className="text-lg font-semibold text-foreground mb-2">
-                Sökte på: "{filters.query}"
-              </h3>
-              <p className="text-muted-foreground">
-                Vi hittade {mockDishes.length} kockar i ditt område
-              </p>
-            </div>
-          )}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockDishes.map((dish) => (
-              <Card key={dish.id} className="hover:shadow-card transition-all duration-300 hover:-translate-y-1">
-                <CardContent className="p-0">
-                  <img
-                    src={dish.image}
-                    alt={dish.name}
-                    className="w-full h-48 object-cover rounded-t-lg"
-                  />
-                  <div className="p-6">
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-semibold text-lg text-foreground">{dish.name}</h3>
-                      <Badge variant="secondary" className="text-lg font-bold">
-                        {dish.price} kr
-                      </Badge>
-                    </div>
-                    
-                    <p className="text-primary text-sm mb-2">av {dish.chef}</p>
-                    
-                    <p className="text-muted-foreground text-sm mb-4">{dish.description}</p>
-                    
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="text-sm font-medium">{dish.rating}</span>
-                        <span className="text-sm text-muted-foreground">({dish.reviews})</span>
-                      </div>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Clock className="w-4 h-4" />
-                          {dish.readyIn}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Truck className="w-4 h-4" />
-                          {dish.distance}
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <Button className="w-full">
-                      Beställ för avhämtning
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
         </div>
       </section>
     </div>
