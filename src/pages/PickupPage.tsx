@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { Search, MapPin, Filter, Star, Clock, Truck } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
+import { Search, MapPin, Filter, Star, Clock, Truck, ChefHat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,11 +12,19 @@ interface SearchFilters {
 }
 
 const PickupPage = () => {
+  const [searchParams] = useSearchParams();
   const [filters, setFilters] = useState<SearchFilters>({
     query: "",
     location: "",
     timeSlot: ""
   });
+
+  useEffect(() => {
+    const query = searchParams.get('q');
+    if (query) {
+      setFilters(prev => ({ ...prev, query }));
+    }
+  }, [searchParams]);
 
   const timeSlots = [
     { id: "now", label: "Nu", icon: "⚡" },
@@ -24,7 +33,9 @@ const PickupPage = () => {
     { id: "today", label: "Idag", icon: "📅" }
   ];
 
-  const mockDishes = [
+  // Simulera att filtrera kockar baserat på sökfrågan
+  // Om det finns en specifik sökfråga, simulera att det inte finns kockar för den staden
+  const allDishes = [
     {
       id: 1,
       name: "Köttbullar med potatismos",
@@ -62,6 +73,12 @@ const PickupPage = () => {
       description: "Autentisk Pad Thai med räkor och färska böngroddar"
     }
   ];
+
+  // Logik för att visa kockar baserat på sökfrågan
+  // För demo: om man söker på "Stockholm" eller "Göteborg" visa kockar, annars visa tom lista
+  const mockDishes = filters.query ? 
+    (filters.query.toLowerCase().includes('stockholm') || filters.query.toLowerCase().includes('göteborg') ? allDishes : []) 
+    : allDishes;
 
   return (
     <div className="min-h-screen bg-background">
@@ -131,6 +148,39 @@ const PickupPage = () => {
               Filter
             </Button>
           </div>
+
+          {/* Visa meddelande om sökt stad men inga kockar */}
+          {filters.query && mockDishes.length === 0 && (
+            <div className="text-center py-16">
+              <ChefHat className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-2xl font-semibold text-foreground mb-4">
+                Inga kockar registrerade i "{filters.query}" än
+              </h3>
+              <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+                Vi arbetar på att få fler kockar till ditt område. Bli den första att registrera dig som kock här!
+              </p>
+              <div className="flex gap-4 justify-center">
+                <Button size="lg">
+                  Registrera dig som kock
+                </Button>
+                <Button variant="outline" size="lg">
+                  Få notifiering när kockar finns
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Visa meddelande om sökt stad och visa även kockar i närheten */}
+          {filters.query && mockDishes.length > 0 && (
+            <div className="bg-muted/50 rounded-xl p-6 mb-8">
+              <h3 className="text-lg font-semibold text-foreground mb-2">
+                Sökte på: "{filters.query}"
+              </h3>
+              <p className="text-muted-foreground">
+                Vi hittade {mockDishes.length} kockar i ditt område
+              </p>
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {mockDishes.map((dish) => (
