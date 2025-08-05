@@ -75,10 +75,8 @@ const PickupPage = () => {
   ];
 
   // Logik för att visa kockar baserat på sökfrågan
-  // För demo: om man söker på "Stockholm" eller "Göteborg" visa kockar, annars visa tom lista
-  const mockDishes = filters.query ? 
-    (filters.query.toLowerCase().includes('stockholm') || filters.query.toLowerCase().includes('göteborg') ? allDishes : []) 
-    : allDishes;
+  // Om det finns en sökfråga, visa tom lista (inga kockar registrerade än)
+  const mockDishes = filters.query ? [] : allDishes;
 
   return (
     <div className="min-h-screen bg-background">
