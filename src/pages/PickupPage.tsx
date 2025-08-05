@@ -104,7 +104,7 @@ const PickupPage = () => {
                 </div>
                 <div className="md:col-span-1">
                   <Button size="lg" className="w-full py-4 text-lg font-semibold">
-                    Hitta mat
+                    Hitta mat nära dig
                   </Button>
                 </div>
               </div>
