@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { Search, MapPin, Filter, Star, Clock, Truck, ChefHat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -158,12 +158,16 @@ const PickupPage = () => {
                 Vi arbetar på att få fler kockar till ditt område. Bli den första att registrera dig som kock här!
               </p>
               <div className="flex gap-4 justify-center">
-                <Button size="lg">
-                  Registrera dig som kock
-                </Button>
-                <Button variant="outline" size="lg">
-                  Få notifiering när kockar finns
-                </Button>
+                <Link to="/chef/application">
+                  <Button size="lg">
+                    Registrera dig som kock
+                  </Button>
+                </Link>
+                <Link to="/notification-signup">
+                  <Button variant="outline" size="lg">
+                    Få notifiering när kockar finns
+                  </Button>
+                </Link>
               </div>
             </div>
           )}

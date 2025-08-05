@@ -27,6 +27,7 @@ import { KitchenPartnerDashboard } from "./pages/kitchen-partner/KitchenPartnerD
 import { KitchenPartnerOnboarding } from "./pages/kitchen-partner/KitchenPartnerOnboarding";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import NotFound from "./pages/NotFound";
+import NotificationSignup from "./pages/NotificationSignup";
 
 const queryClient = new QueryClient();
 
@@ -59,6 +60,7 @@ const App = () => {
               <Route path="/kitchen-partner/dashboard" element={<KitchenPartnerDashboard />} />
               <Route path="/kitchen-partner/register" element={<KitchenPartnerOnboarding />} />
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              <Route path="/notification-signup" element={<NotificationSignup />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </RoleBasedLayout>
