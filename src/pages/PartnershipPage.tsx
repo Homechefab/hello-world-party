@@ -47,14 +47,6 @@ const PartnershipPage = () => {
       color: "from-orange-500 to-orange-600"
     },
     {
-      id: "retail",
-      icon: ShoppingCart,
-      title: "Matvarukedjor",
-      description: "Samarbete med butiker för ingredienser",
-      benefits: ["Ingrediensleveranser", "Specialprodukter", "Bulk-inköp", "Logistiksamarbete"],
-      color: "from-red-500 to-red-600"
-    },
-    {
       id: "influencer",
       icon: Star,
       title: "Influencer-program",
@@ -214,7 +206,6 @@ const PartnershipPage = () => {
                       <option value="corporate">Företagssamarbeten</option>
                       <option value="restaurants">Restaurangsamarbete</option>
                       <option value="events">Event & Catering</option>
-                      <option value="retail">Matvarukedja</option>
                       <option value="influencer">Influencer-program</option>
                       <option value="other">Annat</option>
                     </select>
