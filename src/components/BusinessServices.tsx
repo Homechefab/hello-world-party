@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import sellFoodImage from "@/assets/service-sell-food.jpg";
 import rentKitchenImage from "@/assets/service-rent-kitchen.jpg";
 import orderFoodImage from "@/assets/service-order-food.jpg";
+import deliveryImage from "@/assets/service-delivery.jpg";
 
 const businessServices = [
   {
@@ -17,6 +18,13 @@ const businessServices = [
     description: "Hyra ut kök till kockar som behöver utrymme",
     href: "/kitchen-partner/register",
     color: "from-purple-500 to-purple-600"
+  },
+  {
+    image: deliveryImage,
+    title: "Homechef delivery",
+    description: "Jobba som bud och leverera mat till hungriga kunder",
+    href: "/delivery-partner/onboarding",
+    color: "from-blue-500 to-blue-600"
   },
   {
     image: orderFoodImage,
@@ -40,7 +48,7 @@ const BusinessServices = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
           {businessServices.map((service) => (
             <Link
               key={service.title}

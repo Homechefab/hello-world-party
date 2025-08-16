@@ -25,6 +25,7 @@ import ChefApplication from "./pages/chef/ChefApplication";
 import ApplicationPending from "./pages/chef/ApplicationPending";
 import { KitchenPartnerDashboard } from "./pages/kitchen-partner/KitchenPartnerDashboard";
 import { KitchenPartnerOnboarding } from "./pages/kitchen-partner/KitchenPartnerOnboarding";
+import DeliveryPartnerOnboarding from "./pages/delivery-partner/DeliveryPartnerOnboarding";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import NotFound from "./pages/NotFound";
 import NotificationSignup from "./pages/NotificationSignup";
@@ -59,6 +60,7 @@ const App = () => {
               <Route path="/chef/dashboard" element={<ChefDashboard />} />
               <Route path="/kitchen-partner/dashboard" element={<KitchenPartnerDashboard />} />
               <Route path="/kitchen-partner/register" element={<KitchenPartnerOnboarding />} />
+              <Route path="/delivery-partner/onboarding" element={<DeliveryPartnerOnboarding />} />
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/notification-signup" element={<NotificationSignup />} />
               <Route path="*" element={<NotFound />} />
