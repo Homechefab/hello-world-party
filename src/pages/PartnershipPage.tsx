@@ -31,14 +31,6 @@ const PartnershipPage = () => {
       color: "from-blue-500 to-blue-600"
     },
     {
-      id: "delivery",
-      icon: Truck,
-      title: "Leveranspartners",
-      description: "Budföretag som vill leverera vår mat",
-      benefits: ["Komplettera ditt tjänsteutbud", "Fasta uppdrag", "Flexibla arbetstider", "Konkurrenskraftiga priser"],
-      color: "from-green-500 to-green-600"
-    },
-    {
       id: "restaurants",
       icon: Store,
       title: "Restaurangsamarbeten",
@@ -220,7 +212,6 @@ const PartnershipPage = () => {
                     >
                       <option value="">Välj samarbetstyp</option>
                       <option value="corporate">Företagssamarbeten</option>
-                      <option value="delivery">Leveranspartner</option>
                       <option value="restaurants">Restaurangsamarbete</option>
                       <option value="events">Event & Catering</option>
                       <option value="retail">Matvarukedja</option>
