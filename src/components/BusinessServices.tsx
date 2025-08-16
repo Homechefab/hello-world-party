@@ -22,7 +22,7 @@ const businessServices = [
   {
     image: deliveryImage,
     title: "Homechef delivery",
-    description: "Jobba som bud och leverera mat till hungriga kunder",
+    description: "Jobba som bud och tjäna pengar på dina egna villkor",
     href: "/delivery-partner/onboarding",
     color: "from-blue-500 to-blue-600"
   },
