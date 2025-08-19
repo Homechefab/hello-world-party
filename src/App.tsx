@@ -25,6 +25,10 @@ import ChefApplication from "./pages/chef/ChefApplication";
 import ApplicationPending from "./pages/chef/ApplicationPending";
 import { KitchenPartnerDashboard } from "./pages/kitchen-partner/KitchenPartnerDashboard";
 import { KitchenPartnerOnboarding } from "./pages/kitchen-partner/KitchenPartnerOnboarding";
+import KitchenPartnerHowItWorks from "./pages/kitchen-partner/HowItWorks";
+import PricingTerms from "./pages/kitchen-partner/PricingTerms";
+import SecurityInsurance from "./pages/kitchen-partner/SecurityInsurance";
+import PartnerSupport from "./pages/kitchen-partner/PartnerSupport";
 import DeliveryPartnerOnboarding from "./pages/delivery-partner/DeliveryPartnerOnboarding";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import NotFound from "./pages/NotFound";
@@ -60,6 +64,10 @@ const App = () => {
               <Route path="/chef/dashboard" element={<ChefDashboard />} />
               <Route path="/kitchen-partner/dashboard" element={<KitchenPartnerDashboard />} />
               <Route path="/kitchen-partner/register" element={<KitchenPartnerOnboarding />} />
+              <Route path="/kitchen-partner/how-it-works" element={<KitchenPartnerHowItWorks />} />
+              <Route path="/kitchen-partner/pricing-terms" element={<PricingTerms />} />
+              <Route path="/kitchen-partner/security-insurance" element={<SecurityInsurance />} />
+              <Route path="/kitchen-partner/support" element={<PartnerSupport />} />
               <Route path="/delivery-partner/onboarding" element={<DeliveryPartnerOnboarding />} />
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/notification-signup" element={<NotificationSignup />} />
