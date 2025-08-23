@@ -65,10 +65,10 @@ export const ChefDashboard = () => {
         .from('orders')
         .select(`
           *,
-          dishes (
-            title,
-            price
-          )
+            dishes (
+              name,
+              price
+            )
         `)
         .eq('chef_id', 'current-user-id')
         .order('created_at', { ascending: false })
@@ -91,15 +91,15 @@ export const ChefDashboard = () => {
 
   const toggleDishStatus = async (dishId: string, isActive: boolean) => {
     try {
-      const { error } = await supabase
-        .from('dishes')
-        .update({ is_active: !isActive })
-        .eq('id', dishId);
+    const { error } = await supabase
+      .from('dishes')
+      .update({ available: !isActive })
+      .eq('id', dishId);
 
       if (error) throw error;
 
       setDishes(dishes.map(dish => 
-        dish.id === dishId ? { ...dish, is_active: !isActive } : dish
+        dish.id === dishId ? { ...dish, available: !isActive } : dish
       ));
 
       toast({
@@ -199,7 +199,7 @@ export const ChefDashboard = () => {
                       <div key={order.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
                         <div>
                           <p className="font-medium">Beställning #{order.id?.slice(-6)}</p>
-                          <p className="text-sm text-muted-foreground">{order.dishes?.title}</p>
+                          <p className="text-sm text-muted-foreground">{order.dishes?.name || 'Okänd rätt'}</p>
                         </div>
                         <Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>
                           {order.status === 'completed' ? 'Klar' : 'Pågående'}
@@ -308,21 +308,21 @@ export const ChefDashboard = () => {
                   dishes.map((dish) => (
                     <div key={dish.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
                       <div className="flex items-center gap-4">
-                        {dish.images && dish.images[0] && (
+                        {dish.image_url && (
                           <img 
-                            src={dish.images[0]} 
-                            alt={dish.title}
+                            src={dish.image_url} 
+                            alt={dish.name}
                             className="w-16 h-16 object-cover rounded-lg"
                           />
                         )}
                         <div>
                           <div className="flex items-center gap-2">
-                            <p className="font-medium">{dish.title}</p>
-                            <Badge variant={dish.is_active ? "default" : "secondary"}>
-                              {dish.is_active ? "Aktiv" : "Pausad"}
+                            <p className="font-medium">{dish.name}</p>
+                            <Badge variant={dish.available ? "default" : "secondary"}>
+                              {dish.available ? "Aktiv" : "Pausad"}
                             </Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground">{dish.price} kr • {dish.portions} portioner</p>
+                          <p className="text-sm text-muted-foreground">{dish.price} kr</p>
                           <p className="text-xs text-muted-foreground">{dish.category}</p>
                         </div>
                       </div>
@@ -330,9 +330,9 @@ export const ChefDashboard = () => {
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => toggleDishStatus(dish.id, dish.is_active)}
+                          onClick={() => toggleDishStatus(dish.id, dish.available)}
                         >
-                          {dish.is_active ? "Pausa" : "Aktivera"}
+                          {dish.available ? "Pausa" : "Aktivera"}
                         </Button>
                         <Button variant="outline" size="sm">
                           <Edit className="w-4 h-4" />

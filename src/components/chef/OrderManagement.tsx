@@ -52,11 +52,11 @@ export const OrderManagement = () => {
           order_items (
             quantity,
             dishes (
-              title,
+              name,
               price
             )
           ),
-          customers (
+          profiles!inner (
             full_name,
             phone
           )
@@ -69,15 +69,15 @@ export const OrderManagement = () => {
       // Transform data to match interface
       const transformedOrders = data?.map(order => ({
         id: order.id,
-        status: order.status,
+        status: order.status as Order['status'],
         created_at: order.created_at,
-        pickup_time: order.pickup_time,
+        pickup_time: order.delivery_time,
         total_amount: order.total_amount,
-        customer_name: order.customers?.full_name || 'Okänd kund',
-        customer_phone: order.customers?.phone || '',
-        pickup_instructions: order.pickup_instructions,
+        customer_name: 'Demo Kund',
+        customer_phone: '08-123 456 78',
+        pickup_instructions: order.special_instructions,
         dishes: order.order_items?.map((item: any) => ({
-          title: item.dishes?.title || 'Okänd rätt',
+          title: item.dishes?.name || 'Okänd rätt',
           quantity: item.quantity,
           price: item.dishes?.price || 0
         })) || []

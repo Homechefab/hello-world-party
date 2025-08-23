@@ -109,26 +109,23 @@ const SellPage = () => {
     try {
       setIsSubmitting(true);
 
-      const { data, error } = await supabase
+      // Convert to proper database format
+      const formattedDishes = [{
+        chef_id: 'current-user-id', // This should be actual user ID
+        name: formData.title,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        category: formData.category,
+        ingredients: formData.ingredients.split(',').map((i: string) => i.trim()),
+        allergens: formData.allergens.split(',').map((a: string) => a.trim()),
+        preparation_time: parseInt(formData.prepTime) || 30,
+        available: true,
+        image_url: uploadedImages[0] || null
+      }];
+
+      const { error } = await supabase
         .from('dishes')
-        .insert([
-          {
-            title: formData.title,
-            category: formData.category,
-            description: formData.description,
-            ingredients: formData.ingredients,
-            allergens: formData.allergens,
-            price: parseFloat(formData.price),
-            portions: parseInt(formData.portions),
-            prep_time: formData.prepTime,
-            available_from: formData.availableFrom,
-            available_until: formData.availableUntil,
-            pickup_address: formData.pickupAddress,
-            pickup_instructions: formData.pickupInstructions,
-            images: uploadedImages,
-            chef_id: 'current-user-id' // This should be the actual logged-in user ID
-          }
-        ]);
+        .insert(formattedDishes);
 
       if (error) {
         throw error;
