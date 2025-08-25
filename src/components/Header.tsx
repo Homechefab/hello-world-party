@@ -96,7 +96,7 @@ const Header = () => {
             <User className="w-5 h-5" />
           </Button>
           
-          <Link to="/seller-guide" onClick={() => console.log('Navigating to seller guide')}>
+          <Link to="/chef/application" onClick={() => console.log('Navigating to chef application')}>
             <Button variant="hero" size="sm">
               Börja sälja
             </Button>
@@ -185,10 +185,10 @@ const Header = () => {
                 {/* Action Buttons */}
                 <div className="space-y-3 pt-4 border-t border-border">
                   <Link 
-                    to="/seller-guide" 
+                    to="/chef/application" 
                     className="block"
                     onClick={() => {
-                      console.log('Mobile: Navigating to seller guide');
+                      console.log('Mobile: Navigating to chef application');
                       setMenuOpen(false);
                     }}
                   >
