@@ -345,7 +345,7 @@ const SellerGuide = () => {
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                   <DialogTrigger asChild>
                     <Button size="lg" variant="outline">
-                      Kom igång
+                      Kom igång om du redan har tillstånd
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
