@@ -74,7 +74,7 @@ const SellerGuide = () => {
       icon: <CheckCircle className="w-6 h-6" />,
       title: "2. Få godkännande",
       description: "Vi granskar din ansökan och återkommer inom 24h",
-      details: ["Kvalitetsgranskning", "Hygienverifiering", "Smakprovning"]
+      details: ["Kvalitetsgranskning", "Hygienverifiering"]
     },
     {
       icon: <Camera className="w-6 h-6" />,
