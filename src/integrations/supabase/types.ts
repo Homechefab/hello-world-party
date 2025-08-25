@@ -47,6 +47,48 @@ export type Database = {
         }
         Relationships: []
       }
+      dish_templates: {
+        Row: {
+          allergens: string[] | null
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          ingredients: string[] | null
+          name: string
+          preparation_time: number | null
+          suggested_price: number | null
+          updated_at: string
+        }
+        Insert: {
+          allergens?: string[] | null
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          ingredients?: string[] | null
+          name: string
+          preparation_time?: number | null
+          suggested_price?: number | null
+          updated_at?: string
+        }
+        Update: {
+          allergens?: string[] | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          ingredients?: string[] | null
+          name?: string
+          preparation_time?: number | null
+          suggested_price?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       dishes: {
         Row: {
           allergens: string[] | null

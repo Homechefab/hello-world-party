@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { HygieneQuestionnaire } from '@/components/HygieneQuestionnaire';
 import { VideoUpload } from '@/components/VideoUpload';
 import { OrderManagement } from '@/components/chef/OrderManagement';
+import MenuManager from '@/components/chef/MenuManager';
 import { 
   CheckCircle, 
   AlertCircle, 
@@ -282,79 +283,7 @@ export const ChefDashboard = () => {
         </TabsContent>
 
         <TabsContent value="menu" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>Hantera Meny</CardTitle>
-                  <CardDescription>Lägg till och redigera dina rätter</CardDescription>
-                </div>
-                <Link to="/sell">
-                  <Button className="flex items-center gap-2">
-                    <Plus className="w-4 h-4" />
-                    Lägg till ny rätt
-                  </Button>
-                </Link>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {loading ? (
-                  <div className="text-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                    <p className="text-muted-foreground mt-2">Laddar rätter...</p>
-                  </div>
-                ) : dishes.length > 0 ? (
-                  dishes.map((dish) => (
-                    <div key={dish.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
-                      <div className="flex items-center gap-4">
-                        {dish.image_url && (
-                          <img 
-                            src={dish.image_url} 
-                            alt={dish.name}
-                            className="w-16 h-16 object-cover rounded-lg"
-                          />
-                        )}
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <p className="font-medium">{dish.name}</p>
-                            <Badge variant={dish.available ? "default" : "secondary"}>
-                              {dish.available ? "Aktiv" : "Pausad"}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-muted-foreground">{dish.price} kr</p>
-                          <p className="text-xs text-muted-foreground">{dish.category}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => toggleDishStatus(dish.id, dish.available)}
-                        >
-                          {dish.available ? "Pausa" : "Aktivera"}
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center py-12">
-                    <ChefHat className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground mb-4">Du har inga rätter än</p>
-                    <Link to="/sell">
-                      <Button>
-                        <Plus className="w-4 h-4 mr-2" />
-                        Lägg till din första rätt
-                      </Button>
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+          <MenuManager />
         </TabsContent>
 
         <TabsContent value="sales" className="space-y-6">
