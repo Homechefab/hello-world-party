@@ -80,7 +80,7 @@ const SellerGuide = () => {
       icon: <Camera className="w-6 h-6" />,
       title: "3. Skapa annonser",
       description: "Ladda upp bilder och beskriv dina rätter",
-      details: ["Ta aptitliga bilder", "Skriv lockande beskrivningar", "Sätt rätt pris"]
+      details: ["Lägg upp bilder på dina rätter", "Skriv lockande beskrivningar", "Sätt rätt pris"]
     },
     {
       icon: <DollarSign className="w-6 h-6" />,
