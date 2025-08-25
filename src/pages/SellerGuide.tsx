@@ -116,8 +116,8 @@ const SellerGuide = () => {
   const safetyRules = [
     {
       icon: <Shield className="w-5 h-5" />,
-      title: "Hygienintyg krävs",
-      description: "Alla kockar måste ha giltigt hygienintyg från Livsmedelsverket"
+      title: "Egenkontroller och hygien",
+      description: "Alla kockar säkerställer god hygien genom egenkontroller"
     },
     {
       icon: <Clock className="w-5 h-5" />,
