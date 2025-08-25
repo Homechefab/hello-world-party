@@ -341,22 +341,27 @@ const SellerGuide = () => {
                   Ansök som kock
                 </Button>
               </Link>
-              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button size="lg" variant="outline">
-                    Kom igång och sälj din mat om du har ett godkänt beslut från din kommun
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                  <DialogHeader>
-                    <DialogTitle>Ladda upp ditt kommubeslut</DialogTitle>
-                    <DialogDescription>
-                      Ladda upp ditt godkännandebeslut från kommunen så analyserar vi det automatiskt.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DocumentUpload onSuccess={handleDocumentSuccess} />
-                </DialogContent>
-              </Dialog>
+              <div className="flex flex-col items-center gap-2">
+                <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button size="lg" variant="outline">
+                      Kom igång
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>Ladda upp ditt kommubeslut</DialogTitle>
+                      <DialogDescription>
+                        Ladda upp ditt godkännandebeslut från kommunen så analyserar vi det automatiskt.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DocumentUpload onSuccess={handleDocumentSuccess} />
+                  </DialogContent>
+                </Dialog>
+                <p className="text-sm text-muted-foreground text-center max-w-xs">
+                  Sälj din mat om du har ett godkänt beslut från din kommun
+                </p>
+              </div>
             </div>
           </section>
         </div>
