@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   ChefHat, 
   DollarSign, 
@@ -19,12 +20,49 @@ import {
   MessageCircle
 } from "lucide-react";
 import Header from "@/components/Header";
-import { Link } from "react-router-dom";
+import { DocumentUpload } from "@/components/DocumentUpload";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const SellerGuide = () => {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
+
   useEffect(() => {
     console.log('SellerGuide component mounted');
   }, []);
+
+  const handleDocumentSuccess = async () => {
+    setDialogOpen(false);
+    
+    toast({
+      title: "Dokument uppladddat",
+      description: "Ditt dokument analyseras nu. Du får besked inom kort.",
+    });
+
+    // Check if user got approved and redirect
+    setTimeout(async () => {
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('municipality_approved')
+          .eq('id', user.id)
+          .single();
+        
+        if (profile?.municipality_approved) {
+          toast({
+            title: "Välkommen!",
+            description: "Ditt dokument har godkänts. Du kan nu börja sälja din mat!",
+          });
+          navigate('/chef/dashboard');
+        }
+      }
+    }, 2000);
+  };
   const steps = [
     {
       icon: <ChefHat className="w-6 h-6" />,
@@ -303,11 +341,22 @@ const SellerGuide = () => {
                   Ansök som kock
                 </Button>
               </Link>
-              <Link to="/sell" onClick={() => console.log('Navigating to sell page')}>
-                <Button size="lg" variant="outline">
-                  Kom igång och sälj din mat om du har ett godkänt beslut från din kommun
-                </Button>
-              </Link>
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button size="lg" variant="outline">
+                    Kom igång och sälj din mat om du har ett godkänt beslut från din kommun
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Ladda upp ditt kommubeslut</DialogTitle>
+                    <DialogDescription>
+                      Ladda upp ditt godkännandebeslut från kommunen så analyserar vi det automatiskt.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DocumentUpload onSuccess={handleDocumentSuccess} />
+                </DialogContent>
+              </Dialog>
             </div>
           </section>
         </div>
