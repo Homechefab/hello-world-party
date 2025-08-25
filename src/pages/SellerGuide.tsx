@@ -66,25 +66,25 @@ const SellerGuide = () => {
   const steps = [
     {
       icon: <ChefHat className="w-6 h-6" />,
-      title: "Ansök som kock",
+      title: "1. Ansök som kock",
       description: "Skicka din ansökan tillsammans med en tillståndsbeslut från kommunen.",
       details: ["Fyll i ansökningsformulär", "Ladda upp hygienintyg", "Skicka in provkök-video"]
     },
     {
       icon: <CheckCircle className="w-6 h-6" />,
-      title: "Få godkännande",
+      title: "2. Få godkännande",
       description: "Vi granskar din ansökan och återkommer inom 24h",
       details: ["Kvalitetsgranskning", "Hygienverifiering", "Smakprovning"]
     },
     {
       icon: <Camera className="w-6 h-6" />,
-      title: "Skapa annonser",
+      title: "3. Skapa annonser",
       description: "Ladda upp bilder och beskriv dina rätter",
       details: ["Ta aptitliga bilder", "Skriv lockande beskrivningar", "Sätt rätt pris"]
     },
     {
       icon: <DollarSign className="w-6 h-6" />,
-      title: "Börja sälja",
+      title: "4. Börja sälja",
       description: "Ta emot beställningar och tjäna pengar",
       details: ["Hantera beställningar", "Organisera upphämtning", "Få betalt direkt"]
     }
