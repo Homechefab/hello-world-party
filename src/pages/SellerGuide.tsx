@@ -344,7 +344,7 @@ const SellerGuide = () => {
               <div className="flex flex-col items-center gap-2">
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button size="lg" variant="outline">
+                    <Button size="lg" className="bg-orange-warm text-white hover:bg-orange-warm/90">
                       Kom igång om du redan har tillstånd
                     </Button>
                   </DialogTrigger>
