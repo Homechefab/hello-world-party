@@ -67,7 +67,7 @@ const SellerGuide = () => {
     {
       icon: <ChefHat className="w-6 h-6" />,
       title: "Ansök som kock",
-      description: "Skicka in din ansökan med hygienintyg och provkök",
+      description: "Skicka din ansökan tillsammans med en tillståndsbeslut från kommunen.",
       details: ["Fyll i ansökningsformulär", "Ladda upp hygienintyg", "Skicka in provkök-video"]
     },
     {
