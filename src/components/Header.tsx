@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ChefHat, Search, ShoppingBag, User, Menu, X, Home, UtensilsCrossed, Info, Phone, Users, Building, Shield } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRole } from "@/hooks/useRole";
+import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import {
   Sheet,
@@ -23,8 +24,17 @@ import {
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user: authUser } = useAuth();
   const { user, switchRole, isChef, isCustomer, isKitchenPartner, isAdmin } = useRole();
   const navigate = useNavigate();
+
+  const handleAuthRequiredAction = (action: () => void) => {
+    if (!authUser) {
+      navigate('/auth');
+      return;
+    }
+    action();
+  };
 
   const menuItems = [
     { title: "Hem", href: "/", icon: Home },
@@ -41,6 +51,11 @@ const Header = () => {
   ];
 
   const handleRoleSwitch = (roleId: string) => {
+    if (!authUser) {
+      navigate('/auth');
+      return;
+    }
+    
     const role = roles.find(r => r.id === roleId);
     if (role) {
       switchRole(roleId);
@@ -96,30 +111,50 @@ const Header = () => {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="flex items-center gap-2 min-w-[120px]">
                 {getRoleIcon()}
-                {getRoleName()}
+                {authUser ? getRoleName() : "Logga in"}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {roles.map((role) => {
-                const IconComponent = role.icon;
-                return (
+              {authUser ? (
+                <>
+                  <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {roles.map((role) => {
+                    const IconComponent = role.icon;
+                    return (
+                      <DropdownMenuItem
+                        key={role.id}
+                        onClick={() => handleRoleSwitch(role.id)}
+                        className="cursor-pointer"
+                      >
+                        <IconComponent className="w-4 h-4 mr-2" />
+                        {role.name}
+                        {role.active && (
+                          <Badge variant="secondary" className="ml-auto text-xs">
+                            Aktiv
+                          </Badge>
+                        )}
+                      </DropdownMenuItem>
+                    );
+                  })}
+                  <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    key={role.id}
-                    onClick={() => handleRoleSwitch(role.id)}
+                    onClick={() => navigate('/auth')}
                     className="cursor-pointer"
                   >
-                    <IconComponent className="w-4 h-4 mr-2" />
-                    {role.name}
-                    {role.active && (
-                      <Badge variant="secondary" className="ml-auto text-xs">
-                        Aktiv
-                      </Badge>
-                    )}
+                    <User className="w-4 h-4 mr-2" />
+                    Hantera konto
                   </DropdownMenuItem>
-                );
-              })}
+                </>
+              ) : (
+                <DropdownMenuItem
+                  onClick={() => navigate('/auth')}
+                  className="cursor-pointer"
+                >
+                  <User className="w-4 h-4 mr-2" />
+                  Logga in / Registrera
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
           
@@ -131,9 +166,12 @@ const Header = () => {
             <User className="w-5 h-5" />
           </Button>
           
-          <Link to="/chef/application" onClick={() => console.log('Navigating to chef application')}>
+          <Link 
+            to={authUser ? "/chef/application" : "/auth"}
+            onClick={() => console.log('Navigating to chef application')}
+          >
             <Button variant="hero" size="sm">
-              Börja sälja
+              {authUser ? "Börja sälja" : "Logga in"}
             </Button>
           </Link>
         </div>
