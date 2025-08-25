@@ -103,6 +103,51 @@ export type Database = {
           },
         ]
       }
+      document_submissions: {
+        Row: {
+          ai_analysis: string | null
+          created_at: string
+          document_type: string
+          document_url: string
+          expiry_date: string | null
+          id: string
+          municipality: string | null
+          permit_number: string | null
+          rejection_reason: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_analysis?: string | null
+          created_at?: string
+          document_type?: string
+          document_url: string
+          expiry_date?: string | null
+          id?: string
+          municipality?: string | null
+          permit_number?: string | null
+          rejection_reason?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_analysis?: string | null
+          created_at?: string
+          document_type?: string
+          document_url?: string
+          expiry_date?: string | null
+          id?: string
+          municipality?: string | null
+          permit_number?: string | null
+          rejection_reason?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       Farhan: {
         Row: {
           created_at: string
