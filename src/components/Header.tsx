@@ -12,6 +12,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -84,40 +92,36 @@ const Header = () => {
         {/* Desktop Actions - hidden on mobile */}
         <div className="hidden md:flex items-center gap-3">
           {/* Role Switcher Dropdown for Desktop */}
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" className="flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="flex items-center gap-2 min-w-[120px]">
                 {getRoleIcon()}
                 {getRoleName()}
               </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-80">
-              <SheetHeader>
-                <SheetTitle>Byt roll</SheetTitle>
-              </SheetHeader>
-              <div className="mt-6 space-y-2">
-                {roles.map((role) => {
-                  const IconComponent = role.icon;
-                  return (
-                    <Button
-                      key={role.id}
-                      variant={role.active ? "default" : "outline"}
-                      className="w-full justify-start h-12"
-                      onClick={() => handleRoleSwitch(role.id)}
-                    >
-                      <IconComponent className="w-5 h-5 mr-3" />
-                      {role.name}
-                      {role.active && (
-                        <Badge variant="secondary" className="ml-auto">
-                          Aktiv
-                        </Badge>
-                      )}
-                    </Button>
-                  );
-                })}
-              </div>
-            </SheetContent>
-          </Sheet>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {roles.map((role) => {
+                const IconComponent = role.icon;
+                return (
+                  <DropdownMenuItem
+                    key={role.id}
+                    onClick={() => handleRoleSwitch(role.id)}
+                    className="cursor-pointer"
+                  >
+                    <IconComponent className="w-4 h-4 mr-2" />
+                    {role.name}
+                    {role.active && (
+                      <Badge variant="secondary" className="ml-auto text-xs">
+                        Aktiv
+                      </Badge>
+                    )}
+                  </DropdownMenuItem>
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
           
           <Button variant="ghost" size="icon">
             <ShoppingBag className="w-5 h-5" />
