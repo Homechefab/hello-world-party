@@ -28,13 +28,7 @@ const Header = () => {
   const { user, switchRole, isChef, isCustomer, isKitchenPartner, isAdmin } = useRole();
   const navigate = useNavigate();
 
-  const handleAuthRequiredAction = (action: () => void) => {
-    if (!authUser) {
-      navigate('/auth');
-      return;
-    }
-    action();
-  };
+  // Removed auth requirement - all features available
 
   const menuItems = [
     { title: "Hem", href: "/", icon: Home },
@@ -51,11 +45,6 @@ const Header = () => {
   ];
 
   const handleRoleSwitch = (roleId: string) => {
-    if (!authUser) {
-      navigate('/auth');
-      return;
-    }
-    
     const role = roles.find(r => r.id === roleId);
     if (role) {
       switchRole(roleId);
@@ -111,50 +100,30 @@ const Header = () => {
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="flex items-center gap-2 min-w-[120px]">
                 {getRoleIcon()}
-                {authUser ? getRoleName() : "Logga in"}
+                {getRoleName()}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              {authUser ? (
-                <>
-                  <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {roles.map((role) => {
-                    const IconComponent = role.icon;
-                    return (
-                      <DropdownMenuItem
-                        key={role.id}
-                        onClick={() => handleRoleSwitch(role.id)}
-                        className="cursor-pointer"
-                      >
-                        <IconComponent className="w-4 h-4 mr-2" />
-                        {role.name}
-                        {role.active && (
-                          <Badge variant="secondary" className="ml-auto text-xs">
-                            Aktiv
-                          </Badge>
-                        )}
-                      </DropdownMenuItem>
-                    );
-                  })}
-                  <DropdownMenuSeparator />
+              <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {roles.map((role) => {
+                const IconComponent = role.icon;
+                return (
                   <DropdownMenuItem
-                    onClick={() => navigate('/auth')}
+                    key={role.id}
+                    onClick={() => handleRoleSwitch(role.id)}
                     className="cursor-pointer"
                   >
-                    <User className="w-4 h-4 mr-2" />
-                    Hantera konto
+                    <IconComponent className="w-4 h-4 mr-2" />
+                    {role.name}
+                    {role.active && (
+                      <Badge variant="secondary" className="ml-auto text-xs">
+                        Aktiv
+                      </Badge>
+                    )}
                   </DropdownMenuItem>
-                </>
-              ) : (
-                <DropdownMenuItem
-                  onClick={() => navigate('/auth')}
-                  className="cursor-pointer"
-                >
-                  <User className="w-4 h-4 mr-2" />
-                  Logga in / Registrera
-                </DropdownMenuItem>
-              )}
+                );
+              })}
             </DropdownMenuContent>
           </DropdownMenu>
           
@@ -167,11 +136,11 @@ const Header = () => {
           </Button>
           
           <Link 
-            to={authUser ? "/chef/application" : "/auth"}
+            to="/chef/application"
             onClick={() => console.log('Navigating to chef application')}
           >
             <Button variant="hero" size="sm">
-              {authUser ? "Börja sälja" : "Logga in"}
+              Börja sälja
             </Button>
           </Link>
         </div>
