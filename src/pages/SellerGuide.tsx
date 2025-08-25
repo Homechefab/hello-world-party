@@ -305,7 +305,7 @@ const SellerGuide = () => {
               </Link>
               <Link to="/sell" onClick={() => console.log('Navigating to sell page')}>
                 <Button size="lg" variant="outline">
-                  Sälj direkt (om du redan är godkänd)
+                  Kom igång och sälj din mat om du har ett godkänt beslut från din kommun
                 </Button>
               </Link>
             </div>
