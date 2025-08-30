@@ -40,7 +40,7 @@ const Header = () => {
   const roles = [
     { id: 'customer1', name: 'Kund', icon: Users, active: isCustomer, dashboard: '/' },
     { id: 'chef1', name: 'Kock', icon: ChefHat, active: isChef, dashboard: '/chef/dashboard' },
-    { id: 'kitchen_partner1', name: 'Kökspartner', icon: Building, active: isKitchenPartner, dashboard: '/kitchen-partner/dashboard' },
+    { id: 'kitchen_partner1', name: 'Kökspartner', icon: Building, active: isKitchenPartner, dashboard: '/hyr-ut-ditt-kok' },
     { id: 'admin1', name: 'Admin', icon: Shield, active: isAdmin, dashboard: '/admin/dashboard' },
   ];
 

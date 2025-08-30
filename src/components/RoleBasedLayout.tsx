@@ -43,7 +43,7 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
         navigate('/chef/dashboard');
         break;
       case 'kitchen_partner1':
-        navigate('/kitchen-partner/dashboard');
+        navigate('/hyr-ut-ditt-kok');
         break;
       case 'admin1':
         navigate('/admin/dashboard');

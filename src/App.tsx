@@ -67,7 +67,7 @@ const App = () => {
                 <Route path="/chef/application-pending" element={<ApplicationPending />} />
                 <Route path="/chef/dashboard" element={<ChefDashboard />} />
                 <Route path="/hyr-ut-ditt-kok" element={<HyrUtDittKok />} />
-                <Route path="/kitchen-partner/dashboard" element={<KitchenPartnerDashboard />} />
+                
                 <Route path="/kitchen-partner/register" element={<KitchenPartnerOnboarding />} />
                 <Route path="/kitchen-partner/how-it-works" element={<KitchenPartnerHowItWorks />} />
                 <Route path="/kitchen-partner/pricing-terms" element={<PricingTerms />} />
