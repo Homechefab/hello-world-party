@@ -17,7 +17,7 @@ import ExperiencePage from "./pages/ExperiencePage";
 import PrivateChefPage from "./pages/PrivateChefPage";
 import PartnershipPage from "./pages/PartnershipPage";
 import HowItWorks from "./pages/HowItWorks";
-import { HyrUtDittKok } from "@/pages/kitchen-partner/HyrUtDittKok";
+import HyrUtDittKokInfo from "@/pages/kitchen-partner/HyrUtDittKokInfo";
 import SecurePayments from "./pages/SecurePayments";
 import CustomerService from "./pages/CustomerService";
 import About from "./pages/About";
@@ -66,7 +66,7 @@ const App = () => {
                 <Route path="/chef/application" element={<ChefApplication />} />
                 <Route path="/chef/application-pending" element={<ApplicationPending />} />
                 <Route path="/chef/dashboard" element={<ChefDashboard />} />
-                <Route path="/hyr-ut-ditt-kok" element={<HyrUtDittKok />} />
+                <Route path="/hyr-ut-ditt-kok" element={<HyrUtDittKokInfo />} />
                 <Route path="/kitchen-partner/dashboard" element={<KitchenPartnerDashboard />} />
                 
                 <Route path="/kitchen-partner/register" element={<KitchenPartnerOnboarding />} />
