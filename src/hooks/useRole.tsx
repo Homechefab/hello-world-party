@@ -40,15 +40,25 @@ export const useRole = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate loading user data
-    console.log('useRole: Starting to load user data...');
-    setTimeout(() => {
-      // For demo purposes, start with customer role
-      const defaultUser = mockUsers['customer1'];
-      console.log('useRole: Setting default user:', defaultUser);
-      setCurrentUser(defaultUser);
-      setLoading(false);
-    }, 100); // Reduced loading time
+    // Check current route to determine initial role
+    const currentPath = window.location.pathname;
+    console.log('useRole: Current path:', currentPath);
+    
+    let defaultUserId = 'customer1'; // Default fallback
+    
+    if (currentPath.startsWith('/admin')) {
+      defaultUserId = 'admin1';
+    } else if (currentPath.startsWith('/chef')) {
+      defaultUserId = 'chef1';
+    } else if (currentPath.startsWith('/kitchen-partner')) {
+      defaultUserId = 'kitchen_partner1';
+    }
+    
+    console.log('useRole: Setting user based on route:', defaultUserId);
+    const defaultUser = mockUsers[defaultUserId];
+    console.log('useRole: Setting default user:', defaultUser);
+    setCurrentUser(defaultUser);
+    setLoading(false);
   }, []);
 
   const switchRole = (userId: string) => {
