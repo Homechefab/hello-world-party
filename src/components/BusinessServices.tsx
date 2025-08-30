@@ -18,20 +18,6 @@ const businessServices = [
     description: "Hyra ut kök till kockar som behöver utrymme",
     href: "/kitchen-partner/register",
     color: "from-purple-500 to-purple-600"
-  },
-  {
-    image: deliveryImage,
-    title: "Homechef delivery",
-    description: "Jobba som bud och tjäna pengar på dina egna villkor",
-    href: "/delivery-partner/onboarding",
-    color: "from-blue-500 to-blue-600"
-  },
-  {
-    image: orderFoodImage,
-    title: "Samarbeta med oss",
-    description: "Bli en del av Homechef-familjen och väx tillsammans med oss",
-    href: "/partnership",
-    color: "from-orange-500 to-orange-600"
   }
 ];
 
@@ -48,7 +34,7 @@ const BusinessServices = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {businessServices.map((service) => (
             <Link
               key={service.title}
