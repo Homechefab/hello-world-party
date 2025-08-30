@@ -5,7 +5,7 @@ import { Building, Calendar, Shield, TrendingUp, Truck } from "lucide-react";
 import rentKitchenImage from "@/assets/service-rent-kitchen.jpg";
 import deliveryImage from "@/assets/service-delivery.jpg";
 import partnershipImage from "@/assets/partnership-collaboration.jpg";
-import securityImage from "@/assets/kitchen-security.jpg";
+import securityImage from "@/assets/fire-extinguisher-kitchen.jpg";
 
 const kitchenPartnerServices = [
   {
