@@ -1,8 +1,9 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Building, Calendar, Shield, TrendingUp } from "lucide-react";
+import { Building, Calendar, Shield, TrendingUp, Truck } from "lucide-react";
 import rentKitchenImage from "@/assets/service-rent-kitchen.jpg";
+import deliveryImage from "@/assets/service-delivery.jpg";
 
 const kitchenPartnerServices = [
   {
@@ -14,12 +15,20 @@ const kitchenPartnerServices = [
     color: "from-purple-500 to-purple-600"
   },
   {
-    image: rentKitchenImage,
-    title: "Bokningshantering",
-    description: "Hantera bokningar och schemaläggning för ditt kök",
-    href: "/kitchen-partner/bookings",
-    icon: Calendar,
+    image: deliveryImage,
+    title: "Homechef delivery",
+    description: "Samarbeta med oss för leveranstjänster och utöka din räckvidd",
+    href: "/delivery-partner/onboarding",
+    icon: Truck,
     color: "from-blue-500 to-blue-600"
+  },
+  {
+    image: rentKitchenImage,
+    title: "Samarbeta med oss",
+    description: "Bli en del av Homechef-familjen och väx tillsammans med oss",
+    href: "/partnership",
+    icon: TrendingUp,
+    color: "from-orange-500 to-orange-600"
   },
   {
     image: rentKitchenImage,
@@ -44,7 +53,7 @@ const KitchenPartnerServices = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
           {kitchenPartnerServices.map((service) => {
             const IconComponent = service.icon;
             return (
@@ -73,7 +82,7 @@ const KitchenPartnerServices = () => {
                       {service.description}
                     </p>
                     <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                      Hantera
+                      Kom igång
                     </Button>
                   </CardContent>
                 </Card>
@@ -85,14 +94,14 @@ const KitchenPartnerServices = () => {
         <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           <Card className="p-6">
             <div className="flex items-center gap-4 mb-4">
-              <TrendingUp className="w-8 h-8 text-primary" />
+              <Calendar className="w-8 h-8 text-primary" />
               <div>
-                <h3 className="text-lg font-semibold">Intäktsrapporter</h3>
-                <p className="text-sm text-muted-foreground">Se dina månatliga intäkter</p>
+                <h3 className="text-lg font-semibold">Bokningshantering</h3>
+                <p className="text-sm text-muted-foreground">Hantera alla dina bokningar på ett ställe</p>
               </div>
             </div>
             <Button variant="outline" className="w-full">
-              Visa rapporter
+              Hantera bokningar
             </Button>
           </Card>
 
