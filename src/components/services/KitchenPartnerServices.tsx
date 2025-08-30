@@ -92,34 +92,6 @@ const KitchenPartnerServices = () => {
             );
           })}
         </div>
-
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          <Card className="p-6">
-            <div className="flex items-center gap-4 mb-4">
-              <Calendar className="w-8 h-8 text-primary" />
-              <div>
-                <h3 className="text-lg font-semibold">Bokningshantering</h3>
-                <p className="text-sm text-muted-foreground">Hantera alla dina bokningar på ett ställe</p>
-              </div>
-            </div>
-            <Button variant="outline" className="w-full">
-              Hantera bokningar
-            </Button>
-          </Card>
-
-          <Card className="p-6">
-            <div className="flex items-center gap-4 mb-4">
-              <Building className="w-8 h-8 text-primary" />
-              <div>
-                <h3 className="text-lg font-semibold">Partnersupport</h3>
-                <p className="text-sm text-muted-foreground">Få hjälp med ditt partnerskap</p>
-              </div>
-            </div>
-            <Button variant="outline" className="w-full">
-              Kontakta support
-            </Button>
-          </Card>
-        </div>
       </div>
     </section>
   );
