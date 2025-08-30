@@ -10,9 +10,9 @@ import securityImage from "@/assets/business-insurance-meeting.jpg";
 const kitchenPartnerServices = [
   {
     image: rentKitchenImage,
-    title: "Hyr ut ditt kök",
+    title: "Hyr ut ditt restaurangkök",
     description: "Maximera intäkterna från ditt restaurangkök genom att hyra ut till kockar",
-    href: "/kitchen-partner/dashboard",
+    href: "/hyr-ut-ditt-kok",
     icon: Building,
     color: "from-purple-500 to-purple-600"
   },
