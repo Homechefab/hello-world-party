@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Building, Calendar, Shield, TrendingUp, Truck } from "lucide-react";
 import rentKitchenImage from "@/assets/service-rent-kitchen.jpg";
 import deliveryImage from "@/assets/service-delivery.jpg";
-import experienceImage from "@/assets/experience-dining.jpg";
+import partnershipImage from "@/assets/partnership-collaboration.jpg";
+import securityImage from "@/assets/security-insurance.jpg";
 
 const kitchenPartnerServices = [
   {
@@ -24,7 +25,7 @@ const kitchenPartnerServices = [
     color: "from-blue-500 to-blue-600"
   },
   {
-    image: experienceImage,
+    image: partnershipImage,
     title: "Samarbeta med oss",
     description: "Bli en del av Homechef-familjen och väx tillsammans med oss",
     href: "/partnership",
@@ -32,7 +33,7 @@ const kitchenPartnerServices = [
     color: "from-orange-500 to-orange-600"
   },
   {
-    image: deliveryImage,
+    image: securityImage,
     title: "Säkerhet & försäkring",
     description: "Information om våra säkerhets- och försäkringslösningar",
     href: "/kitchen-partner/security",
