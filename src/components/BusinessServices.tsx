@@ -16,7 +16,7 @@ const businessServices = [
     image: rentKitchenImage,
     title: "Hyr ut ditt restaurangkök",
     description: "Hyra ut kök till kockar som behöver utrymme",
-    href: "/kitchen-partner/dashboard",
+    href: "/hyr-ut-ditt-kok",
     color: "from-purple-500 to-purple-600"
   }
 ];
