@@ -205,6 +205,57 @@ export type Database = {
         }
         Relationships: []
       }
+      kitchen_partners: {
+        Row: {
+          address: string
+          application_status: string | null
+          approved: boolean | null
+          business_name: string
+          created_at: string
+          equipment_details: string | null
+          hourly_rate: number | null
+          id: string
+          kitchen_description: string | null
+          kitchen_size: number | null
+          municipality: string | null
+          rejection_reason: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          application_status?: string | null
+          approved?: boolean | null
+          business_name: string
+          created_at?: string
+          equipment_details?: string | null
+          hourly_rate?: number | null
+          id?: string
+          kitchen_description?: string | null
+          kitchen_size?: number | null
+          municipality?: string | null
+          rejection_reason?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          application_status?: string | null
+          approved?: boolean | null
+          business_name?: string
+          created_at?: string
+          equipment_details?: string | null
+          hourly_rate?: number | null
+          id?: string
+          kitchen_description?: string | null
+          kitchen_size?: number | null
+          municipality?: string | null
+          rejection_reason?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string
@@ -386,7 +437,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      approve_kitchen_partner: {
+        Args: { partner_id: string }
+        Returns: undefined
+      }
+      reject_kitchen_partner: {
+        Args: { partner_id: string; reason: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
