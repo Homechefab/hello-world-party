@@ -12,9 +12,21 @@ import {
   Star,
   Calendar
 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { useRole } from "@/hooks/useRole";
+import { HyrUtDittKok } from "./HyrUtDittKok";
 import rentKitchenImage from "@/assets/service-rent-kitchen.jpg";
 
 const HyrUtDittKokInfo = () => {
+  const { user } = useAuth();
+  const { isKitchenPartner } = useRole();
+
+  // Om användaren är inloggad och är kökspartner, visa dashboarden
+  if (user && isKitchenPartner) {
+    return <HyrUtDittKok />;
+  }
+
+  // Annars visa informationssidan
   const benefits = [
     {
       icon: DollarSign,
