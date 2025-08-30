@@ -59,7 +59,7 @@ export const useRole = () => {
     console.log('useRole: Setting default user:', defaultUser);
     setCurrentUser(defaultUser);
     setLoading(false);
-  }, []);
+  }, [window.location.pathname]); // Add dependency to re-run when route changes
 
   const switchRole = (userId: string) => {
     console.log('useRole: Switching to role:', userId, mockUsers[userId]);

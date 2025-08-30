@@ -111,7 +111,7 @@ const SellPage = () => {
 
       // Convert to proper database format
       const formattedDishes = [{
-        chef_id: 'current-user-id', // This should be actual user ID
+        chef_id: 'chef1', // Using mock user ID
         name: formData.title,
         description: formData.description,
         price: parseFloat(formData.price),

@@ -55,7 +55,7 @@ export const ChefDashboard = () => {
       const { data: dishesData, error: dishesError } = await supabase
         .from('dishes')
         .select('*')
-        .eq('chef_id', 'current-user-id') // Replace with actual user ID
+        .eq('chef_id', 'chef1') // Using mock user ID
         .order('created_at', { ascending: false });
 
       if (dishesError) throw dishesError;
@@ -71,7 +71,7 @@ export const ChefDashboard = () => {
               price
             )
         `)
-        .eq('chef_id', 'current-user-id')
+        .eq('chef_id', 'chef1')
         .order('created_at', { ascending: false })
         .limit(10);
 

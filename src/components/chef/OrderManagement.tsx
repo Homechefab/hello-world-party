@@ -61,7 +61,7 @@ export const OrderManagement = () => {
             phone
           )
         `)
-        .eq('chef_id', 'current-user-id') // Replace with actual user ID
+        .eq('chef_id', 'chef1') // Using mock user ID
         .order('created_at', { ascending: false });
 
       if (error) throw error;
