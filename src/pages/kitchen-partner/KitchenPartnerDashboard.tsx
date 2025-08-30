@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import KitchenPartnerServices from '@/components/services/KitchenPartnerServices';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -253,6 +254,9 @@ export const KitchenPartnerDashboard = () => {
           </Card>
         </TabsContent>
       </Tabs>
+      
+      {/* Kitchen Partner Services */}
+      <KitchenPartnerServices />
     </div>
   );
 };
