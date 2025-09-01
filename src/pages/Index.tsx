@@ -7,7 +7,6 @@ import Features from "@/components/Features";
 import Footer from "@/components/Footer";
 import SearchAndFilters from "@/components/SearchAndFilters";
 import RoleBasedServices from "@/components/services/RoleBasedServices";
-import BusinessServices from "@/components/BusinessServices";
 
 
 interface SearchFilters {
@@ -36,7 +35,6 @@ const Index = () => {
       <RoleBasedServices />
       <PopularChefs />
       <DishDetails />
-      <BusinessServices />
       
       <Features />
       <Footer />
