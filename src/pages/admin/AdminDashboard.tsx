@@ -21,66 +21,11 @@ export const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   const stats = {
-    totalUsers: 1247,
-    pendingApprovals: 8,
-    activeComplaints: 3,
-    completedOnboardings: 156
+    totalUsers: 0,
+    pendingApprovals: 0,
+    activeComplaints: 0,
+    completedOnboardings: 0
   };
-
-  const pendingChefs = [
-    { 
-      id: 1, 
-      name: 'Maria Andersson', 
-      email: 'maria@example.com', 
-      appliedDate: '2024-01-15',
-      municipality: 'Stockholm',
-      status: 'Väntar på granskning'
-    },
-    { 
-      id: 2, 
-      name: 'Johan Svensson', 
-      email: 'johan@example.com', 
-      appliedDate: '2024-01-14',
-      municipality: 'Göteborg',
-      status: 'Dokument saknas'
-    },
-    { 
-      id: 3, 
-      name: 'Lisa Chen', 
-      email: 'lisa@example.com', 
-      appliedDate: '2024-01-13',
-      municipality: 'Malmö',
-      status: 'Under inspektion'
-    }
-  ];
-
-  const complaints = [
-    {
-      id: 1,
-      type: 'Kvalitet',
-      description: 'Mat var kall vid leverans',
-      reporter: 'Anna Kund',
-      chef: 'Erik Kök',
-      date: '2024-01-16',
-      status: 'Öppen'
-    },
-    {
-      id: 2,
-      type: 'Leverans',
-      description: 'Beställning kom aldrig fram',
-      reporter: 'Lars Person',
-      chef: 'Maria Hemlagat',
-      date: '2024-01-15',
-      status: 'Under utredning'
-    }
-  ];
-
-  const onboardingStats = [
-    { step: 'Registrering', completed: 245, pending: 12 },
-    { step: 'Dokumentverifiering', completed: 198, pending: 35 },
-    { step: 'Köksinspektion', completed: 156, pending: 42 },
-    { step: 'Slutgodkännande', completed: 156, pending: 0 }
-  ];
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -97,7 +42,7 @@ export const AdminDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalUsers}</div>
-            <p className="text-xs text-muted-foreground">+12 denna vecka</p>
+            <p className="text-xs text-muted-foreground">Aktiva användare</p>
           </CardContent>
         </Card>
 
@@ -108,7 +53,7 @@ export const AdminDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.pendingApprovals}</div>
-            <p className="text-xs text-muted-foreground">Kockar att granska</p>
+            <p className="text-xs text-muted-foreground">Ansökningar att granska</p>
           </CardContent>
         </Card>
 
@@ -130,7 +75,7 @@ export const AdminDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.completedOnboardings}</div>
-            <p className="text-xs text-muted-foreground">Godkända kockar</p>
+            <p className="text-xs text-muted-foreground">Godkända användare</p>
           </CardContent>
         </Card>
       </div>

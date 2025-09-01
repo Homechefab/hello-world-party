@@ -41,54 +41,8 @@ export const ChefApprovalManager = () => {
   const [selectedApplication, setSelectedApplication] = useState<ChefApplication | null>(null);
   const [reviewNotes, setReviewNotes] = useState('');
 
-  // Mock data - replace with real API calls
-  const [applications, setApplications] = useState<ChefApplication[]>([
-    {
-      id: '1',
-      applicantName: 'Anna Lindström',
-      email: 'anna@example.com',
-      phone: '+46 70 123 45 67',
-      businessName: 'Annas Hemkök',
-      municipality: 'Stockholm',
-      description: 'Specialiserar mig på traditionell svensk husmanskost med moderna influenser.',
-      status: 'pending',
-      appliedDate: '2024-01-15',
-      documents: {
-        selfControlPlan: 'egenkontroll_anna.pdf',
-        businessLicense: 'f_skatt_anna.pdf'
-      }
-    },
-    {
-      id: '2',
-      applicantName: 'Erik Johansson',
-      email: 'erik@example.com',
-      phone: '+46 70 987 65 43',
-      businessName: 'Eriks Gourmetkök',
-      municipality: 'Göteborg',
-      description: 'Italiensk och fransk mat med fokus på färska råvaror.',
-      status: 'under_review',
-      appliedDate: '2024-01-12',
-      documents: {
-        selfControlPlan: 'egenkontroll_erik.pdf',
-        businessLicense: 'f_skatt_erik.pdf'
-      }
-    },
-    {
-      id: '3',
-      applicantName: 'Maria Gonzalez',
-      email: 'maria@example.com',
-      phone: '+46 70 555 12 34',
-      businessName: 'Marias Tapas',
-      municipality: 'Malmö',
-      description: 'Autentisk spansk mat och tapas.',
-      status: 'approved',
-      appliedDate: '2024-01-10',
-      documents: {
-        selfControlPlan: 'egenkontroll_maria.pdf',
-        businessLicense: 'f_skatt_maria.pdf'
-      }
-    }
-  ]);
+  // Applications will be loaded from Supabase
+  const [applications, setApplications] = useState<ChefApplication[]>([]);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
