@@ -16,11 +16,6 @@ const SecurityInsurance = () => {
       description: "Alla kockar har giltiga livsmedelshygien-certifikat och genomgått vår säkerhetsutbildning."
     },
     {
-      icon: <Lock className="w-8 h-8 text-primary" />,
-      title: "Smart köksskydd",
-      description: "IoT-baserade låssystem och övervakning som skyddar din utrustning dygnet runt."
-    },
-    {
       icon: <Shield className="w-8 h-8 text-primary" />,
       title: "Totalförsäkring",
       description: "Komplett försäkringsskydd för ditt kök, utrustning och verksamhet utan extra kostnad."
