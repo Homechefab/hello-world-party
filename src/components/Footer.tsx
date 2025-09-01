@@ -1,7 +1,9 @@
 import { ChefHat, Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
+import { useRole } from "@/hooks/useRole";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
+  const { isChef } = useRole();
   return (
     <footer className="bg-gradient-warm border-t border-border">
       <div className="container mx-auto px-4 py-12">
@@ -57,17 +59,19 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* För säljare */}
-          <div className="space-y-4">
-            <h4 className="font-semibold text-foreground">För säljare</h4>
-            <ul className="space-y-2 text-muted-foreground">
-              <li><Link to="/seller-guide" className="hover:text-primary transition-colors">Börja sälja</Link></li>
-              <li><Link to="/seller-guide#säljguide" className="hover:text-primary transition-colors">Säljguide</Link></li>
-              <li><Link to="/seller-guide#prissättning" className="hover:text-primary transition-colors">Prissättning</Link></li>
-              <li><Link to="/seller-guide#säkerhetsregler" className="hover:text-primary transition-colors">Säkerhetsregler</Link></li>
-              <li><Link to="/seller-guide#community" className="hover:text-primary transition-colors">Säljarcommunityn</Link></li>
-            </ul>
-          </div>
+          {/* För säljare - Only show for chefs */}
+          {isChef && (
+            <div className="space-y-4">
+              <h4 className="font-semibold text-foreground">För säljare</h4>
+              <ul className="space-y-2 text-muted-foreground">
+                <li><Link to="/chef/dashboard" className="hover:text-primary transition-colors">Sälj Din Mat</Link></li>
+                <li><Link to="/seller-guide#säljguide" className="hover:text-primary transition-colors">Säljguide</Link></li>
+                <li><Link to="/seller-guide#prissättning" className="hover:text-primary transition-colors">Prissättning</Link></li>
+                <li><Link to="/seller-guide#säkerhetsregler" className="hover:text-primary transition-colors">Säkerhetsregler</Link></li>
+                <li><Link to="/seller-guide#community" className="hover:text-primary transition-colors">Säljarcommunityn</Link></li>
+              </ul>
+            </div>
+          )}
 
           {/* För restauranger */}
           <div className="space-y-4">
