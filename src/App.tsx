@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { RoleBasedLayout } from "@/components/RoleBasedLayout";
 import { AuthProvider } from "@/hooks/useAuth";
 import { useRole } from "@/hooks/useRole";
@@ -72,6 +72,7 @@ const App = () => {
                 <Route path="/kitchen-partner/register" element={<KitchenPartnerOnboarding />} />
                 <Route path="/kitchen-partner/how-it-works" element={<KitchenPartnerHowItWorks />} />
                 <Route path="/kitchen-partner/pricing-terms" element={<PricingTerms />} />
+                <Route path="/kitchen-partner/security" element={<Navigate to="/kitchen-partner/security-insurance" replace />} />
                 <Route path="/kitchen-partner/security-insurance" element={<SecurityInsurance />} />
                 <Route path="/kitchen-partner/support" element={<PartnerSupport />} />
                 <Route path="/delivery-partner/onboarding" element={<DeliveryPartnerOnboarding />} />
