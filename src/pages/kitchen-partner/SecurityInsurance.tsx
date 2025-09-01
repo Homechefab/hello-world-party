@@ -7,46 +7,46 @@ const SecurityInsurance = () => {
   const securityFeatures = [
     {
       icon: <Users className="w-8 h-8 text-primary" />,
-      title: "Bakgrundskontroll",
-      description: "Alla hemkockar genomgår omfattande bakgrundskontroll innan de får tillgång till plattformen."
+      title: "Verifierade kockar",
+      description: "Alla kockar som får tillgång till ditt kök genomgår grundlig bakgrundskontroll och kompetensbedömning."
     },
     {
       icon: <FileCheck className="w-8 h-8 text-primary" />,
-      title: "Verifiering av kompetens",
-      description: "Vi kontrollerar alla hemkockars livsmedelshygien-certifiering och kulinariska bakgrund."
+      title: "Certifierad säkerhet",
+      description: "Alla kockar har giltiga livsmedelshygien-certifikat och genomgått vår säkerhetsutbildning."
     },
     {
       icon: <Lock className="w-8 h-8 text-primary" />,
-      title: "Säker åtkomst",
-      description: "Digitala nycklar och säker access-kontroll för att skydda ditt kök."
+      title: "Smart köksskydd",
+      description: "IoT-baserade låssystem och övervakning som skyddar din utrustning dygnet runt."
     },
     {
       icon: <Shield className="w-8 h-8 text-primary" />,
-      title: "Fullständig försäkring",
-      description: "Omfattande försäkringsskydd som täcker både egendom och ansvar under uthyrning."
+      title: "Totalförsäkring",
+      description: "Komplett försäkringsskydd för ditt kök, utrustning och verksamhet utan extra kostnad."
     }
   ];
 
   const insuranceCoverage = [
-    "Egendomsskydd upp till 5 miljoner kronor",
-    "Ansvarsskydd för skador på tredje part",
-    "Täcker brand, stöld och vattenskador",
-    "Livsmedelsförsäkring och produktansvar",
-    "Inkomstbortfall vid längre avbrott",
-    "Juridisk hjälp vid tvister",
-    "24/7 skadereglering",
-    "Ingen självrisk för godkända anspråk"
+    "Köksutrustning och inventarier täckta upp till 5 miljoner kronor",
+    "Ansvarsskydd om kocken orsakar skador på tredje part",
+    "Täcker brand, stöld, vattenskador och vandalism",
+    "Hygienskador och kontaminering av livsmedel",
+    "Inkomstbortfall om köket blir oanvändbart",
+    "Juridisk hjälp vid tvister med kockar eller myndigheter",
+    "24/7 skadereglering med dedicerad kökspartner-support",
+    "Ingen självrisk - du betalar ingenting vid godkända skador"
   ];
 
   const safetyProtocols = [
-    "Obligatorisk genomgång av säkerhetsrutiner",
-    "Kontroll av alla elektriska apparater före användning",
-    "Rengöringschecklista efter varje användning",
-    "Brandskyddsrutiner och utrymningsvägar",
-    "Första hjälpen-kit och säkerhetsutrustning",
-    "Övervakningssystem och larm",
-    "Nödkontakter alltid tillgängliga",
-    "Regelbunden säkerhetsutbildning"
+    "Kockar genomgår obligatorisk säkerhetsintroduktion för ditt kök",
+    "Pre-check av all utrustning innan användning startar",
+    "Detaljerad rengöringschecklista som måste följas",
+    "Brandskyddsutbildning och kännedom om utrymningsvägar",
+    "Tillgång till första hjälpen-kit och säkerhetsutrustning",
+    "Real-time övervakning via säkerhetskameror och sensorer",
+    "Direkt kontakt med både dig och vårt supportteam",
+    "Månatlig säkerhetsuppdatering och kompetenskontroll"
   ];
 
   return (
@@ -57,7 +57,7 @@ const SecurityInsurance = () => {
             Säkerhet & Försäkring
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Din trygghet är vår prioritet. Vi erbjuder omfattande säkerhetsrutiner och fullständigt försäkringsskydd för alla våra restaurangpartners.
+            Som kökspartner får du komplett trygghet. Vi skyddar ditt kök med avancerad säkerhet och totalförsäkring som inte kostar dig något extra.
           </p>
         </div>
 
@@ -87,7 +87,7 @@ const SecurityInsurance = () => {
                 <CardTitle className="text-2xl">Försäkringsskydd</CardTitle>
               </div>
               <CardDescription>
-                Omfattande försäkring som skyddar din restaurang och ditt kök under alla uthyrningstillfällen.
+                Totalförsäkring utan extra kostnad som skyddar ditt kök, utrustning och verksamhet under uthyrning.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -109,7 +109,7 @@ const SecurityInsurance = () => {
                 <CardTitle className="text-2xl">Säkerhetsprotokoll</CardTitle>
               </div>
               <CardDescription>
-                Strikta säkerhetsrutiner som alla hemkockar måste följa för att använda ditt kök.
+                Säkerhetsrutiner som våra verifierade kockar följer för att skydda ditt kök och utrustning.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -130,7 +130,7 @@ const SecurityInsurance = () => {
             Är du redo att hyra ut ditt kök säkert?
           </h2>
           <p className="text-muted-foreground mb-6 text-lg">
-            Börja tjäna pengar på ditt outhyrda kök med fullständig trygghet och försäkringsskydd.
+            Gå med i vårt nätverk av kökspartners och tjäna extra intäkter med fullständig trygghet.
           </p>
           <Button asChild size="lg" className="text-lg px-8">
             <Link to="/kitchen-partner/register">
