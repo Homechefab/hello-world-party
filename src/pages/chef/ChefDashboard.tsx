@@ -51,32 +51,55 @@ export const ChefDashboard = () => {
 
   const loadChefData = async () => {
     try {
-      // Load dishes
-      const { data: dishesData, error: dishesError } = await supabase
-        .from('dishes')
-        .select('*')
-        .eq('chef_id', 'chef1') // Using mock user ID
-        .order('created_at', { ascending: false });
+      // Since we're using mock users, let's create some mock data for the dashboard
+      // In a real app, we would query with the actual user's chef_id from Supabase
+      
+      // Mock dishes data
+      const mockDishes = [
+        {
+          id: '1',
+          name: 'Köttbullar med potatismos',
+          description: 'Klassiska svenska köttbullar med krämig potatismos och lingonsylt',
+          price: 145,
+          available: true,
+          category: 'Huvudrätter',
+          preparation_time: 30,
+          image_url: null
+        },
+        {
+          id: '2', 
+          name: 'Vegetarisk lasagne',
+          description: 'Ljuvlig lasagne med grönsaker och färsk basilika',
+          price: 135,
+          available: false,
+          category: 'Vegetariskt',
+          preparation_time: 45,
+          image_url: null
+        }
+      ];
 
-      if (dishesError) throw dishesError;
-      setDishes(dishesData || []);
+      // Mock orders data
+      const mockOrders = [
+        {
+          id: '1',
+          status: 'pending',
+          total_amount: 145,
+          customer_name: 'Erik Kund',
+          created_at: new Date().toISOString(),
+          dishes: { name: 'Köttbullar med potatismos', price: 145 }
+        },
+        {
+          id: '2',
+          status: 'completed', 
+          total_amount: 270,
+          customer_name: 'Maria Kund',
+          created_at: new Date(Date.now() - 86400000).toISOString(), // Yesterday
+          dishes: { name: 'Vegetarisk lasagne', price: 135 }
+        }
+      ];
 
-      // Load orders
-      const { data: ordersData, error: ordersError } = await supabase
-        .from('orders')
-        .select(`
-          *,
-            dishes (
-              name,
-              price
-            )
-        `)
-        .eq('chef_id', 'chef1')
-        .order('created_at', { ascending: false })
-        .limit(10);
-
-      if (ordersError) throw ordersError;
-      setOrders(ordersData || []);
+      setDishes(mockDishes);
+      setOrders(mockOrders);
 
     } catch (error) {
       console.error('Error loading chef data:', error);
@@ -92,13 +115,7 @@ export const ChefDashboard = () => {
 
   const toggleDishStatus = async (dishId: string, isActive: boolean) => {
     try {
-    const { error } = await supabase
-      .from('dishes')
-      .update({ available: !isActive })
-      .eq('id', dishId);
-
-      if (error) throw error;
-
+      // For mock data, just update the local state
       setDishes(dishes.map(dish => 
         dish.id === dishId ? { ...dish, available: !isActive } : dish
       ));
