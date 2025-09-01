@@ -36,7 +36,7 @@ const kitchenPartnerServices = [
     image: securityImage,
     title: "Säkerhet & försäkring",
     description: "Information om våra säkerhets- och försäkringslösningar",
-    href: "/kitchen-partner/security",
+    href: "/kitchen-partner/security-insurance",
     icon: Shield,
     color: "from-green-500 to-green-600"
   }
