@@ -174,13 +174,114 @@ export const ChefDashboard = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview">Översikt</TabsTrigger>
+          <TabsTrigger value="sell">Sälj Din Mat</TabsTrigger>
           <TabsTrigger value="orders">Beställningar</TabsTrigger>
           <TabsTrigger value="menu">Meny</TabsTrigger>
           <TabsTrigger value="hygiene">Hygienplan</TabsTrigger>
           <TabsTrigger value="videos">Videos</TabsTrigger>
-          <TabsTrigger value="kitchen">Kök</TabsTrigger>
           <TabsTrigger value="sales">Försäljning</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="sell" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ChefHat className="w-5 h-5" />
+                Sälj Din Mat
+              </CardTitle>
+              <CardDescription>
+                Skapa och hantera dina rätter för försäljning till kunder
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold">Dina Rätter</h3>
+                  <p className="text-sm text-muted-foreground">Hantera vad du säljer till kunder</p>
+                </div>
+                <Button className="flex items-center gap-2">
+                  <Plus className="w-4 h-4" />
+                  Lägg till ny rätt
+                </Button>
+              </div>
+              
+              <div className="grid gap-4">
+                {loading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+                    <p className="text-muted-foreground mt-2">Laddar dina rätter...</p>
+                  </div>
+                ) : dishes.length > 0 ? (
+                  dishes.map((dish) => (
+                    <Card key={dish.id} className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="w-16 h-16 bg-muted rounded-lg flex items-center justify-center">
+                            {dish.image_url ? (
+                              <img src={dish.image_url} alt={dish.name} className="w-full h-full object-cover rounded-lg" />
+                            ) : (
+                              <ChefHat className="w-6 h-6 text-muted-foreground" />
+                            )}
+                          </div>
+                          <div>
+                            <h4 className="font-semibold">{dish.name}</h4>
+                            <p className="text-sm text-muted-foreground">{dish.description}</p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <span className="font-medium">{dish.price} kr</span>
+                              <Badge variant={dish.available ? "default" : "secondary"}>
+                                {dish.available ? "Aktiv" : "Pausad"}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button variant="outline" size="sm">
+                            <Edit className="w-4 h-4" />
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => toggleDishStatus(dish.id, dish.available)}
+                          >
+                            {dish.available ? "Pausa" : "Aktivera"}
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
+                  ))
+                ) : (
+                  <div className="text-center py-12 border-2 border-dashed border-muted rounded-lg">
+                    <ChefHat className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <h3 className="font-semibold mb-2">Börja sälja din mat</h3>
+                    <p className="text-muted-foreground mb-4">Du har inte lagt till några rätter än. Skapa din första rätt för att börja sälja!</p>
+                    <Button>
+                      <Plus className="w-4 h-4 mr-2" />
+                      Lägg till första rätten
+                    </Button>
+                  </div>
+                )}
+              </div>
+              
+              <div className="grid gap-4 md:grid-cols-3">
+                <Card className="p-4 text-center">
+                  <DollarSign className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <div className="text-2xl font-bold">{stats.totalSales.toLocaleString('sv-SE')} kr</div>
+                  <p className="text-sm text-muted-foreground">Total försäljning</p>
+                </Card>
+                <Card className="p-4 text-center">
+                  <Package className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <div className="text-2xl font-bold">{stats.totalDishes}</div>
+                  <p className="text-sm text-muted-foreground">Aktiva rätter</p>
+                </Card>
+                <Card className="p-4 text-center">
+                  <TrendingUp className="w-8 h-8 text-primary mx-auto mb-2" />
+                  <div className="text-2xl font-bold">{stats.ordersThisWeek}</div>
+                  <p className="text-sm text-muted-foreground">Beställningar denna vecka</p>
+                </Card>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="overview" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
@@ -249,37 +350,6 @@ export const ChefDashboard = () => {
 
         <TabsContent value="videos" className="space-y-6">
           <VideoUpload />
-        </TabsContent>
-
-        <TabsContent value="kitchen" className="space-y-6">
-          <Card>
-            <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <ChefHat className="w-5 h-5" />
-              Köksstatus
-            </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="flex items-center gap-3 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <AlertCircle className="w-5 h-5 text-yellow-600" />
-                <div>
-                  <p className="font-medium text-yellow-800">Kök väntar på godkännande</p>
-                  <p className="text-sm text-yellow-600">Din köksinspektion är inbokad för nästa vecka</p>
-                </div>
-              </div>
-              
-              <div className="space-y-4">
-                <h3 className="font-semibold">Behöver du boka ett kök?</h3>
-                <p className="text-muted-foreground">
-                  Om ditt eget kök inte är godkänt än kan du hyra ett certifierat kök från våra partners.
-                </p>
-                <Button variant="outline" className="w-full">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  Boka kök hos partner
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
 
         <TabsContent value="menu" className="space-y-6">
