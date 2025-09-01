@@ -1,16 +1,29 @@
 import { Link } from "react-router-dom";
-import sellFoodImage from "@/assets/service-sell-food.jpg";
 import rentKitchenImage from "@/assets/service-rent-kitchen.jpg";
 import orderFoodImage from "@/assets/service-order-food.jpg";
 import deliveryImage from "@/assets/service-delivery.jpg";
 
 const businessServices = [
   {
-    image: sellFoodImage,
-    title: "Sälj din mat",
-    description: "Ansök för att bli kock och börja sälja hemlagad mat",
-    href: "/chef/onboarding",
-    color: "from-green-500 to-green-600"
+    image: rentKitchenImage,
+    title: "Hyr ut ditt kök",
+    description: "Bli kökspartner och tjäna pengar på ditt outhyrda kök",
+    href: "/kitchen-partner/register",
+    color: "from-blue-500 to-blue-600"
+  },
+  {
+    image: orderFoodImage,
+    title: "Beställ mat",
+    description: "Upptäck och beställ hemlagad mat från lokala kockar",
+    href: "/search-chefs",
+    color: "from-orange-500 to-orange-600"
+  },
+  {
+    image: deliveryImage,
+    title: "Bli leveranspartner",
+    description: "Leverera mat och tjäna extra pengar på din lediga tid",
+    href: "/delivery-partner/onboarding",
+    color: "from-purple-500 to-purple-600"
   }
 ];
 
@@ -27,7 +40,7 @@ const BusinessServices = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 gap-8 max-w-2xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {businessServices.map((service) => (
             <Link
               key={service.title}
