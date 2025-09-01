@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ChefHat, Users, Building, Shield, Menu } from 'lucide-react';
 import { toast } from 'sonner';
 import LiveChat from '@/components/LiveChat';
+import Header from '@/components/Header';
 import {
   Sheet,
   SheetContent,
@@ -88,6 +89,7 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Header />
       {children}
       
       {/* Live Chat Widget */}
