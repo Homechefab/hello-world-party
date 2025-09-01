@@ -7,6 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import { useEffect } from 'react';
 import { 
   CheckCircle, 
   XCircle, 
@@ -40,9 +42,64 @@ export const ChefApprovalManager = () => {
   const { toast } = useToast();
   const [selectedApplication, setSelectedApplication] = useState<ChefApplication | null>(null);
   const [reviewNotes, setReviewNotes] = useState('');
+  const [loading, setLoading] = useState(true);
 
   // Applications will be loaded from Supabase
   const [applications, setApplications] = useState<ChefApplication[]>([]);
+
+  useEffect(() => {
+    fetchApplications();
+  }, []);
+
+  const fetchApplications = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('chefs')
+        .select(`
+          *,
+          profiles (
+            full_name,
+            email,
+            phone
+          )
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        toast({
+          title: "Fel vid hämtning av ansökningar",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Transform data to match ChefApplication interface
+      const transformedData = (data || []).map((chef: any) => ({
+        id: chef.id,
+        applicantName: chef.profiles?.full_name || 'Okänd',
+        email: chef.profiles?.email || '',
+        phone: chef.profiles?.phone || '',
+        businessName: chef.business_name,
+        municipality: 'Ej angivet', // Vi kan lägga till detta fält senare
+        description: 'Ej angivet',
+        status: chef.kitchen_approved ? 'approved' as const : 'pending' as const,
+        appliedDate: new Date(chef.created_at).toLocaleDateString('sv-SE'),
+        documents: {
+          selfControlPlan: chef.hygiene_certificate_url,
+          businessLicense: undefined
+        }
+      }));
+
+      setApplications(transformedData);
+    } catch (error) {
+      toast({
+        title: "Något gick fel",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {

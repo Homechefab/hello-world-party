@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Building, MapPin, DollarSign, Users, CheckCircle, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface KitchenData {
   businessName: string;
@@ -16,6 +17,7 @@ interface KitchenData {
   phone: string;
   address: string;
   city: string;
+  kitchenSize: string;
   postalCode: string;
   kitchenType: string;
   capacity: string;
@@ -37,6 +39,7 @@ export const KitchenPartnerOnboarding = () => {
     phone: '',
     address: '',
     city: '',
+    kitchenSize: '',
     postalCode: '',
     kitchenType: '',
     capacity: '',
@@ -101,7 +104,7 @@ export const KitchenPartnerOnboarding = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Validation
     if (!formData.businessName || !formData.contactPerson || !formData.email) {
       toast({
@@ -112,13 +115,33 @@ export const KitchenPartnerOnboarding = () => {
       return;
     }
 
-    toast({
-      title: "Ansökan skickad!",
-      description: "Vi kommer att granska din ansökan och återkomma inom 2-3 arbetsdagar"
-    });
+    try {
+      const { error } = await supabase.from('kitchen_partners').insert({
+        business_name: formData.businessName,
+        address: `${formData.address}, ${formData.city}`,
+        kitchen_size: parseInt(formData.kitchenSize) || 0,
+        hourly_rate: parseFloat(formData.hourlyRate) || 0,
+        kitchen_description: formData.description,
+        approved: false,
+        application_status: 'pending',
+        user_id: 'temp-user-id' // Detta behöver kopplas till riktig användar-auth
+      });
 
-    // Here you would typically send the data to your backend
-    console.log('Kitchen partner application:', formData);
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Ansökan skickad!",
+        description: "Vi kommer att granska din ansökan och återkomma inom 2-3 arbetsdagar"
+      });
+    } catch (error) {
+      toast({
+        title: "Fel vid skickning", 
+        description: "Något gick fel. Försök igen senare.",
+        variant: "destructive"
+      });
+    }
   };
 
   const nextStep = () => {

@@ -10,6 +10,7 @@ import { CheckCircle, Upload, FileText, Shield, Clock } from "lucide-react";
 import Header from "@/components/Header";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const steps = [
   {
@@ -47,6 +48,7 @@ const ChefApplication = () => {
     postalCode: "",
     experience: "",
     specialties: "",
+    businessName: "",
     motivation: "",
     hasKitchen: false,
     hasHygieneCertificate: false,
@@ -55,20 +57,39 @@ const ChefApplication = () => {
     agreesToBackground: false
   });
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     } else {
-      // Skicka ansökan
-      toast({
-        title: "Ansökan skickad!",
-        description: "Vi granskar din ansökan och återkommer inom 2-3 arbetsdagar.",
-        duration: 5000
-      });
-      // Här skulle man skicka data till backend
-      setTimeout(() => {
-        navigate("/chef/application-pending");
-      }, 2000);
+      // Skicka ansökan till databasen
+      try {
+        const { error } = await supabase.from('chefs').insert({
+          business_name: formData.businessName,
+          municipality_approved: false,
+          kitchen_approved: false,
+          user_id: 'temp-user-id' // Detta behöver kopplas till riktig användar-auth
+        });
+
+        if (error) {
+          throw error;
+        }
+
+        toast({
+          title: "Ansökan skickad!",
+          description: "Vi granskar din ansökan och återkommer inom 2-3 arbetsdagar.",
+          duration: 5000
+        });
+        
+        setTimeout(() => {
+          navigate("/chef/application-pending");
+        }, 2000);
+      } catch (error) {
+        toast({
+          title: "Fel vid skickning",
+          description: "Något gick fel. Försök igen senare.",
+          variant: "destructive"
+        });
+      }
     }
   };
 
