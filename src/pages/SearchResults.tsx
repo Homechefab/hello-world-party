@@ -81,61 +81,74 @@ const SearchResults = () => {
   useEffect(() => {
     const searchChefs = async () => {
       try {
-        // Temporary test data to demonstrate the nearby search functionality
-        const testChefs: Chef[] = [
-          {
-            id: 'test-chef-1',
-            business_name: 'Stockholms Hembageri',
-            full_name: 'Emma Andersson',
-            address: 'Södermalm, Stockholm',
-            dish_count: 3,
-            city: 'Stockholm'
-          },
-          {
-            id: 'test-chef-2', 
-            business_name: 'Gamla Stan Kök',
-            full_name: 'Lars Persson',
-            address: 'Gamla Stan, Stockholm',
-            dish_count: 2,
-            city: 'Stockholm'
-          },
-          {
-            id: 'test-chef-3',
-            business_name: 'Uppsala Delikatesser',
-            full_name: 'Anna Johansson', 
-            address: 'Centrum, Uppsala',
-            dish_count: 4,
-            city: 'Uppsala'
-          },
-          {
-            id: 'test-chef-4',
-            business_name: 'Göteborg Gourmet',
-            full_name: 'Maria Svensson',
-            address: 'Haga, Göteborg', 
-            dish_count: 3,
-            city: 'Göteborg'
-          },
-          {
-            id: 'test-chef-5',
-            business_name: 'Malmö Matkultur',
-            full_name: 'Ahmed Hassan',
-            address: 'Västra Hamnen, Malmö',
-            dish_count: 5, 
-            city: 'Malmö'
+        // Search for chefs with available dishes
+        const { data: chefsData, error } = await supabase
+          .from('chefs')
+          .select(`
+            id,
+            business_name,
+            user_id
+          `)
+          .eq('kitchen_approved', true);
+
+        if (error) throw error;
+
+        if (!chefsData || chefsData.length === 0) {
+          setChefs([]);
+          return;
+        }
+
+        // Get profiles for all chefs
+        const chefUserIds = chefsData.map(chef => chef.user_id);
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, full_name, address')
+          .in('id', chefUserIds);
+
+        if (profilesError) throw profilesError;
+
+        // Get dish counts for chefs
+        const { data: dishCounts, error: dishError } = await supabase
+          .from('dishes')
+          .select('chef_id')
+          .eq('available', true)
+          .in('chef_id', chefsData.map(c => c.id));
+
+        if (dishError) throw dishError;
+
+        // Format the results with distance calculation
+        let formattedChefs = chefsData.map(chef => {
+          const profile = profilesData?.find(p => p.id === chef.user_id);
+          const dishCount = dishCounts?.filter(d => d.chef_id === chef.id).length || 0;
+          
+          const chefData: Chef = {
+            id: chef.id,
+            business_name: chef.business_name,
+            full_name: profile?.full_name || '',
+            address: profile?.address || '',
+            dish_count: dishCount,
+            city: profile?.address?.split(',')[1]?.trim() || profile?.address || ''
+          };
+
+          // Calculate distance if there's a location query
+          if (query && chefData.address) {
+            chefData.distance = calculateDistance(query, chefData.address);
           }
-        ];
+
+          return chefData;
+        }).filter(chef => chef.dish_count > 0);
 
         // Calculate distances for all chefs if there's a search query
-        let formattedChefs = testChefs.map(chef => ({
+        let filteredChefs = formattedChefs.map(chef => ({
           ...chef,
-          distance: query ? calculateDistance(query, chef.address) : undefined
+          distance: query ? calculateDistance(query, chef.address) : chef.distance
         }));
 
         if (query) {
           const searchLower = query.toLowerCase();
           
           // First, try to find exact matches in the searched area
-          const exactMatches = formattedChefs.filter(chef => 
+          const exactMatches = filteredChefs.filter(chef => 
             chef.business_name?.toLowerCase().includes(searchLower) ||
             chef.full_name?.toLowerCase().includes(searchLower) ||
             chef.address?.toLowerCase().includes(searchLower) ||
@@ -149,9 +162,9 @@ const SearchResults = () => {
             setSearchArea(query);
             setShowingNearby(false);
           } else {
-            // No exact matches, show nearby chefs (within 100km for demonstration)
-            const nearbyChefs = formattedChefs
-              .filter(chef => chef.distance !== undefined && chef.distance <= 100)
+            // No exact matches, show nearby chefs (within 50km)
+            const nearbyChefs = filteredChefs
+              .filter(chef => chef.distance !== undefined && chef.distance <= 50)
               .sort((a, b) => (a.distance || 0) - (b.distance || 0));
 
             if (nearbyChefs.length > 0) {
@@ -160,7 +173,7 @@ const SearchResults = () => {
               setShowingNearby(true);
             } else {
               // Show all chefs if no nearby ones found, sorted by distance
-              const allSorted = formattedChefs
+              const allSorted = filteredChefs
                 .sort((a, b) => (a.distance || 0) - (b.distance || 0))
                 .slice(0, 10);
               setChefs(allSorted);
@@ -170,7 +183,7 @@ const SearchResults = () => {
           }
         } else {
           // No search query, show all available chefs
-          setChefs(formattedChefs);
+          setChefs(filteredChefs);
           setShowingNearby(false);
         }
       } catch (error) {
