@@ -63,7 +63,7 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground">För säljare</h4>
             <ul className="space-y-2 text-muted-foreground">
-              <li><Link to="/chef/application" className="hover:text-primary transition-colors">Bli säljare</Link></li>
+              <li><Link to="/chef/application" className="hover:text-primary transition-colors">Bli hemmakock</Link></li>
               <li><Link to="/seller-guide#säljguide" className="hover:text-primary transition-colors">Säljguide</Link></li>
               <li><Link to="/seller-guide#prissättning" className="hover:text-primary transition-colors">Prissättning</Link></li>
               <li><Link to="/seller-guide#säkerhetsregler" className="hover:text-primary transition-colors">Säkerhetsregler</Link></li>
