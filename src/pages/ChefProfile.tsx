@@ -41,121 +41,53 @@ const ChefProfile = () => {
     const fetchChefData = async () => {
       if (!chefId) return;
       
-      // Mock data for demonstration
-      const mockChefData = {
-        'chef-1': {
-          id: 'chef-1',
-          business_name: 'Annas Hembageri',
-          user_id: 'user-1',
-          full_name: 'Anna Lindström',
-          address: 'Södermalm, Stockholm'
-        },
-        'chef-2': {
-          id: 'chef-2', 
-          business_name: 'Marco\'s Italienska Kök',
-          user_id: 'user-2',
-          full_name: 'Marco Rossi',
-          address: 'Gamla Stan, Stockholm'  
-        },
-        'chef-3': {
-          id: 'chef-3',
-          business_name: 'Lisas Vegetariska Delikatesser', 
-          user_id: 'user-3',
-          full_name: 'Lisa Karlsson',
-          address: 'Östermalm, Stockholm'
-        }
-      };
+      try {
+        // Fetch chef info
+        const { data: chefData, error: chefError } = await supabase
+          .from('chefs')
+          .select(`
+            id,
+            business_name,
+            user_id
+          `)
+          .eq('id', chefId)
+          .eq('kitchen_approved', true)
+          .single();
 
-      const mockDishesData = {
-        'chef-1': [
-          {
-            id: 'dish-1',
-            name: 'Hemgjorda köttbullar',
-            description: 'Klassiska svenska köttbullar med gräddsås och lingonsylt. Gjorda på kött från lokala gårdar.',
-            price: 85,
-            category: 'Svenskt',
-            allergens: ['Gluten', 'Mjölk'],
-            ingredients: ['Nötkött', 'Grädde', 'Lingon', 'Potatis'],
-            preparation_time: 30,
-            available: true,
-            image_url: '/src/assets/meatballs.jpg'
-          },
-          {
-            id: 'dish-2', 
-            name: 'Hemgjord äppelpaj',
-            description: 'Klassisk äppelpaj med kanel och vaniljsås. Gjord på äpplen från egna trädgården.',
-            price: 75,
-            category: 'Dessert',
-            allergens: ['Gluten', 'Mjölk', 'Ägg'],
-            ingredients: ['Äpplen', 'Kanel', 'Smör', 'Mjöl'],
-            preparation_time: 15,
-            available: true,
-            image_url: '/src/assets/apple-pie.jpg'
-          }
-        ],
-        'chef-2': [
-          {
-            id: 'dish-3',
-            name: 'Krämig carbonara', 
-            description: 'Autentisk italiensk pasta carbonara med ägg, parmesan och guanciale. Tillagad enligt familjerecept.',
-            price: 95,
-            category: 'Italienskt',
-            allergens: ['Gluten', 'Mjölk', 'Ägg'],
-            ingredients: ['Pasta', 'Ägg', 'Parmesan', 'Guanciale'],
-            preparation_time: 25,
-            available: true,
-            image_url: '/src/assets/pasta.jpg'
-          },
-          {
-            id: 'dish-4',
-            name: 'Margherita Pizza',
-            description: 'Klassisk italiensk pizza med tomatsås, mozzarella och basilika. Bakad i stenugn.',
-            price: 120,
-            category: 'Italienskt', 
-            allergens: ['Gluten', 'Mjölk'],
-            ingredients: ['Pizzadeg', 'Tomater', 'Mozzarella', 'Basilika'],
-            preparation_time: 20,
-            available: true,
-            image_url: '/src/assets/pasta.jpg'
-          }
-        ],
-        'chef-3': [
-          {
-            id: 'dish-5',
-            name: 'Grönsaksoppa',
-            description: 'Näringsrik soppa gjord på säsongens färska grönsaker. Serveras med hemgjort bröd.',
-            price: 65,
-            category: 'Vegetariskt',
-            allergens: ['Gluten'],
-            ingredients: ['Morötter', 'Selleri', 'Lök', 'Vegetabilisk buljong'], 
-            preparation_time: 20,
-            available: true,
-            image_url: '/src/assets/soup.jpg'
-          },
-          {
-            id: 'dish-6',
-            name: 'Falafel med hummus',
-            description: 'Krispiga falafels med cremig hummus och färska grönsaker. Helt vegetariskt.',
-            price: 78,
-            category: 'Vegetariskt',
-            allergens: ['Sesam'],
-            ingredients: ['Kikärtor', 'Tahini', 'Gurka', 'Tomat'],
-            preparation_time: 15, 
-            available: true,
-            image_url: '/src/assets/soup.jpg'
-          }
-        ]
-      };
+        if (chefError) throw chefError;
 
-      const chefData = mockChefData[chefId as keyof typeof mockChefData];
-      const dishesData = mockDishesData[chefId as keyof typeof mockDishesData] || [];
+        // Fetch profile info separately
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('full_name, address')
+          .eq('id', chefData.user_id)
+          .single();
 
-      if (chefData) {
-        setChef(chefData);
-        setDishes(dishesData);
+        if (profileError) throw profileError;
+
+        setChef({
+          id: chefData.id,
+          business_name: chefData.business_name,
+          user_id: chefData.user_id,
+          full_name: profileData.full_name,
+          address: profileData.address
+        });
+
+        // Fetch chef's dishes
+        const { data: dishesData, error: dishesError } = await supabase
+          .from('dishes')
+          .select('*')
+          .eq('chef_id', chefId)
+          .eq('available', true);
+
+        if (dishesError) throw dishesError;
+
+        setDishes(dishesData || []);
+      } catch (error) {
+        console.error('Error fetching chef data:', error);
+      } finally {
+        setLoading(false);
       }
-      
-      setLoading(false);
     };
 
     fetchChefData();

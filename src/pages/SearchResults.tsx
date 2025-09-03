@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Star, MapPin, ChefHat, Clock } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Chef {
   id: string;
@@ -19,48 +20,69 @@ const SearchResults = () => {
   const [chefs, setChefs] = useState<Chef[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Mock chefs for demonstration
-  const mockChefs = [
-    {
-      id: 'chef-1',
-      business_name: 'Annas Hembageri', 
-      full_name: 'Anna Lindström',
-      address: 'Södermalm, Stockholm',
-      dish_count: 2
-    },
-    {
-      id: 'chef-2',
-      business_name: 'Marco\'s Italienska Kök',
-      full_name: 'Marco Rossi', 
-      address: 'Gamla Stan, Stockholm',
-      dish_count: 2
-    },
-    {
-      id: 'chef-3',
-      business_name: 'Lisas Vegetariska Delikatesser',
-      full_name: 'Lisa Karlsson',
-      address: 'Östermalm, Stockholm', 
-      dish_count: 2
-    }
-  ];
-
   useEffect(() => {
     const searchChefs = async () => {
       try {
-        // For demo purposes, show mock data
-        // Filter based on search query if provided
-        let filteredChefs = mockChefs;
-        
-        if (query) {
+        // Search for chefs with available dishes
+        const { data: chefsData, error } = await supabase
+          .from('chefs')
+          .select(`
+            id,
+            business_name,
+            user_id
+          `)
+          .eq('kitchen_approved', true);
+
+        if (error) throw error;
+
+        if (!chefsData) {
+          setChefs([]);
+          return;
+        }
+
+        // Get profiles for all chefs
+        const chefUserIds = chefsData.map(chef => chef.user_id);
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, full_name, address')
+          .in('id', chefUserIds);
+
+        if (profilesError) throw profilesError;
+
+        // Get dish counts for chefs
+        const { data: dishCounts, error: dishError } = await supabase
+          .from('dishes')
+          .select('chef_id')
+          .eq('available', true)
+          .in('chef_id', chefsData.map(c => c.id));
+
+        if (dishError) throw dishError;
+
+        // Format the results
+        const formattedChefs = chefsData.map(chef => {
+          const profile = profilesData?.find(p => p.id === chef.user_id);
+          const dishCount = dishCounts?.filter(d => d.chef_id === chef.id).length || 0;
+          
+          return {
+            id: chef.id,
+            business_name: chef.business_name,
+            full_name: profile?.full_name || '',
+            address: profile?.address || '',
+            dish_count: dishCount
+          };
+        }).filter(chef => {
+          // Filter based on search query
+          if (!query) return chef.dish_count > 0; // Only show chefs with dishes
+          
           const searchLower = query.toLowerCase();
-          filteredChefs = mockChefs.filter(chef => 
+          return (chef.dish_count > 0 && (
             chef.business_name?.toLowerCase().includes(searchLower) ||
             chef.full_name?.toLowerCase().includes(searchLower) ||
             chef.address?.toLowerCase().includes(searchLower)
-          );
-        }
-        
-        setChefs(filteredChefs);
+          ));
+        });
+
+        setChefs(formattedChefs);
       } catch (error) {
         console.error('Error searching chefs:', error);
       } finally {
