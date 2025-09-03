@@ -138,14 +138,9 @@ const Header = () => {
         {/* Desktop Navigation - Only show for chefs */}
         {isChef && (
           <div className="hidden md:flex">
-            <Link 
-              to="/chef/dashboard"
-              onClick={() => console.log('Navigating to chef dashboard')}
-            >
-              <Button variant="hero" size="sm">
-                Sälj Din Mat
-              </Button>
-            </Link>
+            <Button variant="hero" size="sm" onClick={() => handleRoleSwitch('chef1')}>
+              Sälj Din Mat
+            </Button>
           </div>
         )}
         </div>
@@ -233,18 +228,17 @@ const Header = () => {
                 <div className="space-y-3 pt-4 border-t border-border">
                   {/* Mobile Navigation - Only show for chefs */}
                   {isChef && (
-                    <Link 
-                      to="/chef/dashboard"
+                    <Button 
+                      variant="hero" 
+                      className="w-full justify-start" 
+                      size="lg"
                       onClick={() => {
-                        console.log('Mobile: Navigating to chef dashboard');
-                        setMenuOpen(false);
+                        handleRoleSwitch('chef1');
                       }}
                     >
-                      <Button variant="hero" className="w-full justify-start" size="lg">
-                        <UtensilsCrossed className="w-5 h-5 mr-2" />
-                        Sälj Din Mat
-                      </Button>
-                    </Link>
+                      <UtensilsCrossed className="w-5 h-5 mr-2" />
+                      Sälj Din Mat
+                    </Button>
                   )}
                   
                   <div className="flex gap-2">
