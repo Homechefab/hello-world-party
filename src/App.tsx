@@ -12,6 +12,8 @@ import SellPage from "./pages/SellPage";
 import SellerGuide from "./pages/SellerGuide";
 import Dashboard from "./pages/Dashboard";
 import ChefSearch from "./pages/ChefSearch";
+import SearchResults from "./pages/SearchResults";
+import ChefProfile from "./pages/ChefProfile";
 import PickupPage from "./pages/PickupPage";
 import ExperiencePage from "./pages/ExperiencePage";
 import PrivateChefPage from "./pages/PrivateChefPage";
@@ -60,6 +62,8 @@ const App = () => {
                 <Route path="/secure-payments" element={<SecurePayments />} />
                 <Route path="/customer-service" element={<CustomerService />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/search" element={<SearchResults />} />
+                <Route path="/chef/:chefId" element={<ChefProfile />} />
                 <Route path="/search-chefs" element={<ChefSearch />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/chef/onboarding" element={<ChefOnboarding />} />

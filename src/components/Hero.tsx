@@ -33,7 +33,7 @@ const Hero = () => {
             <form onSubmit={(e) => {
               e.preventDefault();
               console.log("Search submitted with query:", searchQuery);
-              navigate(`/pickup?q=${encodeURIComponent(searchQuery)}`);
+              navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
             }}>
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1 relative">

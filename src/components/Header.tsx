@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ChefHat, Search, ShoppingBag, User, Menu, X, Home, UtensilsCrossed, Info, Phone, Users, Building, Shield } from "lucide-react";
+import { ChefHat, Search, User, Menu, X, Home, UtensilsCrossed, Info, Phone, Users, Building, Shield } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRole } from "@/hooks/useRole";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { Cart } from "@/components/Cart";
 import {
   Sheet,
   SheetContent,
@@ -21,6 +20,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -127,7 +128,7 @@ const Header = () => {
           </DropdownMenu>
           
           <Button variant="ghost" size="icon">
-            <ShoppingBag className="w-5 h-5" />
+            <Cart />
           </Button>
           
           <Button variant="ghost" size="icon">
@@ -247,10 +248,7 @@ const Header = () => {
                   )}
                   
                   <div className="flex gap-2">
-                    <Button variant="outline" size="lg" className="flex-1 justify-start">
-                      <ShoppingBag className="w-5 h-5 mr-2" />
-                      Varukorg
-                    </Button>
+                    <Cart />
                     <Button variant="outline" size="lg" className="flex-1 justify-start">
                       <User className="w-5 h-5 mr-2" />
                       Profil
