@@ -12,13 +12,71 @@ interface Chef {
   full_name: string;
   address: string;
   dish_count: number;
+  distance?: number;
+  city?: string;
 }
+
+// Simple distance calculation for Swedish cities/areas
+const calculateDistance = (searchLocation: string, chefAddress: string): number => {
+  const locations: { [key: string]: { lat: number; lon: number } } = {
+    // Stockholm areas
+    'stockholm': { lat: 59.3293, lon: 18.0686 },
+    'södermalm': { lat: 59.3181, lon: 18.0758 },
+    'gamla stan': { lat: 59.3251, lon: 18.0711 },
+    'östermalm': { lat: 59.3364, lon: 18.0864 },
+    'vasastan': { lat: 59.3467, lon: 18.0582 },
+    'norrmalm': { lat: 59.3326, lon: 18.0649 },
+    
+    // Other major cities
+    'göteborg': { lat: 57.7089, lon: 11.9746 },
+    'malmö': { lat: 55.6050, lon: 13.0038 },
+    'uppsala': { lat: 59.8586, lon: 17.6389 },
+    'linköping': { lat: 58.4108, lon: 15.6214 },
+    'örebro': { lat: 59.2753, lon: 15.2134 }
+  };
+
+  const getLocationCoords = (location: string) => {
+    const normalized = location.toLowerCase().trim();
+    
+    // Try exact match first
+    if (locations[normalized]) {
+      return locations[normalized];
+    }
+    
+    // Try partial match
+    for (const [key, coords] of Object.entries(locations)) {
+      if (normalized.includes(key) || key.includes(normalized)) {
+        return coords;
+      }
+    }
+    
+    // Default to Stockholm if not found
+    return locations['stockholm'];
+  };
+
+  const searchCoords = getLocationCoords(searchLocation);
+  const chefCoords = getLocationCoords(chefAddress);
+
+  // Calculate distance using Haversine formula (simplified)
+  const R = 6371; // Earth's radius in km
+  const dLat = (chefCoords.lat - searchCoords.lat) * Math.PI / 180;
+  const dLon = (chefCoords.lon - searchCoords.lon) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(searchCoords.lat * Math.PI / 180) * Math.cos(chefCoords.lat * Math.PI / 180) *
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const distance = R * c;
+
+  return Math.round(distance * 10) / 10; // Round to 1 decimal
+};
 
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
   const [chefs, setChefs] = useState<Chef[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchArea, setSearchArea] = useState<string>('');
+  const [showingNearby, setShowingNearby] = useState(false);
 
   useEffect(() => {
     const searchChefs = async () => {
@@ -35,7 +93,7 @@ const SearchResults = () => {
 
         if (error) throw error;
 
-        if (!chefsData) {
+        if (!chefsData || chefsData.length === 0) {
           setChefs([]);
           return;
         }
@@ -58,31 +116,69 @@ const SearchResults = () => {
 
         if (dishError) throw dishError;
 
-        // Format the results
-        const formattedChefs = chefsData.map(chef => {
+        // Format the results with distance calculation
+        let formattedChefs = chefsData.map(chef => {
           const profile = profilesData?.find(p => p.id === chef.user_id);
           const dishCount = dishCounts?.filter(d => d.chef_id === chef.id).length || 0;
           
-          return {
+          const chefData: Chef = {
             id: chef.id,
             business_name: chef.business_name,
             full_name: profile?.full_name || '',
             address: profile?.address || '',
-            dish_count: dishCount
+            dish_count: dishCount,
+            city: profile?.address?.split(',')[1]?.trim() || profile?.address || ''
           };
-        }).filter(chef => {
-          // Filter based on search query
-          if (!query) return chef.dish_count > 0; // Only show chefs with dishes
-          
+
+          // Calculate distance if there's a location query
+          if (query && chefData.address) {
+            chefData.distance = calculateDistance(query, chefData.address);
+          }
+
+          return chefData;
+        }).filter(chef => chef.dish_count > 0);
+
+        if (query) {
           const searchLower = query.toLowerCase();
-          return (chef.dish_count > 0 && (
+          
+          // First, try to find exact matches in the searched area
+          const exactMatches = formattedChefs.filter(chef => 
             chef.business_name?.toLowerCase().includes(searchLower) ||
             chef.full_name?.toLowerCase().includes(searchLower) ||
-            chef.address?.toLowerCase().includes(searchLower)
-          ));
-        });
+            chef.address?.toLowerCase().includes(searchLower) ||
+            chef.city?.toLowerCase().includes(searchLower)
+          );
 
-        setChefs(formattedChefs);
+          if (exactMatches.length > 0) {
+            // Sort by distance if we have location data
+            if (exactMatches.some(chef => chef.distance !== undefined)) {
+              exactMatches.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+            }
+            setChefs(exactMatches);
+            setSearchArea(query);
+            setShowingNearby(false);
+          } else {
+            // No exact matches, show nearby chefs (within 50km)
+            const nearbyChefs = formattedChefs
+              .filter(chef => chef.distance !== undefined && chef.distance <= 50)
+              .sort((a, b) => (a.distance || 0) - (b.distance || 0));
+
+            if (nearbyChefs.length > 0) {
+              setChefs(nearbyChefs);
+              setSearchArea(query);
+              setShowingNearby(true);
+            } else {
+              // Show all chefs if no nearby ones found
+              setChefs(formattedChefs.slice(0, 10)); // Limit to 10 for performance
+              setSearchArea(query);
+              setShowingNearby(true);
+            }
+          }
+        } else {
+          // No search query, show all available chefs
+          setChefs(formattedChefs);
+          setShowingNearby(false);
+        }
       } catch (error) {
         console.error('Error searching chefs:', error);
       } finally {
@@ -112,16 +208,26 @@ const SearchResults = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Sökresultat
+              {showingNearby ? 'Kockar i närområdet' : 'Sökresultat'}
             </h1>
             {query && (
-              <p className="text-xl text-white/90">
-                Hittade {chefs.length} kockar för "{query}"
-              </p>
+              <div className="text-center">
+                <p className="text-xl text-white/90 mb-2">
+                  {chefs.length > 0 
+                    ? `Hittade ${chefs.length} kockar ${showingNearby ? 'i närområdet av' : 'för'} "${query}"`
+                    : `Inga kockar hittades för "${query}"`
+                  }
+                </p>
+                {showingNearby && chefs.length > 0 && (
+                  <p className="text-lg text-yellow-cream">
+                    Inga kockar hittades i exakt det området, visar istället kockar inom rimligt avstånd
+                  </p>
+                )}
+              </div>
             )}
             {!query && (
               <p className="text-xl text-white/90">
-                {chefs.length} kockar tillgängliga i ditt område
+                {chefs.length} kockar tillgängliga
               </p>
             )}
           </div>
@@ -189,9 +295,17 @@ const SearchResults = () => {
                           </Badge>
                         </div>
                         
-                        <div className="flex items-center text-sm text-muted-foreground">
-                          <Clock className="w-4 h-4 mr-1" />
-                          <span>30-45 min tillagning</span>
+                        <div className="flex items-center justify-between text-sm text-muted-foreground">
+                          <div className="flex items-center">
+                            <Clock className="w-4 h-4 mr-1" />
+                            <span>30-45 min tillagning</span>
+                          </div>
+                          {chef.distance && (
+                            <div className="flex items-center">
+                              <MapPin className="w-3 h-3 mr-1" />
+                              <span>{chef.distance} km bort</span>
+                            </div>
+                          )}
                         </div>
                         
                         <div className="pt-2">
