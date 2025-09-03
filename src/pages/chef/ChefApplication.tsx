@@ -63,11 +63,22 @@ const ChefApplication = () => {
     } else {
       // Skicka ansökan till databasen
       try {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+          toast({
+            title: "Ej inloggad",
+            description: "Du måste logga in för att skicka en ansökan.",
+            variant: "destructive"
+          });
+          return;
+        }
+
         const { error } = await supabase.from('chefs').insert({
           business_name: formData.businessName,
+          user_id: user.id,
           municipality_approved: false,
-          kitchen_approved: false,
-          user_id: 'temp-user-id' // Detta behöver kopplas till riktig användar-auth
+          kitchen_approved: false
         });
 
         if (error) {

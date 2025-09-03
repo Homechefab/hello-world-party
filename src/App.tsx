@@ -37,6 +37,7 @@ import DeliveryPartnerOnboarding from "./pages/delivery-partner/DeliveryPartnerO
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import NotFound from "./pages/NotFound";
 import NotificationSignup from "./pages/NotificationSignup";
+import Auth from "./pages/Auth";
 // Auth removed - working directly with roles
 
 const queryClient = new QueryClient();
@@ -81,7 +82,7 @@ const App = () => {
                 <Route path="/kitchen-partner/support" element={<PartnerSupport />} />
                 <Route path="/delivery-partner/onboarding" element={<DeliveryPartnerOnboarding />} />
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                {/* Auth route removed - direct role access */}
+                <Route path="/auth" element={<Auth />} />
                 <Route path="/notification-signup" element={<NotificationSignup />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
