@@ -124,11 +124,75 @@ const ChefApplication = () => {
       
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-4">Bli Homechef-kock</h1>
-            <p className="text-lg text-muted-foreground">
-              Ansök om att sälja din hemlagade mat till hungriga kunder i ditt område
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              Bli Homechef-kock
+            </h1>
+            <p className="text-xl text-muted-foreground mb-8">
+              Förvandla din passion för matlagning till en inkomstkälla
             </p>
+            
+            {/* Fördelar sektion */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
+              <Card className="p-6 text-center border-2 hover:border-primary/20 transition-colors">
+                <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold mb-2">Tjäna extra pengar</h3>
+                <p className="text-sm text-muted-foreground">
+                  Sätt ditt eget pris och bestäm hur mycket du vill arbeta
+                </p>
+              </Card>
+              
+              <Card className="p-6 text-center border-2 hover:border-primary/20 transition-colors">
+                <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold mb-2">Nå fler kunder</h3>
+                <p className="text-sm text-muted-foreground">
+                  Vi hjälper dig hitta hungriga kunder i ditt område
+                </p>
+              </Card>
+              
+              <Card className="p-6 text-center border-2 hover:border-primary/20 transition-colors">
+                <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-semibold mb-2">Säker plattform</h3>
+                <p className="text-sm text-muted-foreground">
+                  Säkra betalningar, försäkring och support från vårt team
+                </p>
+              </Card>
+            </div>
+
+            {/* Krav sektion */}
+            <div className="bg-secondary/30 rounded-lg p-6 mb-8 max-w-3xl mx-auto">
+              <h2 className="text-xl font-semibold mb-4">Krav för att bli kock</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-sm">Livsmedelshygienbevis</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-sm">Registrerad näringsverksamhet</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-sm">Välutrustat kök</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                  <span className="text-sm">Passion för matlagning</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Steg-indikator */}
