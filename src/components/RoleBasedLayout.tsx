@@ -10,29 +10,27 @@ interface RoleBasedLayoutProps {
 }
 
 export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
-  const { user, loading } = useRole();
+  const { user, loading, usingMockData } = useRole();
   const { user: authUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   console.log('RoleBasedLayout: Current user:', user, 'Loading:', loading);
 
-  // Protect chef dashboard route
+  // Only protect chef dashboard if using real auth
   React.useEffect(() => {
-    if (!loading && location.pathname === '/chef/dashboard') {
+    if (!loading && !usingMockData && location.pathname === '/chef/dashboard') {
       if (!authUser) {
-        // Not authenticated, redirect to login
         navigate('/auth');
         return;
       }
       
       if (!user || user.role !== 'chef' || !user.municipality_approved) {
-        // Not an approved chef, redirect to application
         navigate('/chef/application');
         return;
       }
     }
-  }, [authUser, user, loading, location.pathname, navigate]);
+  }, [authUser, user, loading, location.pathname, navigate, usingMockData]);
 
   if (loading) {
     return (

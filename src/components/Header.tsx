@@ -25,7 +25,7 @@ import { Badge } from "@/components/ui/badge";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, switchRole, isChef, isCustomer, isKitchenPartner, isAdmin } = useRole();
+  const { user, switchRole, isChef, isCustomer, isKitchenPartner, isAdmin, usingMockData, switchToRealAuth } = useRole();
   const { user: authUser, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -40,7 +40,7 @@ const Header = () => {
 
   const roles = [
     { id: 'customer1', name: 'Kund', icon: Users, active: isCustomer, dashboard: '/' },
-    { id: 'chef1', name: 'Kock', icon: ChefHat, active: isChef, dashboard: '/chef/application' },
+    { id: 'chef1', name: 'Kock', icon: ChefHat, active: isChef, dashboard: '/chef/dashboard' },
     { id: 'kitchen_partner1', name: 'Kökspartner', icon: Building, active: isKitchenPartner, dashboard: '/kitchen-partner/dashboard' },
     { id: 'admin1', name: 'Admin', icon: Shield, active: isAdmin, dashboard: '/admin/dashboard' },
   ];
@@ -50,7 +50,18 @@ const Header = () => {
     if (role) {
       switchRole(roleId);
       toast.success(`Bytte till ${role.name} roll`);
-      navigate(role.dashboard);
+      
+      // Navigate based on role for test mode
+      if (roleId === 'chef1') {
+        navigate('/chef/dashboard');
+      } else if (roleId === 'kitchen_partner1') {
+        navigate('/kitchen-partner/dashboard'); 
+      } else if (roleId === 'admin1') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/');
+      }
+      
       setMenuOpen(false);
     }
   };
@@ -94,49 +105,70 @@ const Header = () => {
           </div>
         </div>
 
-          <div className="hidden md:flex items-center gap-3">
-            {/* Show login button if not authenticated */}
-            {!authUser ? (
-              <Button onClick={() => navigate('/auth')} variant="outline">
-                Logga in
+        {/* Desktop Actions - hidden on mobile */}
+        <div className="hidden md:flex items-center gap-3">
+          {/* Role Switcher Dropdown for Desktop */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="flex items-center gap-2 min-w-[120px]">
+                {getRoleIcon()}
+                {getRoleName()}
+                {usingMockData && <Badge variant="secondary" className="text-xs">Test</Badge>}
               </Button>
-            ) : (
-              <>
-                {/* Role Switcher Dropdown for Desktop - only show if authenticated but not real roles */}
-                {/* For now, hide role switcher when using real auth */}
-                
-                <Button variant="ghost" size="icon">
-                  <Cart />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel>Byt roll (Test-läge)</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {roles.map((role) => {
+                const IconComponent = role.icon;
+                return (
+                  <DropdownMenuItem
+                    key={role.id}
+                    onClick={() => handleRoleSwitch(role.id)}
+                    className="cursor-pointer"
+                  >
+                    <IconComponent className="w-4 h-4 mr-2" />
+                    {role.name}
+                    {role.active && (
+                      <Badge variant="secondary" className="ml-auto text-xs">
+                        Aktiv
+                      </Badge>
+                    )}
+                  </DropdownMenuItem>
+                );
+              })}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate('/auth')} className="cursor-pointer">
+                Använd riktig inloggning
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          
+          <Button variant="ghost" size="icon">
+            <Cart />
+          </Button>
+          
+          {authUser ? (
+            <Button variant="ghost" size="icon" onClick={() => signOut()}>
+              <User className="w-5 h-5" />
+            </Button>
+          ) : (
+            <Button variant="ghost" size="icon" onClick={() => navigate('/auth')}>
+              <User className="w-5 h-5" />
+            </Button>
+          )}
+          
+          {/* Desktop Navigation - Show for chefs */}
+          {isChef && (
+            <div className="hidden md:flex">
+              <Link to="/chef/dashboard">
+                <Button variant="hero" size="sm">
+                  {user?.municipality_approved ? 'Kock Dashboard' : 'Sälj Din Mat'}
                 </Button>
-                
-                <Button variant="ghost" size="icon" onClick={() => signOut()}>
-                  <User className="w-5 h-5" />
-                </Button>
-              </>
-            )}
-            
-            {/* Desktop Navigation - Only show for authenticated chefs */}
-            {authUser && isChef && (
-              <div className="hidden md:flex">
-                <Link to="/chef/dashboard">
-                  <Button variant="hero" size="sm">
-                    Kock Dashboard
-                  </Button>
-                </Link>
-              </div>
-            )}
-            
-            {/* Show chef application link for non-chef authenticated users */}
-            {authUser && !isChef && (
-              <div className="hidden md:flex">
-                <Link to="/chef/application">
-                  <Button variant="hero" size="sm">
-                    Sälj Din Mat
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </div>
+              </Link>
+            </div>
+          )}
+        </div>
 
         {/* Mobile Hamburger Menu */}
         <div className="md:hidden">
@@ -159,20 +191,47 @@ const Header = () => {
               </SheetHeader>
               
               <div className="mt-8 space-y-6">
-                {/* Show user info if authenticated */}
-                {authUser && user ? (
-                  <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
-                    {getRoleIcon()}
-                    <div>
-                      <p className="text-sm font-medium">{getRoleName()}</p>
-                      <p className="text-xs text-muted-foreground">{user?.full_name}</p>
-                    </div>
+                {/* Current Role Display */}
+                <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
+                  {getRoleIcon()}
+                  <div>
+                    <p className="text-sm font-medium">{getRoleName()}</p>
+                    <p className="text-xs text-muted-foreground">{user?.full_name}</p>
+                    {usingMockData && <p className="text-xs text-primary">Test-läge</p>}
                   </div>
-                ) : (
-                  <Button onClick={() => { navigate('/auth'); setMenuOpen(false); }} className="w-full">
-                    Logga in
+                </div>
+
+                {/* Role Switcher */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-muted-foreground px-3">Byt roll (Test)</h3>
+                  {roles.map((role) => {
+                    const IconComponent = role.icon;
+                    return (
+                      <Button
+                        key={role.id}
+                        variant={role.active ? "default" : "outline"}
+                        className="w-full justify-start h-12"
+                        onClick={() => handleRoleSwitch(role.id)}
+                      >
+                        <IconComponent className="w-5 h-5 mr-3" />
+                        {role.name}
+                        {role.active && (
+                          <Badge variant="secondary" className="ml-auto">
+                            Aktiv
+                          </Badge>
+                        )}
+                      </Button>
+                    );
+                  })}
+                  <Button 
+                    variant="outline" 
+                    className="w-full justify-start h-12"
+                    onClick={() => { navigate('/auth'); setMenuOpen(false); }}
+                  >
+                    <User className="w-5 h-5 mr-3" />
+                    Använd riktig inloggning
                   </Button>
-                )}
+                </div>
 
                 {/* Mobile Search */}
                 <div className="relative">
@@ -201,40 +260,40 @@ const Header = () => {
 
                 {/* Action Buttons */}
                 <div className="space-y-3 pt-4 border-t border-border">
-                  {/* Show different buttons based on auth status */}
-                  {authUser ? (
-                    <>
-                      {/* Mobile Navigation - Chef dashboard or application */}
-                      {isChef ? (
-                        <Link to="/chef/dashboard" onClick={() => setMenuOpen(false)}>
-                          <Button variant="hero" className="w-full justify-start" size="lg">
-                            <UtensilsCrossed className="w-5 h-5 mr-2" />
-                            Kock Dashboard
-                          </Button>
-                        </Link>
-                      ) : (
-                        <Link to="/chef/application" onClick={() => setMenuOpen(false)}>
-                          <Button variant="hero" className="w-full justify-start" size="lg">
-                            <UtensilsCrossed className="w-5 h-5 mr-2" />
-                            Sälj Din Mat
-                          </Button>
-                        </Link>
-                      )}
-                      
-                      <div className="flex gap-2">
-                        <Cart />
-                        <Button 
-                          variant="outline" 
-                          size="lg" 
-                          className="flex-1 justify-start"
-                          onClick={() => { signOut(); setMenuOpen(false); }}
-                        >
-                          <User className="w-5 h-5 mr-2" />
-                          Logga ut
-                        </Button>
-                      </div>
-                    </>
-                  ) : null}
+                  {/* Mobile Navigation - Show for chefs */}
+                  {isChef && (
+                    <Link to="/chef/dashboard" onClick={() => setMenuOpen(false)}>
+                      <Button variant="hero" className="w-full justify-start" size="lg">
+                        <UtensilsCrossed className="w-5 h-5 mr-2" />
+                        {user?.municipality_approved ? 'Kock Dashboard' : 'Sälj Din Mat'}
+                      </Button>
+                    </Link>
+                  )}
+                  
+                  <div className="flex gap-2">
+                    <Cart />
+                    {authUser ? (
+                      <Button 
+                        variant="outline" 
+                        size="lg" 
+                        className="flex-1 justify-start"
+                        onClick={() => { signOut(); setMenuOpen(false); }}
+                      >
+                        <User className="w-5 h-5 mr-2" />
+                        Logga ut
+                      </Button>
+                    ) : (
+                      <Button 
+                        variant="outline" 
+                        size="lg" 
+                        className="flex-1 justify-start"
+                        onClick={() => { navigate('/auth'); setMenuOpen(false); }}
+                      >
+                        <User className="w-5 h-5 mr-2" />
+                        Logga in
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </div>
             </SheetContent>
