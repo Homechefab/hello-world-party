@@ -40,32 +40,27 @@ export const useRole = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check current route to determine initial role
-    const currentPath = window.location.pathname;
-    console.log('useRole: Current path:', currentPath);
+    // Default to customer role, allow manual switching
+    const savedRole = localStorage.getItem('selectedRole') || 'customer1';
+    console.log('useRole: Loading saved role:', savedRole);
     
-    let defaultUserId = 'customer1'; // Default fallback
-    
-    if (currentPath.startsWith('/admin')) {
-      defaultUserId = 'admin1';
-    } else if (currentPath.startsWith('/chef')) {
-      defaultUserId = 'chef1';
-    } else if (currentPath.startsWith('/kitchen-partner')) {
-      defaultUserId = 'kitchen_partner1';
+    const savedUser = mockUsers[savedRole];
+    if (savedUser) {
+      setCurrentUser(savedUser);
+      console.log('useRole: Set user from saved role:', savedUser);
+    } else {
+      // Fallback to customer
+      setCurrentUser(mockUsers['customer1']);
     }
-    
-    console.log('useRole: Setting user based on route:', defaultUserId);
-    const defaultUser = mockUsers[defaultUserId];
-    console.log('useRole: Setting default user:', defaultUser);
-    setCurrentUser(defaultUser);
     setLoading(false);
-  }, [window.location.pathname]); // Add dependency to re-run when route changes
+  }, []); // Remove pathname dependency
 
   const switchRole = (userId: string) => {
     console.log('useRole: Switching to role:', userId, mockUsers[userId]);
     const newUser = mockUsers[userId];
     if (newUser) {
       setCurrentUser(newUser);
+      localStorage.setItem('selectedRole', userId); // Save role choice
       console.log('useRole: Successfully switched to:', newUser.role, newUser.full_name);
     }
   };
