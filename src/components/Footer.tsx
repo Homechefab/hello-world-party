@@ -59,19 +59,20 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* För säljare - Only show for chefs */}
-          {isChef && (
-            <div className="space-y-4">
-              <h4 className="font-semibold text-foreground">För säljare</h4>
-              <ul className="space-y-2 text-muted-foreground">
-                <li><Link to="/chef/dashboard" className="hover:text-primary transition-colors">Sälj Din Mat</Link></li>
-                <li><Link to="/seller-guide#säljguide" className="hover:text-primary transition-colors">Säljguide</Link></li>
-                <li><Link to="/seller-guide#prissättning" className="hover:text-primary transition-colors">Prissättning</Link></li>
-                <li><Link to="/seller-guide#säkerhetsregler" className="hover:text-primary transition-colors">Säkerhetsregler</Link></li>
-                <li><Link to="/seller-guide#community" className="hover:text-primary transition-colors">Säljarcommunityn</Link></li>
-              </ul>
-            </div>
-          )}
+          {/* För säljare - Show for all users */}
+          <div className="space-y-4">
+            <h4 className="font-semibold text-foreground">För säljare</h4>
+            <ul className="space-y-2 text-muted-foreground">
+              <li><Link to="/chef/application" className="hover:text-primary transition-colors">Bli säljare</Link></li>
+              <li><Link to="/seller-guide#säljguide" className="hover:text-primary transition-colors">Säljguide</Link></li>
+              <li><Link to="/seller-guide#prissättning" className="hover:text-primary transition-colors">Prissättning</Link></li>
+              <li><Link to="/seller-guide#säkerhetsregler" className="hover:text-primary transition-colors">Säkerhetsregler</Link></li>
+              <li><Link to="/seller-guide#community" className="hover:text-primary transition-colors">Säljarcommunityn</Link></li>
+              {isChef && (
+                <li><Link to="/chef/dashboard" className="hover:text-primary transition-colors">Min säljardashboard</Link></li>
+              )}
+            </ul>
+          </div>
 
           {/* För restauranger */}
           <div className="space-y-4">
