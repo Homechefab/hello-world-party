@@ -39,7 +39,7 @@ const Header = () => {
 
   const roles = [
     { id: 'customer1', name: 'Kund', icon: Users, active: isCustomer, dashboard: '/' },
-    { id: 'chef1', name: 'Kock', icon: ChefHat, active: isChef, dashboard: '/chef/dashboard' },
+    { id: 'chef1', name: 'Kock', icon: ChefHat, active: isChef, dashboard: '/chef/application' },
     { id: 'kitchen_partner1', name: 'Kökspartner', icon: Building, active: isKitchenPartner, dashboard: '/kitchen-partner/dashboard' },
     { id: 'admin1', name: 'Admin', icon: Shield, active: isAdmin, dashboard: '/admin/dashboard' },
   ];
@@ -138,7 +138,7 @@ const Header = () => {
         {/* Desktop Navigation - Only show for chefs */}
         {isChef && (
           <div className="hidden md:flex">
-            <Link to="/chef/dashboard">
+            <Link to="/chef/application">
               <Button variant="hero" size="sm">
                 Sälj Din Mat
               </Button>
@@ -230,7 +230,7 @@ const Header = () => {
                 <div className="space-y-3 pt-4 border-t border-border">
                   {/* Mobile Navigation - Only show for chefs */}
                   {isChef && (
-                    <Link to="/chef/dashboard" onClick={() => setMenuOpen(false)}>
+                    <Link to="/chef/application" onClick={() => setMenuOpen(false)}>
                       <Button variant="hero" className="w-full justify-start" size="lg">
                         <UtensilsCrossed className="w-5 h-5 mr-2" />
                         Sälj Din Mat

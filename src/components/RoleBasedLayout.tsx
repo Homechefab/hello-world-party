@@ -41,7 +41,7 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
     // Navigate to appropriate page based on role
     switch (roleId) {
       case 'chef1':
-        navigate('/chef/dashboard');
+        navigate('/chef/application');
         break;
       case 'kitchen_partner1':
         navigate('/kitchen-partner/dashboard');
