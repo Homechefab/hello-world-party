@@ -40,7 +40,7 @@ const Header = () => {
 
   const roles = [
     { id: 'customer1', name: 'Kund', icon: Users, active: isCustomer, dashboard: '/' },
-    { id: 'chef1', name: 'Kock', icon: ChefHat, active: isChef, dashboard: '/chef/dashboard' },
+    { id: 'chef1', name: 'Kock', icon: ChefHat, active: isChef, dashboard: '/chef/application' },
     { id: 'kitchen_partner1', name: 'Kökspartner', icon: Building, active: isKitchenPartner, dashboard: '/kitchen-partner/dashboard' },
     { id: 'admin1', name: 'Admin', icon: Shield, active: isAdmin, dashboard: '/admin/dashboard' },
   ];
@@ -53,7 +53,7 @@ const Header = () => {
       
       // Navigate based on role for test mode
       if (roleId === 'chef1') {
-        navigate('/chef/dashboard');
+        navigate('/chef/application'); // Kockar ska gå till ansökan först
       } else if (roleId === 'kitchen_partner1') {
         navigate('/kitchen-partner/dashboard'); 
       } else if (roleId === 'admin1') {
@@ -161,9 +161,9 @@ const Header = () => {
           {/* Desktop Navigation - Show for chefs */}
           {isChef && (
             <div className="hidden md:flex">
-              <Link to="/chef/dashboard">
+              <Link to="/chef/application">
                 <Button variant="hero" size="sm">
-                  {user?.municipality_approved ? 'Kock Dashboard' : 'Sälj Din Mat'}
+                  Sälj Din Mat
                 </Button>
               </Link>
             </div>
@@ -262,10 +262,10 @@ const Header = () => {
                 <div className="space-y-3 pt-4 border-t border-border">
                   {/* Mobile Navigation - Show for chefs */}
                   {isChef && (
-                    <Link to="/chef/dashboard" onClick={() => setMenuOpen(false)}>
+                    <Link to="/chef/application" onClick={() => setMenuOpen(false)}>
                       <Button variant="hero" className="w-full justify-start" size="lg">
                         <UtensilsCrossed className="w-5 h-5 mr-2" />
-                        {user?.municipality_approved ? 'Kock Dashboard' : 'Sälj Din Mat'}
+                        Sälj Din Mat
                       </Button>
                     </Link>
                   )}

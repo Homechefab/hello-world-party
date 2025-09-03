@@ -17,7 +17,7 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
 
   console.log('RoleBasedLayout: Current user:', user, 'Loading:', loading);
 
-  // Only protect chef dashboard if using real auth
+  // Only protect chef dashboard if using real auth AND user is actually authenticated
   React.useEffect(() => {
     if (!loading && !usingMockData && location.pathname === '/chef/dashboard') {
       if (!authUser) {
