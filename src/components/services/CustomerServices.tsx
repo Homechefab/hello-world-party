@@ -93,7 +93,7 @@ const CustomerServices = () => {
               <img 
                 src={becomeChefImage} 
                 alt="Kvinna som lagar mat i sitt hemkök - helkroppsbild"
-                className="w-full h-48 object-contain rounded-lg mx-auto bg-gray-50"
+                className="w-full h-56 object-contain rounded-lg mx-auto bg-gray-50"
               />
             </div>
             
