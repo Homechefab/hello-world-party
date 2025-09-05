@@ -5,7 +5,7 @@ import { ShoppingBag, Calendar, Users, ChefHat, DollarSign, Star } from "lucide-
 import pickupImage from "@/assets/customer-pickup.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
-import becomeChefImage from "@/assets/become-chef-hero-realistic.jpg";
+import becomeChefImage from "@/assets/become-chef-hero-face.jpg";
 
 const customerServices = [
   {
