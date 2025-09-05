@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { User, Save, Mail, Phone, MapPin } from "lucide-react";
+import { User, Save, Mail, Phone, MapPin, Calendar, Star, TrendingUp, Shield, Bell, Clock } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 
 const Profile = () => {
@@ -20,10 +22,19 @@ const Profile = () => {
     phone: '',
     address: ''
   });
+  const [stats, setStats] = useState({
+    totalOrders: 0,
+    favoriteChefs: 0,
+    totalSpent: 0,
+    memberSince: '',
+    reviewsGiven: 0,
+    avgRating: 0
+  });
 
   useEffect(() => {
     if (user) {
       fetchProfile();
+      fetchUserStats();
     }
   }, [user]);
 
@@ -53,6 +64,22 @@ const Profile = () => {
     } catch (error) {
       console.error('Error fetching profile:', error);
       toast.error('Kunde inte hämta profilinformation');
+    }
+  };
+
+  const fetchUserStats = async () => {
+    try {
+      // Simulate fetching user statistics - replace with real queries when orders table is ready
+      setStats({
+        totalOrders: 12,
+        favoriteChefs: 3,
+        totalSpent: 2450,
+        memberSince: user?.created_at || new Date().toISOString(),
+        reviewsGiven: 8,
+        avgRating: 4.7
+      });
+    } catch (error) {
+      console.error('Error fetching stats:', error);
     } finally {
       setLoading(false);
     }
@@ -119,6 +146,40 @@ const Profile = () => {
         </div>
 
         <div className="space-y-6">
+          {/* Profile Stats Overview */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center p-4">
+                <div className="text-2xl font-bold text-primary">{stats.totalOrders}</div>
+                <p className="text-sm text-muted-foreground text-center">Beställningar</p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center p-4">
+                <div className="text-2xl font-bold text-green-600">{stats.totalSpent} kr</div>
+                <p className="text-sm text-muted-foreground text-center">Totalt spenderat</p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center p-4">
+                <div className="flex items-center gap-1">
+                  <Star className="w-5 h-5 text-yellow-500 fill-current" />
+                  <span className="text-2xl font-bold">{stats.avgRating}</span>
+                </div>
+                <p className="text-sm text-muted-foreground text-center">Genomsnitt betyg</p>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent className="flex flex-col items-center justify-center p-4">
+                <div className="text-2xl font-bold text-purple-600">{stats.favoriteChefs}</div>
+                <p className="text-sm text-muted-foreground text-center">Favorit kockar</p>
+              </CardContent>
+            </Card>
+          </div>
+
           {/* Profile Picture & Basic Info */}
           <Card>
             <CardHeader>
@@ -135,13 +196,90 @@ const Profile = () => {
                   <p className="text-sm text-muted-foreground">
                     {profile.email}
                   </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <Badge variant="secondary" className="text-xs">
+                      <Calendar className="w-3 h-3 mr-1" />
+                      Medlem sedan {new Date(stats.memberSince).toLocaleDateString('sv-SE', { month: 'long', year: 'numeric' })}
+                    </Badge>
+                  </div>
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground">
-                Din profilbild genereras automatiskt från dina initialer.
-              </p>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-medium mb-2">Profilkomplettering</h4>
+                  <Progress value={75} className="w-full" />
+                  <p className="text-sm text-muted-foreground mt-1">
+                    75% komplett - Lägg till telefonnummer och adress för att få 100%
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-3 gap-4 pt-2">
+                  <div className="text-center">
+                    <TrendingUp className="w-5 h-5 text-green-500 mx-auto mb-1" />
+                    <p className="text-xs text-muted-foreground">Aktiv användare</p>
+                  </div>
+                  <div className="text-center">
+                    <Shield className="w-5 h-5 text-blue-500 mx-auto mb-1" />
+                    <p className="text-xs text-muted-foreground">Verifierad</p>
+                  </div>
+                  <div className="text-center">
+                    <Star className="w-5 h-5 text-yellow-500 mx-auto mb-1" />
+                    <p className="text-xs text-muted-foreground">Pålitlig kund</p>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Recent Activity */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Clock className="w-5 h-5" />
+                Senaste aktivitet
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                  <div>
+                    <p className="font-medium">Beställning #1234</p>
+                    <p className="text-sm text-muted-foreground">Pasta Carbonara från Chef Maria</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-medium">245 kr</p>
+                    <p className="text-xs text-muted-foreground">2 dagar sedan</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                  <div>
+                    <p className="font-medium">Recension lämnad</p>
+                    <p className="text-sm text-muted-foreground">5 stjärnor till Chef Erik</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} className="w-3 h-3 text-yellow-500 fill-current" />
+                      ))}
+                    </div>
+                    <p className="text-xs text-muted-foreground">1 vecka sedan</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                  <div>
+                    <p className="font-medium">Ny favorit kock</p>
+                    <p className="text-sm text-muted-foreground">Följer nu Chef Anna</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-medium">❤️</p>
+                    <p className="text-xs text-muted-foreground">2 veckor sedan</p>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
 
@@ -221,27 +359,97 @@ const Profile = () => {
           {/* Account Settings */}
           <Card>
             <CardHeader>
-              <CardTitle>Kontoinställningar</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="w-5 h-5" />
+                Kontoinställningar & Säkerhet
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="text-sm text-muted-foreground">
-                <p>Konto skapat: {new Date(user?.created_at || '').toLocaleDateString('sv-SE')}</p>
-                <p>Senast inloggad: {new Date().toLocaleDateString('sv-SE')}</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 border rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium">Tvåfaktorsautentisering</h4>
+                    <Badge variant="outline">Inaktiverad</Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Lägg till extra säkerhet till ditt konto
+                  </p>
+                  <Button variant="outline" size="sm">Aktivera</Button>
+                </div>
+                
+                <div className="p-4 border rounded-lg">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="font-medium">E-postnotifikationer</h4>
+                    <Badge variant="default">Aktiverad</Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-3">
+                    Få meddelanden om beställningar och erbjudanden
+                  </p>
+                  <Button variant="outline" size="sm">Hantera</Button>
+                </div>
+              </div>
+              
+              <div className="text-sm text-muted-foreground space-y-1 pt-4 border-t">
+                <p><strong>Konto skapat:</strong> {new Date(user?.created_at || '').toLocaleDateString('sv-SE')}</p>
+                <p><strong>Senast inloggad:</strong> {new Date().toLocaleDateString('sv-SE')}</p>
+                <p><strong>Konto-ID:</strong> {user?.id?.slice(0, 8)}...</p>
               </div>
               
               <div className="pt-4 border-t">
-                <h4 className="font-medium mb-2">Datahantering</h4>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Du kan begära att få dina data eller att ta bort ditt konto.
-                </p>
-                <div className="flex gap-2">
+                <h4 className="font-medium mb-3">Datahantering & Support</h4>
+                <div className="flex flex-wrap gap-2">
+                  <Button variant="outline" size="sm">
+                    <Bell className="w-4 h-4 mr-2" />
+                    Notifikationsinställningar
+                  </Button>
                   <Button variant="outline" size="sm">
                     Ladda ner mina data
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    Kontakta support
                   </Button>
                   <Button variant="outline" size="sm" className="text-red-600 hover:text-red-700">
                     Ta bort konto
                   </Button>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Quick Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Snabblänkar</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <Button variant="outline" className="h-auto flex-col py-4" asChild>
+                  <a href="/settings/addresses">
+                    <MapPin className="w-5 h-5 mb-2" />
+                    <span className="text-sm">Adresser</span>
+                  </a>
+                </Button>
+                
+                <Button variant="outline" className="h-auto flex-col py-4" asChild>
+                  <a href="/settings/payment-methods">
+                    <User className="w-5 h-5 mb-2" />
+                    <span className="text-sm">Betalning</span>
+                  </a>
+                </Button>
+                
+                <Button variant="outline" className="h-auto flex-col py-4" asChild>
+                  <a href="/settings/preferences">
+                    <Star className="w-5 h-5 mb-2" />
+                    <span className="text-sm">Preferenser</span>
+                  </a>
+                </Button>
+                
+                <Button variant="outline" className="h-auto flex-col py-4" asChild>
+                  <a href="/search">
+                    <TrendingUp className="w-5 h-5 mb-2" />
+                    <span className="text-sm">Bläddra mat</span>
+                  </a>
+                </Button>
               </div>
             </CardContent>
           </Card>
