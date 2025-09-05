@@ -43,6 +43,7 @@ import DeliveryAddresses from "./pages/settings/DeliveryAddresses";
 import PaymentMethods from "./pages/settings/PaymentMethods";
 import Preferences from "./pages/settings/Preferences";
 import Profile from "./pages/Profile";
+import MyOrders from "./pages/MyOrders";
 // Auth removed - working directly with roles
 
 const queryClient = new QueryClient();
@@ -89,6 +90,7 @@ const App = () => {
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/profile" element={<Profile />} />
+                <Route path="/my-orders" element={<MyOrders />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/settings/addresses" element={<DeliveryAddresses />} />
                 <Route path="/settings/payment-methods" element={<PaymentMethods />} />

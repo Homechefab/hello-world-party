@@ -1,4 +1,4 @@
-import { User, Settings, MapPin, CreditCard, Heart, LogOut, UserCircle } from "lucide-react";
+import { User, Settings, MapPin, CreditCard, Heart, LogOut, UserCircle, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useRole } from "@/hooks/useRole";
@@ -74,6 +74,13 @@ const UserMenu = () => {
           <Link to="/profile" className="cursor-pointer">
             <UserCircle className="w-4 h-4 mr-2" />
             Profil
+          </Link>
+        </DropdownMenuItem>
+        
+        <DropdownMenuItem asChild>
+          <Link to="/my-orders" className="cursor-pointer">
+            <ShoppingBag className="w-4 h-4 mr-2" />
+            Mina köp
           </Link>
         </DropdownMenuItem>
         
