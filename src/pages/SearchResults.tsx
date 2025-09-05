@@ -3,7 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, MapPin, ChefHat, Clock } from "lucide-react";
+import { Star, MapPin, ChefHat, Clock, UtensilsCrossed, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Chef {
@@ -14,6 +14,21 @@ interface Chef {
   dish_count: number;
   distance?: number;
   city?: string;
+}
+
+interface Dish {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  chef_id: string;
+  chef_name: string;
+  chef_business_name: string;
+  chef_address: string;
+  distance?: number;
+  image_url?: string;
+  category?: string;
+  preparation_time?: number;
 }
 
 // Simple distance calculation for Swedish cities/areas
@@ -74,12 +89,13 @@ const SearchResults = () => {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
   const [chefs, setChefs] = useState<Chef[]>([]);
+  const [dishes, setDishes] = useState<Dish[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchArea, setSearchArea] = useState<string>('');
   const [showingNearby, setShowingNearby] = useState(false);
 
   useEffect(() => {
-    const searchChefs = async () => {
+    const searchContent = async () => {
       try {
         // Search for chefs with available dishes
         const { data: chefsData, error } = await supabase
@@ -93,97 +109,154 @@ const SearchResults = () => {
 
         if (error) throw error;
 
-        if (!chefsData || chefsData.length === 0) {
-          setChefs([]);
-          return;
-        }
+        // Search for dishes simultaneously
+        const { data: dishesData, error: dishError } = await supabase
+          .from('dishes')
+          .select(`
+            id,
+            name,
+            description,
+            price,
+            chef_id,
+            image_url,
+            category,
+            preparation_time,
+            chefs!inner(
+              business_name,
+              user_id,
+              kitchen_approved
+            )
+          `)
+          .eq('available', true)
+          .eq('chefs.kitchen_approved', true);
 
-        // Get profiles for all chefs
-        const chefUserIds = chefsData.map(chef => chef.user_id);
+        if (dishError) throw dishError;
+
+        // Get profiles for all users (chefs and dish chefs)
+        const allUserIds = [
+          ...(chefsData?.map(chef => chef.user_id) || []),
+          ...(dishesData?.map(dish => dish.chefs.user_id) || [])
+        ];
+        const uniqueUserIds = [...new Set(allUserIds)];
+        
         const { data: profilesData, error: profilesError } = await supabase
           .from('profiles')
           .select('id, full_name, address')
-          .in('id', chefUserIds);
+          .in('id', uniqueUserIds);
 
         if (profilesError) throw profilesError;
 
         // Get dish counts for chefs
-        const { data: dishCounts, error: dishError } = await supabase
+        const { data: dishCounts, error: dishCountError } = await supabase
           .from('dishes')
           .select('chef_id')
           .eq('available', true)
-          .in('chef_id', chefsData.map(c => c.id));
+          .in('chef_id', chefsData?.map(c => c.id) || []);
 
-        if (dishError) throw dishError;
+        if (dishCountError) throw dishCountError;
 
-        // Format the results with distance calculation
-        let formattedChefs = chefsData.map(chef => {
-          const profile = profilesData?.find(p => p.id === chef.user_id);
-          const dishCount = dishCounts?.filter(d => d.chef_id === chef.id).length || 0;
-          
-          const chefData: Chef = {
-            id: chef.id,
-            business_name: chef.business_name,
-            full_name: profile?.full_name || '',
-            address: profile?.address || '',
-            dish_count: dishCount,
-            city: profile?.address?.split(',')[1]?.trim() || profile?.address || ''
-          };
+        // Format chef results with distance calculation
+        let formattedChefs: Chef[] = [];
+        if (chefsData && chefsData.length > 0) {
+          formattedChefs = chefsData.map(chef => {
+            const profile = profilesData?.find(p => p.id === chef.user_id);
+            const dishCount = dishCounts?.filter(d => d.chef_id === chef.id).length || 0;
+            
+            const chefData: Chef = {
+              id: chef.id,
+              business_name: chef.business_name,
+              full_name: profile?.full_name || '',
+              address: profile?.address || '',
+              dish_count: dishCount,
+              city: profile?.address?.split(',')[1]?.trim() || profile?.address || ''
+            };
 
-          // Calculate distance if there's a location query
-          if (query && chefData.address) {
-            chefData.distance = calculateDistance(query, chefData.address);
-          }
+            // Calculate distance if there's a location query
+            if (query && chefData.address) {
+              chefData.distance = calculateDistance(query, chefData.address);
+            }
 
-          return chefData;
-        }).filter(chef => chef.dish_count > 0);
+            return chefData;
+          }).filter(chef => chef.dish_count > 0);
+        }
 
-        // Calculate distances for all chefs if there's a search query
-        let filteredChefs = formattedChefs.map(chef => ({
-          ...chef,
-          distance: query ? calculateDistance(query, chef.address) : chef.distance
-        }));
+        // Format dish results with distance calculation
+        let formattedDishes: Dish[] = [];
+        if (dishesData && dishesData.length > 0) {
+          formattedDishes = dishesData.map(dish => {
+            const chefProfile = profilesData?.find(p => p.id === dish.chefs.user_id);
+            
+            const dishData: Dish = {
+              id: dish.id,
+              name: dish.name,
+              description: dish.description || '',
+              price: dish.price,
+              chef_id: dish.chef_id,
+              chef_name: chefProfile?.full_name || '',
+              chef_business_name: dish.chefs.business_name,
+              chef_address: chefProfile?.address || '',
+              image_url: dish.image_url,
+              category: dish.category,
+              preparation_time: dish.preparation_time
+            };
 
+            // Calculate distance if there's a location query
+            if (query && dishData.chef_address) {
+              dishData.distance = calculateDistance(query, dishData.chef_address);
+            }
+
+            return dishData;
+          });
+        }
+
+        // Search and filter logic
         if (query) {
           const searchLower = query.toLowerCase();
           
-          // First, try to find exact matches in the searched area
-          const exactMatches = filteredChefs.filter(chef => 
+          // Filter chefs by search query
+          let filteredChefs = formattedChefs.filter(chef => 
             chef.business_name?.toLowerCase().includes(searchLower) ||
             chef.full_name?.toLowerCase().includes(searchLower) ||
             chef.address?.toLowerCase().includes(searchLower) ||
             chef.city?.toLowerCase().includes(searchLower)
           );
 
-          if (exactMatches.length > 0) {
-            // Sort by distance if we have location data
-            exactMatches.sort((a, b) => (a.distance || 0) - (b.distance || 0));
-            setChefs(exactMatches);
-            setSearchArea(query);
-            setShowingNearby(false);
-          } else {
-            // No exact matches, show nearby chefs (within 50km)
-            const nearbyChefs = filteredChefs
-              .filter(chef => chef.distance !== undefined && chef.distance <= 50)
-              .sort((a, b) => (a.distance || 0) - (b.distance || 0));
+          // Filter dishes by search query
+          let filteredDishes = formattedDishes.filter(dish =>
+            dish.name.toLowerCase().includes(searchLower) ||
+            dish.description?.toLowerCase().includes(searchLower) ||
+            dish.category?.toLowerCase().includes(searchLower) ||
+            dish.chef_name.toLowerCase().includes(searchLower) ||
+            dish.chef_business_name.toLowerCase().includes(searchLower)
+          );
 
-            if (nearbyChefs.length > 0) {
-              setChefs(nearbyChefs);
-              setSearchArea(query);
-              setShowingNearby(true);
-            } else {
-              // Show all chefs if no nearby ones found, sorted by distance
-              const allSorted = filteredChefs
-                .sort((a, b) => (a.distance || 0) - (b.distance || 0))
-                .slice(0, 10);
-              setChefs(allSorted);
-              setSearchArea(query);
-              setShowingNearby(true);
-            }
+          // If no exact matches, show nearby recommendations (within 50km)
+          if (filteredChefs.length === 0 && filteredDishes.length === 0) {
+            filteredChefs = formattedChefs
+              .filter(chef => chef.distance !== undefined && chef.distance <= 50)
+              .sort((a, b) => (a.distance || 0) - (b.distance || 0))
+              .slice(0, 6);
+            
+            filteredDishes = formattedDishes
+              .filter(dish => dish.distance !== undefined && dish.distance <= 50)
+              .sort((a, b) => (a.distance || 0) - (b.distance || 0))
+              .slice(0, 8);
+            
+            setShowingNearby(true);
+          } else {
+            // Sort results by relevance and distance
+            filteredChefs.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+            filteredDishes.sort((a, b) => (a.distance || 0) - (b.distance || 0));
+            setShowingNearby(false);
           }
+
+          setChefs(filteredChefs.slice(0, 6));
+          setDishes(filteredDishes.slice(0, 8));
+          setSearchArea(query);
         } else {
-          // No search query, show all available chefs
-          setChefs(filteredChefs);
+          // No search query, show featured content
+          setChefs(formattedChefs.slice(0, 6));
+          setDishes(formattedDishes.slice(0, 8));
           setShowingNearby(false);
         }
       } catch (error) {
@@ -193,7 +266,7 @@ const SearchResults = () => {
       }
     };
 
-    searchChefs();
+    searchContent();
   }, [query]);
 
   if (loading) {
@@ -215,26 +288,27 @@ const SearchResults = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              {showingNearby ? 'Kockar i närområdet' : 'Sökresultat'}
+              {showingNearby ? 'Rekommendationer i närområdet' : query ? 'Sökresultat' : 'Utforska'}
             </h1>
             {query && (
               <div className="text-center">
                 <p className="text-xl text-white/90 mb-2">
-                  {chefs.length > 0 
-                    ? `Hittade ${chefs.length} kockar ${showingNearby ? 'i närområdet av' : 'för'} "${query}"`
-                    : `Inga kockar hittades för "${query}"`
+                  {chefs.length > 0 || dishes.length > 0
+                    ? `Hittade ${chefs.length} kockar och ${dishes.length} rätter ${showingNearby ? 'i närområdet av' : 'för'} "${query}"`
+                    : `Inga resultat hittades för "${query}"`
                   }
                 </p>
-                {showingNearby && chefs.length > 0 && (
+                {showingNearby && (chefs.length > 0 || dishes.length > 0) && (
                   <p className="text-lg text-yellow-cream">
-                    Inga kockar hittades i exakt det området, visar istället kockar inom rimligt avstånd
+                    <Sparkles className="inline w-5 h-5 mr-1" />
+                    Visar rekommendationer i närområdet baserat på din sökning
                   </p>
                 )}
               </div>
             )}
             {!query && (
               <p className="text-xl text-white/90">
-                {chefs.length} kockar tillgängliga
+                Upptäck {chefs.length} kockar och {dishes.length} rätter
               </p>
             )}
           </div>
@@ -243,16 +317,16 @@ const SearchResults = () => {
 
       <section className="py-12">
         <div className="container mx-auto px-4">
-          {chefs.length === 0 ? (
+          {chefs.length === 0 && dishes.length === 0 ? (
             <div className="text-center py-16">
-              <ChefHat className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <UtensilsCrossed className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-2xl font-semibold mb-4">
-                {query ? `Inga kockar hittades för "${query}"` : "Inga kockar registrerade än"}
+                {query ? `Inga resultat hittades för "${query}"` : "Inget innehåll tillgängligt än"}
               </h3>
               <p className="text-muted-foreground mb-8 max-w-md mx-auto">
                 {query 
                   ? "Prova att söka på något annat eller kontrollera stavningen."
-                  : "Vi arbetar på att få fler kockar att registrera sig."
+                  : "Vi arbetar på att få fler kockar och rätter registrerade."
                 }
               </p>
               <div className="flex gap-4 justify-center">
@@ -269,62 +343,156 @@ const SearchResults = () => {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {chefs.map((chef) => (
-                <Link key={chef.id} to={`/chef/${chef.id}`}>
-                  <Card className="group hover:shadow-warm transition-all duration-300 hover:scale-105 cursor-pointer">
-                    <CardContent className="p-6">
-                      <div className="flex items-center mb-4">
-                        <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mr-4">
-                          <ChefHat className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-lg">
-                            {chef.business_name || chef.full_name}
-                          </h3>
-                          {chef.address && (
-                            <div className="flex items-center text-sm text-muted-foreground">
-                              <MapPin className="w-3 h-3 mr-1" />
-                              <span>{chef.address}</span>
+            <div className="space-y-12">
+              {/* Dish Recommendations */}
+              {dishes.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <UtensilsCrossed className="w-6 h-6 text-primary" />
+                    <h2 className="text-2xl font-bold">
+                      {query ? 'Rekommenderade rätter' : 'Populära rätter'}
+                    </h2>
+                    {showingNearby && (
+                      <Badge variant="secondary" className="ml-2">
+                        <Sparkles className="w-3 h-3 mr-1" />
+                        I närområdet
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {dishes.map((dish) => (
+                      <Link key={dish.id} to={`/dish/${dish.id}`}>
+                        <Card className="group hover:shadow-warm transition-all duration-300 hover:scale-105 cursor-pointer h-full">
+                          <CardContent className="p-4">
+                            {dish.image_url && (
+                              <div className="aspect-video mb-4 rounded-lg overflow-hidden bg-muted">
+                                <img 
+                                  src={dish.image_url} 
+                                  alt={dish.name}
+                                  className="w-full h-full object-cover"
+                                />
+                              </div>
+                            )}
+                            <div className="space-y-2">
+                              <div className="flex items-start justify-between">
+                                <h3 className="font-semibold text-lg leading-tight">{dish.name}</h3>
+                                <Badge variant="outline" className="text-primary font-semibold">
+                                  {dish.price} kr
+                                </Badge>
+                              </div>
+                              
+                              <p className="text-sm text-muted-foreground line-clamp-2">
+                                {dish.description}
+                              </p>
+                              
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <ChefHat className="w-3 h-3" />
+                                <span>{dish.chef_business_name || dish.chef_name}</span>
+                              </div>
+                              
+                              <div className="flex items-center justify-between text-sm text-muted-foreground">
+                                {dish.preparation_time && (
+                                  <div className="flex items-center gap-1">
+                                    <Clock className="w-3 h-3" />
+                                    <span>{dish.preparation_time} min</span>
+                                  </div>
+                                )}
+                                {dish.distance && (
+                                  <div className="flex items-center gap-1">
+                                    <MapPin className="w-3 h-3" />
+                                    <span>{dish.distance} km</span>
+                                  </div>
+                                )}
+                              </div>
+                              
+                              <div className="pt-2">
+                                <Button variant="food" size="sm" className="w-full group-hover:shadow-lg transition-shadow">
+                                  Beställ nu
+                                </Button>
+                              </div>
                             </div>
-                          )}
-                        </div>
-                      </div>
-                      
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between text-sm">
-                          <div className="flex items-center">
-                            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                            <span>4.8 (12 recensioner)</span>
-                          </div>
-                          <Badge variant="secondary">
-                            {chef.dish_count} rätter
-                          </Badge>
-                        </div>
-                        
-                        <div className="flex items-center justify-between text-sm text-muted-foreground">
-                          <div className="flex items-center">
-                            <Clock className="w-4 h-4 mr-1" />
-                            <span>30-45 min tillagning</span>
-                          </div>
-                          {chef.distance && (
-                            <div className="flex items-center">
-                              <MapPin className="w-3 h-3 mr-1" />
-                              <span>{chef.distance} km bort</span>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Chef Recommendations */}
+              {chefs.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <ChefHat className="w-6 h-6 text-primary" />
+                    <h2 className="text-2xl font-bold">
+                      {query ? 'Rekommenderade kockar' : 'Populära kockar'}
+                    </h2>
+                    {showingNearby && (
+                      <Badge variant="secondary" className="ml-2">
+                        <Sparkles className="w-3 h-3 mr-1" />
+                        I närområdet
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {chefs.map((chef) => (
+                      <Link key={chef.id} to={`/chef/${chef.id}`}>
+                        <Card className="group hover:shadow-warm transition-all duration-300 hover:scale-105 cursor-pointer">
+                          <CardContent className="p-6">
+                            <div className="flex items-center mb-4">
+                              <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mr-4">
+                                <ChefHat className="w-6 h-6 text-white" />
+                              </div>
+                              <div>
+                                <h3 className="font-semibold text-lg">
+                                  {chef.business_name || chef.full_name}
+                                </h3>
+                                {chef.address && (
+                                  <div className="flex items-center text-sm text-muted-foreground">
+                                    <MapPin className="w-3 h-3 mr-1" />
+                                    <span>{chef.address}</span>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                          )}
-                        </div>
-                        
-                        <div className="pt-2">
-                          <Button variant="food" className="w-full group-hover:shadow-lg transition-shadow">
-                            Se maträtter
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
+                            
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between text-sm">
+                                <div className="flex items-center">
+                                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
+                                  <span>4.8 (12 recensioner)</span>
+                                </div>
+                                <Badge variant="secondary">
+                                  {chef.dish_count} rätter
+                                </Badge>
+                              </div>
+                              
+                              <div className="flex items-center justify-between text-sm text-muted-foreground">
+                                <div className="flex items-center">
+                                  <Clock className="w-4 h-4 mr-1" />
+                                  <span>30-45 min tillagning</span>
+                                </div>
+                                {chef.distance && (
+                                  <div className="flex items-center">
+                                    <MapPin className="w-3 h-3 mr-1" />
+                                    <span>{chef.distance} km bort</span>
+                                  </div>
+                                )}
+                              </div>
+                              
+                              <div className="pt-2">
+                                <Button variant="food" className="w-full group-hover:shadow-lg transition-shadow">
+                                  Se maträtter
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
