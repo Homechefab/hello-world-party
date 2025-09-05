@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, Calendar, Users } from "lucide-react";
+import { ShoppingBag, Calendar, Users, ChefHat, DollarSign, Star } from "lucide-react";
 import pickupImage from "@/assets/customer-pickup.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
@@ -82,6 +82,46 @@ const CustomerServices = () => {
               </Link>
             );
           })}
+        </div>
+
+        {/* Bli Kock sektion */}
+        <div className="mt-16 text-center">
+          <div className="bg-card rounded-lg p-8 max-w-4xl mx-auto border shadow-sm">
+            <div className="flex justify-center mb-6">
+              <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center">
+                <ChefHat className="w-8 h-8 text-white" />
+              </div>
+            </div>
+            
+            <h3 className="text-2xl font-bold mb-4 text-foreground">
+              Vill du bli kock på Homechef?
+            </h3>
+            <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+              Förvandla din passion för matlagning till en inkomstkälla. Sätt ditt eget pris, jobba när du vill och nå hungriga kunder i ditt område.
+            </p>
+            
+            {/* Fördelar grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 max-w-3xl mx-auto">
+              <div className="flex items-center justify-center gap-2 text-sm">
+                <DollarSign className="w-4 h-4 text-green-500" />
+                <span>Tjäna extra pengar</span>
+              </div>
+              <div className="flex items-center justify-center gap-2 text-sm">
+                <Users className="w-4 h-4 text-blue-500" />
+                <span>Nå fler kunder</span>
+              </div>
+              <div className="flex items-center justify-center gap-2 text-sm">
+                <Star className="w-4 h-4 text-yellow-500" />
+                <span>Säker plattform</span>
+              </div>
+            </div>
+            
+            <Link to="/chef/application">
+              <Button size="lg" className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0 shadow-lg hover:shadow-xl transition-all">
+                Ansök om att bli kock
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
     </section>
