@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { User, Save, Mail, Phone, MapPin, Calendar, Star, TrendingUp, Shield, Bell, Clock } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useRole } from "@/hooks/useRole";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,8 +15,13 @@ import { toast } from "sonner";
 
 const Profile = () => {
   const { user } = useAuth();
+  const { user: mockUser, usingMockData } = useRole();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  
+  // Use either real user or mock user
+  const displayUser = user || mockUser;
+  
   const [profile, setProfile] = useState({
     full_name: '',
     email: '',
@@ -32,11 +38,32 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    if (user) {
-      fetchProfile();
-      fetchUserStats();
+    if (displayUser) {
+      if (usingMockData) {
+        // Use mock data directly
+        setProfile({
+          full_name: mockUser?.full_name || 'Test Användare',
+          email: mockUser?.email || 'test@exempel.se',
+          phone: '+46 70 123 45 67',
+          address: 'Testgatan 123, 123 45 Stockholm'
+        });
+        setStats({
+          totalOrders: 12,
+          favoriteChefs: 3,
+          totalSpent: 2450,
+          memberSince: mockUser?.created_at || new Date().toISOString(),
+          reviewsGiven: 8,
+          avgRating: 4.7
+        });
+        setLoading(false);
+      } else {
+        fetchProfile();
+        fetchUserStats();
+      }
+    } else {
+      setLoading(false);
     }
-  }, [user]);
+  }, [displayUser, usingMockData]);
 
   const fetchProfile = async () => {
     try {
@@ -390,9 +417,10 @@ const Profile = () => {
               </div>
               
               <div className="text-sm text-muted-foreground space-y-1 pt-4 border-t">
-                <p><strong>Konto skapat:</strong> {new Date(user?.created_at || '').toLocaleDateString('sv-SE')}</p>
+                <p><strong>Konto skapat:</strong> {new Date(displayUser?.created_at || '').toLocaleDateString('sv-SE')}</p>
                 <p><strong>Senast inloggad:</strong> {new Date().toLocaleDateString('sv-SE')}</p>
-                <p><strong>Konto-ID:</strong> {user?.id?.slice(0, 8)}...</p>
+                <p><strong>Konto-ID:</strong> {displayUser?.id?.slice(0, 8)}...</p>
+                {usingMockData && <p><strong>Status:</strong> Test-läge</p>}
               </div>
               
               <div className="pt-4 border-t">
