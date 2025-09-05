@@ -5,7 +5,7 @@ import { ShoppingBag, Calendar, Users, ChefHat, DollarSign, Star } from "lucide-
 import pickupImage from "@/assets/customer-pickup.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
-import becomeChefImage from "@/assets/become-chef-wide.jpg";
+import becomeChefImage from "@/assets/become-chef-female.jpg";
 
 const customerServices = [
   {
@@ -92,8 +92,8 @@ const CustomerServices = () => {
             <div className="mb-6">
               <img 
                 src={becomeChefImage} 
-                alt="Professionell kock som förbereder mat i kök"
-                className="w-full h-48 object-cover rounded-lg mx-auto"
+                alt="Professionell kvinnlig kock som förbereder mat i kök"
+                className="w-full h-32 object-cover rounded-lg mx-auto"
               />
             </div>
             
