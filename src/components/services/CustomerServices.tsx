@@ -5,6 +5,7 @@ import { ShoppingBag, Calendar, Users, ChefHat, DollarSign, Star } from "lucide-
 import pickupImage from "@/assets/customer-pickup.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
+import becomeChefImage from "@/assets/become-chef-hero.jpg";
 
 const customerServices = [
   {
@@ -87,10 +88,13 @@ const CustomerServices = () => {
         {/* Bli Kock sektion */}
         <div className="mt-16 text-center">
           <div className="bg-card rounded-lg p-8 max-w-4xl mx-auto border shadow-sm">
-            <div className="flex justify-center mb-6">
-              <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center">
-                <ChefHat className="w-8 h-8 text-white" />
-              </div>
+            {/* Bild ovanför rubrik */}
+            <div className="mb-6">
+              <img 
+                src={becomeChefImage} 
+                alt="Professionell kock som förbereder mat i kök"
+                className="w-full h-48 object-cover rounded-lg mx-auto"
+              />
             </div>
             
             <h3 className="text-2xl font-bold mb-4 text-foreground">
