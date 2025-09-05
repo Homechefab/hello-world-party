@@ -38,6 +38,11 @@ import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import NotFound from "./pages/NotFound";
 import NotificationSignup from "./pages/NotificationSignup";
 import Auth from "./pages/Auth";
+import SettingsPage from "./pages/settings/Settings";
+import DeliveryAddresses from "./pages/settings/DeliveryAddresses";
+import PaymentMethods from "./pages/settings/PaymentMethods";
+import Preferences from "./pages/settings/Preferences";
+import Profile from "./pages/Profile";
 // Auth removed - working directly with roles
 
 const queryClient = new QueryClient();
@@ -83,6 +88,11 @@ const App = () => {
                 <Route path="/delivery-partner/onboarding" element={<DeliveryPartnerOnboarding />} />
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
                 <Route path="/auth" element={<Auth />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/settings/addresses" element={<DeliveryAddresses />} />
+                <Route path="/settings/payment-methods" element={<PaymentMethods />} />
+                <Route path="/settings/preferences" element={<Preferences />} />
                 <Route path="/notification-signup" element={<NotificationSignup />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>

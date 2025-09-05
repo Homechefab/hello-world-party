@@ -1,61 +1,101 @@
-import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { User, Settings, LogOut, PlusCircle } from "lucide-react";
+import { User, Settings, MapPin, CreditCard, Heart, LogOut, UserCircle } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-export const UserMenu = () => {
+const UserMenu = () => {
   const { user, signOut } = useAuth();
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <Link to="/auth">
+        <Button variant="ghost" size="icon">
+          <User className="w-5 h-5" />
+        </Button>
+      </Link>
+    );
+  }
 
-  const initials = user.user_metadata?.full_name
-    ? user.user_metadata.full_name
-        .split(" ")
-        .map((n: string) => n[0])
-        .join("")
-        .toUpperCase()
-    : user.email?.[0]?.toUpperCase() || "U";
+  const userInitials = user.email
+    ?.split('@')[0]
+    ?.slice(0, 2)
+    ?.toUpperCase() || 'US';
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarFallback className="bg-gradient-primary text-white">
-              {initials}
+        <Button variant="ghost" size="icon" className="relative">
+          <Avatar className="w-8 h-8">
+            <AvatarFallback className="bg-primary text-primary-foreground text-sm">
+              {userInitials}
             </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
-        <div className="flex items-center justify-start gap-2 p-2">
-          <div className="flex flex-col space-y-1 leading-none">
-            <p className="font-medium">{user.user_metadata?.full_name || "Användare"}</p>
-            <p className="w-[200px] truncate text-sm text-muted-foreground">
-              {user.email}
+      <DropdownMenuContent align="end" className="w-64 bg-background border border-border">
+        <DropdownMenuLabel className="pb-2">
+          <div className="flex flex-col space-y-1">
+            <p className="text-sm font-medium leading-none">{user.email}</p>
+            <p className="text-xs leading-none text-muted-foreground">
+              Min profil
             </p>
           </div>
-        </div>
+        </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <User className="mr-2 h-4 w-4" />
-          <span>Profil</span>
+        
+        <DropdownMenuItem asChild>
+          <Link to="/profile" className="cursor-pointer">
+            <UserCircle className="w-4 h-4 mr-2" />
+            Profil
+          </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          <span>Lägg till rätt</span>
+        
+        <DropdownMenuItem asChild>
+          <Link to="/settings/addresses" className="cursor-pointer">
+            <MapPin className="w-4 h-4 mr-2" />
+            Leveransadresser
+          </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>
-          <Settings className="mr-2 h-4 w-4" />
-          <span>Inställningar</span>
+        
+        <DropdownMenuItem asChild>
+          <Link to="/settings/payment-methods" className="cursor-pointer">
+            <CreditCard className="w-4 h-4 mr-2" />
+            Betalningsmetoder
+          </Link>
         </DropdownMenuItem>
+        
+        <DropdownMenuItem asChild>
+          <Link to="/settings/preferences" className="cursor-pointer">
+            <Heart className="w-4 h-4 mr-2" />
+            Personliga preferenser
+          </Link>
+        </DropdownMenuItem>
+        
+        <DropdownMenuItem asChild>
+          <Link to="/settings" className="cursor-pointer">
+            <Settings className="w-4 h-4 mr-2" />
+            Inställningar
+          </Link>
+        </DropdownMenuItem>
+        
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={signOut}>
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Logga ut</span>
+        
+        <DropdownMenuItem onClick={signOut} className="cursor-pointer text-red-600 focus:text-red-600">
+          <LogOut className="w-4 h-4 mr-2" />
+          Logga ut
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
+
+export default UserMenu;
