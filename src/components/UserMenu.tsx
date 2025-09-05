@@ -1,6 +1,7 @@
 import { User, Settings, MapPin, CreditCard, Heart, LogOut, UserCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useRole } from "@/hooks/useRole";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,8 +15,16 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const UserMenu = () => {
   const { user, signOut } = useAuth();
+  const { user: mockUser, usingMockData } = useRole();
 
-  if (!user) {
+  // Use either real auth user or mock user for testing
+  const displayUser = user || (usingMockData ? mockUser : null);
+  const userEmail = displayUser?.email || (mockUser?.full_name) || 'test@exempel.se';
+
+  // Always show the menu for testing purposes
+  const shouldShowMenu = displayUser || usingMockData || true; // Always show for now
+
+  if (!shouldShowMenu) {
     return (
       <Link to="/auth">
         <Button variant="ghost" size="icon">
@@ -25,10 +34,19 @@ const UserMenu = () => {
     );
   }
 
-  const userInitials = user.email
+  const userInitials = userEmail
     ?.split('@')[0]
     ?.slice(0, 2)
-    ?.toUpperCase() || 'US';
+    ?.toUpperCase() || 'TE';
+
+  const handleSignOut = () => {
+    if (user) {
+      signOut();
+    } else {
+      // For mock data, just redirect to auth
+      window.location.href = '/auth';
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -44,9 +62,9 @@ const UserMenu = () => {
       <DropdownMenuContent align="end" className="w-64 bg-background border border-border">
         <DropdownMenuLabel className="pb-2">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.email}</p>
+            <p className="text-sm font-medium leading-none">{userEmail}</p>
             <p className="text-xs leading-none text-muted-foreground">
-              Min profil
+              Min profil {!user && '(Test-läge)'}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -89,9 +107,9 @@ const UserMenu = () => {
         
         <DropdownMenuSeparator />
         
-        <DropdownMenuItem onClick={signOut} className="cursor-pointer text-red-600 focus:text-red-600">
+        <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600 focus:text-red-600">
           <LogOut className="w-4 h-4 mr-2" />
-          Logga ut
+          {user ? 'Logga ut' : 'Logga in'}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
