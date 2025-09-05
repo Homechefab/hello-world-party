@@ -426,6 +426,36 @@ export type Database = {
         }
         Relationships: []
       }
+      points_transactions: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          order_id: string | null
+          points_amount: number
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_id?: string | null
+          points_amount: number
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_id?: string | null
+          points_amount?: number
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           address: string | null
@@ -510,6 +540,42 @@ export type Database = {
           },
         ]
       }
+      user_points: {
+        Row: {
+          created_at: string
+          current_points: number | null
+          id: string
+          next_discount_at: number | null
+          points_used: number | null
+          total_points: number | null
+          total_purchases: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_points?: number | null
+          id?: string
+          next_discount_at?: number | null
+          points_used?: number | null
+          total_points?: number | null
+          total_purchases?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_points?: number | null
+          id?: string
+          next_discount_at?: number | null
+          points_used?: number | null
+          total_points?: number | null
+          total_purchases?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_preferences: {
         Row: {
           allergies: string[] | null
@@ -548,9 +614,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apply_loyalty_discount: {
+        Args: {
+          p_order_id: string
+          p_original_amount: number
+          p_user_id: string
+        }
+        Returns: Json
+      }
       approve_kitchen_partner: {
         Args: { partner_id: string }
         Returns: undefined
+      }
+      award_points_for_purchase: {
+        Args: { p_order_amount: number; p_order_id: string; p_user_id: string }
+        Returns: Json
       }
       reject_kitchen_partner: {
         Args: { partner_id: string; reason: string }

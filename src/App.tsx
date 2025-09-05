@@ -44,6 +44,7 @@ import PaymentMethods from "./pages/settings/PaymentMethods";
 import Preferences from "./pages/settings/Preferences";
 import Profile from "./pages/Profile";
 import MyOrders from "./pages/MyOrders";
+import MyPoints from "./pages/MyPoints";
 // Auth removed - working directly with roles
 
 const queryClient = new QueryClient();
@@ -91,6 +92,7 @@ const App = () => {
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/my-orders" element={<MyOrders />} />
+                <Route path="/my-points" element={<MyPoints />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/settings/addresses" element={<DeliveryAddresses />} />
                 <Route path="/settings/payment-methods" element={<PaymentMethods />} />
