@@ -8,6 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Upload, FileText, Shield, Clock } from "lucide-react";
 import Header from "@/components/Header";
+import MunicipalitySearch from "@/components/MunicipalitySearch";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -271,6 +272,15 @@ const ChefApplication = () => {
                     </p>
                   </div>
                 </div>
+              </div>
+              
+              {/* Kommunsök sektion */}
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h3 className="font-semibold text-blue-800 text-sm mb-3">Hitta din kommuns ansökningsblanketter</h3>
+                <p className="text-blue-700 text-xs mb-4">
+                  Sök på din adress för att få direktlänkar till ansökningsblanketter och e-tjänster för livsmedelsregistrering från din kommun.
+                </p>
+                <MunicipalitySearch />
               </div>
             </div>
           </div>
