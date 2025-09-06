@@ -100,7 +100,7 @@ const Footer = () => {
               <li><Link to="/restaurant/partnership" className="hover:text-primary transition-colors">Bli restaurangpartner</Link></li>
               <li>
                 <button 
-                  onClick={() => handleRestaurantLink('#hemkörning')}
+                  onClick={() => handleRestaurantLink('#våra-tjänster')}
                   className="hover:text-primary transition-colors text-left"
                 >
                   Hemkörning för restauranger
@@ -108,7 +108,7 @@ const Footer = () => {
               </li>
               <li>
                 <button 
-                  onClick={() => handleRestaurantLink('#marknadsföring')}
+                  onClick={() => handleRestaurantLink('#våra-tjänster')}
                   className="hover:text-primary transition-colors text-left"
                 >
                   Marknadsföring
@@ -116,7 +116,7 @@ const Footer = () => {
               </li>
               <li>
                 <button 
-                  onClick={() => handleRestaurantLink('#support')}
+                  onClick={() => handleRestaurantLink('#våra-tjänster')}
                   className="hover:text-primary transition-colors text-left"
                 >
                   Restaurangsupport
@@ -124,7 +124,7 @@ const Footer = () => {
               </li>
               <li>
                 <button 
-                  onClick={() => handleRestaurantLink('#betalningar')}
+                  onClick={() => handleRestaurantLink('#våra-tjänster')}
                   className="hover:text-primary transition-colors text-left"
                 >
                   Betalningar
