@@ -47,7 +47,8 @@ const RestaurantPartnership = () => {
       icon: Truck,
       title: "Hemkörning för restauranger",
       description: "Professionell hemkörning av era rätter till kunder",
-      features: ["Snabb leverans", "Temperaturkontroll", "Spårning i realtid"]
+      features: ["Snabb leverans", "Temperaturkontroll", "Spårning i realtid"],
+      id: "hemkörning"
     },
     {
       icon: Target,

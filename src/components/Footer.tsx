@@ -1,9 +1,16 @@
 import { ChefHat, Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 import { useRole } from "@/hooks/useRole";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { scrollToSection } from "@/utils/scrollUtils";
 
 const Footer = () => {
   const { isChef, isRestaurant } = useRole();
+  const navigate = useNavigate();
+
+  const handleRestaurantLink = (hash: string) => {
+    navigate(`/restaurant/partnership${hash}`);
+    scrollToSection(hash);
+  };
   return (
     <footer className="bg-gradient-warm border-t border-border">
       <div className="container mx-auto px-4 py-12">
@@ -91,10 +98,38 @@ const Footer = () => {
             <h4 className="font-semibold text-foreground">För restauranger</h4>
             <ul className="space-y-2 text-muted-foreground">
               <li><Link to="/restaurant/partnership" className="hover:text-primary transition-colors">Bli restaurangpartner</Link></li>
-              <li><Link to="/restaurant/partnership#hemkörning" className="hover:text-primary transition-colors">Hemkörning för restauranger</Link></li>
-              <li><Link to="/restaurant/partnership#marknadsföring" className="hover:text-primary transition-colors">Marknadsföring</Link></li>
-              <li><Link to="/restaurant/partnership#support" className="hover:text-primary transition-colors">Restaurangsupport</Link></li>
-              <li><Link to="/restaurant/partnership#betalningar" className="hover:text-primary transition-colors">Betalningar</Link></li>
+              <li>
+                <button 
+                  onClick={() => handleRestaurantLink('#hemkörning')}
+                  className="hover:text-primary transition-colors text-left"
+                >
+                  Hemkörning för restauranger
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleRestaurantLink('#marknadsföring')}
+                  className="hover:text-primary transition-colors text-left"
+                >
+                  Marknadsföring
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleRestaurantLink('#support')}
+                  className="hover:text-primary transition-colors text-left"
+                >
+                  Restaurangsupport
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => handleRestaurantLink('#betalningar')}
+                  className="hover:text-primary transition-colors text-left"
+                >
+                  Betalningar
+                </button>
+              </li>
               {isRestaurant && (
                 <li><Link to="/restaurant/dashboard" className="hover:text-primary transition-colors">Restaurangdashboard</Link></li>
               )}
