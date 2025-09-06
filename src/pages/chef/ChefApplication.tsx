@@ -217,6 +217,16 @@ const ChefApplication = () => {
                         </p>
                       </div>
                     </div>
+                    
+                    <div className="flex items-start gap-3 p-3 bg-white/50 rounded-lg">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-medium text-sm">Spårbarhetssystem</p>
+                        <p className="text-xs text-muted-foreground">
+                          Dokumentera alla ingredienser med leverantör och bäst-före-datum för att kunna spåra mat vid eventuella problem.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -244,16 +254,6 @@ const ChefApplication = () => {
                         <p className="font-medium text-sm">Godkänt kök</p>
                         <p className="text-xs text-muted-foreground">
                           Köket måste inspekteras och godkännas av kommunen. Det ska ha separata ytor för rå och tillagad mat, samt tillräcklig kyl- och fryskapacitet.
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start gap-3 p-3 bg-white/50 rounded-lg">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-medium text-sm">Spårbarhetssystem</p>
-                        <p className="text-xs text-muted-foreground">
-                          Dokumentera alla ingredienser med leverantör och bäst-före-datum för att kunna spåra mat vid eventuella problem.
                         </p>
                       </div>
                     </div>
