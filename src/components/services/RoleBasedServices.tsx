@@ -5,7 +5,9 @@ import CustomerServices from "./CustomerServices";
 import RestaurantServices from "./RestaurantServices";
 
 const RoleBasedServices = () => {
-  const { isChef, isKitchenPartner, isCustomer, isRestaurant } = useRole();
+  const { isChef, isKitchenPartner, isCustomer, isRestaurant, user } = useRole();
+
+  console.log('RoleBasedServices - Current role:', user?.role, 'isRestaurant:', isRestaurant);
 
   if (isChef) {
     return <ChefServices />;
