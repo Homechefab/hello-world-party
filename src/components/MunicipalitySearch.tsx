@@ -35,50 +35,127 @@ const MunicipalitySearch = () => {
 
     setLoading(true);
     try {
-      // Try with Supabase function first
-      const { data, error } = await supabase.functions.invoke('municipality-search', {
-        body: { 
-          address,
-          // If user provided temporary API key, include it
-          tempApiKey: tempApiKey || undefined
-        }
-      });
-
-      if (error) {
-        console.error('Supabase function error:', error);
-        // If Supabase function fails and user has temp API key, try direct call
-        if (tempApiKey) {
+      // Use mock data for now - no API cost
+      const mockResult = getMockMunicipalityData(address);
+      
+      if (mockResult) {
+        setResult(mockResult);
+        toast({
+          title: "Sökning slutförd (testdata)",
+          description: `Hittade information för ${mockResult.municipality}`,
+        });
+      } else {
+        // If no mock data found, try API if user has key
+        if (tempApiKey && tempApiKey.startsWith('pplx-')) {
           return await searchWithDirectCall();
         }
-        throw new Error('API-anrop misslyckades via Supabase function');
+        
+        // Show API key input for unknown locations
+        setShowApiKeyInput(true);
+        toast({
+          title: "Plats inte igenkänd",
+          description: "Denna plats finns inte i testdatan. Använd en riktig API-nyckel för fullständig sökning.",
+          variant: "default"
+        });
       }
-
-      if (data.error) {
-        // If we get specific error about API key and user has temp key, try direct call
-        if (data.error.includes('API-nyckel') && tempApiKey) {
-          return await searchWithDirectCall();
-        }
-        throw new Error(data.error);
-      }
-
-      setResult(data);
-      toast({
-        title: "Sökning slutförd",
-        description: `Hittade information för ${data.municipality}`,
-      });
       
     } catch (error) {
       console.error('Municipality search error:', error);
       toast({
         title: "Fel vid sökning",
-        description: error instanceof Error ? error.message : "Kunde inte hitta information om kommunen. Försök igen eller kontakta oss för hjälp.",
+        description: error instanceof Error ? error.message : "Kunde inte hitta information om kommunen.",
         variant: "destructive"
       });
-      // Show API key input if search fails
-      setShowApiKeyInput(true);
     } finally {
       setLoading(false);
     }
+  };
+
+  const getMockMunicipalityData = (address: string): MunicipalityResult | null => {
+    const addressLower = address.toLowerCase();
+    
+    // Mock data for common Swedish municipalities
+    const mockData: { [key: string]: MunicipalityResult } = {
+      'stockholm': {
+        municipality: 'Stockholms kommun',
+        links: [
+          {
+            title: 'Ansökan om livsmedelsregistrering',
+            url: 'https://start.stockholm/starta-foretag/tillstand-och-anmalan/livsmedel/',
+            description: 'Digital ansökan för registrering av livsmedelsverksamhet i Stockholm'
+          },
+          {
+            title: 'Livsmedelstillstånd - Stockholms stad',
+            url: 'https://digitalansokningar.stockholm.se/livsmedelstillstand',
+            description: 'E-tjänst för ansökan om livsmedelstillstånd'
+          }
+        ]
+      },
+      'göteborg': {
+        municipality: 'Göteborgs kommun',
+        links: [
+          {
+            title: 'Registrering av livsmedelsverksamhet',
+            url: 'https://goteborg.se/naringslivregi',
+            description: 'Anmälan och registrering av livsmedelsverksamhet i Göteborg'
+          },
+          {
+            title: 'Livsmedelstillstånd Göteborg',
+            url: 'https://www.goteborg.se/tillstand-livsmedel',
+            description: 'Information och ansökan om livsmedelstillstånd'
+          }
+        ]
+      },
+      'malmö': {
+        municipality: 'Malmö kommun',
+        links: [
+          {
+            title: 'Livsmedelsregistrering Malmö',
+            url: 'https://malmo.se/livsmedel-anmalan',
+            description: 'Digital anmälan för livsmedelsverksamhet i Malmö'
+          },
+          {
+            title: 'Tillstånd för livsmedelshantering',
+            url: 'https://www.malmo.se/tillstand-livsmedel',
+            description: 'Ansökan om tillstånd för livsmedelshantering'
+          }
+        ]
+      },
+      'uppsala': {
+        municipality: 'Uppsala kommun',
+        links: [
+          {
+            title: 'Registrera livsmedelsverksamhet',
+            url: 'https://www.uppsala.se/livsmedelsregistrering',
+            description: 'E-tjänst för registrering av livsmedelsverksamhet'
+          }
+        ]
+      },
+      'ängelholm': {
+        municipality: 'Ängelholms kommun',
+        links: [
+          {
+            title: 'Anmälan livsmedelsverksamhet',
+            url: 'https://www.engelholm.se/livsmedel',
+            description: 'Anmälan av livsmedelsverksamhet till Ängelholms kommun'
+          },
+          {
+            title: 'Livsmedelstillstånd Ängelholm',
+            url: 'https://etjanster.engelholm.se/livsmedelstillstand',
+            description: 'Digital ansökan för livsmedelstillstånd'
+          }
+        ]
+      }
+    };
+
+    // Try to match the address to a known municipality
+    for (const [city, data] of Object.entries(mockData)) {
+      if (addressLower.includes(city)) {
+        return data;
+      }
+    }
+
+    return null;
   };
 
   const searchWithDirectCall = async () => {
@@ -160,22 +237,22 @@ Svara i exakt detta JSON-format:
     <div className="space-y-4">
       {/* Temporary API Key Input (shown if search fails) */}
       {showApiKeyInput && (
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
           <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
-              <span className="text-amber-600 font-semibold text-sm">!</span>
+            <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+              <span className="text-blue-600 font-semibold text-sm">i</span>
             </div>
             <div className="flex-1">
-              <h4 className="font-semibold text-amber-900 mb-2">API-nyckel krävs</h4>
-              <p className="text-sm text-amber-800 mb-3">
-                För att använda kommunsökningen behöver du en giltig Perplexity API-nyckel. 
-                En riktig API-nyckel börjar med "pplx-" och är cirka 40 tecken lång.
+              <h4 className="font-semibold text-blue-900 mb-2">Utökad sökning med API</h4>
+              <p className="text-sm text-blue-800 mb-3">
+                Denna plats finns inte i vår testdata. För att söka i alla svenska kommuner 
+                behöver du en Perplexity API-nyckel (kostar ca 20-50 kr/månad).
               </p>
               
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-amber-700 mb-1">
-                    Din Perplexity API-nyckel
+                  <label className="block text-xs font-medium text-blue-700 mb-1">
+                    Perplexity API-nyckel (valfritt)
                   </label>
                   <Input
                     type="password"
@@ -207,21 +284,10 @@ Svara i exakt detta JSON-format:
                     href="https://www.perplexity.ai/settings/api" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-xs text-amber-700 hover:text-amber-900 underline"
+                    className="text-xs text-blue-700 hover:text-blue-900 underline"
                   >
-                    🔗 Skaffa API-nyckel här
+                    🔗 Skaffa API-nyckel (ca 20kr/mån)
                   </a>
-                </div>
-                
-                <div className="bg-amber-100 rounded p-2">
-                  <p className="text-xs text-amber-800">
-                    <strong>Steg för steg:</strong><br/>
-                    1. Klicka på länken ovan<br/>
-                    2. Logga in på Perplexity AI<br/>
-                    3. Gå till "API" i inställningarna<br/>
-                    4. Skapa en ny API-nyckel<br/>
-                    5. Kopiera nyckeln och klistra in här
-                  </p>
                 </div>
               </div>
             </div>
@@ -230,7 +296,14 @@ Svara i exakt detta JSON-format:
       )}
 
       {/* Address Search */}
-      <div className="flex gap-2">
+      <div className="space-y-2">
+        <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+          <p className="text-sm text-green-800">
+            <strong>🎉 Testläge aktivt!</strong> Prova med: Stockholm, Göteborg, Malmö, Uppsala eller Ängelholm
+          </p>
+        </div>
+        
+        <div className="flex gap-2">
         <div className="flex-1">
           <Input
             placeholder="Ange din fullständiga adress (ex. Drottninggatan 1, Stockholm)"
@@ -250,6 +323,7 @@ Svara i exakt detta JSON-format:
             <Search className="w-4 h-4" />
           )}
         </Button>
+        </div>
       </div>
 
       {/* Results */}
