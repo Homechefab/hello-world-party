@@ -217,16 +217,6 @@ const ChefApplication = () => {
                         </p>
                       </div>
                     </div>
-                    
-                    <div className="flex items-start gap-3 p-3 bg-white/50 rounded-lg">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-medium text-sm">Livsmedelshygienbevis</p>
-                        <p className="text-xs text-muted-foreground">
-                          Obligatorisk utbildning som visar att du kan hantera livsmedel säkert enligt gällande bestämmelser.
-                        </p>
-                      </div>
-                    </div>
                   </div>
                 </div>
 
