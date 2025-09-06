@@ -2,9 +2,10 @@ import { useRole } from "@/hooks/useRole";
 import ChefServices from "./ChefServices";
 import KitchenPartnerServices from "./KitchenPartnerServices";
 import CustomerServices from "./CustomerServices";
+import RestaurantServices from "./RestaurantServices";
 
 const RoleBasedServices = () => {
-  const { isChef, isKitchenPartner, isCustomer } = useRole();
+  const { isChef, isKitchenPartner, isCustomer, isRestaurant } = useRole();
 
   if (isChef) {
     return <ChefServices />;
@@ -12,6 +13,10 @@ const RoleBasedServices = () => {
 
   if (isKitchenPartner) {
     return <KitchenPartnerServices />;
+  }
+
+  if (isRestaurant) {
+    return <RestaurantServices />;
   }
 
   if (isCustomer) {

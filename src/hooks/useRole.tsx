@@ -34,6 +34,13 @@ const mockUsers: Record<string, UserProfile> = {
     full_name: 'Erik Admin',
     role: 'admin',
     created_at: new Date().toISOString()
+  },
+  'restaurant1': {
+    id: 'restaurant1',
+    email: 'restaurant@example.com',
+    full_name: 'Sofia Restaurang',
+    role: 'restaurant',
+    created_at: new Date().toISOString()
   }
 };
 
@@ -127,6 +134,7 @@ export const useRole = () => {
     isChef: currentUser?.role === 'chef',
     isCustomer: currentUser?.role === 'customer',
     isKitchenPartner: currentUser?.role === 'kitchen_partner',
-    isAdmin: currentUser?.role === 'admin'
+    isAdmin: currentUser?.role === 'admin',
+    isRestaurant: currentUser?.role === 'restaurant'
   };
 };

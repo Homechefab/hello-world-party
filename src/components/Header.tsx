@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChefHat, Search, User, Menu, X, Home, UtensilsCrossed, Info, Phone, Users, Building, Shield } from "lucide-react";
+import { ChefHat, Search, User, Menu, X, Home, UtensilsCrossed, Info, Phone, Users, Building, Shield, Store } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRole } from "@/hooks/useRole";
 import { useAuth } from "@/hooks/useAuth";
@@ -26,7 +26,7 @@ import { Badge } from "@/components/ui/badge";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, switchRole, isChef, isCustomer, isKitchenPartner, isAdmin, usingMockData, switchToRealAuth } = useRole();
+  const { user, switchRole, isChef, isCustomer, isKitchenPartner, isAdmin, isRestaurant, usingMockData, switchToRealAuth } = useRole();
   const { user: authUser, signOut } = useAuth();
   const navigate = useNavigate();
 
@@ -43,6 +43,7 @@ const Header = () => {
     { id: 'customer1', name: 'Kund', icon: Users, active: isCustomer, dashboard: '/' },
     { id: 'chef1', name: 'Kock', icon: ChefHat, active: isChef, dashboard: '/chef/application' },
     { id: 'kitchen_partner1', name: 'Kökspartner', icon: Building, active: isKitchenPartner, dashboard: '/kitchen-partner/dashboard' },
+    { id: 'restaurant1', name: 'Restaurang', icon: Store, active: isRestaurant, dashboard: '/' },
     { id: 'admin1', name: 'Admin', icon: Shield, active: isAdmin, dashboard: '/admin/dashboard' },
   ];
 
@@ -70,6 +71,7 @@ const Header = () => {
   const getRoleIcon = () => {
     if (isChef) return <ChefHat className="w-4 h-4" />;
     if (isKitchenPartner) return <Building className="w-4 h-4" />;
+    if (isRestaurant) return <Store className="w-4 h-4" />;
     if (isAdmin) return <Shield className="w-4 h-4" />;
     return <Users className="w-4 h-4" />;
   };
@@ -77,6 +79,7 @@ const Header = () => {
   const getRoleName = () => {
     if (isChef) return 'Kock';
     if (isKitchenPartner) return 'Kökspartner';
+    if (isRestaurant) return 'Restaurang';
     if (isAdmin) return 'Admin';
     return 'Kund';
   };
