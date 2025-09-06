@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { UserRole, UserProfile } from '@/types/user';
@@ -44,7 +44,23 @@ const mockUsers: Record<string, UserProfile> = {
   }
 };
 
-export const useRole = () => {
+interface RoleContextType {
+  user: UserProfile | null;
+  loading: boolean;
+  switchRole: (userId: string) => void;
+  switchToRealAuth: () => void;
+  usingMockData: boolean;
+  authUser: any;
+  isChef: boolean;
+  isCustomer: boolean;
+  isKitchenPartner: boolean;
+  isAdmin: boolean;
+  isRestaurant: boolean;
+}
+
+const RoleContext = createContext<RoleContextType | undefined>(undefined);
+
+export const RoleProvider = ({ children }: { children: ReactNode }) => {
   const { user: authUser } = useAuth();
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -107,12 +123,11 @@ export const useRole = () => {
   const switchRole = (userId: string) => {
     const newUser = mockUsers[userId];
     if (newUser) {
-      console.log('useRole: Switching from', currentUser?.role, 'to', newUser.role);
+      console.log('RoleProvider: Switching from', currentUser?.role, 'to', newUser.role);
       setCurrentUser(newUser);
       localStorage.setItem('selectedRole', userId);
       setUsingMockData(true);
-      console.log('useRole: Successfully switched to:', newUser.role, newUser.full_name);
-      console.log('useRole: New user state:', newUser);
+      console.log('RoleProvider: Successfully switched to:', newUser.role, newUser.full_name);
     }
   };
 
@@ -126,7 +141,7 @@ export const useRole = () => {
     }
   };
 
-  return {
+  const value = {
     user: currentUser,
     loading,
     switchRole,
@@ -139,4 +154,18 @@ export const useRole = () => {
     isAdmin: currentUser?.role === 'admin',
     isRestaurant: currentUser?.role === 'restaurant'
   };
+
+  return (
+    <RoleContext.Provider value={value}>
+      {children}
+    </RoleContext.Provider>
+  );
+};
+
+export const useRole = () => {
+  const context = useContext(RoleContext);
+  if (context === undefined) {
+    throw new Error('useRole must be used within a RoleProvider');
+  }
+  return context;
 };
