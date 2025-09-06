@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Search, ExternalLink, MapPin, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface MunicipalityResult {
   municipality: string;
@@ -19,7 +20,6 @@ const MunicipalitySearch = () => {
   const [address, setAddress] = useState("");
   const [result, setResult] = useState<MunicipalityResult | null>(null);
   const [loading, setLoading] = useState(false);
-  const [apiKey, setApiKey] = useState("");
 
   const searchMunicipality = async () => {
     if (!address.trim()) {
@@ -31,77 +31,29 @@ const MunicipalitySearch = () => {
       return;
     }
 
-    if (!apiKey.trim()) {
-      toast({
-        title: "API-nyckel saknas",
-        description: "Vänligen ange din Perplexity API-nyckel",
-        variant: "destructive"
-      });
-      return;
-    }
-
     setLoading(true);
     try {
-      const response = await fetch('https://api.perplexity.ai/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'llama-3.1-sonar-small-128k-online',
-          messages: [
-            {
-              role: 'system',
-              content: 'Du är en expert på svenska kommuner och deras e-tjänster. Svara ENDAST med giltigt JSON utan andra tecken eller text.'
-            },
-            {
-              role: 'user',
-              content: `För adressen "${address}" i Sverige, hitta vilken kommun den tillhör och ge mig aktuella länkar till ansökningsblanketter eller e-tjänster för livsmedelsregistrering/livsmedelstillstånd från den kommunen. 
-
-Svara i exakt detta JSON-format:
-{
-  "municipality": "Kommunnamn",
-  "links": [
-    {
-      "title": "Namn på tjänst/blankett",
-      "url": "https://fullständig-url",
-      "description": "Kort beskrivning"
-    }
-  ]
-}`
-            }
-          ],
-          temperature: 0.2,
-          top_p: 0.9,
-          max_tokens: 1000,
-          return_images: false,
-          return_related_questions: false,
-          search_recency_filter: 'month',
-          frequency_penalty: 1,
-          presence_penalty: 0
-        }),
+      const { data, error } = await supabase.functions.invoke('municipality-search', {
+        body: { address }
       });
 
-      if (!response.ok) {
+      if (error) {
+        console.error('Supabase function error:', error);
         throw new Error('API-anrop misslyckades');
       }
 
-      const data = await response.json();
-      const content = data.choices[0].message.content;
-      
-      try {
-        const parsedResult = JSON.parse(content);
-        setResult(parsedResult);
-        toast({
-          title: "Sökning slutförd",
-          description: `Hittade information för ${parsedResult.municipality}`,
-        });
-      } catch (parseError) {
-        throw new Error('Kunde inte tolka svaret från API:t');
+      if (data.error) {
+        throw new Error(data.error);
       }
+
+      setResult(data);
+      toast({
+        title: "Sökning slutförd",
+        description: `Hittade information för ${data.municipality}`,
+      });
       
     } catch (error) {
+      console.error('Municipality search error:', error);
       toast({
         title: "Fel vid sökning",
         description: "Kunde inte hitta information om kommunen. Försök igen eller kontakta oss för hjälp.",
@@ -114,20 +66,6 @@ Svara i exakt detta JSON-format:
 
   return (
     <div className="space-y-4">
-      {/* API Key Input - Temporary solution */}
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-        <p className="text-xs text-yellow-800 mb-2">
-          <strong>Tillfällig lösning:</strong> Ange din Perplexity API-nyckel för att använda funktionen.
-        </p>
-        <Input
-          type="password"
-          placeholder="Perplexity API-nyckel"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-          className="text-xs"
-        />
-      </div>
-
       {/* Address Search */}
       <div className="flex gap-2">
         <div className="flex-1">
