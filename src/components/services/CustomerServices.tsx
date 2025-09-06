@@ -91,47 +91,42 @@ const CustomerServices = () => {
           <div 
             className="rounded-lg p-8 max-w-4xl mx-auto border shadow-sm relative overflow-hidden min-h-[500px]"
             style={{
-              backgroundImage: `url(${chefRecruitmentBg})`,
+              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.3)), url(${chefRecruitmentBg})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat'
             }}
           >
-            {/* Semi-transparent overlay för text-områden */}
-            <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/50 to-white/60 rounded-lg"></div>
-            
-            {/* Content with better text visibility */}
-            <div className="relative z-10">
-              <h3 className="text-2xl font-bold mb-4 text-gray-900 drop-shadow-lg">
+            {/* Content directly on background */}
+            <div className="relative z-10 pt-12">
+              <h3 className="text-3xl font-bold mb-6 text-white drop-shadow-lg">
                 Vill du bli kock på Homechef?
               </h3>
-              <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 mb-6 shadow-lg">
-                <p className="text-gray-800 mb-6 max-w-2xl mx-auto font-medium">
-                  Förvandla din passion för matlagning till en inkomstkälla. Sätt ditt eget pris, jobba när du vill och nå hungriga kunder i ditt område.
-                </p>
-                
-                {/* Fördelar grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 max-w-3xl mx-auto">
-                  <div className="flex items-center justify-center gap-2 text-sm font-medium text-gray-800">
-                    <DollarSign className="w-4 h-4 text-green-600" />
-                    <span>Tjäna extra pengar</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2 text-sm font-medium text-gray-800">
-                    <Users className="w-4 h-4 text-blue-600" />
-                    <span>Nå fler kunder</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2 text-sm font-medium text-gray-800">
-                    <Star className="w-4 h-4 text-yellow-600" />
-                    <span>Säker plattform</span>
-                  </div>
+              <p className="text-white mb-8 max-w-2xl mx-auto font-medium text-lg drop-shadow-lg">
+                Förvandla din passion för matlagning till en inkomstkälla. Sätt ditt eget pris, jobba när du vill och nå hungriga kunder i ditt område.
+              </p>
+              
+              {/* Fördelar grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 max-w-3xl mx-auto">
+                <div className="flex items-center justify-center gap-2 text-sm font-medium text-white drop-shadow-lg">
+                  <DollarSign className="w-5 h-5 text-green-400 drop-shadow-lg" />
+                  <span>Tjäna extra pengar</span>
                 </div>
-                
-                <Link to="/chef/application">
-                  <Button size="lg" className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0 shadow-lg hover:shadow-xl transition-all">
-                    Ansök om att bli kock
-                  </Button>
-                </Link>
+                <div className="flex items-center justify-center gap-2 text-sm font-medium text-white drop-shadow-lg">
+                  <Users className="w-5 h-5 text-blue-400 drop-shadow-lg" />
+                  <span>Nå fler kunder</span>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-sm font-medium text-white drop-shadow-lg">
+                  <Star className="w-5 h-5 text-yellow-400 drop-shadow-lg" />
+                  <span>Säker plattform</span>
+                </div>
               </div>
+              
+              <Link to="/chef/application">
+                <Button size="lg" className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
+                  Ansök om att bli kock
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
