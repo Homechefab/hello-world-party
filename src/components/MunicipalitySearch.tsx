@@ -81,13 +81,13 @@ const MunicipalitySearch = () => {
         links: [
           {
             title: 'Ansökan om livsmedelsregistrering',
-            url: 'https://start.stockholm/starta-foretag/tillstand-och-anmalan/livsmedel/',
-            description: 'Digital ansökan för registrering av livsmedelsverksamhet i Stockholm'
+            url: 'https://start.stockholm/starta-foretag/tillstand-och-anmalan/',
+            description: 'Information om tillstånd och anmälan för livsmedelsverksamhet i Stockholm'
           },
           {
-            title: 'Livsmedelstillstånd - Stockholms stad',
-            url: 'https://digitalansokningar.stockholm.se/livsmedelstillstand',
-            description: 'E-tjänst för ansökan om livsmedelstillstånd'
+            title: 'Kontakta Stockholms stad - Livsmedel',
+            url: 'https://kontakt.stockholm/ombud/miljohalsoskydd/',
+            description: 'Kontaktuppgifter för miljö- och hälsoskydd gällande livsmedel'
           }
         ]
       },
@@ -95,14 +95,14 @@ const MunicipalitySearch = () => {
         municipality: 'Göteborgs kommun',
         links: [
           {
-            title: 'Registrering av livsmedelsverksamhet',
-            url: 'https://goteborg.se/naringslivregi',
-            description: 'Anmälan och registrering av livsmedelsverksamhet i Göteborg'
+            title: 'Starta företag - Göteborg Stad',
+            url: 'https://goteborg.se/wps/portal/start/starta-foretag/',
+            description: 'Information om att starta livsmedelsverksamhet i Göteborg'
           },
           {
-            title: 'Livsmedelstillstånd Göteborg',
-            url: 'https://www.goteborg.se/tillstand-livsmedel',
-            description: 'Information och ansökan om livsmedelstillstånd'
+            title: 'Miljötillstånd och anmälningar',
+            url: 'https://goteborg.se/wps/portal/start/miljotillstand/',
+            description: 'Information om miljötillstånd för livsmedelshantering'
           }
         ]
       },
@@ -110,14 +110,14 @@ const MunicipalitySearch = () => {
         municipality: 'Malmö kommun',
         links: [
           {
-            title: 'Livsmedelsregistrering Malmö',
-            url: 'https://malmo.se/livsmedel-anmalan',
-            description: 'Digital anmälan för livsmedelsverksamhet i Malmö'
+            title: 'Starta företag - Malmö stad',
+            url: 'https://malmo.se/Service/Foretagare-och-organisationer/Starta-foretag.html',
+            description: 'Vägledning för att starta livsmedelsföretag i Malmö'
           },
           {
-            title: 'Tillstånd för livsmedelshantering',
-            url: 'https://www.malmo.se/tillstand-livsmedel',
-            description: 'Ansökan om tillstånd för livsmedelshantering'
+            title: 'Miljö- och hälsoskydd Malmö',
+            url: 'https://malmo.se/Service/Foretagare-och-organisationer/Tillstand-och-anmalningar.html',
+            description: 'Tillstånd och anmälningar för livsmedelsverksamhet'
           }
         ]
       },
@@ -125,9 +125,14 @@ const MunicipalitySearch = () => {
         municipality: 'Uppsala kommun',
         links: [
           {
-            title: 'Registrera livsmedelsverksamhet',
-            url: 'https://www.uppsala.se/livsmedelsregistrering',
-            description: 'E-tjänst för registrering av livsmedelsverksamhet'
+            title: 'Företagsstöd Uppsala',
+            url: 'https://www.uppsala.se/boende-och-miljo/foretagare/',
+            description: 'Information för företagare i Uppsala kommun'
+          },
+          {
+            title: 'Miljö- och hälsoskydd',
+            url: 'https://www.uppsala.se/boende-och-miljo/miljoskydd/',
+            description: 'Miljötillstånd och registreringar för livsmedel'
           }
         ]
       },
@@ -135,14 +140,14 @@ const MunicipalitySearch = () => {
         municipality: 'Ängelholms kommun',
         links: [
           {
-            title: 'Anmälan livsmedelsverksamhet',
-            url: 'https://www.engelholm.se/livsmedel',
-            description: 'Anmälan av livsmedelsverksamhet till Ängelholms kommun'
+            title: 'Företagare - Ängelholms kommun',
+            url: 'https://www.engelholm.se/foretagare/',
+            description: 'Information för företagare i Ängelholms kommun'
           },
           {
-            title: 'Livsmedelstillstånd Ängelholm',
-            url: 'https://etjanster.engelholm.se/livsmedelstillstand',
-            description: 'Digital ansökan för livsmedelstillstånd'
+            title: 'Miljö och hälsa',
+            url: 'https://www.engelholm.se/boende-miljo/miljoskydd/',
+            description: 'Miljötillstånd och hälsoskydd för livsmedelsverksamhet'
           }
         ]
       }
