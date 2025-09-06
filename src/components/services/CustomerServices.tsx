@@ -91,7 +91,7 @@ const CustomerServices = () => {
           <div 
             className="bg-card rounded-lg p-8 max-w-4xl mx-auto border shadow-sm relative overflow-hidden"
             style={{
-              backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9)), url(${chefRecruitmentBg})`,
+              backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.6)), url(${chefRecruitmentBg})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat'
@@ -102,7 +102,7 @@ const CustomerServices = () => {
               <img 
                 src={becomeChefImage} 
                 alt="Kvinna som lagar mat i sitt hemkök - helkroppsbild"
-                className="w-full h-64 object-contain rounded-lg mx-auto bg-white/80 backdrop-blur-sm"
+                className="w-full h-64 object-contain rounded-lg mx-auto bg-white/60 backdrop-blur-sm"
               />
             </div>
             
