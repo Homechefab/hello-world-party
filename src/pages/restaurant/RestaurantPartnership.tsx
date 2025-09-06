@@ -16,6 +16,7 @@ import {
   CreditCard,
   Target
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const RestaurantPartnership = () => {
   const benefits = [
@@ -88,10 +89,12 @@ const RestaurantPartnership = () => {
             Öka er försäljning och nå nya målgrupper.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
-              Ansök nu
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
+            <Link to="/restaurant/apply">
+              <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                Ansök nu
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
             <Button variant="outline" size="lg">
               Läs mer om fördelarna
             </Button>
@@ -217,10 +220,12 @@ const RestaurantPartnership = () => {
             Anslut er restaurang idag och börja nå nya kunder genom hemkörning.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
-              Ansök som restaurangpartner
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
+            <Link to="/restaurant/apply">
+              <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                Ansök som restaurangpartner
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
             <Button variant="outline" size="lg" className="flex items-center gap-2">
               <Phone className="w-4 h-4" />
               Ring oss: 08-123 45 67
