@@ -164,7 +164,7 @@ export const KitchenPartnerOnboarding = () => {
             Bli Kökspartner
           </h1>
           <p className="text-muted-foreground">
-            Hyr ut ditt restaurangkök till passionerade hemkockar och skapa extra intäkter
+            Hyr ut ditt restaurangkök till passionerade hemmakockar och skapa extra intäkter
           </p>
         </div>
 

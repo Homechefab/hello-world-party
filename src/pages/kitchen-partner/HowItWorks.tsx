@@ -17,8 +17,8 @@ const HowItWorks = () => {
     },
     {
       icon: <Shield className="w-12 h-12 text-primary" />,
-      title: "Godkänn hemkockar",
-      description: "Granska och godkänn hemkockar som vill hyra ditt kök. Du har full kontroll över vem som får tillgång."
+      title: "Godkänn hemmakockar",
+      description: "Granska och godkänn hemmakockar som vill hyra ditt kök. Du har full kontroll över vem som får tillgång."
     },
     {
       icon: <TrendingUp className="w-12 h-12 text-primary" />,
@@ -35,7 +35,7 @@ const HowItWorks = () => {
             Så fungerar kökshyrning
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Förvandla ditt outhyrda kök till en lönsam tillgång. Låt passionerade hemkockar använda ditt professionella kök under era lediga timmar.
+            Förvandla ditt outhyrda kök till en lönsam tillgång. Låt passionerade hemmakockar använda ditt professionella kök under era lediga timmar.
           </p>
         </div>
 
@@ -62,7 +62,7 @@ const HowItWorks = () => {
             Redo att börja tjäna pengar på ditt kök?
           </h2>
           <p className="text-muted-foreground mb-6 text-lg">
-            Registrera dig idag och börja hyra ut ditt kök till hemkockar i ditt område.
+            Registrera dig idag och börja hyra ut ditt kök till hemmakockar i ditt område.
           </p>
           <Button asChild size="lg" className="text-lg px-8">
             <Link to="/kitchen-partner/register">

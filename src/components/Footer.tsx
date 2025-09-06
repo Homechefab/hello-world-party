@@ -24,7 +24,7 @@ const Footer = () => {
               <h3 className="text-xl font-bold text-foreground">Homechef</h3>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              Sveriges första marknadsplats för hemlagad mat. Upptäck unika rätter från passionerade hemkockar i ditt närområde.
+              Sveriges första marknadsplats för hemlagad mat. Upptäck unika rätter från passionerade hemmakockar i ditt närområde.
             </p>
             <div className="flex gap-3">
               <button className="w-10 h-10 bg-white rounded-lg flex items-center justify-center hover:bg-primary hover:text-white transition-colors shadow-soft">

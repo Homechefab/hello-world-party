@@ -12,7 +12,7 @@ const About = () => {
     {
       icon: Users,
       title: "Community först",
-      description: "Vi bygger en stark gemenskap av matälskare och talangfulla hemkockar."
+      description: "Vi bygger en stark gemenskap av matälskare och talangfulla hemmakockar."
     },
     {
       icon: Target,
@@ -30,7 +30,7 @@ const About = () => {
     {
       year: "2024",
       title: "Första kockarna",
-      description: "Våra första hemkockar började sälja sin mat på plattformen"
+      description: "Våra första hemmakockar började sälja sin mat på plattformen"
     },
     {
       year: "2024",
@@ -56,7 +56,7 @@ const About = () => {
             Om Homechef
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Vi förenar matälskare med passionerade hemkockar för att skapa Sveriges 
+            Vi förenar matälskare med passionerade hemmakockar för att skapa Sveriges 
             mest personliga matupplevelse.
           </p>
         </div>
@@ -76,7 +76,7 @@ const About = () => {
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
                   Att göra äkta hemlagad mat tillgänglig för alla genom att skapa en trygg 
-                  och enkel plattform där hemkockar kan dela sin passion och matälskare 
+                  och enkel plattform där hemmakockar kan dela sin passion och matälskare 
                   kan upptäcka unika smaker från sitt närområde.
                 </p>
               </CardContent>
@@ -110,7 +110,7 @@ const About = () => {
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Homechef föddes ur en enkel tanke: varför ska vi acceptera att all mat 
-              kommer från stora kedjor när det finns så många talangfulla hemkockar 
+              kommer från stora kedjor när det finns så många talangfulla hemmakockar 
               runt omkring oss?
             </p>
           </div>
@@ -127,7 +127,7 @@ const About = () => {
                       gynnar både parter.
                     </p>
                     <p className="text-muted-foreground leading-relaxed mb-4">
-                      Idag hjälper vi hemkockar att tjäna extra pengar på sin passion 
+                      Idag hjälper vi hemmakockar att tjäna extra pengar på sin passion 
                       samtidigt som vi ger matälskare tillgång till unik, hemlagad mat 
                       från sitt närområde. Det är mat med själ, gjord av riktiga människor.
                     </p>

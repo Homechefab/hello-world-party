@@ -31,7 +31,7 @@ const features = [
 
 const stats = [
   { number: "2,500+", label: "Nöjda kunder" },
-  { number: "150+", label: "Hemkockar" },
+  { number: "150+", label: "Hemmakockar" },
   { number: "50+", label: "Olika rätter" },
   { number: "4.8", label: "Genomsnittlig betyg" }
 ];
@@ -48,7 +48,7 @@ const Features = () => {
             Upplev äkta hemlagad mat
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Från din grannes kök till ditt bord. Vi kopplar samman matälskare med passionerade hemkockar.
+            Från din grannes kök till ditt bord. Vi kopplar samman matälskare med passionerade hemmakockar.
           </p>
         </div>
         

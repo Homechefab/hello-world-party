@@ -29,7 +29,7 @@ const PricingTerms = () => {
         "Detaljerade analysrapporter",
         "Utökad försäkring",
         "Marknadsföringshjälp",
-        "Direktchatt med hemkockar"
+        "Direktchatt med hemmakockar"
       ],
       popular: true
     },
@@ -56,8 +56,8 @@ const PricingTerms = () => {
     "Betalning sker inom 5 arbetsdagar efter genomförd uthyrning",
     "Alla priser är exklusive moms",
     "Försäkring ingår för alla planer",
-    "Hemkockar genomgår bakgrundskontroll",
-    "Du bestämmer själv vilka hemkockar som får tillgång",
+    "Hemmakockar genomgår bakgrundskontroll",
+    "Du bestämmer själv vilka hemmakockar som får tillgång",
     "Automatisk fakturering och redovisning"
   ];
 

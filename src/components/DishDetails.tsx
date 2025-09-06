@@ -154,7 +154,7 @@ const DishDetails = () => {
             Populära rätter just nu
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Upptäck vad våra hemkockar lagar idag. Alla rätter är färska och tillagade med kärlek.
+            Upptäck vad våra hemmakockar lagar idag. Alla rätter är färska och tillagade med kärlek.
           </p>
         </div>
         
