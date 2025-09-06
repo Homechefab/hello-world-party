@@ -107,10 +107,12 @@ export const useRole = () => {
   const switchRole = (userId: string) => {
     const newUser = mockUsers[userId];
     if (newUser) {
+      console.log('useRole: Switching from', currentUser?.role, 'to', newUser.role);
       setCurrentUser(newUser);
       localStorage.setItem('selectedRole', userId);
       setUsingMockData(true);
       console.log('useRole: Successfully switched to:', newUser.role, newUser.full_name);
+      console.log('useRole: New user state:', newUser);
     }
   };
 
