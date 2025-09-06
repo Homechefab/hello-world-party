@@ -3,11 +3,11 @@ import { useRole } from "@/hooks/useRole";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
-  const { isChef } = useRole();
+  const { isChef, isRestaurant } = useRole();
   return (
     <footer className="bg-gradient-warm border-t border-border">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -83,6 +83,21 @@ const Footer = () => {
               <li><Link to="/kitchen-partner/pricing-terms" className="hover:text-primary transition-colors">Priser & villkor</Link></li>
               <li><Link to="/kitchen-partner/security-insurance" className="hover:text-primary transition-colors">Säkerhet & försäkring</Link></li>
               <li><Link to="/kitchen-partner/support" className="hover:text-primary transition-colors">Partnersupport</Link></li>
+            </ul>
+          </div>
+
+          {/* För restauranger */}
+          <div className="space-y-4">
+            <h4 className="font-semibold text-foreground">För restauranger</h4>
+            <ul className="space-y-2 text-muted-foreground">
+              <li><Link to="#" className="hover:text-primary transition-colors">Bli restaurangpartner</Link></li>
+              <li><Link to="#" className="hover:text-primary transition-colors">Hemkörning för restauranger</Link></li>
+              <li><Link to="#" className="hover:text-primary transition-colors">Marknadsföring</Link></li>
+              <li><Link to="#" className="hover:text-primary transition-colors">Restaurangsupport</Link></li>
+              <li><Link to="#" className="hover:text-primary transition-colors">Betalningar</Link></li>
+              {isRestaurant && (
+                <li><Link to="#" className="hover:text-primary transition-colors">Restaurangdashboard</Link></li>
+              )}
             </ul>
           </div>
 
