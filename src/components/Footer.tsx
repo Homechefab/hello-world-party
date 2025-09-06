@@ -74,9 +74,9 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* För restauranger */}
+          {/* För kökspartner */}
           <div className="space-y-4">
-            <h4 className="font-semibold text-foreground">För restauranger</h4>
+            <h4 className="font-semibold text-foreground">För kökspartner</h4>
             <ul className="space-y-2 text-muted-foreground">
               <li><Link to="/kitchen-partner/register" className="hover:text-primary transition-colors">Hyr ut ditt restaurangkök</Link></li>
               <li><Link to="/kitchen-partner/how-it-works" className="hover:text-primary transition-colors">Så fungerar det</Link></li>
