@@ -90,13 +90,13 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground">För restauranger</h4>
             <ul className="space-y-2 text-muted-foreground">
-              <li><Link to="#" className="hover:text-primary transition-colors">Bli restaurangpartner</Link></li>
-              <li><Link to="#" className="hover:text-primary transition-colors">Hemkörning för restauranger</Link></li>
-              <li><Link to="#" className="hover:text-primary transition-colors">Marknadsföring</Link></li>
-              <li><Link to="#" className="hover:text-primary transition-colors">Restaurangsupport</Link></li>
-              <li><Link to="#" className="hover:text-primary transition-colors">Betalningar</Link></li>
+              <li><Link to="/restaurant/partnership" className="hover:text-primary transition-colors">Bli restaurangpartner</Link></li>
+              <li><Link to="/restaurant/partnership#hemkörning" className="hover:text-primary transition-colors">Hemkörning för restauranger</Link></li>
+              <li><Link to="/restaurant/partnership#marknadsföring" className="hover:text-primary transition-colors">Marknadsföring</Link></li>
+              <li><Link to="/restaurant/partnership#support" className="hover:text-primary transition-colors">Restaurangsupport</Link></li>
+              <li><Link to="/restaurant/partnership#betalningar" className="hover:text-primary transition-colors">Betalningar</Link></li>
               {isRestaurant && (
-                <li><Link to="#" className="hover:text-primary transition-colors">Restaurangdashboard</Link></li>
+                <li><Link to="/restaurant/dashboard" className="hover:text-primary transition-colors">Restaurangdashboard</Link></li>
               )}
             </ul>
           </div>

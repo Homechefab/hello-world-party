@@ -35,6 +35,8 @@ import SecurityInsurance from "./pages/kitchen-partner/SecurityInsurance";
 import PartnerSupport from "./pages/kitchen-partner/PartnerSupport";
 import DeliveryPartnerOnboarding from "./pages/delivery-partner/DeliveryPartnerOnboarding";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
+import RestaurantPartnership from "./pages/restaurant/RestaurantPartnership";
+import RestaurantDashboard from "./pages/restaurant/RestaurantDashboard";
 import NotFound from "./pages/NotFound";
 import NotificationSignup from "./pages/NotificationSignup";
 import Auth from "./pages/Auth";
@@ -89,6 +91,8 @@ const App = () => {
                 <Route path="/kitchen-partner/support" element={<PartnerSupport />} />
                 <Route path="/delivery-partner/onboarding" element={<DeliveryPartnerOnboarding />} />
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/restaurant/partnership" element={<RestaurantPartnership />} />
+                <Route path="/restaurant/dashboard" element={<RestaurantDashboard />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/my-orders" element={<MyOrders />} />
