@@ -91,7 +91,7 @@ const CustomerServices = () => {
           <div 
             className="bg-card rounded-lg p-8 max-w-4xl mx-auto border shadow-sm relative overflow-hidden"
             style={{
-              backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.6)), url(${chefRecruitmentBg})`,
+              backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.8)), url(${chefRecruitmentBg})`,
               backgroundSize: 'cover',
               backgroundPosition: 'center',
               backgroundRepeat: 'no-repeat'
