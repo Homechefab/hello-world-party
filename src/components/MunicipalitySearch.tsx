@@ -20,6 +20,8 @@ const MunicipalitySearch = () => {
   const [address, setAddress] = useState("");
   const [result, setResult] = useState<MunicipalityResult | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
+  const [tempApiKey, setTempApiKey] = useState("");
 
   const searchMunicipality = async () => {
     if (!address.trim()) {
@@ -33,16 +35,29 @@ const MunicipalitySearch = () => {
 
     setLoading(true);
     try {
+      // Try with Supabase function first
       const { data, error } = await supabase.functions.invoke('municipality-search', {
-        body: { address }
+        body: { 
+          address,
+          // If user provided temporary API key, include it
+          tempApiKey: tempApiKey || undefined
+        }
       });
 
       if (error) {
         console.error('Supabase function error:', error);
-        throw new Error('API-anrop misslyckades');
+        // If Supabase function fails and user has temp API key, try direct call
+        if (tempApiKey) {
+          return await searchWithDirectCall();
+        }
+        throw new Error('API-anrop misslyckades via Supabase function');
       }
 
       if (data.error) {
+        // If we get specific error about API key and user has temp key, try direct call
+        if (data.error.includes('API-nyckel') && tempApiKey) {
+          return await searchWithDirectCall();
+        }
         throw new Error(data.error);
       }
 
@@ -56,16 +71,114 @@ const MunicipalitySearch = () => {
       console.error('Municipality search error:', error);
       toast({
         title: "Fel vid sökning",
-        description: "Kunde inte hitta information om kommunen. Försök igen eller kontakta oss för hjälp.",
+        description: error instanceof Error ? error.message : "Kunde inte hitta information om kommunen. Försök igen eller kontakta oss för hjälp.",
         variant: "destructive"
       });
+      // Show API key input if search fails
+      setShowApiKeyInput(true);
     } finally {
       setLoading(false);
     }
   };
 
+  const searchWithDirectCall = async () => {
+    if (!tempApiKey) {
+      throw new Error('Ingen temporär API-nyckel angiven');
+    }
+
+    const response = await fetch('https://api.perplexity.ai/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${tempApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-sonar-small-128k-online',
+        messages: [
+          {
+            role: 'system',
+            content: 'Du är en expert på svenska kommuner och deras e-tjänster. Svara ENDAST med giltigt JSON utan andra tecken eller text.'
+          },
+          {
+            role: 'user',
+            content: `För adressen "${address}" i Sverige, hitta vilken kommun den tillhör och ge mig aktuella länkar till ansökningsblanketter eller e-tjänster för livsmedelsregistrering/livsmedelstillstånd från den kommunen. 
+
+Svara i exakt detta JSON-format:
+{
+  "municipality": "Kommunnamn",
+  "links": [
+    {
+      "title": "Namn på tjänst/blankett",
+      "url": "https://fullständig-url",
+      "description": "Kort beskrivning"
+    }
+  ]
+}`
+          }
+        ],
+        temperature: 0.2,
+        top_p: 0.9,
+        max_tokens: 1000,
+        return_images: false,
+        return_related_questions: false,
+        search_recency_filter: 'month',
+        frequency_penalty: 1,
+        presence_penalty: 0
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Direct API call failed:', response.status, errorText);
+      
+      if (response.status === 401) {
+        throw new Error('API-nyckeln är ogiltig. Kontrollera att du har angett rätt Perplexity API-nyckel.');
+      }
+      throw new Error(`API-anrop misslyckades: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const content = data.choices[0].message.content;
+    
+    const parsedResult = JSON.parse(content);
+    setResult(parsedResult);
+    toast({
+      title: "Sökning slutförd (direktanrop)",
+      description: `Hittade information för ${parsedResult.municipality}`,
+    });
+  };
+
   return (
     <div className="space-y-4">
+      {/* Temporary API Key Input (shown if search fails) */}
+      {showApiKeyInput && (
+        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+          <p className="text-sm text-amber-800 mb-2">
+            <strong>Felsökningsläge:</strong> Det verkar som att API-nyckeln inte fungerar som förväntat. 
+            Du kan ange din egen Perplexity API-nyckel här för att testa funktionen.
+          </p>
+          <div className="flex gap-2">
+            <Input
+              type="password"
+              placeholder="Din Perplexity API-nyckel (pplx-...)"
+              value={tempApiKey}
+              onChange={(e) => setTempApiKey(e.target.value)}
+              className="text-sm"
+            />
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setShowApiKeyInput(false)}
+            >
+              Stäng
+            </Button>
+          </div>
+          <p className="text-xs text-amber-700 mt-2">
+            Du kan få en API-nyckel på: <a href="https://www.perplexity.ai/settings/api" target="_blank" rel="noopener noreferrer" className="underline">perplexity.ai/settings/api</a>
+          </p>
+        </div>
+      )}
+
       {/* Address Search */}
       <div className="flex gap-2">
         <div className="flex-1">
