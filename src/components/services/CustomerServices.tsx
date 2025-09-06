@@ -97,14 +97,6 @@ const CustomerServices = () => {
               backgroundRepeat: 'no-repeat'
             }}
           >
-            {/* Bild ovanför rubrik */}
-            <div className="mb-6">
-              <img 
-                src={becomeChefImage} 
-                alt="Kvinna som lagar mat i sitt hemkök - helkroppsbild"
-                className="w-full h-64 object-contain rounded-lg mx-auto bg-white/60 backdrop-blur-sm"
-              />
-            </div>
             
             <h3 className="text-2xl font-bold mb-4 text-foreground">
               Vill du bli kock på Homechef?
