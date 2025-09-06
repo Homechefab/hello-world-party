@@ -27,10 +27,24 @@ serve(async (req) => {
 
     const perplexityApiKey = Deno.env.get('PERPLEXITY_API_KEY');
     
+    console.log('API key exists:', !!perplexityApiKey);
+    console.log('API key length:', perplexityApiKey?.length || 0);
+    
     if (!perplexityApiKey) {
       console.error('Perplexity API key not found in environment');
       return new Response(
-        JSON.stringify({ error: 'API-konfiguration saknas' }),
+        JSON.stringify({ error: 'API-konfiguration saknas - ingen API-nyckel hittades' }),
+        { 
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        }
+      );
+    }
+
+    if (perplexityApiKey.length < 10) {
+      console.error('API key seems too short:', perplexityApiKey.length);
+      return new Response(
+        JSON.stringify({ error: 'API-nyckeln verkar vara för kort eller felaktig' }),
         { 
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -86,8 +100,20 @@ Svara i exakt detta JSON-format:
       const errorText = await response.text();
       console.error('Error response:', errorText);
       
+      let errorMessage = 'API-anrop misslyckades';
+      if (response.status === 401) {
+        errorMessage = 'API-nyckeln är inte giltig. Kontrollera att du har angett rätt Perplexity API-nyckel.';
+      } else if (response.status === 403) {
+        errorMessage = 'API-nyckeln har inte rätt behörigheter.';
+      } else if (response.status === 429) {
+        errorMessage = 'För många förfrågningar. Försök igen om en stund.';
+      }
+      
       return new Response(
-        JSON.stringify({ error: 'API-anrop misslyckades' }),
+        JSON.stringify({ 
+          error: errorMessage,
+          details: `Status: ${response.status}, ${errorText.slice(0, 200)}`
+        }),
         { 
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
