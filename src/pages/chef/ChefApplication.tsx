@@ -12,7 +12,7 @@ import MunicipalitySearch from "@/components/MunicipalitySearch";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import approvedKitchenImage from "@/assets/realistic-approved-home-kitchen.jpg";
+import approvedKitchenImage from "@/assets/swedish-villa-kitchen-divided.jpg";
 
 const steps = [
   {
