@@ -5,7 +5,7 @@ import { ChefHat, Users, Calendar, Utensils, CheckCircle, Shield } from "lucide-
 import sellFoodImage from "@/assets/service-sell-food.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
-import approvedKitchenImage from "@/assets/two-sinks-clear-labels-kitchen.jpg";
+import approvedKitchenImage from "@/assets/modern-scandinavian-labeled-kitchen.jpg";
 
 const chefServices = [
   {
