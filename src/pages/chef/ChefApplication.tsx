@@ -12,7 +12,7 @@ import MunicipalitySearch from "@/components/MunicipalitySearch";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import approvedKitchenImage from "@/assets/swedish-villa-kitchen-divided.jpg";
+import approvedKitchenImage from "@/assets/official-compliant-kitchen.jpg";
 
 const steps = [
   {
@@ -321,17 +321,17 @@ const ChefApplication = () => {
                     
                     <div className="space-y-3">
                       {[
-                        "Ytor som kommer i kontakt med mat ska vara lätta att rengöra och i gott skick",
-                        "Privat mat och företagets mat ska kunna skiljas åt vid förvaring",
-                        "Rutiner för rengöring mellan privat och företagsanvändning",
-                        "Möjlighet att tvätta händer ordentligt",
-                        "Lämpliga skyddskläder när det behövs (förkläde, handskar)",
-                        "Husdjur får inte ha tillträde under mathantering", 
-                        "Ingen ska hantera mat när någon är sjuk i hushållet",
-                        "Tillräcklig kunskap för säker livsmedelshantering",
-                        "Temperaturkontroll av kyl och frys",
-                        "Märkning av produkter vid försäljning",
-                        "Registrering som livsmedelsanläggning hos kommunen"
+                        "Separering mellan verksamhet och privat användning - i tid eller rum",
+                        "Handhygien - möjlighet att tvätta händer mellan olika moment", 
+                        "Rutiner för sjukdom - vad som gäller när någon i hemmet är sjuk",
+                        "Rengöringsrutiner för redskap, ytor och utrustning",
+                        "Rutiner för familjemedlemmar och husdjur under verksamhet",
+                        "Tillräckligt med ytor för att separera råvaror och färdiga produkter",
+                        "Lämplig utrustning för temperaturkontroll och hygien",
+                        "HACCP-analys av risker i din specifika verksamhet",
+                        "Extra noggrannhet vid hantering av fisk, kött och animaliska produkter",
+                        "Rutiner för arbetskläder, kökshanddukar och städmaterial",
+                        "Vattenkvalitet - extra rutiner vid egen brunn"
                       ].map((requirement, index) => (
                         <div key={index} className="flex items-start gap-3">
                           <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
@@ -345,12 +345,12 @@ const ChefApplication = () => {
                         <CheckCircle className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
                         <div>
                           <p className="text-xs font-medium text-blue-700 dark:text-blue-300 mb-1">
-                            Viktigt enligt Livsmedelsverket
+                            Enligt livsmedelslagstiftningen
                           </p>
                           <p className="text-xs text-blue-600 dark:text-blue-400">
-                            "Det finns inget i lagstiftningen som förbjuder att använda vanliga kök, 
-                            så länge hygienreglerna uppfylls. Du måste kunna visa för kommunens 
-                            livsmedelskontroll att verksamheten uppfyller alla krav."
+                            "Det måste finnas ordentlig separation mellan det som tillhör din livsmedelsverksamhet 
+                            och det som hör till dina normala hushållsaktiviteter. I vissa fall kan separering ske i tid, 
+                            förutsatt att du har goda rutiner för detta."
                           </p>
                         </div>
                       </div>
