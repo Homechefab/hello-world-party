@@ -12,6 +12,7 @@ import MunicipalitySearch from "@/components/MunicipalitySearch";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import approvedKitchenImage from "@/assets/approved-kitchen-example.jpg";
 
 const steps = [
   {
@@ -281,6 +282,81 @@ const ChefApplication = () => {
                   Sök på din adress för att få direktlänkar till ansökningsblanketter och e-tjänster för livsmedelsregistrering från din kommun.
                 </p>
                 <MunicipalitySearch />
+              </div>
+            </div>
+
+            {/* Approved Kitchen Information Section */}
+            <div className="mt-12 bg-white/50 rounded-lg p-6 border">
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-bold text-foreground mb-4">
+                  Så här ser ett godkänt kök ut
+                </h2>
+                <p className="text-muted-foreground max-w-3xl mx-auto">
+                  För att få sälja mat från ditt kök måste det uppfylla kommunens krav för livsmedelssäkerhet. 
+                  Här är ett exempel på hur ett godkänt kök kan se ut.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start max-w-6xl mx-auto">
+                {/* Kitchen Image */}
+                <div className="relative">
+                  <img 
+                    src={approvedKitchenImage} 
+                    alt="Exempel på godkänt kök enligt kommunala krav"
+                    className="w-full rounded-lg shadow-lg"
+                  />
+                  <div className="absolute top-4 left-4 bg-green-500/90 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4" />
+                    Godkänt kök
+                  </div>
+                </div>
+
+                {/* Requirements List */}
+                <div className="space-y-4">
+                  <div className="bg-card rounded-lg p-4 border">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Shield className="w-5 h-5 text-green-500" />
+                      <h3 className="text-lg font-semibold">Kommunala krav</h3>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      {[
+                        "Rena, tvättbara ytor i rostfritt stål eller liknande",
+                        "Effektiv ventilation med köksfläkt",
+                        "Handtvättställ med tvål och handsprit",
+                        "Separata skärbrädor för olika livsmedel",
+                        "Kylförvaring med rätt temperatur (max 4°C)",
+                        "Frysförvaring (min -18°C)",
+                        "Termometer för temperaturkontroll",
+                        "Brandsläckare och rökdetektor",
+                        "Halkfria golv som är lätta att rengöra",
+                        "Ordnad förvaring med märkta behållare",
+                        "Rengöringsmedel separerat från mat",
+                        "Tillräcklig belysning (min 500 lux)"
+                      ].map((requirement, index) => (
+                        <div key={index} className="flex items-start gap-3">
+                          <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                          <span className="text-xs text-muted-foreground">{requirement}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="mt-4 p-3 bg-blue-500/10 rounded-lg border border-blue-200/20">
+                      <div className="flex items-start gap-3">
+                        <CheckCircle className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="text-xs font-medium text-blue-700 dark:text-blue-300 mb-1">
+                            Tips från kommunen
+                          </p>
+                          <p className="text-xs text-blue-600 dark:text-blue-400">
+                            Kontakta din kommuns miljö- och hälsoskyddskontor före du startar. 
+                            De kan göra en kostnadsfri rådgivning för att säkerställa att ditt kök uppfyller alla krav.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
