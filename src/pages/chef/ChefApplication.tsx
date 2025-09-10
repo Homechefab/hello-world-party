@@ -12,7 +12,7 @@ import MunicipalitySearch from "@/components/MunicipalitySearch";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import approvedKitchenImage from "@/assets/kitchen-no-island.jpg";
+import approvedKitchenImage from "@/assets/kitchen-single-sink.jpg";
 
 const steps = [
   {
