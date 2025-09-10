@@ -12,7 +12,7 @@ import MunicipalitySearch from "@/components/MunicipalitySearch";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import approvedKitchenImage from "@/assets/approved-home-kitchen-labeled.jpg";
+import approvedKitchenImage from "@/assets/realistic-approved-home-kitchen.jpg";
 
 const steps = [
   {
@@ -321,18 +321,17 @@ const ChefApplication = () => {
                     
                     <div className="space-y-3">
                       {[
-                        "Rena, tvättbara ytor i rostfritt stål eller liknande",
-                        "Effektiv ventilation med köksfläkt",
-                        "Handtvättställ med tvål och handsprit",
-                        "Separata skärbrädor för olika livsmedel",
-                        "Kylförvaring med rätt temperatur (max 4°C)",
-                        "Frysförvaring (min -18°C)",
-                        "Termometer för temperaturkontroll",
-                        "Brandsläckare och rökdetektor",
-                        "Halkfria golv som är lätta att rengöra",
-                        "Ordnad förvaring med märkta behållare",
-                        "Rengöringsmedel separerat från mat",
-                        "Tillräcklig belysning (min 500 lux)"
+                        "Ytor som kommer i kontakt med mat ska vara lätta att rengöra och i gott skick",
+                        "Privat mat och företagets mat ska kunna skiljas åt vid förvaring",
+                        "Rutiner för rengöring mellan privat och företagsanvändning",
+                        "Möjlighet att tvätta händer ordentligt",
+                        "Lämpliga skyddskläder när det behövs (förkläde, handskar)",
+                        "Husdjur får inte ha tillträde under mathantering", 
+                        "Ingen ska hantera mat när någon är sjuk i hushållet",
+                        "Tillräcklig kunskap för säker livsmedelshantering",
+                        "Temperaturkontroll av kyl och frys",
+                        "Märkning av produkter vid försäljning",
+                        "Registrering som livsmedelsanläggning hos kommunen"
                       ].map((requirement, index) => (
                         <div key={index} className="flex items-start gap-3">
                           <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
@@ -346,11 +345,12 @@ const ChefApplication = () => {
                         <CheckCircle className="w-4 h-4 text-blue-500 mt-0.5 flex-shrink-0" />
                         <div>
                           <p className="text-xs font-medium text-blue-700 dark:text-blue-300 mb-1">
-                            Tips från kommunen
+                            Viktigt enligt Livsmedelsverket
                           </p>
                           <p className="text-xs text-blue-600 dark:text-blue-400">
-                            Kontakta din kommuns miljö- och hälsoskyddskontor före du startar. 
-                            De kan göra en kostnadsfri rådgivning för att säkerställa att ditt kök uppfyller alla krav.
+                            "Det finns inget i lagstiftningen som förbjuder att använda vanliga kök, 
+                            så länge hygienreglerna uppfylls. Du måste kunna visa för kommunens 
+                            livsmedelskontroll att verksamheten uppfyller alla krav."
                           </p>
                         </div>
                       </div>
