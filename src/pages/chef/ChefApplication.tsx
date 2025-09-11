@@ -12,6 +12,7 @@ import MunicipalitySearch from "@/components/MunicipalitySearch";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import standardSwedishKitchen from "@/assets/standard-swedish-kitchen.jpg";
 
 
 const steps = [
@@ -298,6 +299,18 @@ const ChefApplication = () => {
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start max-w-6xl mx-auto">
+                {/* Kitchen Image */}
+                <div className="relative">
+                  <img 
+                    src={standardSwedishKitchen} 
+                    alt="Exempel på godkänt svenskt standardkök enligt kommunala krav"
+                    className="w-full rounded-lg shadow-lg"
+                  />
+                  <div className="absolute top-4 left-4 bg-green-500/90 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4" />
+                    Godkänt kök
+                  </div>
+                </div>
 
                 {/* Requirements List */}
                 <div className="space-y-4">
