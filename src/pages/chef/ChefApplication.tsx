@@ -296,6 +296,11 @@ const ChefApplication = () => {
                   För att få sälja mat från ditt kök måste det uppfylla kommunens krav för livsmedelssäkerhet. 
                   Här är ett exempel på hur ett godkänt kök kan se ut.
                 </p>
+                <div className="mt-6 flex justify-center">
+                  <Button onClick={() => navigate("/chef/dashboard")}>
+                    Gå till kockens dashboard
+                  </Button>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start max-w-6xl mx-auto">
