@@ -67,12 +67,14 @@ export const RoleProvider = ({ children }: { children: ReactNode }) => {
   const [usingMockData, setUsingMockData] = useState(true);
 
   useEffect(() => {
+    console.log('RoleProvider: useEffect triggered', { authUser: !!authUser, usingMockData });
     if (authUser && !usingMockData) {
       loadUserProfile();
     } else {
       // Use mock data system
       const savedRole = localStorage.getItem('selectedRole') || 'customer1';
       const savedUser = mockUsers[savedRole];
+      console.log('RoleProvider: Loading mock user', savedRole, savedUser);
       if (savedUser) {
         setCurrentUser(savedUser);
       } else {

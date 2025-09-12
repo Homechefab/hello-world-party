@@ -17,6 +17,7 @@ interface SearchFilters {
 }
 
 const Index = () => {
+  console.log('Index component rendering');
   const [filters, setFilters] = useState<SearchFilters>({
     query: "",
     category: "",
@@ -26,6 +27,8 @@ const Index = () => {
     sortBy: "relevance"
   });
 
+  console.log('Index: About to render components');
+  
   return (
     <div className="min-h-screen bg-background">
       <Hero />
