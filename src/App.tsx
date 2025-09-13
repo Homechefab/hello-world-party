@@ -27,6 +27,9 @@ import { ChefDashboard } from "./pages/chef/ChefDashboard";
 import { ChefOnboarding } from "./pages/chef/ChefOnboarding";
 import ChefApplication from "./pages/chef/ChefApplication";
 import ApplicationPending from "./pages/chef/ApplicationPending";
+import PrivateChefServices from "./pages/chef/PrivateChefServices";
+import ChefExperiences from "./pages/chef/ChefExperiences";
+import KitchenRequirements from "./pages/chef/KitchenRequirements";
 import { KitchenPartnerDashboard } from "./pages/kitchen-partner/KitchenPartnerDashboard";
 import { KitchenPartnerOnboarding } from "./pages/kitchen-partner/KitchenPartnerOnboarding";
 import KitchenPartnerHowItWorks from "./pages/kitchen-partner/HowItWorks";
@@ -81,6 +84,9 @@ const App = () => {
                 <Route path="/chef/application" element={<ChefApplication />} />
                 <Route path="/chef/application-pending" element={<ApplicationPending />} />
                 <Route path="/chef/dashboard" element={<ChefDashboard />} />
+                <Route path="/chef/private-services" element={<PrivateChefServices />} />
+                <Route path="/chef/experiences" element={<ChefExperiences />} />
+                <Route path="/chef/kitchen-requirements" element={<KitchenRequirements />} />
                 <Route path="/hyr-ut-ditt-kok" element={<HyrUtDittKokInfo />} />
                 <Route path="/kitchen-partner/dashboard" element={<KitchenPartnerDashboard />} />
                 
