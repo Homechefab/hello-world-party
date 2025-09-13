@@ -73,13 +73,17 @@ const RestaurantServices = () => {
             Nå nya kunder och öka din försäljning med vår plattform.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
-              Ansök som restaurangpartner
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-            <Button variant="outline" size="lg">
-              Läs mer om fördelarna
-            </Button>
+            <Link to="/restaurant/apply">
+              <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                Ansök som restaurangpartner
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
+            <Link to="/restaurant/partnership">
+              <Button variant="outline" size="lg">
+                Läs mer om fördelarna
+              </Button>
+            </Link>
           </div>
         </div>
 
