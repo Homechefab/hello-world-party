@@ -221,12 +221,12 @@ const RestaurantPartnership = () => {
             Anslut er restaurang idag och börja nå nya kunder genom hemkörning.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/restaurant/apply">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+            <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+              <Link to="/restaurant/apply">
                 Ansök som restaurangpartner
                 <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </Link>
+              </Link>
+            </Button>
             <Button variant="outline" size="lg" className="flex items-center gap-2">
               <Phone className="w-4 h-4" />
               Ring oss: 08-123 45 67
