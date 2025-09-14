@@ -56,15 +56,15 @@ const ChefHome = () => {
                   <h3 className="text-xl font-semibold mb-4 text-primary">Så kommer du igång</h3>
                   <div className="space-y-4">
                     <div className="flex items-start gap-3">
-                      <span className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0">1</span>
+                      <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></span>
                       <span className="text-muted-foreground">Ansök som kock och ladda upp nödvändiga dokument</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <span className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0">2</span>
+                      <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></span>
                       <span className="text-muted-foreground">Vi granskar handlingar och besked inom 24 timmar</span>
                     </div>
                     <div className="flex items-start gap-3">
-                      <span className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0">3</span>
+                      <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></span>
                       <span className="text-muted-foreground">Börja sälja din mat och skapa fantastiska matupplevelser</span>
                     </div>
                   </div>
