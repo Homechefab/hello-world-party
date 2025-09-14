@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChefHat, Users, Calendar, Utensils, CheckCircle, Shield } from "lucide-react";
+import { ChefHat, Users, Calendar, Utensils, CheckCircle, Shield, BarChart3 } from "lucide-react";
 import sellFoodImage from "@/assets/service-sell-food.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
 import approvedKitchenImage from "@/assets/swedish-villa-kitchen-realistic.jpg";
+import incomeReportsImage from "@/assets/income-reports-chef.jpg";
 
 const chefServices = [
   {
@@ -15,6 +16,14 @@ const chefServices = [
     href: "/chef/dashboard",
     icon: ChefHat,
     color: "from-green-500 to-green-600"
+  },
+  {
+    image: incomeReportsImage,
+    title: "Intäktsrapporter",
+    description: "Håll koll på dina inkomster och få hjälp med bokföring",
+    href: "/chef/dashboard?tab=income",
+    icon: BarChart3,
+    color: "from-blue-500 to-blue-600"
   },
   {
     image: privateChefImage,
@@ -30,7 +39,7 @@ const chefServices = [
     description: "Skapa unika matupplevelser hemma hos dig",
     href: "/chef/experiences",
     icon: Calendar,
-    color: "from-blue-500 to-blue-600"
+    color: "from-amber-500 to-amber-600"
   },
   {
     image: approvedKitchenImage,
@@ -55,7 +64,7 @@ const ChefServices = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
           {chefServices.map((service) => {
             const IconComponent = service.icon;
             return (
