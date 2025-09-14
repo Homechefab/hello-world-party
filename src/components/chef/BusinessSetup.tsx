@@ -70,7 +70,8 @@ const BusinessSetup = () => {
       description: 'Bestäm om du vill starta enskild firma eller aktiebolag',
       time: '30 min',
       cost: 'Gratis',
-      action: 'Överväg för- och nackdelar'
+      action: 'Överväg för- och nackdelar',
+      link: null
     },
     {
       step: 2,
@@ -78,7 +79,8 @@ const BusinessSetup = () => {
       description: 'Anmäl din näringsverksamhet online via Bolagsverket',
       time: '1 timme',
       cost: 'Gratis (enskild firma)',
-      action: 'Gå till verksamt.se'
+      action: 'Gå till verksamt.se',
+      link: 'https://verksamt.se'
     },
     {
       step: 3,
@@ -86,7 +88,8 @@ const BusinessSetup = () => {
       description: 'Ansök om F-skattesedel hos Skatteverket',
       time: '30 min',
       cost: 'Gratis',
-      action: 'Ansök på skatteverket.se'
+      action: 'Ansök på skatteverket.se',
+      link: 'https://skatteverket.se'
     },
     {
       step: 4,
@@ -94,7 +97,8 @@ const BusinessSetup = () => {
       description: 'Separera privat och företag genom eget företagskonto',
       time: '1 timme',
       cost: 'Bankavgifter',
-      action: 'Kontakta din bank'
+      action: 'Kontakta din bank',
+      link: null
     },
     {
       step: 5,
@@ -102,7 +106,8 @@ const BusinessSetup = () => {
       description: 'Ansvarsförsäkring och andra relevanta försäkringar',
       time: '2 timmar',
       cost: '2 000-5 000 kr/år',
-      action: 'Jämför försäkringsbolag'
+      action: 'Jämför försäkringsbolag',
+      link: null
     }
   ];
 
@@ -336,10 +341,23 @@ const BusinessSetup = () => {
                           <span>{step.cost}</span>
                         </div>
                       </div>
-                      <Button variant="outline" size="sm" className="mt-2">
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        {step.action}
-                      </Button>
+                      {step.link ? (
+                        <a 
+                          href={step.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                        >
+                          <Button variant="outline" size="sm" className="mt-2">
+                            <ExternalLink className="w-4 h-4 mr-2" />
+                            {step.action}
+                          </Button>
+                        </a>
+                      ) : (
+                        <Button variant="outline" size="sm" className="mt-2" disabled>
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          {step.action}
+                        </Button>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -357,12 +375,26 @@ const BusinessSetup = () => {
                     <span>Skatteverket: 0771-567 567</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <ExternalLink className="w-4 h-4 text-blue-600" />
-                    <span>verksamt.se</span>
+                    <a 
+                      href="https://verksamt.se" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-blue-600 hover:text-blue-800 hover:underline"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      <span>verksamt.se</span>
+                    </a>
                   </div>
                   <div className="flex items-center gap-2">
-                    <ExternalLink className="w-4 h-4 text-blue-600" />
-                    <span>skatteverket.se</span>
+                    <a 
+                      href="https://skatteverket.se" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-blue-600 hover:text-blue-800 hover:underline"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      <span>skatteverket.se</span>
+                    </a>
                   </div>
                 </div>
               </div>
