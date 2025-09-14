@@ -199,18 +199,19 @@ const BusinessSetup = () => {
 
   return (
     <div className="space-y-6">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold mb-2">Starta ditt matföretag</h1>
-        <p className="text-muted-foreground">
-          Allt du behöver veta för att starta och driva din matverksamhet lagligt
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold mb-4">Starta din matverksamhet</h1>
+        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          Allt du behöver veta för att registrera och driva din matverksamhet lagligt i Sverige. 
+          Vi guidar dig genom alla steg från företagsregistrering till försäkringar.
         </p>
       </div>
 
-      <Alert>
-        <AlertTriangle className="h-4 w-4" />
-        <AlertDescription>
-          <strong>Viktigt:</strong> Denna information är vägledande. Kontakta alltid en revisor eller 
-          juridisk rådgivare för personlig vägledning anpassad till din specifika situation.
+      <Alert className="bg-blue-50 border-blue-200">
+        <AlertTriangle className="h-4 w-4 text-blue-600" />
+        <AlertDescription className="text-blue-800">
+          <strong>Specifikt för matverksamhet:</strong> Som kock som säljer mat behöver du förutom företagsregistrering 
+          även ansöka om livsmedelstillstånd hos din kommun. Detta kräver godkänt kök och hygienplan.
         </AlertDescription>
       </Alert>
 
