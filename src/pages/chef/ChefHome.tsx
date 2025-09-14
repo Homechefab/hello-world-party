@@ -40,7 +40,7 @@ const ChefHome = () => {
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></span>
-                      <span>Genomförd hygienutbildning</span>
+                      <span>Grundläggande kunskap om hygien</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></span>
