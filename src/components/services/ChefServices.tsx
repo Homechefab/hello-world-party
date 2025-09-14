@@ -21,7 +21,7 @@ const chefServices = [
     image: businessRegistrationImage,
     title: "Registrera näringsverksamhet",
     description: "Lär dig starta företag, skatter, avdrag och försäkringar",
-    href: "/chef/dashboard?tab=business",
+    href: "/chef/business-registration",
     icon: Building2,
     color: "from-blue-500 to-blue-600"
   },
