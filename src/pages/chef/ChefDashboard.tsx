@@ -10,6 +10,7 @@ import { HygieneQuestionnaire } from '@/components/HygieneQuestionnaire';
 import { VideoUpload } from '@/components/VideoUpload';
 import { OrderManagement } from '@/components/chef/OrderManagement';
 import MenuManager from '@/components/chef/MenuManager';
+import IncomeReports from '@/components/chef/IncomeReports';
 import { 
   CheckCircle, 
   AlertCircle, 
@@ -189,11 +190,12 @@ export const ChefDashboard = () => {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-8">
           <TabsTrigger value="overview">Översikt</TabsTrigger>
           <TabsTrigger value="sell">Sälj Din Mat</TabsTrigger>
           <TabsTrigger value="orders">Beställningar</TabsTrigger>
           <TabsTrigger value="menu">Meny</TabsTrigger>
+          <TabsTrigger value="income">Intäkter</TabsTrigger>
           <TabsTrigger value="hygiene">Hygienplan</TabsTrigger>
           <TabsTrigger value="videos">Videos</TabsTrigger>
           <TabsTrigger value="sales">Försäljning</TabsTrigger>
@@ -371,6 +373,10 @@ export const ChefDashboard = () => {
 
         <TabsContent value="menu" className="space-y-6">
           <MenuManager />
+        </TabsContent>
+
+        <TabsContent value="income" className="space-y-6">
+          <IncomeReports />
         </TabsContent>
 
         <TabsContent value="sales" className="space-y-6">
