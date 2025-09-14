@@ -61,7 +61,7 @@ const ChefHome = () => {
                     </div>
                     <div className="flex items-start gap-3">
                       <span className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0">2</span>
-                      <span className="text-muted-foreground">Genomför hygienutbildning och få ditt kök godkänt</span>
+                      <span className="text-muted-foreground">Vi granskar handlingar och besked inom 24 timmar</span>
                     </div>
                     <div className="flex items-start gap-3">
                       <span className="w-6 h-6 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-sm font-semibold flex-shrink-0">3</span>
