@@ -18,14 +18,6 @@ const chefServices = [
     color: "from-green-500 to-green-600"
   },
   {
-    image: businessRegistrationImage,
-    title: "Registrera näringsverksamhet",
-    description: "Lär dig starta företag, skatter, avdrag och försäkringar",
-    href: "/chef/business-registration",
-    icon: Building2,
-    color: "from-blue-500 to-blue-600"
-  },
-  {
     image: privateChefImage,
     title: "Privatkock-tjänster",
     description: "Erbjud dina tjänster som privatkock för speciella evenemang",
@@ -48,6 +40,14 @@ const chefServices = [
     href: "/chef/kitchen-requirements",
     icon: Shield,
     color: "from-orange-500 to-orange-600"
+  },
+  {
+    image: businessRegistrationImage,
+    title: "Registrera näringsverksamhet",
+    description: "Lär dig starta företag, skatter, avdrag och försäkringar",
+    href: "/chef/business-registration",
+    icon: Building2,
+    color: "from-blue-500 to-blue-600"
   }
 ];
 
