@@ -97,7 +97,7 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground">För restauranger</h4>
             <ul className="space-y-2 text-muted-foreground">
-              <li><Link to="/restaurant/partnership" className="hover:text-primary transition-colors">Bli restaurangpartner</Link></li>
+              <li><Link to="/restaurant" className="hover:text-primary transition-colors">Bli restaurangpartner</Link></li>
               <li>
                 <button 
                   onClick={() => handleRestaurantLink('#våra-tjänster')}

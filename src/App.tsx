@@ -100,6 +100,7 @@ const App = () => {
                 <Route path="/kitchen-partner/support" element={<PartnerSupport />} />
                 <Route path="/delivery-partner/onboarding" element={<DeliveryPartnerOnboarding />} />
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/restaurant" element={<RestaurantPartnership />} />
                 <Route path="/restaurant/partnership" element={<RestaurantPartnership />} />
                 <Route path="/restaurant/dashboard" element={<RestaurantDashboard />} />
                 <Route path="/restaurant/apply" element={<RestaurantApplicationForm />} />
