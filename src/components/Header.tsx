@@ -41,7 +41,7 @@ const Header = () => {
 
   const roles = [
     { id: 'customer1', name: 'Kund', icon: Users, active: isCustomer, dashboard: '/' },
-    { id: 'chef1', name: 'Kock', icon: ChefHat, active: isChef, dashboard: '/chef/application' },
+    { id: 'chef1', name: 'Kock', icon: ChefHat, active: isChef, dashboard: '/chef' },
     { id: 'kitchen_partner1', name: 'Kökspartner', icon: Building, active: isKitchenPartner, dashboard: '/kitchen-partner/dashboard' },
     { id: 'restaurant1', name: 'Restaurang', icon: Store, active: isRestaurant, dashboard: '/' },
     { id: 'admin1', name: 'Admin', icon: Shield, active: isAdmin, dashboard: '/admin/dashboard' },
@@ -55,7 +55,7 @@ const Header = () => {
       
       // Navigate based on role for test mode
       if (roleId === 'chef1') {
-        navigate('/chef/application'); // Kockar ska gå till ansökan först
+        navigate('/chef'); // Gå till kockens översiktssida
       } else if (roleId === 'kitchen_partner1') {
         navigate('/kitchen-partner/dashboard'); 
       } else if (roleId === 'admin1') {
