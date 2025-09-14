@@ -22,6 +22,7 @@ import {
 
 const BusinessSetup = () => {
   const [activeTab, setActiveTab] = useState('company-forms');
+  const [showComparisonDetails, setShowComparisonDetails] = useState(false);
 
   const companyForms = [
     {
@@ -352,6 +353,16 @@ const BusinessSetup = () => {
                             {step.action}
                           </Button>
                         </a>
+                      ) : step.step === 1 ? (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="mt-2" 
+                          onClick={() => setShowComparisonDetails(!showComparisonDetails)}
+                        >
+                          <BookOpen className="w-4 h-4 mr-2" />
+                          {step.action}
+                        </Button>
                       ) : (
                         <Button variant="outline" size="sm" className="mt-2" disabled>
                           <CheckCircle className="w-4 h-4 mr-2" />
@@ -362,6 +373,130 @@ const BusinessSetup = () => {
                   </div>
                 ))}
               </div>
+
+              {showComparisonDetails && (
+                <div className="mt-6 p-6 bg-gray-50 border rounded-lg">
+                  <h4 className="font-semibold text-lg mb-4">Detaljerad jämförelse av företagsformer</h4>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="border border-green-200 bg-green-50 p-4 rounded-lg">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Building2 className="w-5 h-5 text-green-600" />
+                        <h5 className="font-semibold text-green-800">Enskild firma</h5>
+                        <Badge className="bg-green-600">Rekommenderat för kockar</Badge>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div>
+                          <h6 className="font-medium text-green-700 mb-1">Fördelar:</h6>
+                          <ul className="text-sm space-y-1">
+                            <li className="flex items-start gap-2">
+                              <CheckCircle className="w-3 h-3 text-green-500 mt-1 flex-shrink-0" />
+                              <span>Enkel och snabb registrering - kan göras på en dag</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <CheckCircle className="w-3 h-3 text-green-500 mt-1 flex-shrink-0" />
+                              <span>Ingen startkostnad - helt gratis att starta</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <CheckCircle className="w-3 h-3 text-green-500 mt-1 flex-shrink-0" />
+                              <span>Enkel bokföring - ingen revisor krävs</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <CheckCircle className="w-3 h-3 text-green-500 mt-1 flex-shrink-0" />
+                              <span>Full kontroll - du bestämmer allt själv</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <CheckCircle className="w-3 h-3 text-green-500 mt-1 flex-shrink-0" />
+                              <span>Perfekt för mindre matverksamheter</span>
+                            </li>
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <h6 className="font-medium text-red-700 mb-1">Nackdelar:</h6>
+                          <ul className="text-sm space-y-1">
+                            <li className="flex items-start gap-2">
+                              <AlertTriangle className="w-3 h-3 text-red-500 mt-1 flex-shrink-0" />
+                              <span>Personligt betalningsansvar - risk för privata tillgångar</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <AlertTriangle className="w-3 h-3 text-red-500 mt-1 flex-shrink-0" />
+                              <span>Svårare att få lån eller investerare</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <AlertTriangle className="w-3 h-3 text-red-500 mt-1 flex-shrink-0" />
+                              <span>Högre skatt vid större vinster</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border border-blue-200 bg-blue-50 p-4 rounded-lg">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Building2 className="w-5 h-5 text-blue-600" />
+                        <h5 className="font-semibold text-blue-800">Aktiebolag (AB)</h5>
+                        <Badge variant="outline">För större verksamheter</Badge>
+                      </div>
+                      
+                      <div className="space-y-3">
+                        <div>
+                          <h6 className="font-medium text-green-700 mb-1">Fördelar:</h6>
+                          <ul className="text-sm space-y-1">
+                            <li className="flex items-start gap-2">
+                              <CheckCircle className="w-3 h-3 text-green-500 mt-1 flex-shrink-0" />
+                              <span>Begränsat betalningsansvar - skyddar privata tillgångar</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <CheckCircle className="w-3 h-3 text-green-500 mt-1 flex-shrink-0" />
+                              <span>Lättare att ta in investerare eller partners</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <CheckCircle className="w-3 h-3 text-green-500 mt-1 flex-shrink-0" />
+                              <span>Bättre skatteplanering vid höga vinster</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <CheckCircle className="w-3 h-3 text-green-500 mt-1 flex-shrink-0" />
+                              <span>Professionell image gentemot kunder</span>
+                            </li>
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <h6 className="font-medium text-red-700 mb-1">Nackdelar:</h6>
+                          <ul className="text-sm space-y-1">
+                            <li className="flex items-start gap-2">
+                              <AlertTriangle className="w-3 h-3 text-red-500 mt-1 flex-shrink-0" />
+                              <span>Kräver 25 000 kr i aktiekapital</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <AlertTriangle className="w-3 h-3 text-red-500 mt-1 flex-shrink-0" />
+                              <span>Mer komplex bokföring och administration</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <AlertTriangle className="w-3 h-3 text-red-500 mt-1 flex-shrink-0" />
+                              <span>Kräver ofta revisor - extra kostnad</span>
+                            </li>
+                            <li className="flex items-start gap-2">
+                              <AlertTriangle className="w-3 h-3 text-red-500 mt-1 flex-shrink-0" />
+                              <span>Längre registreringsprocess</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <h6 className="font-semibold text-yellow-800 mb-2">Rekommendation för kockar:</h6>
+                    <p className="text-sm text-yellow-700">
+                      <strong>Börja med enskild firma</strong> om du planerar att sälja mat från hemmet eller i mindre skala. 
+                      Du kan alltid byta till aktiebolag senare när verksamheten växer och omsätter över 500 000 kr per år.
+                    </p>
+                  </div>
+                </div>
+              )}
 
               <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <h4 className="font-semibold text-blue-800 mb-2">Viktiga kontakter</h4>
