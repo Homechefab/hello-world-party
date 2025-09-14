@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ChefHat, Users, Calendar, Utensils, CheckCircle, Shield, BarChart3 } from "lucide-react";
+import { ChefHat, Users, Calendar, Utensils, CheckCircle, Shield, Building2 } from "lucide-react";
 import sellFoodImage from "@/assets/service-sell-food.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
 import approvedKitchenImage from "@/assets/swedish-villa-kitchen-realistic.jpg";
-import incomeReportsImage from "@/assets/income-reports-chef.jpg";
+import businessRegistrationImage from "@/assets/business-registration.jpg";
 
 const chefServices = [
   {
@@ -18,11 +18,11 @@ const chefServices = [
     color: "from-green-500 to-green-600"
   },
   {
-    image: incomeReportsImage,
-    title: "Intäktsrapporter",
-    description: "Håll koll på dina inkomster och få hjälp med bokföring",
-    href: "/chef/dashboard?tab=income",
-    icon: BarChart3,
+    image: businessRegistrationImage,
+    title: "Registrera näringsverksamhet",
+    description: "Lär dig starta företag, skatter, avdrag och försäkringar",
+    href: "/chef/dashboard?tab=business",
+    icon: Building2,
     color: "from-blue-500 to-blue-600"
   },
   {
