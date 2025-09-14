@@ -36,7 +36,7 @@ const ChefHome = () => {
                   <ul className="space-y-3 text-muted-foreground">
                     <li className="flex items-start gap-3">
                       <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></span>
-                      <span>Godkänt kök som uppfyller livsmedelssäkerhetskrav</span>
+                      <span>Registrering och godkännande hos kommunen</span>
                     </li>
                     <li className="flex items-start gap-3">
                       <span className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></span>
