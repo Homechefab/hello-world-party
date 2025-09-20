@@ -13,7 +13,7 @@ const chefServices = [
     image: sellFoodImage,
     title: "Sälj din mat",
     description: "Skapa och sälj dina egna rätter till hungriga kunder",
-    href: "/chef/dashboard",
+    href: "/chef/application",
     icon: ChefHat,
     color: "from-green-500 to-green-600"
   },
