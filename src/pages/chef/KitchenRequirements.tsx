@@ -89,7 +89,7 @@ const KitchenRequirements = () => {
               Kökskrav
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent">
-              Så här ser ett godkänt kök ut
+              Krav och riktlinjer
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
               För att få sälja mat från ditt kök måste det uppfylla kommunens krav för livsmedelssäkerhet. 
