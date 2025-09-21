@@ -290,7 +290,7 @@ const ChefApplication = () => {
             <div className="mt-12 bg-white/50 rounded-lg p-6 border">
               <div className="text-center mb-8">
                 <h2 className="text-2xl font-bold text-foreground mb-4">
-                  Standard kök
+                  Vanlig standard kök
                 </h2>
                 <p className="text-muted-foreground max-w-3xl mx-auto">
                   För att få sälja mat från ditt kök måste det uppfylla kommunens krav för livsmedelssäkerhet. 
