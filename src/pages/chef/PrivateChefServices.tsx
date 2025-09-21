@@ -21,12 +21,12 @@ const PrivateChefServices = () => {
     {
       icon: Users,
       title: "Privata middagar",
-      description: "Laga mat för intima middagar hemma hos kunder"
+      description: "Laga mat för intima middagar i kundens hem"
     },
     {
       icon: Calendar,
-      title: "Speciella event",
-      description: "Caterera bröllop, födelsedagar och företagsevent"
+      title: "Speciella evenemang",
+      description: "Caterera bröllop, födelsedagar och företagsevenemang"
     },
     {
       icon: ChefHat,
@@ -41,11 +41,11 @@ const PrivateChefServices = () => {
   ];
 
   const benefits = [
-    "Sätt ditt eget pris för tjänster",
+    "Sätt dina egna priser",
     "Flexibla arbetstider",
     "Direkta betalningar via plattformen",
     "Försäkringsskydd under uppdrag",
-    "Marknadsföring till premium-kunder",
+    "Marknadsföring mot premiumkunder",
     "Dedikerad support för privatkockar"
   ];
 
@@ -54,7 +54,7 @@ const PrivateChefServices = () => {
     "Minst 2 års professionell erfarenhet",
     "Hygienbevis och HACCP-kunskap",
     "Egen transport och utrustning",
-    "Kundreferenser eller portfolio"
+    "Kundreferenser eller portfölj"
   ];
 
   return (
@@ -71,7 +71,7 @@ const PrivateChefServices = () => {
               Erbjud privatkock-tjänster
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              Ta ditt kockyrke till nästa nivå genom att erbjuda exklusiva privatkock-tjänster för speciella tillfällen och intima middagar.
+              Ta din kockkarriär till nästa nivå genom att erbjuda exklusiva privatkocktjänster för speciella tillfällen och intima middagar.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
@@ -90,7 +90,7 @@ const PrivateChefServices = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Olika typer av privatkock-tjänster</h2>
+            <h2 className="text-3xl font-bold mb-4">Olika typer av privatkocktjänster</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Diversifiera dina inkomstkällor genom att erbjuda olika typer av kulinariska upplevelser
             </p>
@@ -123,7 +123,7 @@ const PrivateChefServices = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Star className="w-5 h-5 text-primary" />
-                  Fördelar med privatkock-tjänster
+                  Fördelar med privatkocktjänster
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -209,7 +209,7 @@ const PrivateChefServices = () => {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">Redo att börja som privatkock?</h2>
           <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Utöka ditt kockyrke och skapa extraordinära matupplevelser för exklusiva kunder.
+            Utöka din kockkarriär och skapa extraordinära matupplevelser för exklusiva kunder.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
