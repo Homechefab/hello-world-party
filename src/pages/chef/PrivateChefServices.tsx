@@ -80,9 +80,6 @@ const PrivateChefServices = () => {
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
-              <Button variant="outline" size="lg">
-                Se exempel på tjänster
-              </Button>
             </div>
           </div>
         </div>
