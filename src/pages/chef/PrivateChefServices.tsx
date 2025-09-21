@@ -21,7 +21,7 @@ const PrivateChefServices = () => {
     {
       icon: Users,
       title: "Privata middagar",
-      description: "Laga mat för intima middagar i kundens hem"
+      description: "Laga mat för personliga middagar i kundens hem"
     },
     {
       icon: Calendar,
@@ -71,7 +71,7 @@ const PrivateChefServices = () => {
               Erbjud dina tjänster som privatkock
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              Ta din kockkarriär till nästa nivå genom att erbjuda exklusiva privatkocktjänster för speciella tillfällen och intima middagar.
+              Ta din kockkarriär till nästa nivå genom att erbjuda exklusiva privatkocktjänster för speciella tillfällen och personliga middagar.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/chef/application">
