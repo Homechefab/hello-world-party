@@ -41,7 +41,7 @@ const BusinessSetup = () => {
       ],
       cost: 'Gratis',
       timeToStart: '1-2 dagar',
-      recommended: true
+      recommended: false
     },
     {
       type: 'Aktiebolag (AB)',
@@ -256,12 +256,7 @@ const BusinessSetup = () => {
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {companyForms.map((form, index) => (
-                  <Card key={index} className={`relative ${form.recommended ? 'border-primary' : ''}`}>
-                    {form.recommended && (
-                      <Badge className="absolute -top-2 left-4 bg-primary">
-                        Rekommenderat
-                      </Badge>
-                    )}
+                  <Card key={index} className="relative">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Building2 className="w-5 h-5" />
@@ -383,7 +378,6 @@ const BusinessSetup = () => {
                       <div className="flex items-center gap-2 mb-3">
                         <Building2 className="w-5 h-5 text-green-600" />
                         <h5 className="font-semibold text-green-800">Enskild firma</h5>
-                        <Badge className="bg-green-600">Rekommenderat för kockar</Badge>
                       </div>
                       
                       <div className="space-y-3">
@@ -489,9 +483,9 @@ const BusinessSetup = () => {
                   </div>
 
                   <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <h6 className="font-semibold text-yellow-800 mb-2">Rekommendation för kockar:</h6>
+                    <h6 className="font-semibold text-yellow-800 mb-2">Information för kockar:</h6>
                     <p className="text-sm text-yellow-700">
-                      <strong>Börja med enskild firma</strong> om du planerar att sälja mat från hemmet eller i mindre skala. 
+                      <strong>Enskild firma</strong> är vanligt för kockar som planerar att sälja mat från hemmet eller i mindre skala. 
                       Du kan alltid byta till aktiebolag senare när verksamheten växer och omsätter över 500 000 kr per år.
                     </p>
                   </div>
