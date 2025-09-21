@@ -86,7 +86,7 @@ const KitchenRequirements = () => {
           <div className="text-center mb-12">
             <Badge variant="secondary" className="mb-4">
               <Shield className="w-4 h-4 mr-2" />
-              Kök-krav
+              Kökskrav
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent">
               Så här ser ett godkänt kök ut
