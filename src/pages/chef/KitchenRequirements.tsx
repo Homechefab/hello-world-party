@@ -96,7 +96,7 @@ const KitchenRequirements = () => {
               Här hittar du all information du behöver.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/chef/application">
+              <Link to="/chef/kitchen-assessment">
                 <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
                   Börja anpassa ditt kök
                   <ArrowRight className="w-5 h-5 ml-2" />
