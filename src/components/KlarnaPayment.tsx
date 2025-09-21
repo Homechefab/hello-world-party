@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 import { ShoppingCart, CreditCard } from 'lucide-react';
 
 interface OrderLine {
@@ -37,10 +37,6 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
   const [klarnaHtml, setKlarnaHtml] = useState('');
   const { toast } = useToast();
 
-  const supabase = createClient(
-    import.meta.env.VITE_SUPABASE_URL,
-    import.meta.env.VITE_SUPABASE_ANON_KEY
-  );
 
   const unitPrice = dishPrice * 100; // Convert to öre (SEK cents)
   const totalAmount = unitPrice * quantity;
