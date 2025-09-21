@@ -11,7 +11,8 @@ import {
   ArrowRight,
   CheckCircle,
   Phone,
-  Mail
+  Mail,
+  BookOpen
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import privateChefImage from "@/assets/private-chef.jpg";
@@ -37,6 +38,11 @@ const PrivateChefServices = () => {
       icon: Star,
       title: "Exklusiva menyer",
       description: "Skapa skräddarsydda menyer för varje tillfälle"
+    },
+    {
+      icon: BookOpen,
+      title: "Recept",
+      description: "Sälja unika recept och matlagningsguider"
     }
   ];
 
@@ -95,7 +101,7 @@ const PrivateChefServices = () => {
             </p>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-6 mb-16">
             {services.map((service, index) => (
               <Card key={index} className="text-center hover:shadow-lg transition-all duration-300 border-primary/10">
                 <CardHeader>
