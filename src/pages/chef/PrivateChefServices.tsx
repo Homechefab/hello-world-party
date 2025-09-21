@@ -74,10 +74,12 @@ const PrivateChefServices = () => {
               Ta din kockkarriär till nästa nivå genom att erbjuda exklusiva privatkocktjänster för speciella tillfällen och intima middagar.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
-                Kom igång som privatkock
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
+              <Link to="/chef/application">
+                <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                  Kom igång som privatkock
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
               <Button variant="outline" size="lg">
                 Se exempel på tjänster
               </Button>
@@ -212,10 +214,12 @@ const PrivateChefServices = () => {
             Utöka din kockkarriär och skapa extraordinära matupplevelser för exklusiva kunder.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
-              Kom igång nu
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
+            <Link to="/chef/application">
+              <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                Kom igång nu
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
             <Button variant="outline" size="lg" className="flex items-center gap-2">
               <Phone className="w-4 h-4" />
               Ring oss: 08-123 45 67
