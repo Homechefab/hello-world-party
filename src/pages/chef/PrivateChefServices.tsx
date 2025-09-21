@@ -57,7 +57,7 @@ const PrivateChefServices = () => {
 
   const requirements = [
     "Godkänt kök med kommunalt tillstånd",
-    "Hygienbevis och HACCP-kunskap",
+    "Egenkontroller",
     "Registrerad näringslivsverksamhet"
   ];
 
