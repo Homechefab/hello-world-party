@@ -57,10 +57,7 @@ const PrivateChefServices = () => {
 
   const requirements = [
     "Godkänt kök med kommunalt tillstånd",
-    "Minst 2 års professionell erfarenhet",
-    "Hygienbevis och HACCP-kunskap",
-    "Egen transport och utrustning",
-    "Kundreferenser eller portfölj"
+    "Hygienbevis och HACCP-kunskap"
   ];
 
   return (
