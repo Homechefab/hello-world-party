@@ -96,10 +96,12 @@ const KitchenRequirements = () => {
               Här hittar du all information du behöver.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
-                Börja anpassa ditt kök
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
+              <Link to="/chef/application">
+                <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                  Börja anpassa ditt kök
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
               <Button variant="outline" size="lg">
                 Ladda ner checklista
               </Button>
@@ -253,10 +255,12 @@ const KitchenRequirements = () => {
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
-                  Boka gratis konsultation
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
+                <Link to="/chef/application">
+                  <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                    Boka gratis konsultation
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </Link>
                 <Button variant="outline" size="lg" className="flex items-center gap-2">
                   <Phone className="w-4 h-4" />
                   Ring oss: 08-123 45 67
