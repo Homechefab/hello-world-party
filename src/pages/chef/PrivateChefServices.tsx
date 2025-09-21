@@ -50,7 +50,6 @@ const PrivateChefServices = () => {
     "Sätt dina egna priser",
     "Flexibla arbetstider",
     "Direkta betalningar via plattformen",
-    "Försäkringsskydd under uppdrag",
     "Marknadsföring mot premiumkunder",
     "Dedikerad support för privatkockar"
   ];
