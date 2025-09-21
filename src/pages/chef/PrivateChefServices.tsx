@@ -68,7 +68,7 @@ const PrivateChefServices = () => {
               Privatkock-tjänster
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent">
-              Erbjud privatkock-tjänster
+              Erbjud dina tjänster som privatkock
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
               Ta din kockkarriär till nästa nivå genom att erbjuda exklusiva privatkocktjänster för speciella tillfällen och intima middagar.
