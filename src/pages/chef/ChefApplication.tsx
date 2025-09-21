@@ -278,7 +278,7 @@ const ChefApplication = () => {
               
               {/* Kommunsök sektion */}
               <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h3 className="font-semibold text-blue-800 text-sm mb-3">Hitta din kommuns ansökningsblanketter</h3>
+                <h3 className="font-semibold text-blue-800 text-sm mb-3">Intresserad av att sälja mat hemifrån men saknar tillstånd från kommunen?</h3>
                 <p className="text-blue-700 text-xs mb-4">
                   Sök på din adress för att få direktlänkar till ansökningsblanketter och e-tjänster för livsmedelsregistrering från din kommun.
                 </p>
