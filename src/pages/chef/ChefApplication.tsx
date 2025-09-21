@@ -288,6 +288,13 @@ const ChefApplication = () => {
 
           </div>
 
+          {/* Application Section Heading */}
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              Har du redan tillstånd från kommunen?
+            </h2>
+          </div>
+
           {/* Steg-indikator */}
           <div className="flex items-center justify-center mb-8 overflow-x-auto">
             {steps.map((step, index) => (
