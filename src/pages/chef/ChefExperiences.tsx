@@ -105,13 +105,12 @@ const ChefExperiences = () => {
               Förvandla ditt kök till en destination där gäster kan lära sig, smaka och uppleva matlagning på en helt ny nivå.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
-                Starta dina upplevelser
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-              <Button variant="outline" size="lg">
-                Se inspirerande exempel
-              </Button>
+              <Link to="/chef/application">
+                <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                  Starta dina upplevelser
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
@@ -289,10 +288,12 @@ const ChefExperiences = () => {
             Förvandla din passion för matlagning till unika upplevelser som gäster kommer att minnas för alltid.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
-              Skapa din första upplevelse
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
+            <Link to="/chef/application">
+              <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                Skapa din första upplevelse
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
             <Button variant="outline" size="lg" className="flex items-center gap-2">
               <Phone className="w-4 h-4" />
               Ring oss: 08-123 45 67
