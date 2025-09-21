@@ -291,7 +291,7 @@ const ChefApplication = () => {
           {/* Application Section Heading */}
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              Har du redan tillstånd från kommunen?
+              Har du redan tillstånd från kommunen? Skicka in ansökan och kom igång inom 24h
             </h2>
           </div>
 
