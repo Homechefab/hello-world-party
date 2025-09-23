@@ -3,8 +3,9 @@ import { useSearchParams, Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, MapPin, ChefHat, Clock, UtensilsCrossed, Sparkles } from "lucide-react";
+import { Star, MapPin, ChefHat, Clock, UtensilsCrossed, Sparkles, Map } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import SearchMap from "@/components/SearchMap";
 
 interface Chef {
   id: string;
@@ -93,6 +94,8 @@ const SearchResults = () => {
   const [loading, setLoading] = useState(true);
   const [searchArea, setSearchArea] = useState<string>('');
   const [showingNearby, setShowingNearby] = useState(false);
+  const [showMap, setShowMap] = useState(false);
+  const [selectedChef, setSelectedChef] = useState<Chef | null>(null);
 
   useEffect(() => {
     const searchContent = async () => {
@@ -344,8 +347,141 @@ const SearchResults = () => {
             </div>
           ) : (
             <div className="space-y-12">
-              {/* Dish Recommendations */}
-              {dishes.length > 0 && (
+              {/* Map and Results Toggle */}
+              {chefs.length > 0 && (
+                <div className="flex justify-center mb-8">
+                  <div className="flex bg-muted rounded-lg p-1">
+                    <button
+                      onClick={() => setShowMap(false)}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                        !showMap 
+                          ? 'bg-background text-foreground shadow-sm' 
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      Lista
+                    </button>
+                    <button
+                      onClick={() => setShowMap(true)}
+                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${
+                        showMap 
+                          ? 'bg-background text-foreground shadow-sm' 
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      <Map className="w-4 h-4" />
+                      Karta
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Map View */}
+              {showMap && chefs.length > 0 && (
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3">
+                    <Map className="w-6 h-6 text-primary" />
+                    <h2 className="text-2xl font-bold">Kockar på kartan</h2>
+                    {showingNearby && (
+                      <Badge variant="secondary" className="ml-2">
+                        <Sparkles className="w-3 h-3 mr-1" />
+                        I närområdet
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
+                    {/* Map */}
+                    <div className="lg:col-span-2 h-full">
+                      <SearchMap 
+                        chefs={chefs} 
+                        searchArea={searchArea}
+                        onChefSelect={(chef: Chef) => setSelectedChef(chef)}
+                      />
+                    </div>
+                    
+                    {/* Chef Details Sidebar */}
+                    <div className="space-y-4 overflow-y-auto">
+                      {selectedChef ? (
+                        <Card>
+                          <CardContent className="p-4">
+                            <h3 className="font-semibold text-lg mb-2">{selectedChef.business_name}</h3>
+                            <p className="text-muted-foreground mb-3">{selectedChef.full_name}</p>
+                            
+                            <div className="space-y-2 text-sm">
+                              <div className="flex items-center gap-2">
+                                <MapPin className="w-4 h-4 text-muted-foreground" />
+                                <span>{selectedChef.city || selectedChef.address}</span>
+                              </div>
+                              {selectedChef.distance && (
+                                <div className="flex items-center gap-2">
+                                  <span className="text-muted-foreground">📏</span>
+                                  <span>{selectedChef.distance} km bort</span>
+                                </div>
+                              )}
+                              <div className="flex items-center gap-2">
+                                <UtensilsCrossed className="w-4 h-4 text-muted-foreground" />
+                                <span>{selectedChef.dish_count} rätter</span>
+                              </div>
+                            </div>
+                            
+                            <div className="mt-4">
+                              <Link to={`/chef/${selectedChef.id}`}>
+                                <Button className="w-full">
+                                  Visa kockens profil
+                                </Button>
+                              </Link>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ) : (
+                        <Card>
+                          <CardContent className="p-4 text-center">
+                            <ChefHat className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                            <p className="text-muted-foreground text-sm">
+                              Klicka på en kock-markör på kartan för att se detaljer
+                            </p>
+                          </CardContent>
+                        </Card>
+                      )}
+                      
+                      {/* Quick chef list */}
+                      <div className="space-y-2">
+                        <h4 className="font-medium text-sm">Alla kockar ({chefs.length})</h4>
+                        {chefs.map((chef) => (
+                          <Card 
+                            key={chef.id} 
+                            className={`cursor-pointer transition-colors ${
+                              selectedChef?.id === chef.id ? 'ring-2 ring-primary' : 'hover:bg-muted/50'
+                            }`}
+                            onClick={() => setSelectedChef(chef)}
+                          >
+                            <CardContent className="p-3">
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <p className="font-medium text-sm">{chef.business_name}</p>
+                                  <p className="text-xs text-muted-foreground">{chef.city || chef.address}</p>
+                                </div>
+                                {chef.distance && (
+                                  <Badge variant="outline" className="text-xs">
+                                    {chef.distance} km
+                                  </Badge>
+                                )}
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* List View */}
+              {!showMap && (
+                <>
+                  {/* Dish Recommendations */}
+                  {dishes.length > 0 && (
                 <div>
                   <div className="flex items-center gap-3 mb-6">
                     <UtensilsCrossed className="w-6 h-6 text-primary" />
@@ -492,6 +628,8 @@ const SearchResults = () => {
                     ))}
                   </div>
                 </div>
+              )}
+                </>
               )}
             </div>
           )}
