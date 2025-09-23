@@ -18,6 +18,7 @@ interface SearchMapProps {
   chefs: Chef[];
   searchArea?: string;
   onChefSelect?: (chef: Chef) => void;
+  selectedChef?: Chef | null;
 }
 
 const SearchMap: React.FC<SearchMapProps> = ({ chefs, searchArea, onChefSelect }) => {
