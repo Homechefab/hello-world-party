@@ -257,9 +257,116 @@ const SearchResults = () => {
           setDishes(filteredDishes.slice(0, 8));
           setSearchArea(query);
         } else {
-          // No search query, show featured content
-          setChefs(formattedChefs.slice(0, 6));
-          setDishes(formattedDishes.slice(0, 8));
+          // No search query, show featured content or mock data for demonstration
+          const mockChefs: Chef[] = [
+            {
+              id: 'chef-1',
+              business_name: 'Annas Hemlagade',
+              full_name: 'Anna Kök',
+              address: 'Gamla Stan, Stockholm',
+              dish_count: 3,
+              distance: 2.1,
+              city: 'Stockholm'
+            },
+            {
+              id: 'chef-2', 
+              business_name: 'Lars Köksstudio',
+              full_name: 'Lars Köksmästare',
+              address: 'Södermalm, Stockholm',
+              dish_count: 2,
+              distance: 1.8,
+              city: 'Stockholm'
+            },
+            {
+              id: 'chef-3',
+              business_name: 'Maria Pasta Bar', 
+              full_name: 'Maria Pasta',
+              address: 'Östermalm, Stockholm',
+              dish_count: 2,
+              distance: 3.2,
+              city: 'Stockholm'
+            }
+          ];
+
+          const mockDishes: Dish[] = [
+            {
+              id: 'dish-1',
+              name: 'Klassiska Köttbullar',
+              description: 'Hemlagade köttbullar med gräddsås, lingonsylt och potatismos',
+              price: 149,
+              chef_id: 'chef-1',
+              chef_name: 'Anna Kök',
+              chef_business_name: 'Annas Hemlagade',
+              chef_address: 'Gamla Stan, Stockholm',
+              distance: 2.1,
+              preparation_time: 30,
+              category: 'Kött'
+            },
+            {
+              id: 'dish-2',
+              name: 'Vegetariska Köttbullar', 
+              description: 'Veganska köttbullar med cashewsås och potatispuré',
+              price: 139,
+              chef_id: 'chef-1',
+              chef_name: 'Anna Kök',
+              chef_business_name: 'Annas Hemlagade',
+              chef_address: 'Gamla Stan, Stockholm',
+              distance: 2.1,
+              preparation_time: 25,
+              category: 'Vegetariskt'
+            },
+            {
+              id: 'dish-3',
+              name: 'Pasta Carbonara',
+              description: 'Klassisk pasta carbonara med ägg, bacon och parmesan', 
+              price: 129,
+              chef_id: 'chef-2',
+              chef_name: 'Lars Köksmästare',
+              chef_business_name: 'Lars Köksstudio',
+              chef_address: 'Södermalm, Stockholm',
+              distance: 1.8,
+              preparation_time: 20,
+              category: 'Pasta'
+            },
+            {
+              id: 'dish-4',
+              name: 'Fiskgryta',
+              description: 'Krämig fiskgryta med lax, torsk och räkor',
+              price: 179,
+              chef_id: 'chef-3', 
+              chef_name: 'Maria Pasta',
+              chef_business_name: 'Maria Pasta Bar',
+              chef_address: 'Östermalm, Stockholm',
+              distance: 3.2,
+              preparation_time: 35,
+              category: 'Fisk'
+            }
+          ];
+
+          // Filter mock data based on search query if provided
+          if (query) {
+            const searchLower = query.toLowerCase();
+            const filteredMockChefs = mockChefs.filter(chef => 
+              chef.business_name?.toLowerCase().includes(searchLower) ||
+              chef.full_name?.toLowerCase().includes(searchLower) ||
+              chef.address?.toLowerCase().includes(searchLower) ||
+              chef.city?.toLowerCase().includes(searchLower)
+            );
+
+            const filteredMockDishes = mockDishes.filter(dish =>
+              dish.name.toLowerCase().includes(searchLower) ||
+              dish.description?.toLowerCase().includes(searchLower) ||
+              dish.category?.toLowerCase().includes(searchLower) ||
+              dish.chef_name.toLowerCase().includes(searchLower) ||
+              dish.chef_business_name.toLowerCase().includes(searchLower)
+            );
+
+            setChefs(filteredMockChefs);
+            setDishes(filteredMockDishes);
+          } else {
+            setChefs(mockChefs.slice(0, 6));
+            setDishes(mockDishes.slice(0, 8));
+          }
           setShowingNearby(false);
         }
       } catch (error) {
