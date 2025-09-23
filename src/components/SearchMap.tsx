@@ -168,24 +168,11 @@ const SearchMap: React.FC<SearchMapProps> = ({ chefs, searchArea, onChefSelect }
   };
 
   useEffect(() => {
-    // Check if we have a Mapbox token from Supabase secrets
-    const checkMapboxToken = async () => {
-      try {
-        // Try to get token from environment or Supabase
-        const token = process.env.MAPBOX_ACCESS_TOKEN || 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbTNmc2g4YW4xNHgyMnFzOWF6azk4aDd1In0.PmVxsAUjcgv5tUs-SKdq0g';
-        
-        if (token && token.startsWith('pk.')) {
-          setMapboxToken(token);
-          initializeMap(token);
-        } else {
-          setNeedsToken(true);
-        }
-      } catch (error) {
-        setNeedsToken(true);
-      }
-    };
-
-    checkMapboxToken();
+    // Use the built-in Mapbox token
+    const token = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbTNmc2g4YW4xNHgyMnFzOWF6azk4aDd1In0.PmVxsAUjcgv5tUs-SKdq0g';
+    
+    setMapboxToken(token);
+    initializeMap(token);
   }, [chefs, searchArea]);
 
   const handleTokenSubmit = (e: React.FormEvent) => {
