@@ -199,12 +199,12 @@ const SearchResults = () => {
 
           if (filteredChefs.length === 0 && filteredDishes.length === 0) {
             filteredChefs = mockChefsData
-              .filter(chef => chef.distance !== undefined && chef.distance <= 50)
+              .filter(chef => chef.distance !== undefined && chef.distance <= 600)
               .sort((a, b) => (a.distance || 0) - (b.distance || 0))
               .slice(0, 6);
 
             filteredDishes = mockDishesData
-              .filter(dish => dish.distance !== undefined && dish.distance <= 50)
+              .filter(dish => dish.distance !== undefined && dish.distance <= 600)
               .sort((a, b) => (a.distance || 0) - (b.distance || 0))
               .slice(0, 8);
 
