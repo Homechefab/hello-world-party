@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import { ChefHat, MapPin } from 'lucide-react';
+import React from 'react';
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { ChefHat, MapPin, Star, UtensilsCrossed } from 'lucide-react';
 
 interface Chef {
   id: string;
@@ -10,6 +11,7 @@ interface Chef {
   address: string;
   distance?: number;
   city?: string;
+  dish_count: number;
 }
 
 interface SearchMapProps {
@@ -19,226 +21,72 @@ interface SearchMapProps {
 }
 
 const SearchMap: React.FC<SearchMapProps> = ({ chefs, searchArea, onChefSelect }) => {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const [mapboxToken, setMapboxToken] = useState<string>('');
-  const [needsToken, setNeedsToken] = useState(false);
-
-  // Simple coordinates for Swedish cities/areas
-  const getCoordinates = (location: string): [number, number] => {
-    const locations: { [key: string]: [number, number] } = {
-      'stockholm': [18.0686, 59.3293],
-      'södermalm': [18.0758, 59.3181],
-      'gamla stan': [18.0711, 59.3251],
-      'östermalm': [18.0864, 59.3364],
-      'vasastan': [18.0582, 59.3467],
-      'norrmalm': [18.0649, 59.3326],
-      'göteborg': [11.9746, 57.7089],
-      'malmö': [13.0038, 55.6050],
-      'uppsala': [17.6389, 59.8586],
-      'linköping': [15.6214, 58.4108],
-      'örebro': [15.2134, 59.2753]
-    };
-
-    const normalized = location.toLowerCase().trim();
-    
-    // Try exact match first
-    if (locations[normalized]) {
-      return locations[normalized];
-    }
-    
-    // Try partial match
-    for (const [key, coords] of Object.entries(locations)) {
-      if (normalized.includes(key) || key.includes(normalized)) {
-        return coords;
-      }
-    }
-    
-    // Default to Stockholm
-    return locations['stockholm'];
-  };
-
-  const initializeMap = (token: string) => {
-    if (!mapContainer.current || map.current) return;
-
-    mapboxgl.accessToken = token;
-    
-    // Determine center based on search area or chefs
-    let center: [number, number] = [18.0686, 59.3293]; // Default to Stockholm
-    let zoom = 10;
-
-    if (searchArea) {
-      center = getCoordinates(searchArea);
-      zoom = 11;
-    } else if (chefs.length > 0) {
-      // Calculate bounds based on chef locations
-      const coords = chefs.map(chef => getCoordinates(chef.address || chef.city || 'stockholm'));
-      if (coords.length > 0) {
-        const lngs = coords.map(c => c[0]);
-        const lats = coords.map(c => c[1]);
-        const avgLng = lngs.reduce((a, b) => a + b) / lngs.length;
-        const avgLat = lats.reduce((a, b) => a + b) / lats.length;
-        center = [avgLng, avgLat];
-      }
-    }
-
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/light-v11',
-      center: center,
-      zoom: zoom,
-    });
-
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
-    // Add markers for chefs
-    chefs.forEach((chef, index) => {
-      const coords = getCoordinates(chef.address || chef.city || 'stockholm');
-      
-      // Create custom marker element
-      const el = document.createElement('div');
-      el.className = 'chef-marker';
-      el.style.cssText = `
-        background-color: hsl(var(--primary));
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        border: 3px solid white;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        transition: transform 0.2s;
-      `;
-      
-      const icon = document.createElement('div');
-      icon.innerHTML = '👨‍🍳';
-      icon.style.fontSize = '16px';
-      el.appendChild(icon);
-
-      el.addEventListener('mouseenter', () => {
-        el.style.transform = 'scale(1.1)';
-      });
-      
-      el.addEventListener('mouseleave', () => {
-        el.style.transform = 'scale(1)';
-      });
-
-      el.addEventListener('click', () => {
-        if (onChefSelect) {
-          onChefSelect(chef);
-        }
-      });
-
-      // Create popup
-      const popup = new mapboxgl.Popup({
-        offset: 25,
-        closeButton: false
-      }).setHTML(`
-        <div class="p-3 min-w-[200px]">
-          <h3 class="font-semibold text-sm mb-1">${chef.business_name}</h3>
-          <p class="text-xs text-gray-600 mb-2">${chef.full_name}</p>
-          <div class="flex items-center gap-1 text-xs text-gray-500 mb-2">
-            <span>📍</span>
-            <span>${chef.city || chef.address}</span>
-          </div>
-          ${chef.distance ? `
-            <div class="flex items-center gap-1 text-xs text-gray-500">
-              <span>📏</span>
-              <span>${chef.distance} km bort</span>
-            </div>
-          ` : ''}
-        </div>
-      `);
-
-      new mapboxgl.Marker(el)
-        .setLngLat(coords)
-        .setPopup(popup)
-        .addTo(map.current!);
-    });
-
-    // Fit bounds if multiple chefs
-    if (chefs.length > 1) {
-      const coords = chefs.map(chef => getCoordinates(chef.address || chef.city || 'stockholm'));
-      const bounds = new mapboxgl.LngLatBounds();
-      coords.forEach(coord => bounds.extend(coord));
-      map.current.fitBounds(bounds, { padding: 50 });
-    }
-  };
-
-  useEffect(() => {
-    // Use the built-in Mapbox token
-    const token = 'pk.eyJ1IjoibG92YWJsZSIsImEiOiJjbTNmc2g4YW4xNHgyMnFzOWF6azk4aDd1In0.PmVxsAUjcgv5tUs-SKdq0g';
-    
-    setMapboxToken(token);
-    initializeMap(token);
-  }, [chefs, searchArea]);
-
-  const handleTokenSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const token = formData.get('token') as string;
-    
-    if (token && token.startsWith('pk.')) {
-      setMapboxToken(token);
-      setNeedsToken(false);
-      initializeMap(token);
-    } else {
-      alert('Ogiltig Mapbox token. Den ska börja med "pk."');
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (map.current) {
-        map.current.remove();
-        map.current = null;
-      }
-    };
-  }, []);
-
-  if (needsToken) {
-    return (
-      <div className="bg-card border rounded-lg p-6">
-        <div className="text-center space-y-4">
-          <MapPin className="w-12 h-12 text-muted-foreground mx-auto" />
-          <h3 className="font-semibold">Mapbox Token Required</h3>
-          <p className="text-sm text-muted-foreground">
-            För att visa kartan behöver vi din Mapbox public token. 
-            Gå till <a href="https://mapbox.com/" target="_blank" rel="noopener noreferrer" className="text-primary underline">mapbox.com</a> för att få din token.
-          </p>
-          <form onSubmit={handleTokenSubmit} className="space-y-3">
-            <input
-              type="text"
-              name="token"
-              placeholder="Klistra in din Mapbox public token här..."
-              className="w-full px-3 py-2 border rounded-md text-sm"
-              required
-            />
-            <button
-              type="submit"
-              className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm hover:bg-primary/90"
-            >
-              Aktivera karta
-            </button>
-          </form>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="relative w-full h-full">
-      <div ref={mapContainer} className="absolute inset-0 rounded-lg" />
-      {chefs.length === 0 && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/5 rounded-lg">
+    <div className="relative w-full h-full bg-gradient-to-br from-orange-light to-yellow-cream rounded-lg border-2 border-dashed border-primary/30">
+      <div className="absolute inset-0 flex flex-col items-center justify-center p-6">
+        <div className="text-center mb-6">
+          <MapPin className="w-16 h-16 text-primary mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-foreground mb-2">
+            Kartvy kommer snart
+          </h3>
+          <p className="text-muted-foreground">
+            {searchArea ? `Kockar i ${searchArea}` : 'Kockar i området'}
+          </p>
+        </div>
+
+        {/* Chef Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-4xl max-h-80 overflow-y-auto">
+          {chefs.map((chef) => (
+            <Card key={chef.id} className="cursor-pointer hover:shadow-card transition-all duration-300 hover:scale-105">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                    <ChefHat className="w-5 h-5 text-primary-foreground" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-sm truncate">{chef.business_name}</h4>
+                    <p className="text-xs text-muted-foreground truncate">{chef.full_name}</p>
+                  </div>
+                </div>
+                
+                <div className="space-y-2 text-xs">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-3 h-3 text-muted-foreground" />
+                    <span className="truncate">{chef.city || chef.address}</span>
+                  </div>
+                  
+                  {chef.distance && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-muted-foreground">📏</span>
+                      <span>{chef.distance} km bort</span>
+                    </div>
+                  )}
+                  
+                  <div className="flex items-center gap-2">
+                    <UtensilsCrossed className="w-3 h-3 text-muted-foreground" />
+                    <span>{chef.dish_count} rätter</span>
+                  </div>
+                </div>
+                
+                <Button 
+                  size="sm" 
+                  className="w-full mt-3"
+                  onClick={() => onChefSelect?.(chef)}
+                >
+                  Visa profil
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {chefs.length === 0 && (
           <div className="text-center">
             <ChefHat className="w-12 h-12 text-muted-foreground mx-auto mb-2" />
-            <p className="text-sm text-muted-foreground">Inga kockar att visa på kartan</p>
+            <p className="text-sm text-muted-foreground">Inga kockar att visa</p>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 };
