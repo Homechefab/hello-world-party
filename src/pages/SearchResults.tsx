@@ -251,22 +251,30 @@ const SearchResults = () => {
         let filteredDishes = mockDishesData;
 
         if (query) {
-          const searchLower = query.toLowerCase();
+          const searchLower = query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-          filteredChefs = mockChefsData.filter(chef =>
-            chef.business_name?.toLowerCase().includes(searchLower) ||
-            chef.full_name?.toLowerCase().includes(searchLower) ||
-            chef.address?.toLowerCase().includes(searchLower) ||
-            chef.city?.toLowerCase().includes(searchLower)
-          );
+          filteredChefs = mockChefsData.filter(chef => {
+            const normalizeText = (text: string) => 
+              text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            
+            return (chef.business_name && normalizeText(chef.business_name).includes(searchLower)) ||
+                   (chef.full_name && normalizeText(chef.full_name).includes(searchLower)) ||
+                   (chef.address && normalizeText(chef.address).includes(searchLower)) ||
+                   (chef.city && normalizeText(chef.city).includes(searchLower));
+          });
 
-          filteredDishes = mockDishesData.filter(dish =>
-            dish.name.toLowerCase().includes(searchLower) ||
-            dish.description?.toLowerCase().includes(searchLower) ||
-            dish.category?.toLowerCase().includes(searchLower) ||
-            dish.chef_name.toLowerCase().includes(searchLower) ||
-            dish.chef_business_name.toLowerCase().includes(searchLower)
-          );
+          filteredDishes = mockDishesData.filter(dish => {
+            const normalizeText = (text: string) => 
+              text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            
+            return normalizeText(dish.name).includes(searchLower) ||
+                   (dish.description && normalizeText(dish.description).includes(searchLower)) ||
+                   (dish.category && normalizeText(dish.category).includes(searchLower)) ||
+                   normalizeText(dish.chef_name).includes(searchLower) ||
+                   normalizeText(dish.chef_business_name).includes(searchLower);
+          });
+
+          console.log('Search query:', query, 'Filtered dishes:', filteredDishes.length, 'Filtered chefs:', filteredChefs.length);
 
           if (filteredChefs.length === 0 && filteredDishes.length === 0) {
             filteredChefs = mockChefsData
