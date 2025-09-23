@@ -47,7 +47,8 @@ const calculateDistance = (searchLocation: string, chefAddress: string): number 
     'malmö': { lat: 55.6050, lon: 13.0038 },
     'uppsala': { lat: 59.8586, lon: 17.6389 },
     'linköping': { lat: 58.4108, lon: 15.6214 },
-    'örebro': { lat: 59.2753, lon: 15.2134 }
+    'örebro': { lat: 59.2753, lon: 15.2134 },
+    'laholm': { lat: 56.5125, lon: 13.0405 }
   };
 
   const getLocationCoords = (location: string) => {
@@ -93,7 +94,6 @@ const SearchResults = () => {
   const [loading, setLoading] = useState(true);
   const [searchArea, setSearchArea] = useState<string>('');
   const [showingNearby, setShowingNearby] = useState(false);
-  const [showMap, setShowMap] = useState(false);
   const [selectedChef, setSelectedChef] = useState<Chef | null>(null);
 
   // Mock data for demonstration
@@ -386,291 +386,83 @@ const SearchResults = () => {
               </div>
             </div>
           ) : (
-            <div className="space-y-12">
-              {/* Map and Results Toggle */}
-              {chefs.length > 0 && (
-                <div className="flex justify-center mb-8">
-                  <div className="flex bg-muted rounded-lg p-1">
-                    <button
-                      onClick={() => setShowMap(false)}
-                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                        !showMap 
-                          ? 'bg-background text-foreground shadow-sm' 
-                          : 'text-muted-foreground hover:text-foreground'
-                      }`}
-                    >
-                      Lista
-                    </button>
-                    <button
-                      onClick={() => setShowMap(true)}
-                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex items-center gap-2 ${
-                        showMap 
-                          ? 'bg-background text-foreground shadow-sm' 
-                          : 'text-muted-foreground hover:text-foreground'
-                      }`}
-                    >
-                      <Map className="w-4 h-4" />
-                      Karta
-                    </button>
-                  </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-[600px]">
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <ChefHat className="w-6 h-6 text-primary" />
+                  <h2 className="text-2xl font-bold">Kockar i området</h2>
+                  {showingNearby && (
+                    <Badge variant="secondary" className="ml-2">
+                      <Sparkles className="w-3 h-3 mr-1" />
+                      I närområdet
+                    </Badge>
+                  )}
                 </div>
-              )}
 
-              {/* Map View */}
-              {showMap && chefs.length > 0 && (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-3">
-                    <Map className="w-6 h-6 text-primary" />
-                    <h2 className="text-2xl font-bold">Kockar på kartan</h2>
-                    {showingNearby && (
-                      <Badge variant="secondary" className="ml-2">
-                        <Sparkles className="w-3 h-3 mr-1" />
-                        I närområdet
-                      </Badge>
-                    )}
-                  </div>
-                  
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
-                    {/* Map */}
-                    <div className="lg:col-span-2 h-full">
-                      <SearchMap 
-                        chefs={chefs} 
-                        searchArea={searchArea}
-                        onChefSelect={(chef: Chef) => setSelectedChef(chef)}
-                      />
-                    </div>
-                    
-                    {/* Chef Details Sidebar */}
-                    <div className="space-y-4 overflow-y-auto">
-                      {selectedChef ? (
-                        <Card>
-                          <CardContent className="p-4">
-                            <h3 className="font-semibold text-lg mb-2">{selectedChef.business_name}</h3>
-                            <p className="text-muted-foreground mb-3">{selectedChef.full_name}</p>
-                            
-                            <div className="space-y-2 text-sm">
-                              <div className="flex items-center gap-2">
-                                <MapPin className="w-4 h-4 text-muted-foreground" />
-                                <span>{selectedChef.city || selectedChef.address}</span>
-                              </div>
-                              {selectedChef.distance && (
-                                <div className="flex items-center gap-2">
-                                  <span className="text-muted-foreground">📏</span>
-                                  <span>{selectedChef.distance} km bort</span>
-                                </div>
-                              )}
-                              <div className="flex items-center gap-2">
-                                <UtensilsCrossed className="w-4 h-4 text-muted-foreground" />
-                                <span>{selectedChef.dish_count} rätter</span>
-                              </div>
+                <div className="space-y-4 overflow-y-auto h-[500px] pr-2">
+                  {chefs.map((chef) => (
+                    <Card key={chef.id} className="hover:shadow-card transition-all duration-300 cursor-pointer">
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                              <ChefHat className="w-6 h-6 text-primary-foreground" />
                             </div>
-                            
-                            <div className="mt-4">
-                              <Link to={`/chef/${selectedChef.id}`}>
-                                <Button className="w-full">
-                                  Visa kockens profil
-                                </Button>
-                              </Link>
+                            <div>
+                              <h3 className="font-semibold text-lg">{chef.business_name}</h3>
+                              <p className="text-muted-foreground">{chef.full_name}</p>
                             </div>
-                          </CardContent>
-                        </Card>
-                      ) : (
-                        <Card>
-                          <CardContent className="p-4 text-center">
-                            <ChefHat className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-                            <p className="text-muted-foreground text-sm">
-                              Klicka på en kock-markör på kartan för att se detaljer
-                            </p>
-                          </CardContent>
-                        </Card>
-                      )}
-                      
-                      {/* Quick chef list */}
-                      <div className="space-y-2">
-                        <h4 className="font-medium text-sm">Alla kockar ({chefs.length})</h4>
-                        {chefs.map((chef) => (
-                          <Card 
-                            key={chef.id} 
-                            className={`cursor-pointer transition-colors ${
-                              selectedChef?.id === chef.id ? 'ring-2 ring-primary' : 'hover:bg-muted/50'
-                            }`}
-                            onClick={() => setSelectedChef(chef)}
-                          >
-                            <CardContent className="p-3">
-                              <div className="flex justify-between items-start">
-                                <div>
-                                  <p className="font-medium text-sm">{chef.business_name}</p>
-                                  <p className="text-xs text-muted-foreground">{chef.city || chef.address}</p>
-                                </div>
-                                {chef.distance && (
-                                  <Badge variant="outline" className="text-xs">
-                                    {chef.distance} km
-                                  </Badge>
-                                )}
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+                          </div>
+                          {chef.distance && (
+                            <Badge variant="outline">
+                              {chef.distance} km
+                            </Badge>
+                          )}
+                        </div>
+                        
+                        <div className="space-y-2 text-sm mb-4">
+                          <div className="flex items-center gap-2">
+                            <MapPin className="w-4 h-4 text-muted-foreground" />
+                            <span>{chef.city || chef.address}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <UtensilsCrossed className="w-4 h-4 text-muted-foreground" />
+                            <span>{chef.dish_count} rätter tillgängliga</span>
+                          </div>
+                        </div>
+                        
+                        <Link to={`/chef/${chef.id}`}>
+                          <Button className="w-full">
+                            Visa kockens profil
+                          </Button>
+                        </Link>
+                      </CardContent>
+                    </Card>
+                  ))}
 
-              {/* List View */}
-              {!showMap && (
-                <>
-                  {/* Dish Recommendations */}
-                  {dishes.length > 0 && (
-                    <div>
-                      <div className="flex items-center gap-3 mb-6">
-                        <UtensilsCrossed className="w-6 h-6 text-primary" />
-                        <h2 className="text-2xl font-bold">
-                          {query ? 'Rekommenderade rätter' : 'Populära rätter'}
-                        </h2>
-                        {showingNearby && (
-                          <Badge variant="secondary" className="ml-2">
-                            <Sparkles className="w-3 h-3 mr-1" />
-                            I närområdet
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {dishes.map((dish) => (
-                          <Link key={dish.id} to={`/dish/${dish.id}`}>
-                            <Card className="group hover:shadow-warm transition-all duration-300 hover:scale-105 cursor-pointer h-full">
-                              <CardContent className="p-4">
-                                {dish.image_url && (
-                                  <div className="aspect-video mb-4 rounded-lg overflow-hidden bg-muted">
-                                    <img 
-                                      src={dish.image_url} 
-                                      alt={dish.name}
-                                      className="w-full h-full object-cover"
-                                    />
-                                  </div>
-                                )}
-                                <div className="space-y-2">
-                                  <div className="flex items-start justify-between">
-                                    <h3 className="font-semibold text-lg leading-tight">{dish.name}</h3>
-                                    <Badge variant="outline" className="text-primary font-semibold">
-                                      {dish.price} kr
-                                    </Badge>
-                                  </div>
-                                  
-                                  <p className="text-sm text-muted-foreground line-clamp-2">
-                                    {dish.description}
-                                  </p>
-                                  
-                                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                    <ChefHat className="w-3 h-3" />
-                                    <span>{dish.chef_business_name || dish.chef_name}</span>
-                                  </div>
-                                  
-                                  <div className="flex items-center justify-between text-sm text-muted-foreground">
-                                    {dish.preparation_time && (
-                                      <div className="flex items-center gap-1">
-                                        <Clock className="w-3 h-3" />
-                                        <span>{dish.preparation_time} min</span>
-                                      </div>
-                                    )}
-                                    {dish.distance && (
-                                      <div className="flex items-center gap-1">
-                                        <MapPin className="w-3 h-3" />
-                                        <span>{dish.distance} km</span>
-                                      </div>
-                                    )}
-                                  </div>
-                                  
-                                  <div className="pt-2">
-                                    <Button variant="food" size="sm" className="w-full group-hover:shadow-lg transition-shadow">
-                                      Beställ nu
-                                    </Button>
-                                  </div>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          </Link>
-                        ))}
-                      </div>
+                  {chefs.length === 0 && (
+                    <div className="text-center py-8">
+                      <ChefHat className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                      <p className="text-muted-foreground">Inga kockar hittades i området</p>
                     </div>
                   )}
+                </div>
+              </div>
 
-                  {/* Chef Recommendations */}
-                  {chefs.length > 0 && (
-                    <div>
-                      <div className="flex items-center gap-3 mb-6">
-                        <ChefHat className="w-6 h-6 text-primary" />
-                        <h2 className="text-2xl font-bold">
-                          {query ? 'Rekommenderade kockar' : 'Populära kockar'}
-                        </h2>
-                        {showingNearby && (
-                          <Badge variant="secondary" className="ml-2">
-                            <Sparkles className="w-3 h-3 mr-1" />
-                            I närområdet
-                          </Badge>
-                        )}
-                      </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {chefs.map((chef) => (
-                          <Link key={chef.id} to={`/chef/${chef.id}`}>
-                            <Card className="group hover:shadow-warm transition-all duration-300 hover:scale-105 cursor-pointer">
-                              <CardContent className="p-6">
-                                <div className="flex items-center mb-4">
-                                  <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mr-4">
-                                    <ChefHat className="w-6 h-6 text-white" />
-                                  </div>
-                                  <div>
-                                    <h3 className="font-semibold text-lg">
-                                      {chef.business_name || chef.full_name}
-                                    </h3>
-                                    {chef.address && (
-                                      <div className="flex items-center text-sm text-muted-foreground">
-                                        <MapPin className="w-3 h-3 mr-1" />
-                                        <span>{chef.address}</span>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                                
-                                <div className="space-y-3">
-                                  <div className="flex items-center justify-between text-sm">
-                                    <div className="flex items-center">
-                                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                                      <span>4.8 (12 recensioner)</span>
-                                    </div>
-                                    <Badge variant="secondary">
-                                      {chef.dish_count} rätter
-                                    </Badge>
-                                  </div>
-                                  
-                                  <div className="flex items-center justify-between text-sm text-muted-foreground">
-                                    <div className="flex items-center">
-                                      <Clock className="w-4 h-4 mr-1" />
-                                      <span>30-45 min tillagning</span>
-                                    </div>
-                                    {chef.distance && (
-                                      <div className="flex items-center">
-                                        <MapPin className="w-3 h-3 mr-1" />
-                                        <span>{chef.distance} km bort</span>
-                                      </div>
-                                    )}
-                                  </div>
-                                  
-                                  <div className="pt-2">
-                                    <Button variant="food" className="w-full group-hover:shadow-lg transition-shadow">
-                                      Se maträtter
-                                    </Button>
-                                  </div>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <Map className="w-6 h-6 text-primary" />
+                  <h2 className="text-2xl font-bold">Karta</h2>
+                </div>
+                
+                <div className="h-[500px]">
+                  <SearchMap 
+                    chefs={chefs} 
+                    searchArea={searchArea}
+                    onChefSelect={(chef: Chef) => setSelectedChef(chef)}
+                  />
+                </div>
+              </div>
             </div>
           )}
         </div>
