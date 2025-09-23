@@ -97,9 +97,154 @@ const SearchResults = () => {
   const [showMap, setShowMap] = useState(false);
   const [selectedChef, setSelectedChef] = useState<Chef | null>(null);
 
+  // Mock data for demonstration
+  const mockChefs: Chef[] = [
+    {
+      id: 'chef1',
+      business_name: 'Annas Hemlagade',
+      full_name: 'Anna Kök',
+      address: 'Gamla Stan, Stockholm',
+      dish_count: 3,
+      city: 'Stockholm',
+      distance: query ? calculateDistance(query, 'Gamla Stan, Stockholm') : undefined
+    },
+    {
+      id: 'chef2',
+      business_name: 'Lars Köksstudio',
+      full_name: 'Lars Köksmästare',
+      address: 'Södermalm, Stockholm',
+      dish_count: 2,
+      city: 'Stockholm',
+      distance: query ? calculateDistance(query, 'Södermalm, Stockholm') : undefined
+    },
+    {
+      id: 'chef3',
+      business_name: 'Maria Pasta Bar',
+      full_name: 'Maria Pasta',
+      address: 'Östermalm, Stockholm',
+      dish_count: 2,
+      city: 'Stockholm',
+      distance: query ? calculateDistance(query, 'Östermalm, Stockholm') : undefined
+    },
+    {
+      id: 'chef4',
+      business_name: 'Eriks Fiskrätter',
+      full_name: 'Erik Fiskhandlare',
+      address: 'Vasastan, Stockholm',
+      dish_count: 1,
+      city: 'Stockholm',
+      distance: query ? calculateDistance(query, 'Vasastan, Stockholm') : undefined
+    },
+    {
+      id: 'chef5',
+      business_name: 'Sofias Vegetariska',
+      full_name: 'Sofia Vegetarian',
+      address: 'Norrmalm, Stockholm',
+      dish_count: 1,
+      city: 'Stockholm',
+      distance: query ? calculateDistance(query, 'Norrmalm, Stockholm') : undefined
+    }
+  ];
+
+  const mockDishes: Dish[] = [
+    {
+      id: 'dish1',
+      name: 'Klassiska Köttbullar',
+      description: 'Hemlagade köttbullar med gräddsås, lingonsylt och potatismos',
+      price: 149,
+      chef_id: 'chef1',
+      chef_name: 'Anna Kök',
+      chef_business_name: 'Annas Hemlagade',
+      chef_address: 'Gamla Stan, Stockholm',
+      category: 'Kött',
+      preparation_time: 30,
+      distance: query ? calculateDistance(query, 'Gamla Stan, Stockholm') : undefined
+    },
+    {
+      id: 'dish2',
+      name: 'Vegetariska Köttbullar',
+      description: 'Veganska köttbullar med cashewsås och potatispuré',
+      price: 139,
+      chef_id: 'chef1',
+      chef_name: 'Anna Kök',
+      chef_business_name: 'Annas Hemlagade',
+      chef_address: 'Gamla Stan, Stockholm',
+      category: 'Vegetariskt',
+      preparation_time: 25,
+      distance: query ? calculateDistance(query, 'Gamla Stan, Stockholm') : undefined
+    },
+    {
+      id: 'dish3',
+      name: 'Pasta Carbonara',
+      description: 'Klassisk pasta carbonara med ägg, bacon och parmesan',
+      price: 129,
+      chef_id: 'chef2',
+      chef_name: 'Lars Köksmästare',
+      chef_business_name: 'Lars Köksstudio',
+      chef_address: 'Södermalm, Stockholm',
+      category: 'Pasta',
+      preparation_time: 20,
+      distance: query ? calculateDistance(query, 'Södermalm, Stockholm') : undefined
+    },
+    {
+      id: 'dish4',
+      name: 'Pasta Arrabbiata',
+      description: 'Kryddig tomatbaserad pasta med chili och vitlök',
+      price: 119,
+      chef_id: 'chef3',
+      chef_name: 'Maria Pasta',
+      chef_business_name: 'Maria Pasta Bar',
+      chef_address: 'Östermalm, Stockholm',
+      category: 'Pasta',
+      preparation_time: 15,
+      distance: query ? calculateDistance(query, 'Östermalm, Stockholm') : undefined
+    },
+    {
+      id: 'dish5',
+      name: 'Fiskgryta',
+      description: 'Krämig fiskgryta med lax, torsk och räkor',
+      price: 179,
+      chef_id: 'chef4',
+      chef_name: 'Erik Fiskhandlare',
+      chef_business_name: 'Eriks Fiskrätter',
+      chef_address: 'Vasastan, Stockholm',
+      category: 'Fisk',
+      preparation_time: 35,
+      distance: query ? calculateDistance(query, 'Vasastan, Stockholm') : undefined
+    },
+    {
+      id: 'dish6',
+      name: 'Vegansk Buddha Bowl',
+      description: 'Näringsrik bowl med quinoa, rostade grönsaker och tahini-dressing',
+      price: 139,
+      chef_id: 'chef5',
+      chef_name: 'Sofia Vegetarian',
+      chef_business_name: 'Sofias Vegetariska',
+      chef_address: 'Norrmalm, Stockholm',
+      category: 'Vegetariskt',
+      preparation_time: 25,
+      distance: query ? calculateDistance(query, 'Norrmalm, Stockholm') : undefined
+    },
+    {
+      id: 'dish7',
+      name: 'Kycklinggryta',
+      description: 'Saftig kycklinggryta med rosmarin och potatis',
+      price: 159,
+      chef_id: 'chef2',
+      chef_name: 'Lars Köksmästare',
+      chef_business_name: 'Lars Köksstudio',
+      chef_address: 'Södermalm, Stockholm',
+      category: 'Kött',
+      preparation_time: 40,
+      distance: query ? calculateDistance(query, 'Södermalm, Stockholm') : undefined
+    }
+  ];
+
   useEffect(() => {
     const searchContent = async () => {
       try {
+        setLoading(true);
+
         // Search for chefs with available dishes
         const { data: chefsData, error } = await supabase
           .from('chefs')
@@ -589,153 +734,153 @@ const SearchResults = () => {
                 <>
                   {/* Dish Recommendations */}
                   {dishes.length > 0 && (
-                <div>
-                  <div className="flex items-center gap-3 mb-6">
-                    <UtensilsCrossed className="w-6 h-6 text-primary" />
-                    <h2 className="text-2xl font-bold">
-                      {query ? 'Rekommenderade rätter' : 'Populära rätter'}
-                    </h2>
-                    {showingNearby && (
-                      <Badge variant="secondary" className="ml-2">
-                        <Sparkles className="w-3 h-3 mr-1" />
-                        I närområdet
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {dishes.map((dish) => (
-                      <Link key={dish.id} to={`/dish/${dish.id}`}>
-                        <Card className="group hover:shadow-warm transition-all duration-300 hover:scale-105 cursor-pointer h-full">
-                          <CardContent className="p-4">
-                            {dish.image_url && (
-                              <div className="aspect-video mb-4 rounded-lg overflow-hidden bg-muted">
-                                <img 
-                                  src={dish.image_url} 
-                                  alt={dish.name}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            )}
-                            <div className="space-y-2">
-                              <div className="flex items-start justify-between">
-                                <h3 className="font-semibold text-lg leading-tight">{dish.name}</h3>
-                                <Badge variant="outline" className="text-primary font-semibold">
-                                  {dish.price} kr
-                                </Badge>
-                              </div>
-                              
-                              <p className="text-sm text-muted-foreground line-clamp-2">
-                                {dish.description}
-                              </p>
-                              
-                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <ChefHat className="w-3 h-3" />
-                                <span>{dish.chef_business_name || dish.chef_name}</span>
-                              </div>
-                              
-                              <div className="flex items-center justify-between text-sm text-muted-foreground">
-                                {dish.preparation_time && (
-                                  <div className="flex items-center gap-1">
-                                    <Clock className="w-3 h-3" />
-                                    <span>{dish.preparation_time} min</span>
+                    <div>
+                      <div className="flex items-center gap-3 mb-6">
+                        <UtensilsCrossed className="w-6 h-6 text-primary" />
+                        <h2 className="text-2xl font-bold">
+                          {query ? 'Rekommenderade rätter' : 'Populära rätter'}
+                        </h2>
+                        {showingNearby && (
+                          <Badge variant="secondary" className="ml-2">
+                            <Sparkles className="w-3 h-3 mr-1" />
+                            I närområdet
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {dishes.map((dish) => (
+                          <Link key={dish.id} to={`/dish/${dish.id}`}>
+                            <Card className="group hover:shadow-warm transition-all duration-300 hover:scale-105 cursor-pointer h-full">
+                              <CardContent className="p-4">
+                                {dish.image_url && (
+                                  <div className="aspect-video mb-4 rounded-lg overflow-hidden bg-muted">
+                                    <img 
+                                      src={dish.image_url} 
+                                      alt={dish.name}
+                                      className="w-full h-full object-cover"
+                                    />
                                   </div>
                                 )}
-                                {dish.distance && (
-                                  <div className="flex items-center gap-1">
-                                    <MapPin className="w-3 h-3" />
-                                    <span>{dish.distance} km</span>
+                                <div className="space-y-2">
+                                  <div className="flex items-start justify-between">
+                                    <h3 className="font-semibold text-lg leading-tight">{dish.name}</h3>
+                                    <Badge variant="outline" className="text-primary font-semibold">
+                                      {dish.price} kr
+                                    </Badge>
                                   </div>
-                                )}
-                              </div>
-                              
-                              <div className="pt-2">
-                                <Button variant="food" size="sm" className="w-full group-hover:shadow-lg transition-shadow">
-                                  Beställ nu
-                                </Button>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
+                                  
+                                  <p className="text-sm text-muted-foreground line-clamp-2">
+                                    {dish.description}
+                                  </p>
+                                  
+                                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <ChefHat className="w-3 h-3" />
+                                    <span>{dish.chef_business_name || dish.chef_name}</span>
+                                  </div>
+                                  
+                                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                                    {dish.preparation_time && (
+                                      <div className="flex items-center gap-1">
+                                        <Clock className="w-3 h-3" />
+                                        <span>{dish.preparation_time} min</span>
+                                      </div>
+                                    )}
+                                    {dish.distance && (
+                                      <div className="flex items-center gap-1">
+                                        <MapPin className="w-3 h-3" />
+                                        <span>{dish.distance} km</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                  
+                                  <div className="pt-2">
+                                    <Button variant="food" size="sm" className="w-full group-hover:shadow-lg transition-shadow">
+                                      Beställ nu
+                                    </Button>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
-              {/* Chef Recommendations */}
-              {chefs.length > 0 && (
-                <div>
-                  <div className="flex items-center gap-3 mb-6">
-                    <ChefHat className="w-6 h-6 text-primary" />
-                    <h2 className="text-2xl font-bold">
-                      {query ? 'Rekommenderade kockar' : 'Populära kockar'}
-                    </h2>
-                    {showingNearby && (
-                      <Badge variant="secondary" className="ml-2">
-                        <Sparkles className="w-3 h-3 mr-1" />
-                        I närområdet
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {chefs.map((chef) => (
-                      <Link key={chef.id} to={`/chef/${chef.id}`}>
-                        <Card className="group hover:shadow-warm transition-all duration-300 hover:scale-105 cursor-pointer">
-                          <CardContent className="p-6">
-                            <div className="flex items-center mb-4">
-                              <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mr-4">
-                                <ChefHat className="w-6 h-6 text-white" />
-                              </div>
-                              <div>
-                                <h3 className="font-semibold text-lg">
-                                  {chef.business_name || chef.full_name}
-                                </h3>
-                                {chef.address && (
-                                  <div className="flex items-center text-sm text-muted-foreground">
-                                    <MapPin className="w-3 h-3 mr-1" />
-                                    <span>{chef.address}</span>
+                  {/* Chef Recommendations */}
+                  {chefs.length > 0 && (
+                    <div>
+                      <div className="flex items-center gap-3 mb-6">
+                        <ChefHat className="w-6 h-6 text-primary" />
+                        <h2 className="text-2xl font-bold">
+                          {query ? 'Rekommenderade kockar' : 'Populära kockar'}
+                        </h2>
+                        {showingNearby && (
+                          <Badge variant="secondary" className="ml-2">
+                            <Sparkles className="w-3 h-3 mr-1" />
+                            I närområdet
+                          </Badge>
+                        )}
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {chefs.map((chef) => (
+                          <Link key={chef.id} to={`/chef/${chef.id}`}>
+                            <Card className="group hover:shadow-warm transition-all duration-300 hover:scale-105 cursor-pointer">
+                              <CardContent className="p-6">
+                                <div className="flex items-center mb-4">
+                                  <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mr-4">
+                                    <ChefHat className="w-6 h-6 text-white" />
                                   </div>
-                                )}
-                              </div>
-                            </div>
-                            
-                            <div className="space-y-3">
-                              <div className="flex items-center justify-between text-sm">
-                                <div className="flex items-center">
-                                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                                  <span>4.8 (12 recensioner)</span>
-                                </div>
-                                <Badge variant="secondary">
-                                  {chef.dish_count} rätter
-                                </Badge>
-                              </div>
-                              
-                              <div className="flex items-center justify-between text-sm text-muted-foreground">
-                                <div className="flex items-center">
-                                  <Clock className="w-4 h-4 mr-1" />
-                                  <span>30-45 min tillagning</span>
-                                </div>
-                                {chef.distance && (
-                                  <div className="flex items-center">
-                                    <MapPin className="w-3 h-3 mr-1" />
-                                    <span>{chef.distance} km bort</span>
+                                  <div>
+                                    <h3 className="font-semibold text-lg">
+                                      {chef.business_name || chef.full_name}
+                                    </h3>
+                                    {chef.address && (
+                                      <div className="flex items-center text-sm text-muted-foreground">
+                                        <MapPin className="w-3 h-3 mr-1" />
+                                        <span>{chef.address}</span>
+                                      </div>
+                                    )}
                                   </div>
-                                )}
-                              </div>
-                              
-                              <div className="pt-2">
-                                <Button variant="food" className="w-full group-hover:shadow-lg transition-shadow">
-                                  Se maträtter
-                                </Button>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
+                                </div>
+                                
+                                <div className="space-y-3">
+                                  <div className="flex items-center justify-between text-sm">
+                                    <div className="flex items-center">
+                                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
+                                      <span>4.8 (12 recensioner)</span>
+                                    </div>
+                                    <Badge variant="secondary">
+                                      {chef.dish_count} rätter
+                                    </Badge>
+                                  </div>
+                                  
+                                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                                    <div className="flex items-center">
+                                      <Clock className="w-4 h-4 mr-1" />
+                                      <span>30-45 min tillagning</span>
+                                    </div>
+                                    {chef.distance && (
+                                      <div className="flex items-center">
+                                        <MapPin className="w-3 h-3 mr-1" />
+                                        <span>{chef.distance} km bort</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                  
+                                  <div className="pt-2">
+                                    <Button variant="food" className="w-full group-hover:shadow-lg transition-shadow">
+                                      Se maträtter
+                                    </Button>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </>
               )}
             </div>
