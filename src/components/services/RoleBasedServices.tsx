@@ -5,25 +5,25 @@ import CustomerServices from "./CustomerServices";
 import RestaurantServices from "./RestaurantServices";
 
 const RoleBasedServices = () => {
-  const { isChef, isKitchenPartner, isCustomer, isRestaurant } = useRole();
+  const { user, loading } = useRole();
 
-  if (isChef) {
+  if (loading) {
+    return null;
+  }
+
+  if (user?.role === 'chef') {
     return <ChefServices />;
   }
 
-  if (isKitchenPartner) {
+  if (user?.role === 'kitchen_partner') {
     return <KitchenPartnerServices />;
   }
 
-  if (isRestaurant) {
+  if (user?.role === 'restaurant') {
     return <RestaurantServices />;
   }
 
-  if (isCustomer) {
-    return <CustomerServices />;
-  }
-
-  // Fallback för om ingen roll är aktiv
+  // Default till customer services
   return <CustomerServices />;
 };
 

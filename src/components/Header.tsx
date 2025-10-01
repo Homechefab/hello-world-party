@@ -26,7 +26,7 @@ import { Badge } from "@/components/ui/badge";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, switchRole, isChef, isCustomer, isKitchenPartner, isAdmin, isRestaurant, usingMockData, switchToRealAuth } = useRole();
+  const { user, switchRole, usingMockData, switchToRealAuth, isChef, isCustomer, isKitchenPartner, isAdmin, isRestaurant } = useRole();
   const { user: authUser, signOut } = useAuth();
   const navigate = useNavigate();
 
