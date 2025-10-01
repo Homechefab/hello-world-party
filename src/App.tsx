@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-// import { RoleBasedLayout } from "@/components/RoleBasedLayout";
+import { RoleBasedLayout } from "@/components/RoleBasedLayout";
 import Index from "./pages/Index";
 import DishPage from "./pages/DishPage";
 import SellPage from "./pages/SellPage";
@@ -52,18 +52,15 @@ import Preferences from "./pages/settings/Preferences";
 import Profile from "./pages/Profile";
 import MyOrders from "./pages/MyOrders";
 import MyPoints from "./pages/MyPoints";
-// Auth removed - working directly with roles
 
 const queryClient = new QueryClient();
-
 
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <BrowserRouter>
-          <div id="debug-app" style={{position:'fixed', top: 8, left: 8, zIndex: 99999, color: 'red'}}>App loaded</div>
-          
+          <RoleBasedLayout>
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/dish/:id" element={<DishPage />} />
@@ -116,7 +113,7 @@ const App = () => {
               <Route path="/notification-signup" element={<NotificationSignup />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
-          
+          </RoleBasedLayout>
         </BrowserRouter>
         <Toaster />
         <Sonner />
