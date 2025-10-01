@@ -4,8 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { scrollToSection } from "@/utils/scrollUtils";
 
 const Footer = () => {
-  const { isChef, isRestaurant } = useRole();
+  const { user } = useRole();
   const navigate = useNavigate();
+  const isChef = user?.role === 'chef';
+  const isRestaurant = user?.role === 'restaurant';
 
   const handleRestaurantLink = (hash: string) => {
     navigate(`/restaurant/partnership${hash}`);
