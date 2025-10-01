@@ -3,7 +3,7 @@ import App from './App.tsx'
 import './index.css'
 import { AuthProvider } from '@/hooks/useAuth'
 import { CartProvider } from '@/contexts/CartContext'
-import { RoleProvider } from '@/contexts/RoleContext'
+import { RoleProvider } from '@/hooks/useRole'
 
 createRoot(document.getElementById("root")!).render(
   <AuthProvider>
