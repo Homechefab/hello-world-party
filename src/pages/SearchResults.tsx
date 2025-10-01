@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Star, MapPin, ChefHat, Clock, UtensilsCrossed, Sparkles } from "lucide-react";
-import SearchMap from "@/components/SearchMap";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Chef {
   id: string;
@@ -47,9 +47,7 @@ const calculateDistance = (searchLocation: string, chefAddress: string): number 
     'malmö': { lat: 55.6050, lon: 13.0038 },
     'uppsala': { lat: 59.8586, lon: 17.6389 },
     'linköping': { lat: 58.4108, lon: 15.6214 },
-    'örebro': { lat: 59.2753, lon: 15.2134 },
-    'laholm': { lat: 56.5125, lon: 13.0405 },
-    'båstad': { lat: 56.4309, lon: 12.8563 }
+    'örebro': { lat: 59.2753, lon: 15.2134 }
   };
 
   const getLocationCoords = (location: string) => {
@@ -95,121 +93,158 @@ const SearchResults = () => {
   const [loading, setLoading] = useState(true);
   const [searchArea, setSearchArea] = useState<string>('');
   const [showingNearby, setShowingNearby] = useState(false);
-  const [selectedChef, setSelectedChef] = useState<Chef | null>(null);
-
-  // Mock data for demonstration
-  const mockChefs: Chef[] = [
-    {
-      id: 'chef1',
-      business_name: 'Annas Hemlagade',
-      full_name: 'Anna Kök',
-      address: 'Gamla Stan, Stockholm',
-      dish_count: 3,
-      city: 'Stockholm',
-      distance: query ? calculateDistance(query, 'Gamla Stan, Stockholm') : undefined
-    },
-    {
-      id: 'chef2',
-      business_name: 'Lars Köksstudio',
-      full_name: 'Lars Köksmästare',
-      address: 'Södermalm, Stockholm',
-      dish_count: 2,
-      city: 'Stockholm',
-      distance: query ? calculateDistance(query, 'Södermalm, Stockholm') : undefined
-    },
-    {
-      id: 'chef3',
-      business_name: 'Maria Pasta Bar',
-      full_name: 'Maria Pasta',
-      address: 'Östermalm, Stockholm',
-      dish_count: 2,
-      city: 'Stockholm',
-      distance: query ? calculateDistance(query, 'Östermalm, Stockholm') : undefined
-    },
-    {
-      id: 'chef4',
-      business_name: 'Eriks Fiskrätter',
-      full_name: 'Erik Fiskhandlare',
-      address: 'Vasastan, Stockholm',
-      dish_count: 1,
-      city: 'Stockholm',
-      distance: query ? calculateDistance(query, 'Vasastan, Stockholm') : undefined
-    },
-    {
-      id: 'chef5',
-      business_name: 'Sofias Vegetariska',
-      full_name: 'Sofia Vegetarian',
-      address: 'Norrmalm, Stockholm',
-      dish_count: 1,
-      city: 'Stockholm',
-      distance: query ? calculateDistance(query, 'Norrmalm, Stockholm') : undefined
-    }
-  ];
-
-  const mockDishes: Dish[] = [
-    {
-      id: 'dish1',
-      name: 'Klassiska Köttbullar',
-      description: 'Hemlagade köttbullar med gräddsås, lingonsylt och potatismos',
-      price: 149,
-      chef_id: 'chef1',
-      chef_name: 'Anna Kök',
-      chef_business_name: 'Annas Hemlagade',
-      chef_address: 'Gamla Stan, Stockholm',
-      category: 'Kött',
-      preparation_time: 30,
-      distance: query ? calculateDistance(query, 'Gamla Stan, Stockholm') : undefined
-    }
-  ];
 
   useEffect(() => {
     const searchContent = async () => {
       try {
-        setLoading(true);
+        // Search for chefs with available dishes
+        const { data: chefsData, error } = await supabase
+          .from('chefs')
+          .select(`
+            id,
+            business_name,
+            user_id
+          `)
+          .eq('kitchen_approved', true);
 
-        // Use mock data for now
-        const mockChefsData = mockChefs;
-        const mockDishesData = mockDishes;
-        let filteredChefs = mockChefsData;
-        let filteredDishes = mockDishesData;
+        if (error) throw error;
 
+        // Search for dishes simultaneously
+        const { data: dishesData, error: dishError } = await supabase
+          .from('dishes')
+          .select(`
+            id,
+            name,
+            description,
+            price,
+            chef_id,
+            image_url,
+            category,
+            preparation_time,
+            chefs!inner(
+              business_name,
+              user_id,
+              kitchen_approved
+            )
+          `)
+          .eq('available', true)
+          .eq('chefs.kitchen_approved', true);
+
+        if (dishError) throw dishError;
+
+        // Get profiles for all users (chefs and dish chefs)
+        const allUserIds = [
+          ...(chefsData?.map(chef => chef.user_id) || []),
+          ...(dishesData?.map(dish => dish.chefs.user_id) || [])
+        ];
+        const uniqueUserIds = [...new Set(allUserIds)];
+        
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, full_name, address')
+          .in('id', uniqueUserIds);
+
+        if (profilesError) throw profilesError;
+
+        // Get dish counts for chefs
+        const { data: dishCounts, error: dishCountError } = await supabase
+          .from('dishes')
+          .select('chef_id')
+          .eq('available', true)
+          .in('chef_id', chefsData?.map(c => c.id) || []);
+
+        if (dishCountError) throw dishCountError;
+
+        // Format chef results with distance calculation
+        let formattedChefs: Chef[] = [];
+        if (chefsData && chefsData.length > 0) {
+          formattedChefs = chefsData.map(chef => {
+            const profile = profilesData?.find(p => p.id === chef.user_id);
+            const dishCount = dishCounts?.filter(d => d.chef_id === chef.id).length || 0;
+            
+            const chefData: Chef = {
+              id: chef.id,
+              business_name: chef.business_name,
+              full_name: profile?.full_name || '',
+              address: profile?.address || '',
+              dish_count: dishCount,
+              city: profile?.address?.split(',')[1]?.trim() || profile?.address || ''
+            };
+
+            // Calculate distance if there's a location query
+            if (query && chefData.address) {
+              chefData.distance = calculateDistance(query, chefData.address);
+            }
+
+            return chefData;
+          }).filter(chef => chef.dish_count > 0);
+        }
+
+        // Format dish results with distance calculation
+        let formattedDishes: Dish[] = [];
+        if (dishesData && dishesData.length > 0) {
+          formattedDishes = dishesData.map(dish => {
+            const chefProfile = profilesData?.find(p => p.id === dish.chefs.user_id);
+            
+            const dishData: Dish = {
+              id: dish.id,
+              name: dish.name,
+              description: dish.description || '',
+              price: dish.price,
+              chef_id: dish.chef_id,
+              chef_name: chefProfile?.full_name || '',
+              chef_business_name: dish.chefs.business_name,
+              chef_address: chefProfile?.address || '',
+              image_url: dish.image_url,
+              category: dish.category,
+              preparation_time: dish.preparation_time
+            };
+
+            // Calculate distance if there's a location query
+            if (query && dishData.chef_address) {
+              dishData.distance = calculateDistance(query, dishData.chef_address);
+            }
+
+            return dishData;
+          });
+        }
+
+        // Search and filter logic
         if (query) {
-          const searchLower = query.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+          const searchLower = query.toLowerCase();
+          
+          // Filter chefs by search query
+          let filteredChefs = formattedChefs.filter(chef => 
+            chef.business_name?.toLowerCase().includes(searchLower) ||
+            chef.full_name?.toLowerCase().includes(searchLower) ||
+            chef.address?.toLowerCase().includes(searchLower) ||
+            chef.city?.toLowerCase().includes(searchLower)
+          );
 
-          filteredChefs = mockChefsData.filter(chef => {
-            const normalizeText = (text: string) => 
-              text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-            
-            return (chef.business_name && normalizeText(chef.business_name).includes(searchLower)) ||
-                   (chef.full_name && normalizeText(chef.full_name).includes(searchLower)) ||
-                   (chef.address && normalizeText(chef.address).includes(searchLower)) ||
-                   (chef.city && normalizeText(chef.city).includes(searchLower));
-          });
+          // Filter dishes by search query
+          let filteredDishes = formattedDishes.filter(dish =>
+            dish.name.toLowerCase().includes(searchLower) ||
+            dish.description?.toLowerCase().includes(searchLower) ||
+            dish.category?.toLowerCase().includes(searchLower) ||
+            dish.chef_name.toLowerCase().includes(searchLower) ||
+            dish.chef_business_name.toLowerCase().includes(searchLower)
+          );
 
-          filteredDishes = mockDishesData.filter(dish => {
-            const normalizeText = (text: string) => 
-              text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-            
-            return normalizeText(dish.name).includes(searchLower) ||
-                   (dish.description && normalizeText(dish.description).includes(searchLower)) ||
-                   (dish.category && normalizeText(dish.category).includes(searchLower)) ||
-                   normalizeText(dish.chef_name).includes(searchLower) ||
-                   normalizeText(dish.chef_business_name).includes(searchLower);
-          });
-
+          // If no exact matches, show nearby recommendations (within 50km)
           if (filteredChefs.length === 0 && filteredDishes.length === 0) {
-            filteredChefs = mockChefsData
-              .filter(chef => chef.distance !== undefined && chef.distance <= 600)
+            filteredChefs = formattedChefs
+              .filter(chef => chef.distance !== undefined && chef.distance <= 50)
               .sort((a, b) => (a.distance || 0) - (b.distance || 0))
               .slice(0, 6);
-
-            filteredDishes = mockDishesData
-              .filter(dish => dish.distance !== undefined && dish.distance <= 600)
+            
+            filteredDishes = formattedDishes
+              .filter(dish => dish.distance !== undefined && dish.distance <= 50)
               .sort((a, b) => (a.distance || 0) - (b.distance || 0))
               .slice(0, 8);
-
+            
             setShowingNearby(true);
           } else {
+            // Sort results by relevance and distance
             filteredChefs.sort((a, b) => (a.distance || 0) - (b.distance || 0));
             filteredDishes.sort((a, b) => (a.distance || 0) - (b.distance || 0));
             setShowingNearby(false);
@@ -219,8 +254,9 @@ const SearchResults = () => {
           setDishes(filteredDishes.slice(0, 8));
           setSearchArea(query);
         } else {
-          setChefs(filteredChefs.slice(0, 6));
-          setDishes(filteredDishes.slice(0, 8));
+          // No search query, show featured content
+          setChefs(formattedChefs.slice(0, 6));
+          setDishes(formattedDishes.slice(0, 8));
           setShowingNearby(false);
         }
       } catch (error) {
@@ -258,7 +294,7 @@ const SearchResults = () => {
               <div className="text-center">
                 <p className="text-xl text-white/90 mb-2">
                   {chefs.length > 0 || dishes.length > 0
-                    ? `Hittade ${chefs.length} kockar ${showingNearby ? 'i närområdet av' : 'för'} "${query}"`
+                    ? `Hittade ${chefs.length} kockar och ${dishes.length} rätter ${showingNearby ? 'i närområdet av' : 'för'} "${query}"`
                     : `Inga resultat hittades för "${query}"`
                   }
                 </p>
@@ -272,15 +308,15 @@ const SearchResults = () => {
             )}
             {!query && (
               <p className="text-xl text-white/90">
-                Upptäck {chefs.length} kockar
+                Upptäck {chefs.length} kockar och {dishes.length} rätter
               </p>
             )}
           </div>
         </div>
       </section>
 
-      <section className="py-8">
-        <div className="container mx-auto px-4 max-w-7xl">
+      <section className="py-12">
+        <div className="container mx-auto px-4">
           {chefs.length === 0 && dishes.length === 0 ? (
             <div className="text-center py-16">
               <UtensilsCrossed className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
@@ -307,110 +343,156 @@ const SearchResults = () => {
               </div>
             </div>
           ) : (
-            // Airbnb-style layout: List on left, Map on right (50/50 split)
-            <div className="flex h-[calc(100vh-200px)] gap-6">
-              {/* Left side - Scrollable Chef List (50%) */}
-              <div className="flex-1 overflow-y-auto pr-4">
-                <div className="mb-6">
-                  <h2 className="text-2xl font-bold flex items-center gap-3">
-                    <ChefHat className="w-6 h-6 text-primary" />
-                    {chefs.length} kockar i området
+            <div className="space-y-12">
+              {/* Dish Recommendations */}
+              {dishes.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <UtensilsCrossed className="w-6 h-6 text-primary" />
+                    <h2 className="text-2xl font-bold">
+                      {query ? 'Rekommenderade rätter' : 'Populära rätter'}
+                    </h2>
                     {showingNearby && (
                       <Badge variant="secondary" className="ml-2">
                         <Sparkles className="w-3 h-3 mr-1" />
-                        Rekommendationer
+                        I närområdet
                       </Badge>
                     )}
-                  </h2>
-                </div>
-
-                <div className="space-y-4">
-                  {chefs.map((chef) => (
-                    <Card 
-                      key={chef.id} 
-                      className={`hover:shadow-lg transition-all duration-300 cursor-pointer border-l-4 ${
-                        selectedChef?.id === chef.id ? 'border-l-primary shadow-lg' : 'border-l-transparent'
-                      } hover:border-l-primary`}
-                      onMouseEnter={() => setSelectedChef(chef)}
-                      onMouseLeave={() => setSelectedChef(null)}
-                    >
-                      <CardContent className="p-4">
-                        <div className="flex gap-4">
-                          {/* Chef Avatar */}
-                          <div className="flex-shrink-0">
-                            <div className="w-16 h-16 bg-gradient-primary rounded-xl flex items-center justify-center">
-                              <ChefHat className="w-8 h-8 text-white" />
-                            </div>
-                          </div>
-                          
-                          {/* Chef Info */}
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-start justify-between mb-2">
-                              <div>
-                                <h3 className="font-semibold text-lg text-foreground truncate">
-                                  {chef.business_name}
-                                </h3>
-                                <p className="text-muted-foreground text-sm">{chef.full_name}</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {dishes.map((dish) => (
+                      <Link key={dish.id} to={`/dish/${dish.id}`}>
+                        <Card className="group hover:shadow-warm transition-all duration-300 hover:scale-105 cursor-pointer h-full">
+                          <CardContent className="p-4">
+                            {dish.image_url && (
+                              <div className="aspect-video mb-4 rounded-lg overflow-hidden bg-muted">
+                                <img 
+                                  src={dish.image_url} 
+                                  alt={dish.name}
+                                  className="w-full h-full object-cover"
+                                />
                               </div>
-                              {chef.distance && (
-                                <Badge variant="outline" className="ml-2 flex-shrink-0">
-                                  {chef.distance} km
+                            )}
+                            <div className="space-y-2">
+                              <div className="flex items-start justify-between">
+                                <h3 className="font-semibold text-lg leading-tight">{dish.name}</h3>
+                                <Badge variant="outline" className="text-primary font-semibold">
+                                  {dish.price} kr
                                 </Badge>
-                              )}
-                            </div>
-                            
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
-                              <div className="flex items-center gap-1">
-                                <MapPin className="w-4 h-4" />
-                                <span className="truncate">{chef.city || chef.address}</span>
                               </div>
-                              <div className="flex items-center gap-1">
-                                <UtensilsCrossed className="w-4 h-4" />
-                                <span>{chef.dish_count} rätter</span>
+                              
+                              <p className="text-sm text-muted-foreground line-clamp-2">
+                                {dish.description}
+                              </p>
+                              
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <ChefHat className="w-3 h-3" />
+                                <span>{dish.chef_business_name || dish.chef_name}</span>
                               </div>
-                              <div className="flex items-center gap-1">
-                                <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                                <span>4.8</span>
+                              
+                              <div className="flex items-center justify-between text-sm text-muted-foreground">
+                                {dish.preparation_time && (
+                                  <div className="flex items-center gap-1">
+                                    <Clock className="w-3 h-3" />
+                                    <span>{dish.preparation_time} min</span>
+                                  </div>
+                                )}
+                                {dish.distance && (
+                                  <div className="flex items-center gap-1">
+                                    <MapPin className="w-3 h-3" />
+                                    <span>{dish.distance} km</span>
+                                  </div>
+                                )}
                               </div>
-                            </div>
-                            
-                            <div className="flex items-center justify-between">
-                              <div className="text-sm text-muted-foreground">
-                                Från 150 kr/rätt
-                              </div>
-                              <Link to={`/chef/${chef.id}`}>
-                                <Button size="sm" variant="outline">
-                                  Visa profil
+                              
+                              <div className="pt-2">
+                                <Button variant="food" size="sm" className="w-full group-hover:shadow-lg transition-shadow">
+                                  Beställ nu
                                 </Button>
-                              </Link>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-
-                  {chefs.length === 0 && (
-                    <div className="text-center py-12">
-                      <ChefHat className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                      <p className="text-lg text-muted-foreground">Inga kockar hittades</p>
-                      <p className="text-sm text-muted-foreground">Prova att ändra dina sökkriterier</p>
-                    </div>
-                  )}
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Right side - Fixed Map (50%) */}
-              <div className="flex-1 sticky top-0 h-full">
-                <div className="h-full rounded-xl overflow-hidden border shadow-lg">
-                  <SearchMap 
-                    chefs={chefs} 
-                    searchArea={searchArea}
-                    onChefSelect={(chef: Chef) => setSelectedChef(chef)}
-                    selectedChef={selectedChef}
-                  />
+              {/* Chef Recommendations */}
+              {chefs.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <ChefHat className="w-6 h-6 text-primary" />
+                    <h2 className="text-2xl font-bold">
+                      {query ? 'Rekommenderade kockar' : 'Populära kockar'}
+                    </h2>
+                    {showingNearby && (
+                      <Badge variant="secondary" className="ml-2">
+                        <Sparkles className="w-3 h-3 mr-1" />
+                        I närområdet
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {chefs.map((chef) => (
+                      <Link key={chef.id} to={`/chef/${chef.id}`}>
+                        <Card className="group hover:shadow-warm transition-all duration-300 hover:scale-105 cursor-pointer">
+                          <CardContent className="p-6">
+                            <div className="flex items-center mb-4">
+                              <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mr-4">
+                                <ChefHat className="w-6 h-6 text-white" />
+                              </div>
+                              <div>
+                                <h3 className="font-semibold text-lg">
+                                  {chef.business_name || chef.full_name}
+                                </h3>
+                                {chef.address && (
+                                  <div className="flex items-center text-sm text-muted-foreground">
+                                    <MapPin className="w-3 h-3 mr-1" />
+                                    <span>{chef.address}</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between text-sm">
+                                <div className="flex items-center">
+                                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
+                                  <span>4.8 (12 recensioner)</span>
+                                </div>
+                                <Badge variant="secondary">
+                                  {chef.dish_count} rätter
+                                </Badge>
+                              </div>
+                              
+                              <div className="flex items-center justify-between text-sm text-muted-foreground">
+                                <div className="flex items-center">
+                                  <Clock className="w-4 h-4 mr-1" />
+                                  <span>30-45 min tillagning</span>
+                                </div>
+                                {chef.distance && (
+                                  <div className="flex items-center">
+                                    <MapPin className="w-3 h-3 mr-1" />
+                                    <span>{chef.distance} km bort</span>
+                                  </div>
+                                )}
+                              </div>
+                              
+                              <div className="pt-2">
+                                <Button variant="food" className="w-full group-hover:shadow-lg transition-shadow">
+                                  Se maträtter
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
         </div>
