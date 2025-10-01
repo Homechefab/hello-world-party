@@ -54,7 +54,6 @@ import Preferences from "./pages/settings/Preferences";
 import Profile from "./pages/Profile";
 import MyOrders from "./pages/MyOrders";
 import MyPoints from "./pages/MyPoints";
-import PaymentSuccess from "./pages/payment-success";
 // Auth removed - working directly with roles
 
 const queryClient = new QueryClient();
@@ -118,7 +117,6 @@ const App = () => {
                 <Route path="/settings/payment-methods" element={<PaymentMethods />} />
                 <Route path="/settings/preferences" element={<Preferences />} />
                 <Route path="/notification-signup" element={<NotificationSignup />} />
-                <Route path="/payment-success" element={<PaymentSuccess />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </RoleBasedLayout>

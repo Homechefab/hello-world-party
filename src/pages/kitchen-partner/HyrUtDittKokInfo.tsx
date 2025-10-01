@@ -19,8 +19,7 @@ import rentKitchenImage from "@/assets/service-rent-kitchen.jpg";
 
 const HyrUtDittKokInfo = () => {
   const { user } = useAuth();
-  const { user: roleUser } = useRole();
-  const isKitchenPartner = roleUser?.role === 'kitchen_partner';
+  const { isKitchenPartner } = useRole();
 
   // Om användaren är inloggad och är kökspartner, visa dashboarden
   if (user && isKitchenPartner) {
