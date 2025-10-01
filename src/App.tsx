@@ -4,8 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { RoleBasedLayout } from "@/components/RoleBasedLayout";
-import { AuthProvider } from "@/hooks/useAuth";
-import { useRole } from "@/hooks/useRole";
+// Removed nested AuthProvider to avoid double provider
 import Index from "./pages/Index";
 import DishPage from "./pages/DishPage";
 import SellPage from "./pages/SellPage";
@@ -64,7 +63,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <BrowserRouter>
-          <AuthProvider>
+          
             <RoleBasedLayout>
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -120,7 +119,7 @@ const App = () => {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </RoleBasedLayout>
-          </AuthProvider>
+          
         </BrowserRouter>
         <Toaster />
         <Sonner />
