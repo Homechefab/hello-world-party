@@ -59,12 +59,21 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
     setIsLoading(true);
     
     try {
+      // Validate email format if provided
+      if (customerEmail && !customerEmail.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+        throw new Error('Ogiltig e-postadress format');
+      }
+
       const { data, error } = await supabase.functions.invoke('klarna-payment', {
         body: {
           amount: totalAmount,
           currency: 'SEK',
           orderLines: orderLines,
-          userEmail: customerEmail
+          userEmail: customerEmail || undefined,
+          merchantConfig: {
+            origin: window.location.origin,
+            returnUrl: `${window.location.origin}/payment-success`
+          }
         }
       });
 
