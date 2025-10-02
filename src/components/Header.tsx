@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Cart } from "@/components/Cart";
 import UserMenu from "@/components/UserMenu";
 import type { UserRole } from "@/types/user";
+import homechefMascot from "@/assets/homechef-mascot.png";
 import {
   Sheet,
   SheetContent,
@@ -92,9 +93,11 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
-            <ChefHat className="w-6 h-6 text-white" />
-          </div>
+          <img 
+            src={homechefMascot} 
+            alt="HomeChef Mascot" 
+            className="w-10 h-10 object-contain"
+          />
           <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
             Homechef
           </h1>
