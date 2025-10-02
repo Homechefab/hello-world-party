@@ -1,12 +1,5 @@
 import { useContext } from 'react';
-import { RoleContext } from '@/contexts/RoleContext';
-import type { UserProfile, UserRole } from '@/types/user';
-
-interface RoleContextType {
-  role: UserRole | null;
-  loading: boolean;
-  user: UserProfile | null;
-}
+import { RoleContext, RoleContextType } from '@/contexts/RoleContext';
 
 export function useRole(): RoleContextType {
   const context = useContext(RoleContext);

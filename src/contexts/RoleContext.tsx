@@ -7,6 +7,14 @@ export interface RoleContextType {
   role: UserRole | null;
   loading: boolean;
   user: UserProfile | null;
+  isChef: boolean;
+  isKitchenPartner: boolean;
+  isCustomer: boolean;
+  isRestaurant: boolean;
+  isAdmin: boolean;
+  usingMockData: boolean;
+  switchRole: (newRole: UserRole) => void;
+  switchToRealAuth: () => void;
 }
 
 export const RoleContext = createContext<RoleContextType | undefined>(undefined);
@@ -70,8 +78,31 @@ export function RoleProvider({ children }: { children: ReactNode }) {
     fetchUserRole();
   }, [authUser]);
 
+  const switchRole = (newRole: UserRole) => {
+    setRole(newRole);
+  };
+
+  const switchToRealAuth = () => {
+    // This would navigate to auth page
+    window.location.href = '/auth';
+  };
+
+  const contextValue: RoleContextType = {
+    role,
+    loading,
+    user,
+    isChef: role === 'chef',
+    isKitchenPartner: role === 'kitchen_partner',
+    isCustomer: role === 'customer',
+    isRestaurant: role === 'restaurant',
+    isAdmin: role === 'admin',
+    usingMockData: false,
+    switchRole,
+    switchToRealAuth
+  };
+
   return (
-    <RoleContext.Provider value={{ role, loading, user }}>
+    <RoleContext.Provider value={contextValue}>
       {children}
     </RoleContext.Provider>
   );

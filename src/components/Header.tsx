@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { Cart } from "@/components/Cart";
 import UserMenu from "@/components/UserMenu";
+import type { UserRole } from "@/types/user";
 import {
   Sheet,
   SheetContent,
@@ -50,14 +51,16 @@ const Header = () => {
   const handleRoleSwitch = (roleId: string) => {
     const role = roles.find(r => r.id === roleId);
     if (role) {
-      switchRole(roleId);
+      // Extract the actual role from the roleId (remove the number suffix)
+      const actualRole = roleId.replace(/\d+$/, '') as UserRole;
+      switchRole(actualRole);
       toast.success(`Bytte till ${role.name} roll`);
       
       // Navigate based on role for test mode
       if (roleId === 'chef1') {
         navigate('/chef'); // Gå till kockens översiktssida
       } else if (roleId === 'kitchen_partner1') {
-        navigate('/kitchen-partner/dashboard'); 
+        navigate('/kitchen-partner/dashboard');
       } else if (roleId === 'admin1') {
         navigate('/admin/dashboard');
       } else {
