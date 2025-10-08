@@ -1,0 +1,7 @@
+{
+  "title": "Home Chef AB Components",
+  "description": "Component library for Home Chef AB",
+  "entryPoints": ["src/components/**/*.tsx"],
+  "excludes": ["**/*.test.*", "**/*.spec.*", "**/*.stories.*"],
+  "outDir": "dist-lovable"
+}

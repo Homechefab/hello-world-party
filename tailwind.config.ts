@@ -7,6 +7,7 @@ export default {
 		"./components/**/*.{ts,tsx}",
 		"./app/**/*.{ts,tsx}",
 		"./src/**/*.{ts,tsx}",
+		"./dist-lovable/**/*.{html,js}",
 	],
 	prefix: "",
 	theme: {
