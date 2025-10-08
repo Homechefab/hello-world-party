@@ -1,24 +1,28 @@
-// lovable.config.ts
+// @ts-check
+/** @type {import('lovable-tagger').Config} */
 export default {
-  enabled: true,
-  preview: true,
   title: "Home Chef AB",
-  links: {
-    repositoryUrl: "https://github.com/Homechefab/hello-world-party",
-    documentationUrl: "https://homechefab.com/docs"
+  description: "Component library for Home Chef AB",
+  repositoryUrl: "https://github.com/Homechefab/hello-world-party",
+  components: {
+    paths: ["src/components/**/*.tsx"],
+    ignore: ["src/components/**/*.test.tsx", "src/components/**/*.spec.tsx"],
   },
-  groups: {
-    "UI Components": {
-      glob: "src/components/ui/**/*.tsx",
+  groups: [
+    {
+      name: "UI Components",
+      match: "src/components/ui/**/*.tsx",
       description: "Reusable UI components based on shadcn/ui"
     },
-    "Features": {
-      glob: "src/components/*.tsx",
+    {
+      name: "Features",
+      match: "src/components/*.tsx",
       description: "Feature-specific components"
     },
-    "Pages": {
-      glob: "src/pages/**/*.tsx",
+    {
+      name: "Pages",
+      match: "src/pages/**/*.tsx",
       description: "Page components"
     }
-  }
+  ]
 }
