@@ -5,17 +5,16 @@ import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
-  const isLovable = mode === 'lovable';
+  const isPreview = mode === 'preview';
   const isDev = mode === 'development';
   
   return {
     server: {
-      host: "::",
+      host: "localhost",
       port: 8080,
     },
     plugins: [
       react(),
-      componentTagger(),
     ],
     resolve: {
       alias: {
@@ -24,11 +23,11 @@ export default defineConfig(({ command, mode }) => {
     },
     build: {
       sourcemap: true,
-      outDir: isLovable ? 'dist-lovable' : 'dist',
+      outDir: isPreview ? 'dist-preview' : 'dist',
       target: 'esnext',
-      rollupOptions: isLovable ? undefined : {
+      rollupOptions: {
         input: {
-          main: path.resolve(__dirname, 'index.html'),
+          main: path.resolve(__dirname, isPreview ? 'preview.html' : 'index.html'),
         },
       }
     },

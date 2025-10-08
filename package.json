@@ -6,9 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build:lovable": "vite build --mode lovable && node ./node_modules/lovable-tagger/dist/index.js build",
-    "lovable:serve": "node ./node_modules/lovable-tagger/dist/index.js serve",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preview:components": "vite --mode preview --config vite.config.ts",
+    "build:preview": "vite build --mode preview"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.2",
@@ -68,7 +68,13 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@chromatic-com/storybook": "4.1.1",
     "@eslint/js": "^9.9.0",
+    "@storybook/addon-a11y": "9.1.10",
+    "@storybook/addon-docs": "9.1.10",
+    "@storybook/addon-onboarding": "9.1.10",
+    "@storybook/addon-vitest": "9.1.10",
+    "@storybook/react-vite": "9.1.10",
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^22.5.5",
     "@types/react": "^18.3.3",
@@ -78,12 +84,18 @@
     "eslint": "^9.9.0",
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
+    "eslint-plugin-storybook": "9.1.10",
     "globals": "^15.9.0",
-    "lovable-tagger": "^1.1.10",
+    "lovable-tagger": "1.1.7",
     "postcss": "^8.4.47",
+    "storybook": "9.1.10",
     "tailwindcss": "^3.4.11",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
-    "vite": "^5.4.1"
+    "vite": "^5.4.1",
+    "vitest": "^3.2.4",
+    "@vitest/browser": "^3.2.4",
+    "playwright": "^1.56.0",
+    "@vitest/coverage-v8": "^3.2.4"
   }
 }
