@@ -2,6 +2,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
+/**
+ * @lovable
+ * @description A component for handling payment processing with a clean and simple interface
+ * @example
+ * ```tsx
+ * <PaymentComponent />
+ * ```
+ */
 const PaymentComponent = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 

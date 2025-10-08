@@ -9,19 +9,19 @@ const config = {
     {
       id: "ui",
       title: "UI Components",
-      pattern: "ui/**/*.tsx",
+      pattern: "**/ui/**/*.tsx",
       description: "Reusable UI components based on shadcn/ui"
     },
     {
       id: "features",
       title: "Feature Components",
-      pattern: "*.tsx",
+      pattern: "**/!(ui)/*.tsx",
       description: "Feature-specific components"
     },
     {
       id: "pages",
       title: "Pages",
-      pattern: "../pages/**/*.tsx",
+      pattern: "**/pages/**/*.tsx",
       description: "Page components"
     }
   ],
