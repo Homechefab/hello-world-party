@@ -355,6 +355,8 @@ export type Database = {
           status: string
           total_amount: number
           updated_at: string
+          stripe_payment_intent_id: string | null
+          stripe_customer_id: string | null
         }
         Insert: {
           chef_id: string
@@ -367,6 +369,8 @@ export type Database = {
           status?: string
           total_amount: number
           updated_at?: string
+          stripe_payment_intent_id?: string | null
+          stripe_customer_id?: string | null
         }
         Update: {
           chef_id?: string
@@ -379,6 +383,8 @@ export type Database = {
           status?: string
           total_amount?: number
           updated_at?: string
+          stripe_payment_intent_id?: string | null
+          stripe_customer_id?: string | null
         }
         Relationships: [
           {
@@ -539,6 +545,30 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      },
+      stripe_customers: {
+        Row: {
+          id: string
+          user_id: string
+          stripe_customer_id: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          stripe_customer_id: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          stripe_customer_id?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       user_points: {
         Row: {
