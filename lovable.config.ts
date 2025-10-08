@@ -1,28 +1,35 @@
-// @ts-check
-/** @type {import('lovable-tagger').Config} */
-export default {
-  title: "Home Chef AB",
+const config = {
+  input: "src/components",
+  output: "dist-lovable",
+  title: "Home Chef AB Components",
   description: "Component library for Home Chef AB",
-  repositoryUrl: "https://github.com/Homechefab/hello-world-party",
-  components: {
-    paths: ["src/components/**/*.tsx"],
-    ignore: ["src/components/**/*.test.tsx", "src/components/**/*.spec.tsx"],
-  },
+  include: ["**/*.tsx"],
+  exclude: ["**/*.test.tsx", "**/*.spec.tsx", "**/*.stories.tsx"],
   groups: [
     {
-      name: "UI Components",
-      match: "src/components/ui/**/*.tsx",
+      id: "ui",
+      title: "UI Components",
+      pattern: "ui/**/*.tsx",
       description: "Reusable UI components based on shadcn/ui"
     },
     {
-      name: "Features",
-      match: "src/components/*.tsx",
+      id: "features",
+      title: "Feature Components",
+      pattern: "*.tsx",
       description: "Feature-specific components"
     },
     {
-      name: "Pages",
-      match: "src/pages/**/*.tsx",
+      id: "pages",
+      title: "Pages",
+      pattern: "../pages/**/*.tsx",
       description: "Page components"
     }
-  ]
-}
+  ],
+  typescript: {
+    compilerOptions: {
+      jsx: "react-jsx"
+    }
+  }
+};
+
+export default config;
