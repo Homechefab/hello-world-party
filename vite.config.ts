@@ -4,42 +4,18 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command, mode }) => {
-  const isPreview = mode === 'preview';
-  const isDev = mode === 'development';
-  
-  return {
-    server: {
-      host: "localhost",
-      port: 8080,
+export default defineConfig(({ mode }) => ({
+  server: {
+    host: "::",
+    port: 8080,
+  },
+  plugins: [
+    react(),
+    mode === 'development' && componentTagger(),
+  ].filter(Boolean),
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
     },
-    plugins: [
-      react(),
-      componentTagger({
-        enabled: isPreview || isDev,
-        previewConfig: {
-          outDir: 'dist-preview',
-          staticResources: ['/src/styles/**/*.css'],
-        }
-      }),
-    ],
-    resolve: {
-      alias: {
-        "@": path.resolve(__dirname, "./src"),
-      },
-    },
-    build: {
-      sourcemap: true,
-      outDir: isPreview ? 'dist-preview' : 'dist',
-      target: 'esnext',
-      rollupOptions: {
-        input: {
-          main: path.resolve(__dirname, isPreview ? 'preview.html' : 'index.html'),
-        },
-      }
-    },
-    define: {
-      'process.env.NODE_ENV': JSON.stringify(mode)
-    }
-  };
-});
+  },
+}));
