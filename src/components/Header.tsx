@@ -154,9 +154,7 @@ const Header = () => {
             </DropdownMenuContent>
           </DropdownMenu>
           
-          <Button variant="ghost" size="icon">
-            <Cart />
-          </Button>
+          <Cart />
           
           <UserMenu />
           
@@ -273,7 +271,9 @@ const Header = () => {
                   )}
                   
                   <div className="flex gap-2">
-                    <Cart />
+                    <div className="flex-1">
+                      <Cart />
+                    </div>
                     <div className="flex-1">
                       <UserMenu />
                     </div>
