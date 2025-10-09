@@ -15,6 +15,13 @@ export default defineConfig(({ command, mode }) => {
     },
     plugins: [
       react(),
+      componentTagger({
+        enabled: isPreview || isDev,
+        previewConfig: {
+          outDir: 'dist-preview',
+          staticResources: ['/src/styles/**/*.css'],
+        }
+      }),
     ],
     resolve: {
       alias: {
