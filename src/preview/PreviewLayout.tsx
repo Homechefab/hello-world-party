@@ -23,7 +23,14 @@ const PreviewLayout = () => {
             <p className="text-muted-foreground">A reusable payment processing interface</p>
           </div>
           <div className="p-4 bg-muted/40 rounded-lg">
-            <PaymentComponent />
+            <PaymentComponent 
+              dishTitle="Mormors köttbullar"
+              dishPrice={89}
+              quantity={2}
+              pickupTime="18:00"
+              pickupAddress="Hornsgatan 45, Stockholm"
+              specialRequests="Extra lingonsylt tack!"
+            />
           </div>
         </div>
       </div>
