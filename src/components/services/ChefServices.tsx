@@ -8,7 +8,7 @@ import experienceImage from "@/assets/experience-dining.jpg";
 import approvedKitchenImage from "@/assets/swedish-villa-kitchen-realistic.jpg";
 import businessRegistrationImage from "@/assets/business-registration.jpg";
 
-const chefServices = [
+const mainChefServices = [
   {
     image: sellFoodImage,
     title: "Sälj din mat",
@@ -32,7 +32,10 @@ const chefServices = [
     href: "/chef/experiences",
     icon: Calendar,
     color: "from-amber-500 to-amber-600"
-  },
+  }
+];
+
+const otherChefServices = [
   {
     image: approvedKitchenImage,
     title: "Kök-krav",
@@ -64,8 +67,9 @@ const ChefServices = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
-          {chefServices.map((service) => {
+        {/* Main Services */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto mb-12">
+          {mainChefServices.map((service) => {
             const IconComponent = service.icon;
             return (
               <Link
@@ -100,6 +104,48 @@ const ChefServices = () => {
               </Link>
             );
           })}
+        </div>
+
+        {/* Övrigt Section */}
+        <div className="max-w-7xl mx-auto">
+          <h3 className="text-xl font-semibold text-foreground mb-4">Övrigt</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {otherChefServices.map((service) => {
+              const IconComponent = service.icon;
+              return (
+                <Link
+                  key={service.title}
+                  to={service.href}
+                  className="group block"
+                >
+                  <Card className="hover:shadow-card transition-all duration-300 hover:-translate-y-2 overflow-hidden">
+                    <div className="relative h-48 overflow-hidden">
+                      <img 
+                        src={service.image} 
+                        alt={service.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="absolute top-4 right-4 bg-white/10 backdrop-blur-sm rounded-full p-2">
+                        <IconComponent className="w-5 h-5 text-white" />
+                      </div>
+                    </div>
+                    <CardContent className="p-6">
+                      <h3 className="text-lg font-semibold text-center text-foreground mb-2">
+                        {service.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground text-center mb-4">
+                        {service.description}
+                      </p>
+                      <Button variant="outline" size="sm" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                        Utforska
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
