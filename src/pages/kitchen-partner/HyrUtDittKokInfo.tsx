@@ -98,7 +98,7 @@ const HyrUtDittKokInfo = () => {
             Maximera intäkterna från ditt kök genom att hyra ut till kvalificerade kockar när du inte använder det
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-primary hover:bg-primary/90">
+            <Button size="lg" className="bg-primary hover:bg-primary/90" asChild>
               <Link to="/kitchen-partner/register">
                 Kom igång nu
               </Link>
@@ -263,7 +263,7 @@ const HyrUtDittKokInfo = () => {
           <p className="text-lg mb-8 max-w-2xl mx-auto opacity-90">
             Registrera dig idag och börja ta emot bokningar redan imorgon
           </p>
-          <Button size="lg" variant="secondary">
+          <Button size="lg" variant="secondary" asChild>
             <Link to="/kitchen-partner/register">
               Registrera ditt kök nu
             </Link>
