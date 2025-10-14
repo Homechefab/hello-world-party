@@ -222,7 +222,7 @@ const BusinessSetup = () => {
       </Alert>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="company-forms">
             <Building2 className="w-4 h-4 mr-2" />
             Företagsform
@@ -230,14 +230,6 @@ const BusinessSetup = () => {
           <TabsTrigger value="registration">
             <FileText className="w-4 h-4 mr-2" />
             Registrering
-          </TabsTrigger>
-          <TabsTrigger value="taxes">
-            <Calculator className="w-4 h-4 mr-2" />
-            Skatter
-          </TabsTrigger>
-          <TabsTrigger value="deductions">
-            <BookOpen className="w-4 h-4 mr-2" />
-            Avdrag
           </TabsTrigger>
           <TabsTrigger value="insurance">
             <Shield className="w-4 h-4 mr-2" />
@@ -527,86 +519,6 @@ const BusinessSetup = () => {
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="taxes" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Skatter du behöver betala</CardTitle>
-              <CardDescription>
-                Översikt över de olika skatter som gäller för din matverksamhet
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {taxInfo.map((tax, index) => (
-                  <div key={index} className="p-4 border rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold">{tax.category}</h4>
-                      <Badge variant="secondary">{tax.rate}</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-2">{tax.description}</p>
-                    <p className="text-xs text-muted-foreground">{tax.details}</p>
-                  </div>
-                ))}
-              </div>
-
-              <Alert className="mt-6">
-                <Calculator className="h-4 w-4" />
-                <AlertDescription>
-                  <strong>Exempel:</strong> Om du tjänar 200 000 kr i överskott per år, betalar du ungefär:
-                  <br />• Inkomstskatt: ~60 000 kr
-                  <br />• Egenavgifter: ~58 000 kr
-                  <br />• Totalt: ~118 000 kr (59% av överskott)
-                </AlertDescription>
-              </Alert>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="deductions" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Avdrag du kan göra</CardTitle>
-              <CardDescription>
-                Kostnader du kan dra av för att minska din skatt
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {deductions.map((deduction, index) => (
-                  <div key={index} className="p-4 border rounded-lg">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="font-semibold">{deduction.category}</h4>
-                      <Badge className="bg-green-100 text-green-700">
-                        {deduction.percentage} avdragsgill
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-3">{deduction.description}</p>
-                    <div>
-                      <h5 className="text-sm font-medium mb-1">Exempel:</h5>
-                      <ul className="text-xs text-muted-foreground space-y-1">
-                        {deduction.examples.map((example, i) => (
-                          <li key={i} className="flex items-start gap-2">
-                            <span className="w-1 h-1 bg-muted-foreground rounded-full mt-2 flex-shrink-0"></span>
-                            <span>{example}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <Alert className="mt-6">
-                <BookOpen className="h-4 w-4" />
-                <AlertDescription>
-                  <strong>Tips:</strong> Spara alla kvitton och håll noggrann bokföring. 
-                  En bra regel är att dokumentera allt som har med verksamheten att göra.
-                </AlertDescription>
-              </Alert>
             </CardContent>
           </Card>
         </TabsContent>
