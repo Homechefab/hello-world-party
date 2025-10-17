@@ -18,7 +18,7 @@ const PreviewWrapper = ({
   currentPath = '/'
 }: PreviewWrapperProps) => {
   const mockAuthContext: AuthContextType = {
-    user: isAuthenticated ? { email: 'test@example.com' } : null,
+    user: isAuthenticated ? { email: 'test@example.com', id: 'test-id' } : null,
     signOut: () => Promise.resolve(),
   };
 
