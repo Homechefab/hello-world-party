@@ -18,8 +18,15 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  optimizeDeps: {
+    include: ['react', 'react-dom'],
+    exclude: mode === 'preview' ? ['lovable-tagger'] : [],
+  },
   build: {
     sourcemap: true,
     outDir: mode === 'preview' ? 'dist-preview' : 'dist',
+    rollupOptions: {
+      external: mode === 'preview' ? ['lovable-tagger'] : [],
+    },
   }
 }));

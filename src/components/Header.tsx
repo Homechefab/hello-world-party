@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { ChefHat, Search, Menu, Home, UtensilsCrossed, Info, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useRole } from "../hooks/useRole";
-import { Cart } from "./Cart";
-import UserMenu from "./UserMenu";
-import homechefMascot from "../assets/homechef-mascot.png";
+import { useRole } from "@/hooks/useRole";
+import { Cart } from "@/components/Cart";
+import UserMenu from "@/components/UserMenu";
+import homechefMascot from "@/assets/homechef-mascot.png";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "./ui/sheet";
-import { Button } from "./ui/button";
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -36,11 +36,17 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <img 
-            src={homechefMascot} 
-            alt="HomeChef Mascot" 
-            className="w-10 h-10 object-contain"
-          />
+          {homechefMascot ? (
+            <img 
+              src={homechefMascot} 
+              alt="HomeChef Mascot" 
+              className="w-10 h-10 object-contain"
+            />
+          ) : (
+            <div className="w-10 h-10 flex items-center justify-center bg-primary/10 rounded-lg">
+              <ChefHat className="w-6 h-6 text-primary" />
+            </div>
+          )}
           <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
             Homechef
           </h1>
