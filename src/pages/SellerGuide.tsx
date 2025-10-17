@@ -50,7 +50,7 @@ const SellerGuide = () => {
         const { data: profile } = await supabase
           .from('profiles')
           .select('municipality_approved')
-          .eq('id', user.id)
+          .eq('id', user.id as string)
           .single();
         
         if (profile?.municipality_approved) {

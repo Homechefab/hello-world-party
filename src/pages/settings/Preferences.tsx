@@ -46,13 +46,19 @@ const Preferences = () => {
       const { data, error } = await supabase
         .from('user_preferences')
         .select('*')
-        .eq('user_id', user?.id)
+        .eq('user_id', user?.id as string)
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') throw error;
       
       if (data) {
-        setPreferences(data);
+        setPreferences({
+          id: data.id,
+          allergies: data.allergies || [],
+          favorite_dishes: data.favorite_dishes || [],
+          language: data.language || 'sv',
+          dietary_restrictions: data.dietary_restrictions || [],
+        });
         setLanguage(data.language || 'sv');
         setAllergies(data.allergies || []);
         setFavoriteDishes(data.favorite_dishes || []);
@@ -67,11 +73,17 @@ const Preferences = () => {
   };
 
   const handleSave = async () => {
-    setSaving(true);
-    
-    try {
+  setSaving(true);
+  
+  if (!user?.id) {
+    toast.error('Du måste vara inloggad för att spara preferenser.');
+    setSaving(false);
+    return;
+  }
+  
+  try {
       const preferencesData = {
-        user_id: user?.id,
+        user_id: user.id,
         language,
         allergies,
         favorite_dishes: favoriteDishes,
@@ -88,7 +100,7 @@ const Preferences = () => {
       } else {
         const { error } = await supabase
           .from('user_preferences')
-          .insert(preferencesData);
+          .insert([preferencesData]);
         
         if (error) throw error;
       }

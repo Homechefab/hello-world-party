@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Bike, Clock, CreditCard, CheckCircle, Star, ArrowRight, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+
 import { useToast } from "@/hooks/use-toast";
 
 interface ApplicationForm {

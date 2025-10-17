@@ -51,7 +51,17 @@ const DeliveryAddresses = () => {
         .order('is_default', { ascending: false });
 
       if (error) throw error;
-      setAddresses(data || []);
+      setAddresses((data || []).map((d) => ({
+        id: d.id,
+        name: d.name,
+        address_line1: d.address_line1,
+        address_line2: d.address_line2 ?? null,
+        city: d.city,
+        postal_code: d.postal_code,
+        country: d.country ?? 'Sweden',
+        is_default: d.is_default ?? false,
+      })));
+
     } catch (error) {
       console.error('Error fetching addresses:', error);
       toast.error('Kunde inte hämta adresser');
@@ -62,12 +72,17 @@ const DeliveryAddresses = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    if (!user?.id) {
+      toast.error('Du måste vara inloggad för att spara en adress.');
+      return;
+    }
+
     try {
       const addressData = {
         ...formData,
-        user_id: user?.id,
-        country: 'Sweden'
+        user_id: user.id,
+        country: 'Sweden',
       };
 
       if (editingAddress) {
@@ -81,7 +96,7 @@ const DeliveryAddresses = () => {
       } else {
         const { error } = await supabase
           .from('delivery_addresses')
-          .insert(addressData);
+          .insert([addressData]);
         
         if (error) throw error;
         toast.success('Adress tillagd');
