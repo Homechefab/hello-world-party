@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Building2, Truck, Store, Users, ShoppingCart, Star, Mail, Phone, ArrowRight } from "lucide-react";
+import { Building2, Store, Users, Star, Mail, Phone, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+
 import { Card, CardContent } from "@/components/ui/card";
 
 interface ContactForm {

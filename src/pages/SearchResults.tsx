@@ -91,7 +91,7 @@ const SearchResults = () => {
   const [chefs, setChefs] = useState<Chef[]>([]);
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchArea, setSearchArea] = useState<string>('');
+  
   const [showingNearby, setShowingNearby] = useState(false);
 
   useEffect(() => {
@@ -195,9 +195,9 @@ const SearchResults = () => {
               chef_name: chefProfile?.full_name || '',
               chef_business_name: dish.chefs.business_name,
               chef_address: chefProfile?.address || '',
-              image_url: dish.image_url,
-              category: dish.category,
-              preparation_time: dish.preparation_time
+              image_url: dish.image_url || undefined,
+              category: dish.category || undefined,
+              preparation_time: dish.preparation_time || undefined
             };
 
             // Calculate distance if there's a location query
@@ -252,7 +252,7 @@ const SearchResults = () => {
 
           setChefs(filteredChefs.slice(0, 6));
           setDishes(filteredDishes.slice(0, 8));
-          setSearchArea(query);
+          
         } else {
           // No search query, show featured content
           setChefs(formattedChefs.slice(0, 6));

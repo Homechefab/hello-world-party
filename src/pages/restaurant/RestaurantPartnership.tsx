@@ -6,8 +6,6 @@ import {
   Users, 
   TrendingUp, 
   Shield,
-  Clock,
-  Star,
   ArrowRight,
   CheckCircle,
   Phone,

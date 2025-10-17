@@ -15,7 +15,7 @@ import {
   BookOpen
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import privateChefImage from "@/assets/private-chef.jpg";
+
 
 const PrivateChefServices = () => {
   const services = [

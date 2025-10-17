@@ -2,29 +2,21 @@ import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { ChefApprovalManager } from '@/components/admin/ChefApprovalManager';
 import { KitchenPartnerApprovalManager } from '@/components/admin/KitchenPartnerApprovalManager';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect } from 'react';
 import { 
-  Shield, 
   Users, 
   AlertTriangle, 
   CheckCircle, 
   Clock,
-  Search,
-  FileText,
-  MessageSquare,
-  Settings,
   DollarSign,
-  TrendingUp,
-  BarChart3
+  TrendingUp
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  
   const [stats, setStats] = useState({
     totalUsers: 0,
     pendingApprovals: 0,

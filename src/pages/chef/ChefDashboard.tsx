@@ -4,9 +4,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { HygieneQuestionnaire } from '@/components/HygieneQuestionnaire';
 import { VideoUpload } from '@/components/VideoUpload';
 import { OrderManagement } from '@/components/chef/OrderManagement';
@@ -16,22 +13,14 @@ import BusinessSetup from '@/components/chef/BusinessSetup';
 import { 
   CheckCircle, 
   AlertCircle, 
-  Calendar, 
   DollarSign, 
-  FileText, 
   ChefHat,
   TrendingUp,
   Package,
   Edit,
-  Eye,
-  MoreHorizontal,
-  Plus,
-  Settings,
-  ClipboardList
+  Plus
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
-import { Link } from 'react-router-dom';
 
 // Chef Dashboard Component
 export const ChefDashboard = () => {

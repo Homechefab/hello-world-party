@@ -15,7 +15,7 @@ import {
   Utensils
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import experienceImage from "@/assets/experience-dining.jpg";
+
 
 const ChefExperiences = () => {
   const experienceTypes = [

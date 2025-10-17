@@ -5,11 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { 
-  Building, 
   DollarSign, 
   Clock, 
   Users, 
-  TrendingUp,
   CalendarDays,
   CheckCircle
 } from 'lucide-react';
