@@ -1,16 +1,29 @@
 {
+  "_react-vendor-CYFT4VlH.js": {
+    "file": "assets/react-vendor-CYFT4VlH.js",
+    "name": "react-vendor",
+    "imports": [
+      "_vendor-iq9X00YI.js"
+    ]
+  },
+  "_vendor-iq9X00YI.js": {
+    "file": "assets/vendor-iq9X00YI.js",
+    "name": "vendor",
+    "imports": [
+      "_react-vendor-CYFT4VlH.js"
+    ]
+  },
   "index.html": {
-    "file": "assets/main-C8BbFMOP.js",
-    "name": "main",
+    "file": "assets/index-BelFNwfz.js",
+    "name": "index",
     "src": "index.html",
     "isEntry": true,
-    "dynamicImports": [
-      "node_modules/html2canvas/dist/html2canvas.esm.js",
-      "node_modules/dompurify/dist/purify.es.mjs",
-      "node_modules/canvg/lib/index.es.js"
+    "imports": [
+      "_react-vendor-CYFT4VlH.js",
+      "_vendor-iq9X00YI.js"
     ],
     "css": [
-      "assets/main-Cj9Djieq.css"
+      "assets/index-Cj9Djieq.css"
     ],
     "assets": [
       "assets/homechef-mascot-DyPbiw3m.png",
@@ -31,27 +44,6 @@
       "assets/customer-pickup-DDzSTFy8.jpg",
       "assets/chef-recruitment-bg-CfwnVQuy.jpg"
     ]
-  },
-  "node_modules/canvg/lib/index.es.js": {
-    "file": "assets/index.es-Cc5_R9qc.js",
-    "name": "index.es",
-    "src": "node_modules/canvg/lib/index.es.js",
-    "isDynamicEntry": true,
-    "imports": [
-      "index.html"
-    ]
-  },
-  "node_modules/dompurify/dist/purify.es.mjs": {
-    "file": "assets/purify.es-Bjem63qI.js",
-    "name": "purify.es",
-    "src": "node_modules/dompurify/dist/purify.es.mjs",
-    "isDynamicEntry": true
-  },
-  "node_modules/html2canvas/dist/html2canvas.esm.js": {
-    "file": "assets/html2canvas.esm-C_tcw68Z.js",
-    "name": "html2canvas.esm",
-    "src": "node_modules/html2canvas/dist/html2canvas.esm.js",
-    "isDynamicEntry": true
   },
   "src/assets/apple-pie.jpg": {
     "file": "assets/apple-pie-DjChKGoy.jpg",
