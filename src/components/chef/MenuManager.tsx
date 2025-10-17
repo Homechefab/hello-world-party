@@ -27,14 +27,14 @@ import DishTemplates from "./DishTemplates";
 interface Dish {
   id: string;
   name: string;
-  description: string;
-  category: string;
-  ingredients: string[];
-  allergens: string[];
-  preparation_time: number;
+  description: string | null;
+  category: string | null;
+  ingredients: string[] | null;
+  allergens: string[] | null;
+  preparation_time: number | null;
   price: number;
-  available: boolean;
-  image_url?: string;
+  available: boolean | null;
+  image_url?: string | null;
 }
 
 const MenuManager = () => {
@@ -54,7 +54,7 @@ const MenuManager = () => {
   }, [activeTab, user]);
 
   const fetchMyDishes = async () => {
-    if (!user) return;
+    if (!user?.id) return;
 
     try {
       // Get chef_id first
@@ -209,8 +209,8 @@ const MenuManager = () => {
               <Tabs value={activeCategory} onValueChange={setActiveCategory}>
                 <TabsList>
                   {categories.map((category) => (
-                    <TabsTrigger key={category} value={category}>
-                      {category}
+                    <TabsTrigger key={category} value={category || 'Okategoriserad'}>
+                      {category || 'Okategoriserad'}
                     </TabsTrigger>
                   ))}
                 </TabsList>
@@ -261,7 +261,7 @@ const MenuManager = () => {
                           <div className="flex items-center justify-between pt-2">
                             <div className="flex items-center gap-2">
                               <Switch
-                                checked={dish.available}
+                                checked={dish.available || false}
                                 onCheckedChange={(checked) => toggleDishAvailability(dish.id, checked)}
                               />
                               <span className="text-sm text-muted-foreground">
@@ -340,7 +340,7 @@ const MenuManager = () => {
 
               <div className="flex items-center gap-2">
                 <Switch
-                  checked={editingDish.available}
+                  checked={editingDish.available || false}
                   onCheckedChange={(checked) => setEditingDish({...editingDish, available: checked})}
                 />
                 <Label>Synlig för kunder</Label>

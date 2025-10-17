@@ -21,11 +21,11 @@ interface Order {
   id: string;
   status: 'pending' | 'confirmed' | 'preparing' | 'ready' | 'completed' | 'cancelled';
   created_at: string;
-  pickup_time: string;
+  pickup_time: string | null;
   total_amount: number;
   customer_name: string;
   customer_phone: string;
-  pickup_instructions?: string;
+  pickup_instructions?: string | null;
   dishes: {
     title: string;
     quantity: number;
@@ -248,7 +248,7 @@ export const OrderManagement = () => {
                           </p>
                           <p className="flex items-center gap-2">
                             <Calendar className="w-4 h-4" />
-                            Upphämtning: {formatTime(order.pickup_time)}
+                            Upphämtning: {order.pickup_time ? formatTime(order.pickup_time) : 'Ej angiven'}
                           </p>
                         </div>
                       </div>
