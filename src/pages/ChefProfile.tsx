@@ -19,14 +19,14 @@ interface Chef {
 interface Dish {
   id: string;
   name: string;
-  description: string;
+  description: string | null;
   price: number;
-  image_url?: string;
-  category: string;
-  allergens: string[];
-  ingredients: string[];
-  preparation_time: number;
-  available: boolean;
+  image_url?: string | null;
+  category: string | null;
+  allergens: string[] | null;
+  ingredients: string[] | null;
+  preparation_time: number | null;
+  available: boolean | null;
 }
 
 const ChefProfile = () => {
@@ -70,7 +70,7 @@ const ChefProfile = () => {
           business_name: chefData.business_name,
           user_id: chefData.user_id,
           full_name: profileData.full_name,
-          address: profileData.address
+          address: profileData.address || ''
         });
 
         // Fetch chef's dishes
@@ -103,7 +103,7 @@ const ChefProfile = () => {
       price: dish.price,
       chefId: chef.id,
       chefName: chef.business_name || chef.full_name,
-      image: dish.image_url
+      image: dish.image_url || undefined
     });
 
     toast({

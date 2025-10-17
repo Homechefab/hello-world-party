@@ -15,13 +15,13 @@ import { useAuth } from "@/hooks/useAuth";
 interface DishTemplate {
   id: string;
   name: string;
-  description: string;
+  description: string | null;
   category: string;
-  ingredients: string[];
-  allergens: string[];
-  preparation_time: number;
-  suggested_price: number;
-  image_url?: string;
+  ingredients: string[] | null;
+  allergens: string[] | null;
+  preparation_time: number | null;
+  suggested_price: number | null;
+  image_url?: string | null;
 }
 
 interface DishTemplatesProps {
@@ -76,7 +76,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
   };
 
   const handleAddDish = async () => {
-    if (!selectedTemplate || !user) return;
+    if (!selectedTemplate || !user?.id) return;
 
     setLoading(true);
     try {
@@ -99,9 +99,9 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
           name: selectedTemplate.name,
           description: customDescription,
           category: selectedTemplate.category,
-          ingredients: selectedTemplate.ingredients,
-          allergens: selectedTemplate.allergens,
-          preparation_time: selectedTemplate.preparation_time,
+          ingredients: selectedTemplate.ingredients || [],
+          allergens: selectedTemplate.allergens || [],
+          preparation_time: selectedTemplate.preparation_time || 30,
           price: parseFloat(customPrice),
           available: true
         });
@@ -168,11 +168,11 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
-                      {template.preparation_time} min
+                      {template.preparation_time || 30} min
                     </div>
                     <div className="flex items-center gap-1">
                       <DollarSign className="w-4 h-4" />
-                      {template.suggested_price} kr
+                      {template.suggested_price || 0} kr
                     </div>
                   </div>
 
@@ -232,7 +232,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
                   <Label>Tillaganstid</Label>
                   <div className="flex items-center gap-2 p-2 border rounded-md bg-muted">
                     <Clock className="w-4 h-4" />
-                    {selectedTemplate.preparation_time} minuter
+                    {selectedTemplate.preparation_time || 30} minuter
                   </div>
                 </div>
               </div>
@@ -251,7 +251,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
               <div>
                 <Label>Ingredienser</Label>
                 <div className="flex flex-wrap gap-1 p-2 border rounded-md bg-muted">
-                  {selectedTemplate.ingredients.map((ingredient, index) => (
+                  {(selectedTemplate.ingredients || []).map((ingredient, index) => (
                     <Badge key={index} variant="secondary" className="text-xs">
                       {ingredient}
                     </Badge>
@@ -262,7 +262,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
               <div>
                 <Label>Allergener</Label>
                 <div className="flex flex-wrap gap-1 p-2 border rounded-md bg-muted">
-                  {selectedTemplate.allergens.map((allergen, index) => (
+                  {(selectedTemplate.allergens || []).map((allergen, index) => (
                     <Badge key={index} variant="outline" className="text-xs">
                       {allergen}
                     </Badge>

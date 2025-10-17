@@ -44,7 +44,7 @@ const IncomeReports = () => {
   }, [user, selectedPeriod]);
 
   const fetchIncomeData = async () => {
-    if (!user) return;
+    if (!user?.id) return;
 
     setLoading(true);
     try {
@@ -410,7 +410,7 @@ const IncomeReports = () => {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Preliminär skatt (30%):</span>
-                        <span className="font-medium">{(incomeData?.taxableAmount * 0.3).toLocaleString('sv-SE')} kr</span>
+                        <span className="font-medium">{((incomeData?.taxableAmount || 0) * 0.3).toLocaleString('sv-SE')} kr</span>
                       </div>
                     </div>
                     <p className="text-xs text-muted-foreground">
