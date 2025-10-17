@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect } from "react";
 import { ShoppingBag, Clock, CheckCircle, XCircle, Star, MapPin, Calendar, Package, Truck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";

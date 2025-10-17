@@ -12,6 +12,7 @@ export interface RoleContextType {
   isCustomer: boolean;
   isRestaurant: boolean;
   isAdmin: boolean;
+  usingMockData: boolean;
   logout: () => Promise<void>;
 }
 
@@ -107,6 +108,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
     isCustomer: role === 'customer',
     isRestaurant: role === 'restaurant',
     isAdmin: role === 'admin',
+    usingMockData: false,
     logout
   };
 

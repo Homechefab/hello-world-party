@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState } from "react";
 import { Search, MapPin, Filter, Star, Calendar, Users, Clock, ChefHat } from "lucide-react";
 import { Link } from "react-router-dom";

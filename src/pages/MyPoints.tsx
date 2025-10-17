@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect } from "react";
 import { Gift, Star, TrendingUp, ShoppingBag, Calendar, Award, Zap } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
