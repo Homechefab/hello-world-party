@@ -11,18 +11,19 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    componentTagger()
-  ],
+    mode === 'preview' && componentTagger()
+  ].filter(Boolean),
   base: mode === 'preview' ? '' : '/',
   define: {
-    'process.env': {
-      NODE_ENV: JSON.stringify(mode),
-      MODE: JSON.stringify(mode)
-    }
+    'process.env.NODE_ENV': JSON.stringify(mode === 'preview' ? 'development' : mode),
+    'process.env.VITE_APP_ENV': JSON.stringify(mode),
+    'global': 'globalThis',
+    'window.gsapscriptloaded': 'true'
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src")
+      "@": path.resolve(__dirname, "./src"),
+      'react': path.resolve(__dirname, './node_modules/react')
     },
     extensions: ['.js', '.jsx', '.ts', '.tsx']
   },
@@ -36,13 +37,24 @@ export default defineConfig(({ mode }) => ({
     target: 'esnext',
     minify: mode !== 'preview',
     manifest: true,
+    assetsInlineLimit: 0,
     rollupOptions: {
-      input: mode === 'preview' ? {
-        main: path.resolve(__dirname, 'index.html')
-      } : undefined,
+      external: mode === 'preview' ? ['lovable-tagger'] : [],
       output: {
-        manualChunks: undefined
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) {
+              return 'react-vendor';
+            }
+            return 'vendor';
+          }
+        }
       }
     }
+  },
+  esbuild: {
+    jsxFactory: 'React.createElement',
+    jsxFragment: 'React.Fragment',
+    loader: 'tsx'
   }
 }));
