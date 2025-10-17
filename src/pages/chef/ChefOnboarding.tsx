@@ -248,7 +248,7 @@ export const ChefOnboarding = () => {
         {/* Progress */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-4">
-            {steps.map((step, index) => {
+            {steps.map((step) => {
               const StepIcon = step.icon;
               const isCompleted = currentStep > step.id;
               const isCurrent = currentStep === step.id;

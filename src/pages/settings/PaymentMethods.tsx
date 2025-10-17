@@ -3,7 +3,7 @@ import { Plus, CreditCard, Star, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -42,11 +42,18 @@ const PaymentMethods = () => {
       const { data, error } = await supabase
         .from('payment_methods')
         .select('*')
-        .eq('user_id', user?.id)
+        .eq('user_id', user?.id as string)
         .order('is_default', { ascending: false });
 
       if (error) throw error;
-      setPaymentMethods(data || []);
+      setPaymentMethods((data || []).map((d) => ({
+        id: d.id,
+        name: d.name,
+        type: d.type,
+        last_four: d.last_four ?? null,
+        is_default: d.is_default ?? false,
+      })));
+
     } catch (error) {
       console.error('Error fetching payment methods:', error);
       toast.error('Kunde inte hämta betalningsmetoder');
@@ -57,16 +64,21 @@ const PaymentMethods = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    if (!user?.id) {
+      toast.error('Du måste vara inloggad för att spara en betalningsmetod.');
+      return;
+    }
+
     try {
       const paymentData = {
         ...formData,
-        user_id: user?.id
+        user_id: user.id,
       };
 
       const { error } = await supabase
         .from('payment_methods')
-        .insert(paymentData);
+        .insert([paymentData]);
       
       if (error) throw error;
       
@@ -131,7 +143,7 @@ const PaymentMethods = () => {
     }
   };
 
-  const getPaymentIcon = (type: string) => {
+  const getPaymentIcon = () => {
     return <CreditCard className="w-5 h-5" />;
   };
 
@@ -257,7 +269,7 @@ const PaymentMethods = () => {
                 <CardContent className="flex items-center justify-between p-6">
                   <div className="flex items-center gap-4">
                     <div className="p-2 bg-secondary rounded-lg">
-                      {getPaymentIcon(method.type)}
+                      {getPaymentIcon()}
                     </div>
                     <div>
                       <div className="flex items-center gap-2">

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { MapPin, CreditCard, Heart, Settings, User, Shield, Bell, HelpCircle } from "lucide-react";
+import { MapPin, CreditCard, Heart, User, Shield, Bell, HelpCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 

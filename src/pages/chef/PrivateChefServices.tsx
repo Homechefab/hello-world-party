@@ -5,8 +5,6 @@ import {
   Users, 
   Calendar, 
   ChefHat,
-  DollarSign,
-  Clock,
   Star,
   ArrowRight,
   CheckCircle,
