@@ -11,12 +11,13 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    componentTagger(),
-  ],
+    mode === 'preview' && componentTagger(),
+  ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    extensions: ['.js', '.jsx', '.ts', '.tsx']
   },
   optimizeDeps: {
     include: ['react', 'react-dom'],
@@ -27,6 +28,20 @@ export default defineConfig(({ mode }) => ({
     outDir: mode === 'preview' ? 'dist-preview' : 'dist',
     rollupOptions: {
       external: mode === 'preview' ? ['lovable-tagger'] : [],
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) {
+              return 'vendor';
+            }
+            if (id.includes('@radix-ui') || id.includes('class-variance-authority') || id.includes('clsx') || id.includes('tailwind-merge')) {
+              return 'ui';
+            }
+            return 'deps';
+          }
+        }
+      }
     },
+    chunkSizeWarningLimit: 1000
   }
 }));
