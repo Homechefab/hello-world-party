@@ -1,0 +1,124 @@
+{
+  "index.html": {
+    "file": "assets/main-C8BbFMOP.js",
+    "name": "main",
+    "src": "index.html",
+    "isEntry": true,
+    "dynamicImports": [
+      "node_modules/html2canvas/dist/html2canvas.esm.js",
+      "node_modules/dompurify/dist/purify.es.mjs",
+      "node_modules/canvg/lib/index.es.js"
+    ],
+    "css": [
+      "assets/main-Cj9Djieq.css"
+    ],
+    "assets": [
+      "assets/homechef-mascot-DyPbiw3m.png",
+      "assets/hero-food-DFYRoXo0.jpg",
+      "assets/meatballs-DHVq8NCF.jpg",
+      "assets/pasta-Xl-qYzrg.jpg",
+      "assets/soup-Do13SlC2.jpg",
+      "assets/apple-pie-DjChKGoy.jpg",
+      "assets/service-sell-food--uj_Iun9.jpg",
+      "assets/private-chef-DpK49eGB.jpg",
+      "assets/experience-dining-CDyA-FKb.jpg",
+      "assets/swedish-villa-kitchen-realistic-CTiMOiQV.jpg",
+      "assets/business-registration-BXE5SV7u.jpg",
+      "assets/service-rent-kitchen-BaOjEoiE.jpg",
+      "assets/service-delivery-C59xJ7GQ.jpg",
+      "assets/partnership-collaboration-DljTLq0C.jpg",
+      "assets/security-insurance-kitchen-Dfyet_AC.jpg",
+      "assets/customer-pickup-DDzSTFy8.jpg",
+      "assets/chef-recruitment-bg-CfwnVQuy.jpg"
+    ]
+  },
+  "node_modules/canvg/lib/index.es.js": {
+    "file": "assets/index.es-Cc5_R9qc.js",
+    "name": "index.es",
+    "src": "node_modules/canvg/lib/index.es.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "index.html"
+    ]
+  },
+  "node_modules/dompurify/dist/purify.es.mjs": {
+    "file": "assets/purify.es-Bjem63qI.js",
+    "name": "purify.es",
+    "src": "node_modules/dompurify/dist/purify.es.mjs",
+    "isDynamicEntry": true
+  },
+  "node_modules/html2canvas/dist/html2canvas.esm.js": {
+    "file": "assets/html2canvas.esm-C_tcw68Z.js",
+    "name": "html2canvas.esm",
+    "src": "node_modules/html2canvas/dist/html2canvas.esm.js",
+    "isDynamicEntry": true
+  },
+  "src/assets/apple-pie.jpg": {
+    "file": "assets/apple-pie-DjChKGoy.jpg",
+    "src": "src/assets/apple-pie.jpg"
+  },
+  "src/assets/business-registration.jpg": {
+    "file": "assets/business-registration-BXE5SV7u.jpg",
+    "src": "src/assets/business-registration.jpg"
+  },
+  "src/assets/chef-recruitment-bg.jpg": {
+    "file": "assets/chef-recruitment-bg-CfwnVQuy.jpg",
+    "src": "src/assets/chef-recruitment-bg.jpg"
+  },
+  "src/assets/customer-pickup.jpg": {
+    "file": "assets/customer-pickup-DDzSTFy8.jpg",
+    "src": "src/assets/customer-pickup.jpg"
+  },
+  "src/assets/experience-dining.jpg": {
+    "file": "assets/experience-dining-CDyA-FKb.jpg",
+    "src": "src/assets/experience-dining.jpg"
+  },
+  "src/assets/hero-food.jpg": {
+    "file": "assets/hero-food-DFYRoXo0.jpg",
+    "src": "src/assets/hero-food.jpg"
+  },
+  "src/assets/homechef-mascot.png": {
+    "file": "assets/homechef-mascot-DyPbiw3m.png",
+    "src": "src/assets/homechef-mascot.png"
+  },
+  "src/assets/meatballs.jpg": {
+    "file": "assets/meatballs-DHVq8NCF.jpg",
+    "src": "src/assets/meatballs.jpg"
+  },
+  "src/assets/partnership-collaboration.jpg": {
+    "file": "assets/partnership-collaboration-DljTLq0C.jpg",
+    "src": "src/assets/partnership-collaboration.jpg"
+  },
+  "src/assets/pasta.jpg": {
+    "file": "assets/pasta-Xl-qYzrg.jpg",
+    "src": "src/assets/pasta.jpg"
+  },
+  "src/assets/private-chef.jpg": {
+    "file": "assets/private-chef-DpK49eGB.jpg",
+    "src": "src/assets/private-chef.jpg"
+  },
+  "src/assets/security-insurance-kitchen.jpg": {
+    "file": "assets/security-insurance-kitchen-Dfyet_AC.jpg",
+    "src": "src/assets/security-insurance-kitchen.jpg"
+  },
+  "src/assets/service-delivery.jpg": {
+    "file": "assets/service-delivery-C59xJ7GQ.jpg",
+    "src": "src/assets/service-delivery.jpg"
+  },
+  "src/assets/service-rent-kitchen.jpg": {
+    "file": "assets/service-rent-kitchen-BaOjEoiE.jpg",
+    "src": "src/assets/service-rent-kitchen.jpg"
+  },
+  "src/assets/service-sell-food.jpg": {
+    "file": "assets/service-sell-food--uj_Iun9.jpg",
+    "src": "src/assets/service-sell-food.jpg"
+  },
+  "src/assets/soup.jpg": {
+    "file": "assets/soup-Do13SlC2.jpg",
+    "src": "src/assets/soup.jpg"
+  },
+  "src/assets/swedish-villa-kitchen-realistic.jpg": {
+    "file": "assets/swedish-villa-kitchen-realistic-CTiMOiQV.jpg",
+    "src": "src/assets/swedish-villa-kitchen-realistic.jpg"
+  }
+}

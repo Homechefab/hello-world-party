@@ -11,35 +11,37 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    mode === 'preview' && componentTagger()
-  ].filter(Boolean),
+    componentTagger()
+  ],
+  base: mode === 'preview' ? '' : '/',
   define: {
-    'process.env.NODE_ENV': JSON.stringify(mode === 'preview' ? 'development' : mode),
-    global: 'window'
+    'process.env': {
+      NODE_ENV: JSON.stringify(mode),
+      MODE: JSON.stringify(mode)
+    }
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(__dirname, "./src")
     },
     extensions: ['.js', '.jsx', '.ts', '.tsx']
   },
   optimizeDeps: {
     include: ['react', 'react-dom'],
-    exclude: mode === 'preview' ? ['lovable-tagger'] : []
+    force: mode === 'preview'
   },
   build: {
     sourcemap: true,
     outDir: mode === 'preview' ? 'dist-preview' : 'dist',
     target: 'esnext',
-    minify: false,
+    minify: mode !== 'preview',
+    manifest: true,
     rollupOptions: {
-      external: mode === 'preview' ? ['lovable-tagger'] : [],
-      preserveEntrySignatures: 'strict',
+      input: mode === 'preview' ? {
+        main: path.resolve(__dirname, 'index.html')
+      } : undefined,
       output: {
-        format: 'esm',
-        entryFileNames: 'assets/[name].[hash].js',
-        chunkFileNames: 'assets/[name].[hash].js',
-        assetFileNames: 'assets/[name].[hash].[ext]'
+        manualChunks: undefined
       }
     }
   }
