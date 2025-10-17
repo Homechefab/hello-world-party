@@ -8,53 +8,56 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    fs: {
+      strict: false
+    }
   },
   plugins: [
     react(),
-    mode === 'preview' && componentTagger()
+    mode === 'preview' ? componentTagger() : null
   ].filter(Boolean),
-  base: mode === 'preview' ? '' : '/',
+  base: mode === 'preview' ? './' : '/',
   define: {
-    'process.env.NODE_ENV': JSON.stringify(mode === 'preview' ? 'development' : mode),
-    'process.env.VITE_APP_ENV': JSON.stringify(mode),
-    'global': 'globalThis',
-    'window.gsapscriptloaded': 'true'
+    'process.env': {
+      NODE_ENV: JSON.stringify('development'),
+      VITE_MODE: JSON.stringify(mode),
+      IS_PREVIEW: mode === 'preview'
+    }
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
-      'react': path.resolve(__dirname, './node_modules/react')
+      "@": path.resolve(__dirname, "./src")
     },
-    extensions: ['.js', '.jsx', '.ts', '.tsx']
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    dedupe: ['react', 'react-dom']
   },
   optimizeDeps: {
-    include: ['react', 'react-dom'],
-    force: mode === 'preview'
+    entries: [
+      'src/**/*.{ts,tsx}',
+      'src/*.{ts,tsx}'
+    ],
+    include: [
+      'react',
+      'react-dom',
+      'react/jsx-runtime'
+    ]
   },
   build: {
-    sourcemap: true,
     outDir: mode === 'preview' ? 'dist-preview' : 'dist',
+    sourcemap: true,
+    minify: false,
     target: 'esnext',
-    minify: mode !== 'preview',
-    manifest: true,
-    assetsInlineLimit: 0,
     rollupOptions: {
-      external: mode === 'preview' ? ['lovable-tagger'] : [],
+      input: {
+        main: path.resolve(__dirname, 'index.html')
+      },
+      external: mode === 'preview' ? ['lovable-tagger'] : undefined,
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react')) {
-              return 'react-vendor';
-            }
-            return 'vendor';
-          }
-        }
+        format: 'esm',
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash].[ext]'
       }
     }
-  },
-  esbuild: {
-    jsxFactory: 'React.createElement',
-    jsxFragment: 'React.Fragment',
-    loader: 'tsx'
   }
 }));
