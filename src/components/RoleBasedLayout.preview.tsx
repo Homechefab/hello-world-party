@@ -37,6 +37,7 @@ const PreviewWrapper = ({
     isRestaurant: mockRole === 'restaurant',
     isCustomer: mockRole === 'customer',
     loading: false,
+    usingMockData: false,
     logout: () => Promise.resolve(),
   };
 

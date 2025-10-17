@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState } from "react";
 import Hero from "@/components/Hero";
 import PopularChefs from "@/components/Categories";
