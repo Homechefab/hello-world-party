@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { ChefHat, Search, Menu, Home, UtensilsCrossed, Info, Phone } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useRole } from "@/hooks/useRole";
-import { Cart } from "@/components/Cart";
-import UserMenu from "@/components/UserMenu";
-import homechefMascot from "@/assets/homechef-mascot.png";
+import { useRole } from "../hooks/useRole";
+import { Cart } from "./Cart";
+import UserMenu from "./UserMenu";
+import homechefMascot from "../assets/homechef-mascot.png";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet";
-import { Button } from "@/components/ui/button";
+} from "./ui/sheet";
+import { Button } from "./ui/button";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
