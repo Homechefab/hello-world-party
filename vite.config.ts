@@ -11,8 +11,13 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    mode === 'preview' && componentTagger(),
-  ].filter(Boolean),
+    componentTagger()
+  ],
+  define: {
+    'process.env': {
+      NODE_ENV: JSON.stringify(mode)
+    }
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -20,14 +25,15 @@ export default defineConfig(({ mode }) => ({
     extensions: ['.js', '.jsx', '.ts', '.tsx']
   },
   optimizeDeps: {
+    force: mode === 'preview',
     include: ['react', 'react-dom'],
-    exclude: mode === 'preview' ? ['lovable-tagger'] : [],
   },
   build: {
     sourcemap: true,
     outDir: mode === 'preview' ? 'dist-preview' : 'dist',
+    target: 'esnext',
+    minify: mode !== 'preview',
     rollupOptions: {
-      external: mode === 'preview' ? ['lovable-tagger'] : [],
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
@@ -41,7 +47,6 @@ export default defineConfig(({ mode }) => ({
           }
         }
       }
-    },
-    chunkSizeWarningLimit: 1000
+    }
   }
 }));
