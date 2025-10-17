@@ -4,8 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Store, 
   TrendingUp, 
-  Users,
-  Clock,
   Package,
   Star,
   Plus,

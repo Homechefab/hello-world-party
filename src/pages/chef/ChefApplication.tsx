@@ -5,14 +5,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
+
 import { CheckCircle, Upload, FileText, Shield, Clock } from "lucide-react";
 import Header from "@/components/Header";
 import MunicipalitySearch from "@/components/MunicipalitySearch";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import standardSwedishKitchen from "@/assets/standard-swedish-kitchen.jpg";
+
 
 
 const steps = [

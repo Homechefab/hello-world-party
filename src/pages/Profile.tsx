@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -67,10 +67,11 @@ const Profile = () => {
 
   const fetchProfile = async () => {
     try {
+      if (!user?.id) return;
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', user?.id)
+        .eq('id', user.id)
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') throw error;
@@ -101,7 +102,7 @@ const Profile = () => {
         totalOrders: 12,
         favoriteChefs: 3,
         totalSpent: 2450,
-        memberSince: user?.created_at || new Date().toISOString(),
+        memberSince: new Date().toISOString(),
         reviewsGiven: 8,
         avgRating: 4.7
       });
@@ -117,7 +118,7 @@ const Profile = () => {
     
     try {
       const profileData = {
-        id: user?.id,
+        id: user?.id as string,
         ...profile
       };
 
@@ -417,7 +418,7 @@ const Profile = () => {
               </div>
               
               <div className="text-sm text-muted-foreground space-y-1 pt-4 border-t">
-                <p><strong>Konto skapat:</strong> {new Date(displayUser?.created_at || '').toLocaleDateString('sv-SE')}</p>
+                <p><strong>Konto skapat:</strong> {new Date(stats.memberSince).toLocaleDateString('sv-SE')}</p>
                 <p><strong>Senast inloggad:</strong> {new Date().toLocaleDateString('sv-SE')}</p>
                 <p><strong>Konto-ID:</strong> {displayUser?.id?.slice(0, 8)}...</p>
                 {usingMockData && <p><strong>Status:</strong> Test-läge</p>}

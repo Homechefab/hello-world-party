@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { Search, MapPin, Filter, Star, Clock, Truck, ChefHat } from "lucide-react";
+import { Search, Filter, ChefHat } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 
 interface SearchFilters {
   query: string;
@@ -35,47 +33,9 @@ const PickupPage = () => {
 
   // Simulera att filtrera kockar baserat på sökfrågan
   // Om det finns en specifik sökfråga, simulera att det inte finns kockar för den staden
-  const allDishes = [
-    {
-      id: 1,
-      name: "Köttbullar med potatismos",
-      chef: "Anna Lindberg",
-      image: "https://images.unsplash.com/photo-1529059997568-3d847b1154f0?w=400&h=300&fit=crop",
-      price: 125,
-      rating: 4.9,
-      reviews: 89,
-      readyIn: "25 min",
-      distance: "1.2 km",
-      description: "Klassiska svenska köttbullar med krämigt potatismos och lingonsylt"
-    },
-    {
-      id: 2,
-      name: "Vegetarisk lasagne",
-      chef: "Sofia Ahmed",
-      image: "https://images.unsplash.com/photo-1621510456681-2330135e5871?w=400&h=300&fit=crop",
-      price: 110,
-      rating: 4.8,
-      reviews: 67,
-      readyIn: "15 min",
-      distance: "2.1 km",
-      description: "Hemlagad vegetarisk lasagne med ricotta och färska grönsaker"
-    },
-    {
-      id: 3,
-      name: "Thai Pad Thai",
-      chef: "Marcus Johansson",
-      image: "https://images.unsplash.com/photo-1559314809-0f31657def5e?w=400&h=300&fit=crop",
-      price: 95,
-      rating: 4.7,
-      reviews: 43,
-      readyIn: "20 min",
-      distance: "0.8 km",
-      description: "Autentisk Pad Thai med räkor och färska böngroddar"
-    }
-  ];
 
   // Inga kockar registrerade än - visa alltid tom lista
-  const mockDishes = [];
+  
 
   // Visa alltid meddelandet om inga kockar (oavsett sökfråga)
   const showNoChefs = true;

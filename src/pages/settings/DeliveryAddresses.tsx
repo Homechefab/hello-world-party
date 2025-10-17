@@ -3,7 +3,7 @@ import { Plus, MapPin, Edit, Trash2, Star } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -47,7 +47,7 @@ const DeliveryAddresses = () => {
       const { data, error } = await supabase
         .from('delivery_addresses')
         .select('*')
-        .eq('user_id', user?.id)
+        .eq('user_id', user?.id as string)
         .order('is_default', { ascending: false });
 
       if (error) throw error;
