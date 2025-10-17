@@ -49,18 +49,30 @@ export function RoleProvider({ children }: { children: ReactNode }) {
               .eq('user_id', authUser.id)
               .single();
 
-            const userProfile = {
-              ...profile,
+            const userProfile: UserProfile = {
+              id: profile.id,
+              email: profile.email,
+              full_name: profile.full_name,
               role: profile.role as UserRole,
-              municipality_approved: chefData?.kitchen_approved || false,
-              onboarding_completed: true
+              phone: profile.phone || undefined,
+              address: profile.address || undefined,
+              municipality_approved: chefData?.kitchen_approved || undefined,
+              onboarding_completed: true,
+              created_at: profile.created_at
             };
             setUser(userProfile);
             setRole(userProfile.role);
           } else {
-            const userProfile = {
-              ...profile,
-              role: profile.role as UserRole
+            const userProfile: UserProfile = {
+              id: profile.id,
+              email: profile.email,
+              full_name: profile.full_name,
+              role: profile.role as UserRole,
+              phone: profile.phone || undefined,
+              address: profile.address || undefined,
+              municipality_approved: undefined,
+              onboarding_completed: undefined,
+              created_at: profile.created_at
             };
             setUser(userProfile);
             setRole(userProfile.role);

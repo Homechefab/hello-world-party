@@ -25,10 +25,23 @@ interface KlarnaPaymentProps {
   onPaymentSuccess?: () => void;
 }
 
+/**
+ * KlarnaPayment Component
+ * 
+ * @example
+ * ```tsx
+ * <KlarnaPayment 
+ *   dishTitle="Hemlagad Lasagne"
+ *   dishPrice={149}
+ *   quantity={2}
+ *   onPaymentSuccess={() => console.log('Payment successful!')}
+ * />
+ * ```
+ */
 export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
-  dishTitle,
-  dishPrice,
-  quantity,
+  dishTitle = "Exempelrätt",
+  dishPrice = 149,
+  quantity = 1,
   onPaymentSuccess
 }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -79,9 +92,11 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
           title: "Klarna Checkout laddad",
           description: "Välj ditt betalningssätt nedan"
         });
+        onPaymentSuccess?.();
       } else if (data.checkout_url) {
         // Öppna Klarna checkout i ny flik
         window.open(data.checkout_url, '_blank');
+        onPaymentSuccess?.();
       }
 
     } catch (error) {
