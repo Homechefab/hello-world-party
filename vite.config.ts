@@ -11,12 +11,11 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [
     react(),
-    componentTagger()
-  ],
+    mode === 'preview' && componentTagger()
+  ].filter(Boolean),
   define: {
-    'process.env': {
-      NODE_ENV: JSON.stringify(mode)
-    }
+    'process.env.NODE_ENV': JSON.stringify(mode === 'preview' ? 'development' : mode),
+    global: 'window'
   },
   resolve: {
     alias: {
@@ -25,27 +24,22 @@ export default defineConfig(({ mode }) => ({
     extensions: ['.js', '.jsx', '.ts', '.tsx']
   },
   optimizeDeps: {
-    force: mode === 'preview',
     include: ['react', 'react-dom'],
+    exclude: mode === 'preview' ? ['lovable-tagger'] : []
   },
   build: {
     sourcemap: true,
     outDir: mode === 'preview' ? 'dist-preview' : 'dist',
     target: 'esnext',
-    minify: mode !== 'preview',
+    minify: false,
     rollupOptions: {
+      external: mode === 'preview' ? ['lovable-tagger'] : [],
+      preserveEntrySignatures: 'strict',
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('react')) {
-              return 'vendor';
-            }
-            if (id.includes('@radix-ui') || id.includes('class-variance-authority') || id.includes('clsx') || id.includes('tailwind-merge')) {
-              return 'ui';
-            }
-            return 'deps';
-          }
-        }
+        format: 'esm',
+        entryFileNames: 'assets/[name].[hash].js',
+        chunkFileNames: 'assets/[name].[hash].js',
+        assetFileNames: 'assets/[name].[hash].[ext]'
       }
     }
   }
