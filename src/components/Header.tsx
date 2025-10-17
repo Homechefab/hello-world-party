@@ -1,12 +1,9 @@
 import { useState } from "react";
-import { ChefHat, Search, User, Menu, X, Home, UtensilsCrossed, Info, Phone, Users, Building, Shield, Store } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { ChefHat, Search, Menu, Home, UtensilsCrossed, Info, Phone } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useRole } from "@/hooks/useRole";
-import { useAuth } from "@/hooks/useAuth";
-import { toast } from "sonner";
 import { Cart } from "@/components/Cart";
 import UserMenu from "@/components/UserMenu";
-import type { UserRole } from "@/types/user";
 import homechefMascot from "@/assets/homechef-mascot.png";
 import {
   Sheet,
@@ -15,22 +12,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, switchRole, isChef, isCustomer, isKitchenPartner, isAdmin, isRestaurant, usingMockData, switchToRealAuth } = useRole();
-  const { user: authUser, signOut } = useAuth();
-  const navigate = useNavigate();
+  const { isChef } = useRole();
 
   // Removed auth requirement - all features available
 
@@ -41,52 +27,9 @@ const Header = () => {
     { title: "Kontakt", href: "#kontakt", icon: Phone },
   ];
 
-  const roles = [
-    { id: 'customer1', name: 'Kund', icon: Users, active: isCustomer, dashboard: '/' },
-    { id: 'chef1', name: 'Kock', icon: ChefHat, active: isChef, dashboard: '/chef' },
-    { id: 'kitchen_partner1', name: 'Kökspartner', icon: Building, active: isKitchenPartner, dashboard: '/kitchen-partner/dashboard' },
-    { id: 'restaurant1', name: 'Restaurang', icon: Store, active: isRestaurant, dashboard: '/' },
-    { id: 'admin1', name: 'Admin', icon: Shield, active: isAdmin, dashboard: '/admin/dashboard' },
-  ];
+  // Role functionality has been removed
 
-  const handleRoleSwitch = (roleId: string) => {
-    const role = roles.find(r => r.id === roleId);
-    if (role) {
-      // Extract the actual role from the roleId (remove the number suffix)
-      const actualRole = roleId.replace(/\d+$/, '') as UserRole;
-      switchRole(actualRole);
-      toast.success(`Bytte till ${role.name} roll`);
-      
-      // Navigate based on role for test mode
-      if (roleId === 'chef1') {
-        navigate('/chef'); // Gå till kockens översiktssida
-      } else if (roleId === 'kitchen_partner1') {
-        navigate('/kitchen-partner/dashboard');
-      } else if (roleId === 'admin1') {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/');
-      }
-      
-      setMenuOpen(false);
-    }
-  };
-
-  const getRoleIcon = () => {
-    if (isChef) return <ChefHat className="w-4 h-4" />;
-    if (isKitchenPartner) return <Building className="w-4 h-4" />;
-    if (isRestaurant) return <Store className="w-4 h-4" />;
-    if (isAdmin) return <Shield className="w-4 h-4" />;
-    return <Users className="w-4 h-4" />;
-  };
-
-  const getRoleName = () => {
-    if (isChef) return 'Kock';
-    if (isKitchenPartner) return 'Kökspartner';
-    if (isRestaurant) return 'Restaurang';
-    if (isAdmin) return 'Admin';
-    return 'Kund';
-  };
+  // Role functions have been removed
 
   return (
     <header className="bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 shadow-soft">
@@ -117,43 +60,7 @@ const Header = () => {
 
         {/* Desktop Actions - hidden on mobile */}
         <div className="hidden md:flex items-center gap-3">
-          {/* Role Switcher Dropdown for Desktop */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="flex items-center gap-2 min-w-[120px]">
-                {getRoleIcon()}
-                {getRoleName()}
-                {usingMockData && <Badge variant="secondary" className="text-xs">Test</Badge>}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>Byt roll (Test-läge)</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {roles.map((role) => {
-                const IconComponent = role.icon;
-                return (
-                  <DropdownMenuItem
-                    key={role.id}
-                    onClick={() => handleRoleSwitch(role.id)}
-                    className="cursor-pointer"
-                  >
-                    <IconComponent className="w-4 h-4 mr-2" />
-                    {role.name}
-                    {role.active && (
-                      <Badge variant="secondary" className="ml-auto text-xs">
-                        Aktiv
-                      </Badge>
-                    )}
-                  </DropdownMenuItem>
-                );
-              })}
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => navigate('/auth')} className="cursor-pointer">
-                Använd riktig inloggning
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          
+          {/* Role switcher has been removed */}
           <Cart />
           
           <UserMenu />
@@ -191,47 +98,9 @@ const Header = () => {
               </SheetHeader>
               
               <div className="mt-8 space-y-6">
-                {/* Current Role Display */}
-                <div className="flex items-center gap-2 p-3 bg-secondary/50 rounded-lg">
-                  {getRoleIcon()}
-                  <div>
-                    <p className="text-sm font-medium">{getRoleName()}</p>
-                    <p className="text-xs text-muted-foreground">{user?.full_name}</p>
-                    {usingMockData && <p className="text-xs text-primary">Test-läge</p>}
-                  </div>
-                </div>
+                {/* Current role display has been removed */}
 
-                {/* Role Switcher */}
-                <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-muted-foreground px-3">Byt roll (Test)</h3>
-                  {roles.map((role) => {
-                    const IconComponent = role.icon;
-                    return (
-                      <Button
-                        key={role.id}
-                        variant={role.active ? "default" : "outline"}
-                        className="w-full justify-start h-12"
-                        onClick={() => handleRoleSwitch(role.id)}
-                      >
-                        <IconComponent className="w-5 h-5 mr-3" />
-                        {role.name}
-                        {role.active && (
-                          <Badge variant="secondary" className="ml-auto">
-                            Aktiv
-                          </Badge>
-                        )}
-                      </Button>
-                    );
-                  })}
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start h-12"
-                    onClick={() => { navigate('/auth'); setMenuOpen(false); }}
-                  >
-                    <User className="w-5 h-5 mr-3" />
-                    Använd riktig inloggning
-                  </Button>
-                </div>
+                {/* Role switcher has been removed */}
 
                 {/* Mobile Search */}
                 <div className="relative">
