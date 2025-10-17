@@ -15,7 +15,7 @@ import { Avatar, AvatarFallback } from "../components/ui/avatar";
 
 const UserMenu = () => {
   const { user, signOut } = useAuth();
-  const { user: profileUser, role, isChef, isAdmin, isKitchenPartner, isRestaurant } = useRole();
+  const { user: profileUser, isChef, isAdmin, isKitchenPartner, isRestaurant } = useRole();
 
   const userEmail = user?.email || profileUser?.email;
   const shouldShowMenu = !!user;
