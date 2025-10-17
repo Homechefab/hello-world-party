@@ -1,7 +1,7 @@
-import { User, Settings, MapPin, CreditCard, Heart, LogOut, UserCircle, ShoppingBag, Gift } from "lucide-react";
+import { User, Settings, MapPin, CreditCard, LogOut, UserCircle, ShoppingBag, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
-import { useRole } from "@/hooks/useRole";
+import { useAuth } from "../hooks/useAuth";
+import { useRole } from "../hooks/useRole";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,20 +9,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+} from "../components/ui/dropdown-menu";
+import { Button } from "../components/ui/button";
+import { Avatar, AvatarFallback } from "../components/ui/avatar";
 
 const UserMenu = () => {
   const { user, signOut } = useAuth();
-  const { user: mockUser, usingMockData } = useRole();
+  const { user: profileUser, role, isChef, isAdmin, isKitchenPartner, isRestaurant } = useRole();
 
-  // Use either real auth user or mock user for testing
-  const displayUser = user || (usingMockData ? mockUser : null);
-  const userEmail = displayUser?.email || (mockUser?.full_name) || 'test@exempel.se';
-
-  // Always show the menu for testing purposes
-  const shouldShowMenu = displayUser || usingMockData || true; // Always show for now
+  const userEmail = user?.email || profileUser?.email;
+  const shouldShowMenu = !!user;
 
   if (!shouldShowMenu) {
     return (
@@ -76,41 +72,98 @@ const UserMenu = () => {
             Profil
           </Link>
         </DropdownMenuItem>
+
+        {isAdmin && (
+          <DropdownMenuItem asChild>
+            <Link to="/admin/dashboard" className="cursor-pointer">
+              <Settings className="w-4 h-4 mr-2" />
+              Admin Dashboard
+            </Link>
+          </DropdownMenuItem>
+        )}
         
-        <DropdownMenuItem asChild>
-          <Link to="/my-orders" className="cursor-pointer">
-            <ShoppingBag className="w-4 h-4 mr-2" />
-            Mina köp
-          </Link>
-        </DropdownMenuItem>
-        
-        <DropdownMenuItem asChild>
-          <Link to="/settings/addresses" className="cursor-pointer">
-            <MapPin className="w-4 h-4 mr-2" />
-            Leveransadresser
-          </Link>
-        </DropdownMenuItem>
-        
-        <DropdownMenuItem asChild>
-          <Link to="/settings/payment-methods" className="cursor-pointer">
-            <CreditCard className="w-4 h-4 mr-2" />
-            Betalningsmetoder
-          </Link>
-        </DropdownMenuItem>
-        
-        <DropdownMenuItem asChild>
-          <Link to="/settings/preferences" className="cursor-pointer">
-            <Heart className="w-4 h-4 mr-2" />
-            Personliga preferenser
-          </Link>
-        </DropdownMenuItem>
-        
-        <DropdownMenuItem asChild>
-          <Link to="/my-points" className="cursor-pointer">
-            <Gift className="w-4 h-4 mr-2" />
-            Mina poäng
-          </Link>
-        </DropdownMenuItem>
+        {isChef && (
+          <>
+            <DropdownMenuItem asChild>
+              <Link to="/chef/orders" className="cursor-pointer">
+                <ShoppingBag className="w-4 h-4 mr-2" />
+                Mina beställningar
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/chef/kitchen" className="cursor-pointer">
+                <Settings className="w-4 h-4 mr-2" />
+                Kökshantering
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
+
+        {isKitchenPartner && (
+          <>
+            <DropdownMenuItem asChild>
+              <Link to="/partner/bookings" className="cursor-pointer">
+                <ShoppingBag className="w-4 h-4 mr-2" />
+                Bokningar
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/partner/kitchen" className="cursor-pointer">
+                <Settings className="w-4 h-4 mr-2" />
+                Kökshantering
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
+
+        {isRestaurant && (
+          <>
+            <DropdownMenuItem asChild>
+              <Link to="/restaurant/orders" className="cursor-pointer">
+                <ShoppingBag className="w-4 h-4 mr-2" />
+                Beställningar
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/restaurant/menu" className="cursor-pointer">
+                <Settings className="w-4 h-4 mr-2" />
+                Menyhantering
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
+
+        {!isAdmin && !isChef && !isKitchenPartner && !isRestaurant && (
+          <>
+            <DropdownMenuItem asChild>
+              <Link to="/my-orders" className="cursor-pointer">
+                <ShoppingBag className="w-4 h-4 mr-2" />
+                Mina köp
+              </Link>
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem asChild>
+              <Link to="/settings/addresses" className="cursor-pointer">
+                <MapPin className="w-4 h-4 mr-2" />
+                Leveransadresser
+              </Link>
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem asChild>
+              <Link to="/settings/payment-methods" className="cursor-pointer">
+                <CreditCard className="w-4 h-4 mr-2" />
+                Betalningsmetoder
+              </Link>
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem asChild>
+              <Link to="/my-points" className="cursor-pointer">
+                <Gift className="w-4 h-4 mr-2" />
+                Mina poäng
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
         
         <DropdownMenuItem asChild>
           <Link to="/settings" className="cursor-pointer">

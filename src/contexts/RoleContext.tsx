@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, ReactNode } from 'react';
-import { UserRole, UserProfile } from '@/types/user';
-import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { UserRole, UserProfile } from '../types/user';
+import { useAuth } from '../hooks/useAuth';
+import { supabase } from '../integrations/supabase/client';
 
 export interface RoleContextType {
   role: UserRole | null;
@@ -12,9 +12,7 @@ export interface RoleContextType {
   isCustomer: boolean;
   isRestaurant: boolean;
   isAdmin: boolean;
-  usingMockData: boolean;
-  switchRole: (newRole: UserRole) => void;
-  switchToRealAuth: () => void;
+  logout: () => Promise<void>;
 }
 
 export const RoleContext = createContext<RoleContextType | undefined>(undefined);
@@ -27,7 +25,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     async function fetchUserRole() {
-      if (!authUser) {
+      if (!authUser?.id) {
         setRole(null);
         setUser(null);
         setLoading(false);
@@ -46,7 +44,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
             const { data: chefData } = await supabase
               .from('chefs')
               .select('*')
-              .eq('user_id', authUser.id)
+              .eq('user_id', profile.id)
               .single();
 
             const userProfile: UserProfile = {
@@ -90,13 +88,14 @@ export function RoleProvider({ children }: { children: ReactNode }) {
     fetchUserRole();
   }, [authUser]);
 
-  const switchRole = (newRole: UserRole) => {
-    setRole(newRole);
-  };
-
-  const switchToRealAuth = () => {
-    // This would navigate to auth page
-    window.location.href = '/auth';
+  const logout = async () => {
+    try {
+      await supabase.auth.signOut();
+      setRole(null);
+      setUser(null);
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
   };
 
   const contextValue: RoleContextType = {
@@ -108,9 +107,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
     isCustomer: role === 'customer',
     isRestaurant: role === 'restaurant',
     isAdmin: role === 'admin',
-    usingMockData: false,
-    switchRole,
-    switchToRealAuth
+    logout
   };
 
   return (

@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react';
-import { useRole } from '@/hooks/useRole';
-import { useAuth } from '@/hooks/useAuth';
+import { useRole } from '../hooks/useRole';
+import { useAuth } from '../hooks/useAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
-import LiveChat from '@/components/LiveChat';
-import Header from '@/components/Header';
+import LiveChat from './LiveChat';
+import Header from './Header';
 
 interface RoleBasedLayoutProps {
   children: ReactNode;
@@ -15,19 +15,46 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Only protect chef dashboard if the user is authenticated
+  // Protect all role-specific routes
   React.useEffect(() => {
-    if (!loading && location.pathname === '/chef/dashboard') {
-      if (!authUser) {
-        navigate('/auth');
-        return;
-      }
-      
-      if (!role || role !== 'chef') {
-        navigate('/chef/application');
-        return;
-      }
+    if (loading || !location.pathname) return;
+
+    // Require authentication for protected routes
+    const requiresAuth = ['/profile', '/settings', '/my-orders', '/my-points'].some(
+      path => location.pathname.startsWith(path)
+    );
+
+    if (requiresAuth && !authUser) {
+      navigate('/auth');
+      return;
     }
+
+    // Role-specific route protection
+    const roleRoutes = {
+      chef: ['/chef'],
+      admin: ['/admin'],
+      kitchen_partner: ['/partner'],
+      restaurant: ['/restaurant']
+    };
+
+    Object.entries(roleRoutes).forEach(([requiredRole, paths]) => {
+      const isProtectedPath = paths.some(path => location.pathname.startsWith(path));
+      if (isProtectedPath) {
+        if (!role) {
+          navigate('/auth');
+          return;
+        }
+        
+        if (role !== requiredRole) {
+          if (role === 'chef' && requiredRole === 'chef' && location.pathname !== '/chef/dashboard') {
+            navigate('/chef/application');
+          } else {
+            navigate('/');
+          }
+          return;
+        }
+      }
+    });
   }, [authUser, role, loading, location.pathname, navigate]);
 
   if (loading) {
