@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { User, Save, Mail, Phone, MapPin, Calendar, Star, TrendingUp, Shield, Bell, Clock } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useRole } from "@/hooks/useRole";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,12 +14,9 @@ import { toast } from "sonner";
 
 const Profile = () => {
   const { user } = useAuth();
-  const { user: mockUser, usingMockData } = useRole();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  
-  // Use either real user or mock user
-  const displayUser = user || mockUser;
+  const [recentActivity, setRecentActivity] = useState<any[]>([]);
   
   const [profile, setProfile] = useState({
     full_name: '',
@@ -38,32 +34,14 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    if (displayUser) {
-      if (usingMockData) {
-        // Use mock data directly
-        setProfile({
-          full_name: mockUser?.full_name || 'Test Användare',
-          email: mockUser?.email || 'test@exempel.se',
-          phone: '+46 70 123 45 67',
-          address: 'Testgatan 123, 123 45 Stockholm'
-        });
-        setStats({
-          totalOrders: 12,
-          favoriteChefs: 3,
-          totalSpent: 2450,
-          memberSince: mockUser?.created_at || new Date().toISOString(),
-          reviewsGiven: 8,
-          avgRating: 4.7
-        });
-        setLoading(false);
-      } else {
-        fetchProfile();
-        fetchUserStats();
-      }
+    if (user?.id) {
+      fetchProfile();
+      fetchUserStats();
+      fetchRecentActivity();
     } else {
       setLoading(false);
     }
-  }, [displayUser, usingMockData]);
+  }, [user?.id]);
 
   const fetchProfile = async () => {
     try {
@@ -97,19 +75,133 @@ const Profile = () => {
 
   const fetchUserStats = async () => {
     try {
-      // Simulate fetching user statistics - replace with real queries when orders table is ready
+      if (!user?.id) return;
+
+      // Fetch total orders and amount spent
+      const { data: orders, error: ordersError } = await supabase
+        .from('orders')
+        .select('total_amount, created_at')
+        .eq('customer_id', user.id);
+
+      if (ordersError) throw ordersError;
+
+      const totalOrders = orders?.length || 0;
+      const totalSpent = orders?.reduce((sum, order) => sum + Number(order.total_amount), 0) || 0;
+
+      // Fetch reviews given
+      const { data: reviews, error: reviewsError } = await supabase
+        .from('reviews')
+        .select('rating')
+        .eq('customer_id', user.id);
+
+      if (reviewsError) throw reviewsError;
+
+      const reviewsGiven = reviews?.length || 0;
+      const avgRating = reviews && reviews.length > 0
+        ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+        : 0;
+
+      // Get member since date from profile
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('created_at')
+        .eq('id', user.id)
+        .maybeSingle();
+
       setStats({
-        totalOrders: 12,
-        favoriteChefs: 3,
-        totalSpent: 2450,
-        memberSince: new Date().toISOString(),
-        reviewsGiven: 8,
-        avgRating: 4.7
+        totalOrders,
+        favoriteChefs: 0, // TODO: Implement when favorites feature is added
+        totalSpent: Math.round(totalSpent),
+        memberSince: profileData?.created_at || new Date().toISOString(),
+        reviewsGiven,
+        avgRating: Math.round(avgRating * 10) / 10
       });
     } catch (error) {
       console.error('Error fetching stats:', error);
+      // Set default values on error
+      setStats({
+        totalOrders: 0,
+        favoriteChefs: 0,
+        totalSpent: 0,
+        memberSince: new Date().toISOString(),
+        reviewsGiven: 0,
+        avgRating: 0
+      });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchRecentActivity = async () => {
+    try {
+      if (!user?.id) return;
+
+      // Fetch recent orders
+      const { data: recentOrders, error: ordersError } = await supabase
+        .from('orders')
+        .select(`
+          id,
+          total_amount,
+          created_at,
+          status,
+          order_items (
+            dishes (
+              name
+            )
+          )
+        `)
+        .eq('customer_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(3);
+
+      if (ordersError) throw ordersError;
+
+      // Fetch recent reviews
+      const { data: recentReviews, error: reviewsError } = await supabase
+        .from('reviews')
+        .select(`
+          id,
+          rating,
+          created_at,
+          comment,
+          chef_id,
+          chefs (
+            user_id,
+            profiles (
+              full_name
+            )
+          )
+        `)
+        .eq('customer_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(2);
+
+      if (reviewsError) throw reviewsError;
+
+      // Combine and format activity
+      const activities = [
+        ...(recentOrders || []).map(order => ({
+          type: 'order',
+          id: order.id,
+          title: `Beställning #${order.id.slice(0, 8)}`,
+          description: order.order_items?.[0]?.dishes?.name || 'Mat',
+          amount: `${order.total_amount} kr`,
+          date: order.created_at
+        })),
+        ...(recentReviews || []).map(review => ({
+          type: 'review',
+          id: review.id,
+          title: 'Recension lämnad',
+          description: `${review.rating} stjärnor`,
+          rating: review.rating,
+          date: review.created_at
+        }))
+      ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 3);
+
+      setRecentActivity(activities);
+    } catch (error) {
+      console.error('Error fetching recent activity:', error);
+      setRecentActivity([]);
     }
   };
 
@@ -270,44 +362,44 @@ const Profile = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
-                  <div>
-                    <p className="font-medium">Beställning #1234</p>
-                    <p className="text-sm text-muted-foreground">Pasta Carbonara från Chef Maria</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium">245 kr</p>
-                    <p className="text-xs text-muted-foreground">2 dagar sedan</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
-                  <div>
-                    <p className="font-medium">Recension lämnad</p>
-                    <p className="text-sm text-muted-foreground">5 stjärnor till Chef Erik</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-3 h-3 text-yellow-500 fill-current" />
-                      ))}
+              {recentActivity.length > 0 ? (
+                <div className="space-y-3">
+                  {recentActivity.map((activity) => (
+                    <div key={activity.id} className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div>
+                        <p className="font-medium">{activity.title}</p>
+                        <p className="text-sm text-muted-foreground">{activity.description}</p>
+                      </div>
+                      <div className="text-right">
+                        {activity.type === 'order' && (
+                          <>
+                            <p className="text-sm font-medium">{activity.amount}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {Math.floor((new Date().getTime() - new Date(activity.date).getTime()) / (1000 * 60 * 60 * 24))} dagar sedan
+                            </p>
+                          </>
+                        )}
+                        {activity.type === 'review' && (
+                          <>
+                            <div className="flex">
+                              {[...Array(5)].map((_, i) => (
+                                <Star key={i} className={`w-3 h-3 ${i < activity.rating ? 'text-yellow-500 fill-current' : 'text-gray-300'}`} />
+                              ))}
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              {Math.floor((new Date().getTime() - new Date(activity.date).getTime()) / (1000 * 60 * 60 * 24))} dagar sedan
+                            </p>
+                          </>
+                        )}
+                      </div>
                     </div>
-                    <p className="text-xs text-muted-foreground">1 vecka sedan</p>
-                  </div>
+                  ))}
                 </div>
-                
-                <div className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
-                  <div>
-                    <p className="font-medium">Ny favorit kock</p>
-                    <p className="text-sm text-muted-foreground">Följer nu Chef Anna</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium">❤️</p>
-                    <p className="text-xs text-muted-foreground">2 veckor sedan</p>
-                  </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <p>Ingen aktivitet än. Börja beställa mat för att se din historik här!</p>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
@@ -420,8 +512,7 @@ const Profile = () => {
               <div className="text-sm text-muted-foreground space-y-1 pt-4 border-t">
                 <p><strong>Konto skapat:</strong> {new Date(stats.memberSince).toLocaleDateString('sv-SE')}</p>
                 <p><strong>Senast inloggad:</strong> {new Date().toLocaleDateString('sv-SE')}</p>
-                <p><strong>Konto-ID:</strong> {displayUser?.id?.slice(0, 8)}...</p>
-                {usingMockData && <p><strong>Status:</strong> Test-läge</p>}
+                <p><strong>Konto-ID:</strong> {user?.id?.slice(0, 8)}...</p>
               </div>
               
               <div className="pt-4 border-t">

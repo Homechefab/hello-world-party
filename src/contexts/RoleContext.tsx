@@ -40,17 +40,25 @@ export function RoleProvider({ children }: { children: ReactNode }) {
 
       try {
         // Load profile info
-        const { data: profile } = await supabase
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', authUser.id)
           .maybeSingle();
 
+        if (profileError) {
+          console.error('Profile fetch error:', profileError);
+        }
+
         // Load all roles for this user
-        const { data: roleRows } = await supabase
+        const { data: roleRows, error: rolesError } = await supabase
           .from('user_roles')
           .select('role')
           .eq('user_id', authUser.id);
+
+        if (rolesError) {
+          console.error('Roles fetch error:', rolesError);
+        }
 
         const fetchedRoles = (roleRows?.map(r => r.role) || []) as UserRole[];
         // Fallback to profile.role if roles table empty (legacy)
@@ -60,7 +68,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
 
         // Determine primary role by priority
         const priority: UserRole[] = ['admin', 'chef', 'kitchen_partner', 'restaurant', 'customer'];
-        const primary = priority.find(r => combinedRoles.includes(r)) ?? null;
+        const primary = priority.find(r => combinedRoles.includes(r)) ?? 'customer';
 
         // If user has chef role, fetch chef-specific data
         let chefApproved: boolean | undefined;
@@ -78,28 +86,45 @@ export function RoleProvider({ children }: { children: ReactNode }) {
             id: profile.id,
             email: profile.email,
             full_name: profile.full_name,
-            role: (primary ?? 'customer') as UserRole,
+            role: primary as UserRole,
             roles: combinedRoles,
             phone: profile.phone || undefined,
             address: profile.address || undefined,
             municipality_approved: chefApproved,
-            onboarding_completed: undefined,
+            onboarding_completed: profile.onboarding_completed || undefined,
             created_at: profile.created_at
           };
           setUser(userProfile);
           setRole(userProfile.role);
           setRoles(combinedRoles);
         } else {
-          // No profile yet, but set roles anyway
-          setUser(null);
-          setRole(primary);
+          // No profile yet - create minimal user object
+          const userProfile: UserProfile = {
+            id: authUser.id,
+            email: authUser.email || '',
+            full_name: authUser.email?.split('@')[0] || 'Användare',
+            role: primary as UserRole,
+            roles: combinedRoles,
+            created_at: new Date().toISOString()
+          };
+          setUser(userProfile);
+          setRole(primary as UserRole);
           setRoles(combinedRoles);
         }
       } catch (error) {
         console.error('Error loading user profile/roles:', error);
-        setRole(null);
-        setRoles([]);
-        setUser(null);
+        // Set default customer role on error
+        const defaultProfile: UserProfile = {
+          id: authUser.id,
+          email: authUser.email || '',
+          full_name: 'Användare',
+          role: 'customer',
+          roles: ['customer'],
+          created_at: new Date().toISOString()
+        };
+        setUser(defaultProfile);
+        setRole('customer');
+        setRoles(['customer']);
       } finally {
         setLoading(false);
       }
