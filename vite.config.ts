@@ -16,7 +16,10 @@ export default defineConfig({
   build: {
     outDir: 'dist-preview',
     target: 'esnext',
-    minify: false
+    minify: false,
+    rollupOptions: {
+      input: path.resolve(__dirname, 'preview.html'),
+    },
   },
   resolve: {
     alias: {
