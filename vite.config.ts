@@ -18,7 +18,10 @@ export default defineConfig({
     target: 'esnext',
     minify: false,
     rollupOptions: {
-      input: path.resolve(__dirname, 'preview.html'),
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        preview: path.resolve(__dirname, 'preview.html'),
+      },
     },
   },
   resolve: {
