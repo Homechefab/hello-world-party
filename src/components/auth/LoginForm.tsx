@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Separator } from "@/components/ui/separator";
+import { useNavigate } from "react-router-dom";
 
 interface LoginFormProps {
   onToggleMode: () => void;
@@ -16,6 +17,7 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,6 +35,9 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
         title: "Inloggad!",
         description: "Du är nu inloggad i appen.",
       });
+      
+      // Navigate to home page after successful login
+      navigate('/');
     } catch (error: any) {
       toast({
         title: "Fel vid inloggning",
