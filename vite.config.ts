@@ -7,21 +7,19 @@ import { componentTagger } from "lovable-tagger";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  plugins: [react(), componentTagger()],
+  plugins: [
+    react({
+      jsxImportSource: '@emotion/react'
+    }),
+    componentTagger()
+  ],
   server: {
     port: 8080
   },
   build: {
     outDir: 'dist-preview',
     target: 'esnext',
-    minify: false,
-    rollupOptions: {
-      external: [
-        '@emotion/react/jsx-runtime',
-        '@emotion/react',
-        '@emotion/styled'
-      ]
-    }
+    minify: false
   },
   resolve: {
     alias: {
