@@ -14,7 +14,7 @@ export async function createOrRetrieveCustomer({
     .from('stripe_customers')
     .select('stripe_customer_id')
     .eq('user_id', userId)
-    .single();
+    .maybeSingle();
 
   if (error || !customerData?.stripe_customer_id) {
     // No customer record found, let's create one
@@ -22,7 +22,7 @@ export async function createOrRetrieveCustomer({
       .from('profiles')
       .select('email, full_name')
       .eq('id', userId)
-      .single();
+      .maybeSingle();
 
     const customer = await stripe.customers.create({
       email: userData?.email,
