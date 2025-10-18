@@ -51,7 +51,7 @@ const SellerGuide = () => {
           .from('profiles')
           .select('municipality_approved')
           .eq('id', user.id as string)
-          .single();
+          .maybeSingle();
         
         if (profile?.municipality_approved) {
           toast({

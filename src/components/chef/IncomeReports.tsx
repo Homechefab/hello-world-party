@@ -53,7 +53,7 @@ const IncomeReports = () => {
         .from('chefs')
         .select('id')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (chefError || !chefData) {
         // No chef profile found, show empty state

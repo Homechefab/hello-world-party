@@ -63,7 +63,7 @@ const MenuManager = () => {
         .from('chefs')
         .select('id')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (chefError || !chefData) return;
 
