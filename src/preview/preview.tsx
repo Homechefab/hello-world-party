@@ -10,5 +10,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <PreviewProviders>
       <PreviewLayout />
     </PreviewProviders>
-  </React.StrictMode>,
+  </React.StrictMode>
 )
