@@ -97,17 +97,7 @@ const IncomeReports = () => {
           id,
           total_amount,
           created_at,
-          status,
-          order_items (
-            dish_id,
-            quantity,
-            unit_price,
-            total_price,
-            dishes (
-              name,
-              category
-            )
-          )
+          status
         `)
         .eq('chef_id', chefData.id)
         .eq('status', 'completed')

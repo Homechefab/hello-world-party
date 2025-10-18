@@ -57,12 +57,7 @@ export const ChefApprovalManager = () => {
       const { data, error } = await supabase
         .from('chefs')
         .select(`
-          *,
-          profiles (
-            full_name,
-            email,
-            phone
-          )
+          *
         `)
         .order('created_at', { ascending: false });
 

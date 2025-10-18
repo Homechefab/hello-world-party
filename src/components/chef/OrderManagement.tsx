@@ -49,18 +49,7 @@ export const OrderManagement = () => {
       const { data, error } = await supabase
         .from('orders')
         .select(`
-          *,
-          order_items (
-            quantity,
-            dishes (
-              name,
-              price
-            )
-          ),
-          profiles!inner (
-            full_name,
-            phone
-          )
+          *
         `)
         .eq('chef_id', 'chef1') // Using mock user ID
         .order('created_at', { ascending: false });

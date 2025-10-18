@@ -120,22 +120,15 @@ const SearchResults = () => {
             chef_id,
             image_url,
             category,
-            preparation_time,
-            chefs!inner(
-              business_name,
-              user_id,
-              kitchen_approved
-            )
+            preparation_time
           `)
-          .eq('available', true)
-          .eq('chefs.kitchen_approved', true);
+          .eq('available', true);
 
         if (dishError) throw dishError;
 
         // Get profiles for all users (chefs and dish chefs)
         const allUserIds = [
-          ...(chefsData?.map(chef => chef.user_id) || []),
-          ...(dishesData?.map(dish => dish.chefs.user_id) || [])
+          ...(chefsData?.map(chef => chef.user_id) || [])
         ];
         const uniqueUserIds = [...new Set(allUserIds)];
         
@@ -180,21 +173,19 @@ const SearchResults = () => {
           }).filter(chef => chef.dish_count > 0);
         }
 
-        // Format dish results with distance calculation
+        // Format dish results - simplified without nested data
         let formattedDishes: Dish[] = [];
         if (dishesData && dishesData.length > 0) {
           formattedDishes = dishesData.map(dish => {
-            const chefProfile = profilesData?.find(p => p.id === dish.chefs.user_id);
-            
             const dishData: Dish = {
               id: dish.id,
               name: dish.name,
               description: dish.description || '',
               price: dish.price,
               chef_id: dish.chef_id,
-              chef_name: chefProfile?.full_name || '',
-              chef_business_name: dish.chefs.business_name,
-              chef_address: chefProfile?.address || '',
+              chef_name: 'Okänd kock',
+              chef_business_name: 'Okänt företag',
+              chef_address: '',
               image_url: dish.image_url || undefined,
               category: dish.category || undefined,
               preparation_time: dish.preparation_time || undefined
