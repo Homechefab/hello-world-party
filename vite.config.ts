@@ -16,12 +16,8 @@ export default defineConfig(({ mode }) => ({
     port: 8080
   },
   build: {
-    outDir: 'dist-preview',
+    outDir: 'dist',
     target: 'esnext',
-    minify: false,
-    rollupOptions: {
-      input: path.resolve(__dirname, 'preview.html'),
-    },
   },
   resolve: {
     alias: {
