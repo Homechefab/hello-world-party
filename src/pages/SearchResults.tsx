@@ -191,10 +191,10 @@ const SearchResults = () => {
               preparation_time: dish.preparation_time || undefined
             };
 
-            // Calculate distance if there's a location query
-            if (query && dishData.chef_address) {
-              dishData.distance = calculateDistance(query, dishData.chef_address);
-            }
+            // Skip distance calculation since we don't have chef address data
+            // if (query && dishData.chef_address) {
+            //   dishData.distance = calculateDistance(query, dishData.chef_address);
+            // }
 
             return dishData;
           });
