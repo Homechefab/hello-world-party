@@ -11,9 +11,6 @@ export default defineConfig({
     react(),
     componentTagger()
   ],
-  server: {
-    port: 8080
-  },
   build: {
     outDir: 'dist-preview',
     target: 'esnext',
