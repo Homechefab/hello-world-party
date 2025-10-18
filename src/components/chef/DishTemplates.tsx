@@ -86,7 +86,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
         .from('chefs')
         .select('id')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (chefError || !chefData) {
         throw new Error('Chef profile not found');

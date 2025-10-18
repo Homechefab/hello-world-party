@@ -52,16 +52,20 @@ const ChefProfile = () => {
           `)
           .eq('id', chefId)
           .eq('kitchen_approved', true)
-          .single();
+          .maybeSingle();
 
         if (chefError) throw chefError;
+        
+        if (!chefData) {
+          throw new Error('Chef not found');
+        }
 
         // Fetch profile info separately
         const { data: profileData, error: profileError } = await supabase
           .from('profiles')
           .select('full_name, address')
           .eq('id', chefData.user_id)
-          .single();
+          .maybeSingle();
 
         if (profileError) throw profileError;
 
@@ -69,8 +73,8 @@ const ChefProfile = () => {
           id: chefData.id,
           business_name: chefData.business_name,
           user_id: chefData.user_id,
-          full_name: profileData.full_name,
-          address: profileData.address || ''
+          full_name: profileData?.full_name || 'Okänd kock',
+          address: profileData?.address || ''
         });
 
         // Fetch chef's dishes

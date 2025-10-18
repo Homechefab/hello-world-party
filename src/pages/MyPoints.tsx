@@ -78,7 +78,7 @@ const MyPoints = () => {
             next_discount_at: 5
           })
           .select()
-          .single();
+          .maybeSingle();
 
         if (insertError) throw insertError;
         setUserPoints(newRecord);

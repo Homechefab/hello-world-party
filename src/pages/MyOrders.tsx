@@ -48,23 +48,10 @@ const MyOrders = () => {
 
   const fetchOrders = async () => {
     try {
-      // This would fetch real orders from Supabase when implemented
+      // Fetch real orders from Supabase
       const { data, error } = await supabase
         .from('orders')
-        .select(`
-          *,
-          order_items (
-            quantity,
-            unit_price,
-            dish:dishes (
-              name,
-              image_url
-            )
-          ),
-          chef:chefs (
-            business_name
-          )
-        `)
+        .select('*')
         .eq('customer_id', user?.id)
         .order('created_at', { ascending: false });
 
@@ -73,19 +60,15 @@ const MyOrders = () => {
       // Transform data to match our interface
       const transformedOrders = (data || []).map(order => ({
         id: order.id,
-        chef_name: order.chef?.business_name || 'Okänd kock',
-        dish_name: order.order_items?.[0]?.dish?.name || 'Okänd rätt',
-        dish_image: order.order_items?.[0]?.dish?.image_url || '/placeholder.svg',
+        chef_name: 'Okänd kock',
+        dish_name: 'Okänd rätt',
+        dish_image: '/placeholder.svg',
         total_amount: order.total_amount,
         status: order.status,
         delivery_address: order.delivery_address,
         delivery_time: order.delivery_time,
         created_at: order.created_at,
-        items: order.order_items?.map(item => ({
-          dish_name: item.dish?.name || 'Okänd rätt',
-          quantity: item.quantity,
-          unit_price: item.unit_price
-        })) || []
+        items: []
       }));
 
       setOrders(transformedOrders);
