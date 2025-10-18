@@ -34,13 +34,18 @@ const Profile = () => {
   });
 
   useEffect(() => {
-    if (user?.id) {
-      fetchProfile();
-      fetchUserStats();
-      fetchRecentActivity();
-    } else {
-      setLoading(false);
-    }
+    const loadData = async () => {
+      if (user?.id) {
+        await fetchProfile();
+        await fetchUserStats();
+        await fetchRecentActivity();
+      } else {
+        setLoading(false);
+      }
+    };
+    
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
 
   const fetchProfile = async () => {
