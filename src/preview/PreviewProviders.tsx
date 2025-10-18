@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { AuthContext, AuthContextType } from '@/contexts/AuthContext';
+import { AuthContext, AuthContextType } from '@/contexts/AuthContext.tsx';
 import { RoleContext, RoleContextType } from '@/contexts/RoleContext';
 import { UserProfile, UserRole } from '@/types/user';
 

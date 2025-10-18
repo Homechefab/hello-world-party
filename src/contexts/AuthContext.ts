@@ -1,11 +1,2 @@
-import { createContext } from 'react';
-
-export interface AuthContextType {
-  user: {
-    email: string;
-    id?: string;
-  } | null;
-  signOut: () => Promise<void>;
-}
-
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export type { AuthContextType } from './AuthContext.tsx';
+export { AuthContext, AuthProvider } from './AuthContext.tsx';
