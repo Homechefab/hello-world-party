@@ -148,12 +148,7 @@ const Profile = () => {
           id,
           total_amount,
           created_at,
-          status,
-          order_items (
-            dishes (
-              name
-            )
-          )
+          status
         `)
         .eq('customer_id', user.id)
         .order('created_at', { ascending: false })
@@ -169,13 +164,7 @@ const Profile = () => {
           rating,
           created_at,
           comment,
-          chef_id,
-          chefs (
-            user_id,
-            profiles (
-              full_name
-            )
-          )
+          chef_id
         `)
         .eq('customer_id', user.id)
         .order('created_at', { ascending: false })
@@ -189,7 +178,7 @@ const Profile = () => {
           type: 'order',
           id: order.id,
           title: `Beställning #${order.id.slice(0, 8)}`,
-          description: order.order_items?.[0]?.dishes?.name || 'Mat',
+          description: 'Beställning',
           amount: `${order.total_amount} kr`,
           date: order.created_at
         })),
