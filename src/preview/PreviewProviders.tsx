@@ -29,6 +29,7 @@ export const PreviewProviders = ({ children, mockRole = 'customer' }: PreviewPro
 
   const mockRoleContext: RoleContextType = {
     role: mockRole ?? null,
+    roles: mockRole ? [mockRole] : [],
     loading: false,
     user: profile,
     isChef: mockRole === 'chef',

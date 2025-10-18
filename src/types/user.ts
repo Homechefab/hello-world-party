@@ -4,7 +4,10 @@ export interface UserProfile {
   id: string;
   email: string;
   full_name: string;
+  // Primary role (highest priority) for backward compatibility
   role: UserRole;
+  // All roles the user has
+  roles?: UserRole[];
   phone?: string;
   address?: string;
   municipality_approved?: boolean;
