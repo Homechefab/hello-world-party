@@ -3,7 +3,6 @@ import { useState } from "react";
 import Hero from "@/components/Hero";
 import PopularChefs from "@/components/Categories";
 import DishDetails from "@/components/DishDetails";
-import FoodGrid from "@/components/FoodGrid";
 import Features from "@/components/Features";
 import Footer from "@/components/Footer";
 import RoleBasedServices from "@/components/services/RoleBasedServices";
@@ -37,7 +36,6 @@ const Index = () => {
       <RoleBasedServices />
       <PopularChefs />
       <DishDetails />
-      <FoodGrid />
       <Features />
       <Footer />
     </div>
