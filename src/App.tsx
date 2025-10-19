@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { RoleBasedLayout } from "@/components/RoleBasedLayout";
+import { PublicLayout } from "@/components/PublicLayout";
 import Index from "./pages/Index";
 import DishPage from "./pages/DishPage";
 import SellPage from "./pages/SellPage";
@@ -60,8 +61,9 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <BrowserRouter>
-          <RoleBasedLayout>
-            <Routes>
+          <Routes>
+            {/* Public routes with PublicLayout */}
+            <Route element={<PublicLayout><Routes><Route path="*" element={null} /></Routes></PublicLayout>}>
               <Route path="/" element={<Index />} />
               <Route path="/dish/:id" element={<DishPage />} />
               <Route path="/sell" element={<SellPage />} />
@@ -77,6 +79,20 @@ const App = () => {
               <Route path="/search" element={<SearchResults />} />
               <Route path="/chef/:chefId" element={<ChefProfile />} />
               <Route path="/search-chefs" element={<ChefSearch />} />
+              <Route path="/hyr-ut-ditt-kok" element={<HyrUtDittKokInfo />} />
+              <Route path="/kitchen-partner/how-it-works" element={<KitchenPartnerHowItWorks />} />
+              <Route path="/kitchen-partner/pricing-terms" element={<PricingTerms />} />
+              <Route path="/kitchen-partner/security" element={<Navigate to="/kitchen-partner/security-insurance" replace />} />
+              <Route path="/kitchen-partner/security-insurance" element={<SecurityInsurance />} />
+              <Route path="/kitchen-partner/support" element={<PartnerSupport />} />
+              <Route path="/restaurant" element={<RestaurantPartnership />} />
+              <Route path="/restaurant/partnership" element={<RestaurantPartnership />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/notification-signup" element={<NotificationSignup />} />
+            </Route>
+
+            {/* Protected routes with RoleBasedLayout */}
+            <Route element={<RoleBasedLayout><Routes><Route path="*" element={null} /></Routes></RoleBasedLayout>}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/chef" element={<ChefHome />} />
               <Route path="/chef/onboarding" element={<ChefOnboarding />} />
@@ -88,21 +104,12 @@ const App = () => {
               <Route path="/chef/kitchen-requirements" element={<KitchenRequirements />} />
               <Route path="/chef/kitchen-assessment" element={<KitchenAssessment />} />
               <Route path="/chef/business-registration" element={<BusinessRegistration />} />
-              <Route path="/hyr-ut-ditt-kok" element={<HyrUtDittKokInfo />} />
               <Route path="/kitchen-partner/dashboard" element={<KitchenPartnerDashboard />} />
               <Route path="/kitchen-partner/register" element={<KitchenPartnerOnboarding />} />
-              <Route path="/kitchen-partner/how-it-works" element={<KitchenPartnerHowItWorks />} />
-              <Route path="/kitchen-partner/pricing-terms" element={<PricingTerms />} />
-              <Route path="/kitchen-partner/security" element={<Navigate to="/kitchen-partner/security-insurance" replace />} />
-              <Route path="/kitchen-partner/security-insurance" element={<SecurityInsurance />} />
-              <Route path="/kitchen-partner/support" element={<PartnerSupport />} />
               <Route path="/delivery-partner/onboarding" element={<DeliveryPartnerOnboarding />} />
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              <Route path="/restaurant" element={<RestaurantPartnership />} />
-              <Route path="/restaurant/partnership" element={<RestaurantPartnership />} />
               <Route path="/restaurant/dashboard" element={<RestaurantDashboard />} />
               <Route path="/restaurant/apply" element={<RestaurantApplicationForm />} />
-              <Route path="/auth" element={<Auth />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/my-orders" element={<MyOrders />} />
               <Route path="/my-points" element={<MyPoints />} />
@@ -110,10 +117,10 @@ const App = () => {
               <Route path="/settings/addresses" element={<DeliveryAddresses />} />
               <Route path="/settings/payment-methods" element={<PaymentMethods />} />
               <Route path="/settings/preferences" element={<Preferences />} />
-              <Route path="/notification-signup" element={<NotificationSignup />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </RoleBasedLayout>
+            </Route>
+
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </BrowserRouter>
         <Toaster />
         <Sonner />
