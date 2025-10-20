@@ -62,64 +62,60 @@ const App = () => {
       <TooltipProvider>
         <BrowserRouter>
           <Routes>
-            {/* Public routes with PublicLayout */}
-            <Route element={<PublicLayout><Routes><Route path="*" element={null} /></Routes></PublicLayout>}>
-              <Route path="/" element={<Index />} />
-              <Route path="/dish/:id" element={<DishPage />} />
-              <Route path="/sell" element={<SellPage />} />
-              <Route path="/seller-guide" element={<SellerGuide />} />
-              <Route path="/pickup" element={<PickupPage />} />
-              <Route path="/experiences" element={<ExperiencePage />} />
-              <Route path="/private-chef" element={<PrivateChefPage />} />
-              <Route path="/partnership" element={<PartnershipPage />} />
-              <Route path="/how-it-works" element={<HowItWorks />} />
-              <Route path="/secure-payments" element={<SecurePayments />} />
-              <Route path="/customer-service" element={<CustomerService />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/search" element={<SearchResults />} />
-              <Route path="/chef/:chefId" element={<ChefProfile />} />
-              <Route path="/search-chefs" element={<ChefSearch />} />
-              <Route path="/hyr-ut-ditt-kok" element={<HyrUtDittKokInfo />} />
-              <Route path="/kitchen-partner/how-it-works" element={<KitchenPartnerHowItWorks />} />
-              <Route path="/kitchen-partner/pricing-terms" element={<PricingTerms />} />
-              <Route path="/kitchen-partner/security" element={<Navigate to="/kitchen-partner/security-insurance" replace />} />
-              <Route path="/kitchen-partner/security-insurance" element={<SecurityInsurance />} />
-              <Route path="/kitchen-partner/support" element={<PartnerSupport />} />
-              <Route path="/restaurant" element={<RestaurantPartnership />} />
-              <Route path="/restaurant/partnership" element={<RestaurantPartnership />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/notification-signup" element={<NotificationSignup />} />
-            </Route>
+            {/* Public routes */}
+            <Route path="/" element={<PublicLayout><Index /></PublicLayout>} />
+            <Route path="/dish/:id" element={<PublicLayout><DishPage /></PublicLayout>} />
+            <Route path="/sell" element={<PublicLayout><SellPage /></PublicLayout>} />
+            <Route path="/seller-guide" element={<PublicLayout><SellerGuide /></PublicLayout>} />
+            <Route path="/pickup" element={<PublicLayout><PickupPage /></PublicLayout>} />
+            <Route path="/experiences" element={<PublicLayout><ExperiencePage /></PublicLayout>} />
+            <Route path="/private-chef" element={<PublicLayout><PrivateChefPage /></PublicLayout>} />
+            <Route path="/partnership" element={<PublicLayout><PartnershipPage /></PublicLayout>} />
+            <Route path="/how-it-works" element={<PublicLayout><HowItWorks /></PublicLayout>} />
+            <Route path="/secure-payments" element={<PublicLayout><SecurePayments /></PublicLayout>} />
+            <Route path="/customer-service" element={<PublicLayout><CustomerService /></PublicLayout>} />
+            <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
+            <Route path="/search" element={<PublicLayout><SearchResults /></PublicLayout>} />
+            <Route path="/chef/:chefId" element={<PublicLayout><ChefProfile /></PublicLayout>} />
+            <Route path="/search-chefs" element={<PublicLayout><ChefSearch /></PublicLayout>} />
+            <Route path="/hyr-ut-ditt-kok" element={<PublicLayout><HyrUtDittKokInfo /></PublicLayout>} />
+            <Route path="/kitchen-partner/how-it-works" element={<PublicLayout><KitchenPartnerHowItWorks /></PublicLayout>} />
+            <Route path="/kitchen-partner/pricing-terms" element={<PublicLayout><PricingTerms /></PublicLayout>} />
+            <Route path="/kitchen-partner/security" element={<Navigate to="/kitchen-partner/security-insurance" replace />} />
+            <Route path="/kitchen-partner/security-insurance" element={<PublicLayout><SecurityInsurance /></PublicLayout>} />
+            <Route path="/kitchen-partner/support" element={<PublicLayout><PartnerSupport /></PublicLayout>} />
+            <Route path="/restaurant" element={<PublicLayout><RestaurantPartnership /></PublicLayout>} />
+            <Route path="/restaurant/partnership" element={<PublicLayout><RestaurantPartnership /></PublicLayout>} />
+            <Route path="/auth" element={<PublicLayout><Auth /></PublicLayout>} />
+            <Route path="/notification-signup" element={<PublicLayout><NotificationSignup /></PublicLayout>} />
 
-            {/* Protected routes with RoleBasedLayout */}
-            <Route element={<RoleBasedLayout><Routes><Route path="*" element={null} /></Routes></RoleBasedLayout>}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/chef" element={<ChefHome />} />
-              <Route path="/chef/onboarding" element={<ChefOnboarding />} />
-              <Route path="/chef/application" element={<ChefApplication />} />
-              <Route path="/chef/application-pending" element={<ApplicationPending />} />
-              <Route path="/chef/dashboard" element={<ChefDashboard />} />
-              <Route path="/chef/private-services" element={<PrivateChefServices />} />
-              <Route path="/chef/experiences" element={<ChefExperiences />} />
-              <Route path="/chef/kitchen-requirements" element={<KitchenRequirements />} />
-              <Route path="/chef/kitchen-assessment" element={<KitchenAssessment />} />
-              <Route path="/chef/business-registration" element={<BusinessRegistration />} />
-              <Route path="/kitchen-partner/dashboard" element={<KitchenPartnerDashboard />} />
-              <Route path="/kitchen-partner/register" element={<KitchenPartnerOnboarding />} />
-              <Route path="/delivery-partner/onboarding" element={<DeliveryPartnerOnboarding />} />
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              <Route path="/restaurant/dashboard" element={<RestaurantDashboard />} />
-              <Route path="/restaurant/apply" element={<RestaurantApplicationForm />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/my-orders" element={<MyOrders />} />
-              <Route path="/my-points" element={<MyPoints />} />
-              <Route path="/settings" element={<SettingsPage />} />
-              <Route path="/settings/addresses" element={<DeliveryAddresses />} />
-              <Route path="/settings/payment-methods" element={<PaymentMethods />} />
-              <Route path="/settings/preferences" element={<Preferences />} />
-            </Route>
+            {/* Protected routes */}
+            <Route path="/dashboard" element={<RoleBasedLayout><Dashboard /></RoleBasedLayout>} />
+            <Route path="/chef" element={<RoleBasedLayout><ChefHome /></RoleBasedLayout>} />
+            <Route path="/chef/onboarding" element={<RoleBasedLayout><ChefOnboarding /></RoleBasedLayout>} />
+            <Route path="/chef/application" element={<RoleBasedLayout><ChefApplication /></RoleBasedLayout>} />
+            <Route path="/chef/application-pending" element={<RoleBasedLayout><ApplicationPending /></RoleBasedLayout>} />
+            <Route path="/chef/dashboard" element={<RoleBasedLayout><ChefDashboard /></RoleBasedLayout>} />
+            <Route path="/chef/private-services" element={<RoleBasedLayout><PrivateChefServices /></RoleBasedLayout>} />
+            <Route path="/chef/experiences" element={<RoleBasedLayout><ChefExperiences /></RoleBasedLayout>} />
+            <Route path="/chef/kitchen-requirements" element={<RoleBasedLayout><KitchenRequirements /></RoleBasedLayout>} />
+            <Route path="/chef/kitchen-assessment" element={<RoleBasedLayout><KitchenAssessment /></RoleBasedLayout>} />
+            <Route path="/chef/business-registration" element={<RoleBasedLayout><BusinessRegistration /></RoleBasedLayout>} />
+            <Route path="/kitchen-partner/dashboard" element={<RoleBasedLayout><KitchenPartnerDashboard /></RoleBasedLayout>} />
+            <Route path="/kitchen-partner/register" element={<RoleBasedLayout><KitchenPartnerOnboarding /></RoleBasedLayout>} />
+            <Route path="/delivery-partner/onboarding" element={<RoleBasedLayout><DeliveryPartnerOnboarding /></RoleBasedLayout>} />
+            <Route path="/admin/dashboard" element={<RoleBasedLayout><AdminDashboard /></RoleBasedLayout>} />
+            <Route path="/restaurant/dashboard" element={<RoleBasedLayout><RestaurantDashboard /></RoleBasedLayout>} />
+            <Route path="/restaurant/apply" element={<RoleBasedLayout><RestaurantApplicationForm /></RoleBasedLayout>} />
+            <Route path="/profile" element={<RoleBasedLayout><Profile /></RoleBasedLayout>} />
+            <Route path="/my-orders" element={<RoleBasedLayout><MyOrders /></RoleBasedLayout>} />
+            <Route path="/my-points" element={<RoleBasedLayout><MyPoints /></RoleBasedLayout>} />
+            <Route path="/settings" element={<RoleBasedLayout><SettingsPage /></RoleBasedLayout>} />
+            <Route path="/settings/addresses" element={<RoleBasedLayout><DeliveryAddresses /></RoleBasedLayout>} />
+            <Route path="/settings/payment-methods" element={<RoleBasedLayout><PaymentMethods /></RoleBasedLayout>} />
+            <Route path="/settings/preferences" element={<RoleBasedLayout><Preferences /></RoleBasedLayout>} />
 
-            <Route path="*" element={<NotFound />} />
+            <Route path="*" element={<PublicLayout><NotFound /></PublicLayout>} />
           </Routes>
         </BrowserRouter>
         <Toaster />
