@@ -123,6 +123,16 @@ const Header = () => {
               </Link>
             </div>
           )}
+          {/* Desktop Navigation - Show for admin */}
+          {role === 'admin' && (
+            <div className="hidden md:flex">
+              <Link to="/admin/dashboard">
+                <Button variant="secondary" size="sm">
+                  Adminpanel
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Mobile Hamburger Menu */}
@@ -213,6 +223,14 @@ const Header = () => {
                       <Button variant="hero" className="w-full justify-start" size="lg">
                         <UtensilsCrossed className="w-5 h-5 mr-2" />
                         Sälj Din Mat
+                      </Button>
+                    </Link>
+                  )}
+                  {/* Mobile Navigation - Show for admin */}
+                  {role === 'admin' && (
+                    <Link to="/admin/dashboard" onClick={() => setMenuOpen(false)}>
+                      <Button variant="secondary" className="w-full justify-start" size="lg">
+                        Adminpanel
                       </Button>
                     </Link>
                   )}
