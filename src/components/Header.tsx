@@ -40,15 +40,9 @@ const Header = () => {
     switchRole(newRole as any);
     toast.success(`Bytte till ${roleLabels[newRole]}`);
     
-    // Navigate to role-specific dashboard
+    // Navigate to admin dashboard, otherwise go to home
     if (newRole === 'admin') {
       navigate('/admin/dashboard');
-    } else if (newRole === 'chef') {
-      navigate('/chef/dashboard');
-    } else if (newRole === 'kitchen_partner') {
-      navigate('/kitchen-partner/dashboard');
-    } else if (newRole === 'restaurant') {
-      navigate('/restaurant/dashboard');
     } else {
       navigate('/');
     }
