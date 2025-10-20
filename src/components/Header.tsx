@@ -94,25 +94,18 @@ const Header = () => {
             <DropdownMenuContent align="end" className="w-48 z-50 bg-background">
               <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {(['customer','chef','kitchen_partner','restaurant','admin'] as const).map((r) => {
-                const allowed = roles.includes('admin') || roles.includes(r as any);
-                return (
-                  <DropdownMenuItem
-                    key={r}
-                    onClick={() => {
-                      if (allowed) {
-                        console.log('Switching to role:', r);
-                        switchRole(r as any);
-                        toast.success(`Bytte till ${roleLabels[r]}`);
-                      }
-                    }}
-                    className={`${role === r ? "bg-secondary" : ""} ${!allowed ? "opacity-50 pointer-events-none" : ""}`}
-                    aria-disabled={!allowed}
-                  >
-                    {roleLabels[r]}
-                  </DropdownMenuItem>
-                );
-              })}
+              {(['customer','chef','kitchen_partner','restaurant','admin'] as const).map((r) => (
+                <DropdownMenuItem
+                  key={r}
+                  onClick={() => {
+                    switchRole(r as any);
+                    toast.success(`Bytte till ${roleLabels[r]}`);
+                  }}
+                  className={role === r ? "bg-secondary" : ""}
+                >
+                  {roleLabels[r]}
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
           
@@ -169,7 +162,7 @@ const Header = () => {
                       <DropdownMenuContent className="w-full z-50 bg-background">
                         <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        {(roles.includes('admin') ? (['admin','chef','kitchen_partner','restaurant','customer'] as const) : roles).map((r) => (
+                        {(['customer','chef','kitchen_partner','restaurant','admin'] as const).map((r) => (
                           <DropdownMenuItem
                             key={r}
                             onClick={() => {
