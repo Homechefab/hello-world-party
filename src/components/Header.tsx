@@ -94,7 +94,7 @@ const Header = () => {
               <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {(['customer','chef','kitchen_partner','restaurant','admin'] as const).map((r) => {
-                const allowed = role === 'admin' || roles.includes(r as any);
+                const allowed = roles.includes('admin') || roles.includes(r as any);
                 return (
                   <DropdownMenuItem
                     key={r}
@@ -147,7 +147,7 @@ const Header = () => {
               
               <div className="mt-8 space-y-6">
                 {/* Role Switcher - Mobile */}
-                {(roles.length > 1 || role === 'admin') && (
+                {(roles.includes('admin') || roles.length > 1) && (
                   <div className="space-y-2">
                     <p className="text-sm text-muted-foreground">Nuvarande roll:</p>
                     <DropdownMenu>
@@ -162,7 +162,7 @@ const Header = () => {
                       <DropdownMenuContent className="w-full z-50 bg-background">
                         <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        {(role === 'admin' ? (['admin','chef','kitchen_partner','restaurant','customer'] as const) : roles).map((r) => (
+                        {(roles.includes('admin') ? (['admin','chef','kitchen_partner','restaurant','customer'] as const) : roles).map((r) => (
                           <DropdownMenuItem
                             key={r}
                             onClick={() => {
