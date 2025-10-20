@@ -123,7 +123,7 @@ const CustomerServices = () => {
                 </div>
               </div>
               
-              <Link to="/chef">
+              <Link to="/chef/application">
                 <Button size="lg" className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
                   Ansök om att bli kock
                 </Button>
