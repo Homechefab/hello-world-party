@@ -146,11 +146,15 @@ export function RoleProvider({ children }: { children: ReactNode }) {
   };
 
   const switchRole = (newRole: UserRole) => {
+    console.log('switchRole called with:', newRole, 'current roles:', roles);
     if (roles.includes('admin') || roles.includes(newRole)) {
+      console.log('Switching role to:', newRole);
       setRole(newRole);
       if (user) {
         setUser({ ...user, role: newRole });
       }
+    } else {
+      console.log('Role switch not allowed');
     }
   };
 
@@ -159,11 +163,11 @@ export function RoleProvider({ children }: { children: ReactNode }) {
     roles,
     loading,
     user,
-    isChef: roles.includes('chef'),
-    isKitchenPartner: roles.includes('kitchen_partner'),
-    isCustomer: roles.includes('customer') || roles.length === 0,
-    isRestaurant: roles.includes('restaurant'),
-    isAdmin: roles.includes('admin'),
+    isChef: role === 'chef',
+    isKitchenPartner: role === 'kitchen_partner',
+    isCustomer: role === 'customer' || !role,
+    isRestaurant: role === 'restaurant',
+    isAdmin: role === 'admin',
     usingMockData: false,
     logout,
     switchRole
