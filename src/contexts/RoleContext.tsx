@@ -146,7 +146,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
   };
 
   const switchRole = (newRole: UserRole) => {
-    if (roles.includes(newRole)) {
+    if (roles.includes(newRole) || roles.includes('admin')) {
       setRole(newRole);
       if (user) {
         setUser({ ...user, role: newRole });

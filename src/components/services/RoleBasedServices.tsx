@@ -5,18 +5,16 @@ import CustomerServices from "./CustomerServices";
 import RestaurantServices from "./RestaurantServices";
 
 const RoleBasedServices = () => {
-  const { isChef, isCustomer, isKitchenPartner, isRestaurant, loading } = useRole();
+  const { role, loading } = useRole();
 
-  if (loading) {
-    return null;
-  }
+  if (loading) return null;
 
   return (
     <>
-      {isCustomer && <CustomerServices />}
-      {isChef && <ChefServices />}
-      {isKitchenPartner && <KitchenPartnerServices />}
-      {isRestaurant && <RestaurantServices />}
+      {role === 'customer' && <CustomerServices />}
+      {role === 'chef' && <ChefServices />}
+      {role === 'kitchen_partner' && <KitchenPartnerServices />}
+      {role === 'restaurant' && <RestaurantServices />}
     </>
   );
 };
