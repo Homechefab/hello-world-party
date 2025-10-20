@@ -88,12 +88,13 @@ const App = () => {
             <Route path="/restaurant/partnership" element={<PublicLayout><RestaurantPartnership /></PublicLayout>} />
             <Route path="/auth" element={<PublicLayout><Auth /></PublicLayout>} />
             <Route path="/notification-signup" element={<PublicLayout><NotificationSignup /></PublicLayout>} />
+            <Route path="/chef/application" element={<PublicLayout><ChefApplication /></PublicLayout>} />
 
             {/* Protected routes */}
             <Route path="/dashboard" element={<RoleBasedLayout><Dashboard /></RoleBasedLayout>} />
             <Route path="/chef" element={<RoleBasedLayout><ChefHome /></RoleBasedLayout>} />
             <Route path="/chef/onboarding" element={<RoleBasedLayout><ChefOnboarding /></RoleBasedLayout>} />
-            <Route path="/chef/application" element={<RoleBasedLayout><ChefApplication /></RoleBasedLayout>} />
+            
             <Route path="/chef/application-pending" element={<RoleBasedLayout><ApplicationPending /></RoleBasedLayout>} />
             <Route path="/chef/dashboard" element={<RoleBasedLayout><ChefDashboard /></RoleBasedLayout>} />
             <Route path="/chef/private-services" element={<RoleBasedLayout><PrivateChefServices /></RoleBasedLayout>} />
