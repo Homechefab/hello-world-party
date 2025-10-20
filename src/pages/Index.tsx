@@ -6,6 +6,7 @@ import FoodGrid from "@/components/FoodGrid";
 import Features from "@/components/Features";
 import Footer from "@/components/Footer";
 import RoleBasedServices from "@/components/services/RoleBasedServices";
+import { useRole } from "@/hooks/useRole";
 
 
 interface SearchFilters {
@@ -19,6 +20,7 @@ interface SearchFilters {
 
 const Index = () => {
   console.log('Index component rendering');
+  const { role, loading } = useRole();
   const [filters, setFilters] = useState<SearchFilters>({
     query: "",
     category: "",
@@ -34,9 +36,14 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Hero />
       <RoleBasedServices />
-      <PopularChefs />
-      <FoodGrid />
-      <Features />
+      {/* Show these sections only for customer role */}
+      {(role === 'customer' || !role) && (
+        <>
+          <PopularChefs />
+          <FoodGrid />
+          <Features />
+        </>
+      )}
       <Footer />
     </div>
   );
