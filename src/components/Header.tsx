@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChefHat, Search, Menu, Home, UtensilsCrossed, Info, Phone, Users } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRole } from "@/hooks/useRole";
 import { Cart } from "@/components/Cart";
 import UserMenu from "@/components/UserMenu";
@@ -26,6 +26,7 @@ import {
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const { isChef, role, roles, switchRole } = useRole();
+  const navigate = useNavigate();
 
   const roleLabels: Record<string, string> = {
     customer: 'Kund',
@@ -33,6 +34,24 @@ const Header = () => {
     kitchen_partner: 'Kökspartner',
     restaurant: 'Restaurang',
     admin: 'Administratör'
+  };
+
+  const handleRoleSwitch = (newRole: string) => {
+    switchRole(newRole as any);
+    toast.success(`Bytte till ${roleLabels[newRole]}`);
+    
+    // Navigate to role-specific dashboard
+    if (newRole === 'admin') {
+      navigate('/admin/dashboard');
+    } else if (newRole === 'chef') {
+      navigate('/chef/dashboard');
+    } else if (newRole === 'kitchen_partner') {
+      navigate('/kitchen-partner/dashboard');
+    } else if (newRole === 'restaurant') {
+      navigate('/restaurant/dashboard');
+    } else {
+      navigate('/');
+    }
   };
 
   // Removed auth requirement - all features available
@@ -97,10 +116,7 @@ const Header = () => {
               {(['customer','chef','kitchen_partner','restaurant','admin'] as const).map((r) => (
                 <DropdownMenuItem
                   key={r}
-                  onClick={() => {
-                    switchRole(r as any);
-                    toast.success(`Bytte till ${roleLabels[r]}`);
-                  }}
+                  onClick={() => handleRoleSwitch(r)}
                   className={role === r ? "bg-secondary" : ""}
                 >
                   {roleLabels[r]}
@@ -176,8 +192,7 @@ const Header = () => {
                           <DropdownMenuItem
                             key={r}
                             onClick={() => {
-                              switchRole(r as any);
-                              toast.success(`Bytte till ${roleLabels[r]}`);
+                              handleRoleSwitch(r);
                               setMenuOpen(false);
                             }}
                             className={role === r ? "bg-secondary" : ""}
