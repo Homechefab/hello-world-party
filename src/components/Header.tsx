@@ -5,6 +5,7 @@ import { useRole } from "@/hooks/useRole";
 import { Cart } from "@/components/Cart";
 import UserMenu from "@/components/UserMenu";
 import homechefMascot from "@/assets/homechef-mascot.png";
+import { toast } from "sonner";
 import {
   Sheet,
   SheetContent,
@@ -98,7 +99,13 @@ const Header = () => {
                 return (
                   <DropdownMenuItem
                     key={r}
-                    onClick={() => allowed && switchRole(r as any)}
+                    onClick={() => {
+                      if (allowed) {
+                        console.log('Switching to role:', r);
+                        switchRole(r as any);
+                        toast.success(`Bytte till ${roleLabels[r]}`);
+                      }
+                    }}
                     className={`${role === r ? "bg-secondary" : ""} ${!allowed ? "opacity-50 pointer-events-none" : ""}`}
                     aria-disabled={!allowed}
                   >
@@ -167,6 +174,7 @@ const Header = () => {
                             key={r}
                             onClick={() => {
                               switchRole(r as any);
+                              toast.success(`Bytte till ${roleLabels[r]}`);
                               setMenuOpen(false);
                             }}
                             className={role === r ? "bg-secondary" : ""}
