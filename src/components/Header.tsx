@@ -83,29 +83,31 @@ const Header = () => {
         {/* Desktop Actions - hidden on mobile */}
         <div className="hidden md:flex items-center gap-3">
           {/* Role Switcher - Only show if user has multiple roles */}
-          { (roles.length > 1 || role === 'admin') && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="gap-2">
-                  <Users className="w-4 h-4" />
-                  {roleLabels[role || 'customer']}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 z-50 bg-background">
-                <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {(role === 'admin' ? (['admin','chef','kitchen_partner','restaurant','customer'] as const) : roles).map((r) => (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                <Users className="w-4 h-4" />
+                {roleLabels[role || 'customer']}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48 z-50 bg-background">
+              <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {(['customer','chef','kitchen_partner','restaurant','admin'] as const).map((r) => {
+                const allowed = role === 'admin' || roles.includes(r as any);
+                return (
                   <DropdownMenuItem
                     key={r}
-                    onClick={() => switchRole(r as any)}
-                    className={role === r ? "bg-secondary" : ""}
+                    onClick={() => allowed && switchRole(r as any)}
+                    className={`${role === r ? "bg-secondary" : ""} ${!allowed ? "opacity-50 pointer-events-none" : ""}`}
+                    aria-disabled={!allowed}
                   >
                     {roleLabels[r]}
                   </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+                );
+              })}
+            </DropdownMenuContent>
+          </DropdownMenu>
           
           <Cart />
           
