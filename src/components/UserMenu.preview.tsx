@@ -35,6 +35,7 @@ const PreviewWrapper = ({ children, mockRole }: PreviewWrapperProps) => {
     loading: false,
     usingMockData: false,
     logout: () => Promise.resolve(),
+    switchRole: () => {},
   };
 
   return (

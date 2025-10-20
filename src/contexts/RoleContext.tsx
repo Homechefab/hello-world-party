@@ -17,6 +17,7 @@ export interface RoleContextType {
   isAdmin: boolean;
   usingMockData: boolean;
   logout: () => Promise<void>;
+  switchRole: (newRole: UserRole) => void;
 }
 
 export const RoleContext = createContext<RoleContextType | undefined>(undefined);
@@ -144,6 +145,15 @@ export function RoleProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const switchRole = (newRole: UserRole) => {
+    if (roles.includes(newRole)) {
+      setRole(newRole);
+      if (user) {
+        setUser({ ...user, role: newRole });
+      }
+    }
+  };
+
   const contextValue: RoleContextType = {
     role,
     roles,
@@ -155,7 +165,8 @@ export function RoleProvider({ children }: { children: ReactNode }) {
     isRestaurant: roles.includes('restaurant'),
     isAdmin: roles.includes('admin'),
     usingMockData: false,
-    logout
+    logout,
+    switchRole
   };
 
   return (
