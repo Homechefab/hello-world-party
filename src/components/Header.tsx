@@ -83,7 +83,7 @@ const Header = () => {
         {/* Desktop Actions - hidden on mobile */}
         <div className="hidden md:flex items-center gap-3">
           {/* Role Switcher - Only show if user has multiple roles */}
-          {roles.length > 1 && (
+          { (roles.length > 1 || role === 'admin') && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="gap-2">
@@ -91,13 +91,13 @@ const Header = () => {
                   {roleLabels[role || 'customer']}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 bg-background">
+              <DropdownMenuContent align="end" className="w-48 z-50 bg-background">
                 <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {roles.map((r) => (
+                {(role === 'admin' ? (['admin','chef','kitchen_partner','restaurant','customer'] as const) : roles).map((r) => (
                   <DropdownMenuItem
                     key={r}
-                    onClick={() => switchRole(r)}
+                    onClick={() => switchRole(r as any)}
                     className={role === r ? "bg-secondary" : ""}
                   >
                     {roleLabels[r]}
@@ -145,7 +145,7 @@ const Header = () => {
               
               <div className="mt-8 space-y-6">
                 {/* Role Switcher - Mobile */}
-                {roles.length > 1 && (
+                {(roles.length > 1 || role === 'admin') && (
                   <div className="space-y-2">
                     <p className="text-sm text-muted-foreground">Nuvarande roll:</p>
                     <DropdownMenu>
@@ -157,14 +157,14 @@ const Header = () => {
                           </span>
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-full bg-background">
+                      <DropdownMenuContent className="w-full z-50 bg-background">
                         <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        {roles.map((r) => (
+                        {(role === 'admin' ? (['admin','chef','kitchen_partner','restaurant','customer'] as const) : roles).map((r) => (
                           <DropdownMenuItem
                             key={r}
                             onClick={() => {
-                              switchRole(r);
+                              switchRole(r as any);
                               setMenuOpen(false);
                             }}
                             className={role === r ? "bg-secondary" : ""}
