@@ -41,6 +41,7 @@ const PreviewWrapper = ({
     loading: false,
     usingMockData: false,
     logout: () => Promise.resolve(),
+    switchRole: () => {},
   };
 
   // Mock window.location

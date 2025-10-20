@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChefHat, Search, Menu, Home, UtensilsCrossed, Info, Phone } from "lucide-react";
+import { ChefHat, Search, Menu, Home, UtensilsCrossed, Info, Phone, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useRole } from "@/hooks/useRole";
 import { Cart } from "@/components/Cart";
@@ -13,10 +13,26 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { isChef } = useRole();
+  const { isChef, role, roles, switchRole } = useRole();
+
+  const roleLabels: Record<string, string> = {
+    customer: 'Kund',
+    chef: 'Kock',
+    kitchen_partner: 'Kökspartner',
+    restaurant: 'Restaurang',
+    admin: 'Administratör'
+  };
 
   // Removed auth requirement - all features available
 
@@ -66,7 +82,31 @@ const Header = () => {
 
         {/* Desktop Actions - hidden on mobile */}
         <div className="hidden md:flex items-center gap-3">
-          {/* Role switcher has been removed */}
+          {/* Role Switcher - Only show if user has multiple roles */}
+          {roles.length > 1 && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="gap-2">
+                  <Users className="w-4 h-4" />
+                  {roleLabels[role || 'customer']}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 bg-background">
+                <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {roles.map((r) => (
+                  <DropdownMenuItem
+                    key={r}
+                    onClick={() => switchRole(r)}
+                    className={role === r ? "bg-secondary" : ""}
+                  >
+                    {roleLabels[r]}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+          
           <Cart />
           
           <UserMenu />
@@ -104,9 +144,38 @@ const Header = () => {
               </SheetHeader>
               
               <div className="mt-8 space-y-6">
-                {/* Current role display has been removed */}
-
-                {/* Role switcher has been removed */}
+                {/* Role Switcher - Mobile */}
+                {roles.length > 1 && (
+                  <div className="space-y-2">
+                    <p className="text-sm text-muted-foreground">Nuvarande roll:</p>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="w-full justify-between">
+                          <span className="flex items-center gap-2">
+                            <Users className="w-4 h-4" />
+                            {roleLabels[role || 'customer']}
+                          </span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-full bg-background">
+                        <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        {roles.map((r) => (
+                          <DropdownMenuItem
+                            key={r}
+                            onClick={() => {
+                              switchRole(r);
+                              setMenuOpen(false);
+                            }}
+                            className={role === r ? "bg-secondary" : ""}
+                          >
+                            {roleLabels[r]}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                )}
 
                 {/* Mobile Search */}
                 <div className="relative">
