@@ -132,6 +132,15 @@ export function RoleProvider({ children }: { children: ReactNode }) {
     }
 
     fetchUserRole();
+
+    // Apply persisted impersonated role after initial load
+    const saved = ((): UserRole | null => {
+      try { return (localStorage.getItem('impersonated_role') as UserRole) || null; } catch { return null; }
+    })();
+    if (saved) {
+      setRole(saved);
+      setUser((prev) => (prev ? { ...prev, role: saved } : prev));
+    }
   }, [authUser]);
 
   const logout = async () => {
@@ -147,14 +156,13 @@ export function RoleProvider({ children }: { children: ReactNode }) {
 
   const switchRole = (newRole: UserRole) => {
     console.log('switchRole called with:', newRole, 'current roles:', roles);
-    if (roles.includes('admin') || roles.includes(newRole)) {
-      console.log('Switching role to:', newRole);
-      setRole(newRole);
-      if (user) {
-        setUser({ ...user, role: newRole });
-      }
-    } else {
-      console.log('Role switch not allowed');
+    // Frontend-only impersonation for admin/testing: persist in localStorage
+    try {
+      localStorage.setItem('impersonated_role', newRole);
+    } catch {}
+    setRole(newRole);
+    if (user) {
+      setUser({ ...user, role: newRole });
     }
   };
 
