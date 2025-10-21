@@ -28,23 +28,23 @@ const HyrUtDittKokInfo = () => {
   const benefits = [
     {
       icon: DollarSign,
-      title: "Extra intäkter",
-      description: "Tjäna 150-500 kr per timme när du inte använder ditt kök"
+      title: "Extra inkomst",
+      description: "Tjäna 150-500 kr per timme när köket står tomt"
     },
     {
       icon: Clock,
-      title: "Flexibla tider",
-      description: "Du bestämmer helt själv när ditt kök är tillgängligt"
+      title: "Du bestämmer",
+      description: "Välj själv när och hur ofta du vill hyra ut"
     },
     {
       icon: Shield,
-      title: "Fullständig försäkring",
-      description: "Alla bokningar täcks av vårt omfattande försäkringsskydd"
+      title: "Bra försäkring",
+      description: "Allt är försäkrat - ingen extra kostnad för dig"
     },
     {
       icon: Users,
-      title: "Verifierade kockar",
-      description: "Alla våra kockar är kvalificerade och bakgrundskontrollerade"
+      title: "Pålitliga kockar",
+      description: "Alla kockar är kontrollerade och godkända"
     }
   ];
 
@@ -58,20 +58,20 @@ const HyrUtDittKokInfo = () => {
 
   const steps = [
     {
-      title: "1. Registrera ditt kök",
-      description: "Fyll i information om ditt kök, ladda upp bilder och ange tillgänglighet"
+      title: "1. Registrera",
+      description: "Lägg in ditt kök med bilder och när det är ledigt"
     },
     {
-      title: "2. Verifiering",
-      description: "Vi granskar ditt kök och bekräftar att det uppfyller våra krav"
+      title: "2. Granskning",
+      description: "Vi kollar att allt är okej - tar max 2-3 dagar"
     },
     {
-      title: "3. Sätt ditt pris",
-      description: "Bestäm vad du vill ta betalt per timme för ditt kök"
+      title: "3. Sätt pris",
+      description: "Välj vad du vill ta per timme"
     },
     {
-      title: "4. Börja tjäna",
-      description: "Kockar kan nu boka ditt kök och du får betalt automatiskt"
+      title: "4. Tjäna pengar",
+      description: "Kockar bokar och du får betalt automatiskt"
     }
   ];
 
@@ -93,7 +93,7 @@ const HyrUtDittKokInfo = () => {
             Hyr ut ditt restaurangkök
           </h1>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Maximera intäkterna från ditt kök genom att hyra ut till kvalificerade kockar när du inte använder det
+            Tjäna pengar på ditt kök när det står tomt - enkelt och säkert
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" className="bg-primary hover:bg-primary/90" asChild>
@@ -113,10 +113,10 @@ const HyrUtDittKokInfo = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              Varför hyra ut ditt kök?
+              Därför ska du hyra ut
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Få ut mer av din investering och hjälp lokala kockar att förverkliga sina drömmar
+              Få ut mer av ditt kök och hjälp lokala kockar samtidigt
             </p>
           </div>
           
@@ -145,10 +145,10 @@ const HyrUtDittKokInfo = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl font-bold text-foreground mb-6">
-                Vad krävs för att hyra ut ditt kök?
+                Vad krävs av ditt kök?
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                För att säkerställa kvalitet och säkerhet har vi vissa grundkrav för alla kök i vårt nätverk.
+                För säkerhet och kvalitet har vi några grundkrav.
               </p>
               <div className="space-y-4">
                 {requirements.map((requirement, index) => (
@@ -199,7 +199,7 @@ const HyrUtDittKokInfo = () => {
               Så här fungerar det
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Enkelt och säkert - från registrering till utbetalning
+              Enkelt från start till slut
             </p>
           </div>
           
@@ -256,10 +256,10 @@ const HyrUtDittKokInfo = () => {
       <section className="py-16 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">
-            Redo att börja tjäna på ditt kök?
+            Vill du med?
           </h2>
           <p className="text-lg mb-8 max-w-2xl mx-auto opacity-90">
-            Registrera dig idag och börja ta emot bokningar redan imorgon
+            Registrera dig idag så kan du ha din första bokning imorgon
           </p>
           <Button size="lg" variant="secondary" asChild>
             <Link to="/kitchen-partner/register">

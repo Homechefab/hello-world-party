@@ -35,8 +35,8 @@ export const HyrUtDittKok = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Kökspartner Dashboard</h1>
-        <p className="text-muted-foreground">Hyr ut ditt restaurangkök och få betalt</p>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Mitt kök</h1>
+        <p className="text-muted-foreground">Översikt över bokningar och intäkter</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-4 mb-8">
@@ -97,8 +97,8 @@ export const HyrUtDittKok = () => {
           <div className="grid gap-6 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Kommande Bokningar</CardTitle>
-                <CardDescription>Dina nästa schemalagda sessioner</CardDescription>
+                <CardTitle>Kommande bokningar</CardTitle>
+                <CardDescription>Nästa bokningar i ditt kök</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -145,8 +145,8 @@ export const HyrUtDittKok = () => {
           
           <Card>
             <CardHeader>
-              <CardTitle>Alla Bokningar</CardTitle>
-              <CardDescription>Hantera alla dina bokningar</CardDescription>
+                <CardTitle>Alla bokningar</CardTitle>
+                <CardDescription>Se alla bokningar</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">Bokningar kommer att visas här...</p>
@@ -159,8 +159,8 @@ export const HyrUtDittKok = () => {
           <div className="grid gap-6 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Välj Datum</CardTitle>
-                <CardDescription>Klicka på ett datum för att hantera tillgänglighet</CardDescription>
+                <CardTitle>Välj datum</CardTitle>
+                <CardDescription>Klicka för att ändra tillgänglighet</CardDescription>
               </CardHeader>
               <CardContent>
                 <Calendar

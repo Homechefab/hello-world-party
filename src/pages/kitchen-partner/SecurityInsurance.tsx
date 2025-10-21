@@ -7,18 +7,18 @@ const SecurityInsurance = () => {
   const securityFeatures = [
     {
       icon: <Users className="w-8 h-8 text-primary" />,
-      title: "Verifierade kockar",
-      description: "Alla kockar som får tillgång till ditt kök genomgår grundlig bakgrundskontroll och kompetensbedömning."
+      title: "Kontrollerade kockar",
+      description: "Alla kockar är bakgrundskontrollerade innan de får boka."
     },
     {
       icon: <FileCheck className="w-8 h-8 text-primary" />,
-      title: "Certifierad säkerhet",
-      description: "Alla kockar har giltiga livsmedelshygien-certifikat och genomgått vår säkerhetsutbildning."
+      title: "Utbildade kockar",
+      description: "Alla har livsmedelshygien-certifikat och är utbildade i säkerhet."
     },
     {
       icon: <Shield className="w-8 h-8 text-primary" />,
-      title: "Totalförsäkring",
-      description: "Komplett försäkringsskydd för ditt kök, utrustning och verksamhet utan extra kostnad."
+      title: "Bra försäkring",
+      description: "Allt är försäkrat - kök, utrustning och verksamhet."
     }
   ];
 
@@ -52,7 +52,7 @@ const SecurityInsurance = () => {
             Säkerhet & Försäkring
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Som kökspartner får du komplett trygghet. Vi skyddar ditt kök med avancerad säkerhet och totalförsäkring som inte kostar dig något extra.
+            Ditt kök är tryggt hos oss. Bra försäkring och säkerhet ingår utan extra kostnad.
           </p>
         </div>
 
@@ -82,7 +82,7 @@ const SecurityInsurance = () => {
                 <CardTitle className="text-2xl">Försäkringsskydd</CardTitle>
               </div>
               <CardDescription>
-                Totalförsäkring utan extra kostnad som skyddar ditt kök, utrustning och verksamhet under uthyrning.
+                Allt är försäkrat utan extra kostnad - kök, utrustning och verksamhet.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -104,7 +104,7 @@ const SecurityInsurance = () => {
                 <CardTitle className="text-2xl">Säkerhetsprotokoll</CardTitle>
               </div>
               <CardDescription>
-                Säkerhetsrutiner som våra verifierade kockar följer för att skydda ditt kök och utrustning.
+                Rutiner som kockarna följer för att ta hand om ditt kök.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -122,10 +122,10 @@ const SecurityInsurance = () => {
 
         <div className="bg-gradient-warm rounded-2xl p-8 text-center">
           <h2 className="text-3xl font-bold text-foreground mb-4">
-            Är du redo att hyra ut ditt kök säkert?
+            Vill du hyra ut tryggt?
           </h2>
           <p className="text-muted-foreground mb-6 text-lg">
-            Gå med i vårt nätverk av kökspartners och tjäna extra intäkter med fullständig trygghet.
+            Bli kökspartner och tjäna extra pengar med full trygghet.
           </p>
           <Button asChild size="lg" className="text-lg px-8">
             <Link to="/kitchen-partner/register">
