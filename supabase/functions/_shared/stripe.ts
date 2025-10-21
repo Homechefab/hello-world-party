@@ -1,9 +1,9 @@
-import { createClient } from "@supabase/supabase-js";
-import Stripe from "stripe";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import Stripe from "https://esm.sh/stripe@18.5.0";
 
 // Initialize Stripe with Deno env
 export const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY') ?? '', {
-  apiVersion: '2023-10-16',
+  apiVersion: '2025-08-27.basil',
   httpClient: Stripe.createFetchHttpClient(),
 });
 
