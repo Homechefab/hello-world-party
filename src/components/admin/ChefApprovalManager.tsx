@@ -100,13 +100,13 @@ export const ChefApprovalManager = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
-        return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Väntar granskning</Badge>;
+        return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Väntar</Badge>;
       case 'under_review':
-        return <Badge variant="secondary" className="bg-blue-100 text-blue-800">Under granskning</Badge>;
+        return <Badge variant="secondary" className="bg-blue-100 text-blue-800">Granskas</Badge>;
       case 'approved':
         return <Badge variant="secondary" className="bg-green-100 text-green-800">Godkänd</Badge>;
       case 'rejected':
-        return <Badge variant="secondary" className="bg-red-100 text-red-800">Avvisad</Badge>;
+        return <Badge variant="secondary" className="bg-red-100 text-red-800">Nekad</Badge>;
       default:
         return <Badge variant="secondary">Okänd status</Badge>;
     }
@@ -138,7 +138,7 @@ export const ChefApprovalManager = () => {
 
     toast({
       title: "Status uppdaterad",
-      description: `Ansökan har markerats som ${newStatus === 'approved' ? 'godkänd' : newStatus === 'rejected' ? 'avvisad' : 'under granskning'}`
+      description: `Ansökan har markerats som ${newStatus === 'approved' ? 'godkänd' : newStatus === 'rejected' ? 'nekad' : 'under granskning'}`
     });
 
     setSelectedApplication(null);
@@ -151,13 +151,13 @@ export const ChefApprovalManager = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Kock-ansökningar</h2>
+        <h2 className="text-2xl font-bold">Ansökningar från kockar</h2>
         <div className="flex gap-2">
           <Badge variant="outline" className="bg-yellow-50">
-            {pendingCount} Väntande
+            {pendingCount} Väntar
           </Badge>
           <Badge variant="outline" className="bg-blue-50">
-            {underReviewCount} Under granskning
+            {underReviewCount} Granskas
           </Badge>
         </div>
       </div>
@@ -220,15 +220,15 @@ export const ChefApprovalManager = () => {
                         Granska ansökan - {application.applicantName}
                       </DialogTitle>
                       <DialogDescription>
-                        Kontrollera all information och dokument innan godkännande
+                        Kolla all info och dokument innan godkännande
                       </DialogDescription>
                     </DialogHeader>
 
                     <div className="space-y-6">
-                      {/* Personal Information */}
+                      {/* Personlig info */}
                       <Card>
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-lg">Personlig information</CardTitle>
+                          <CardTitle className="text-lg">Personuppgifter</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-2">
                           <div className="grid grid-cols-2 gap-4">
@@ -252,10 +252,10 @@ export const ChefApprovalManager = () => {
                         </CardContent>
                       </Card>
 
-                      {/* Business Information */}
+                      {/* Företagsinfo */}
                       <Card>
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-lg">Företagsinformation</CardTitle>
+                          <CardTitle className="text-lg">Företagsuppgifter</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-2">
                           <div>
@@ -309,12 +309,12 @@ export const ChefApprovalManager = () => {
 
                       {/* Review Notes */}
                       <div>
-                        <Label htmlFor="reviewNotes">Granskningsanteckningar</Label>
+                        <Label htmlFor="reviewNotes">Anteckningar</Label>
                         <Textarea
                           id="reviewNotes"
                           value={reviewNotes}
                           onChange={(e) => setReviewNotes(e.target.value)}
-                          placeholder="Lägg till kommentarer om ansökan..."
+                          placeholder="Skriv kommentarer om ansökan..."
                           rows={3}
                         />
                       </div>
@@ -328,7 +328,7 @@ export const ChefApprovalManager = () => {
                             className="flex-1"
                           >
                             <AlertCircle className="w-4 h-4 mr-2" />
-                            Sätt under granskning
+                            Behöver granskas
                           </Button>
                           <Button
                             onClick={() => handleStatusChange(application.id, 'rejected')}
@@ -336,7 +336,7 @@ export const ChefApprovalManager = () => {
                             className="flex-1 text-red-600 border-red-200 hover:bg-red-50"
                           >
                             <XCircle className="w-4 h-4 mr-2" />
-                            Avvisa
+                            Neka
                           </Button>
                           <Button
                             onClick={() => handleStatusChange(application.id, 'approved')}
