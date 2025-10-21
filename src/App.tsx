@@ -27,6 +27,7 @@ import { ChefOnboarding } from "./pages/chef/ChefOnboarding";
 import ChefApplication from "./pages/chef/ChefApplication";
 import ApplicationPending from "./pages/chef/ApplicationPending";
 import PrivateChefServices from "./pages/chef/PrivateChefServices";
+import CateringServices from "./pages/chef/CateringServices";
 import ChefExperiences from "./pages/chef/ChefExperiences";
 import KitchenRequirements from "./pages/chef/KitchenRequirements";
 import KitchenAssessment from "./pages/chef/KitchenAssessment";
@@ -98,6 +99,7 @@ const App = () => {
             <Route path="/chef/application-pending" element={<RoleBasedLayout><ApplicationPending /></RoleBasedLayout>} />
             <Route path="/chef/dashboard" element={<RoleBasedLayout><ChefDashboard /></RoleBasedLayout>} />
             <Route path="/chef/private-services" element={<RoleBasedLayout><PrivateChefServices /></RoleBasedLayout>} />
+            <Route path="/chef/catering" element={<RoleBasedLayout><CateringServices /></RoleBasedLayout>} />
             <Route path="/chef/experiences" element={<RoleBasedLayout><ChefExperiences /></RoleBasedLayout>} />
             <Route path="/chef/kitchen-requirements" element={<RoleBasedLayout><KitchenRequirements /></RoleBasedLayout>} />
             <Route path="/chef/kitchen-assessment" element={<RoleBasedLayout><KitchenAssessment /></RoleBasedLayout>} />

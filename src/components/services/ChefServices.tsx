@@ -6,6 +6,7 @@ import { ChefHat, Users, Calendar, Utensils, CheckCircle, Shield, Building2 } fr
 import sellFoodImage from "@/assets/service-sell-food.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
+import cateringImage from "@/assets/catering-service.jpg";
 import approvedKitchenImage from "@/assets/swedish-villa-kitchen-realistic.jpg";
 import businessRegistrationImage from "@/assets/business-registration.jpg";
 
@@ -33,6 +34,14 @@ const mainChefServices = [
     href: "/chef/experiences",
     icon: Calendar,
     color: "from-amber-500 to-amber-600"
+  },
+  {
+    image: cateringImage,
+    title: "Catering",
+    description: "Erbjud professionell catering till företag och privatpersoner",
+    href: "/chef/catering",
+    icon: Utensils,
+    color: "from-blue-500 to-blue-600"
   }
 ];
 
@@ -69,7 +78,7 @@ const ChefServices = () => {
         </div>
         
         {/* Main Services */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto mb-12">
           {mainChefServices.map((service) => {
             const IconComponent = service.icon;
             return (
