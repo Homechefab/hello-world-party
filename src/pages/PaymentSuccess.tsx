@@ -16,18 +16,21 @@ const PaymentSuccess = () => {
   useEffect(() => {
     const verify = async () => {
       if (!sessionId) {
+        console.log("No session_id found in URL");
         setLoading(false);
         return;
       }
+      console.log("Calling verify-payment with sessionId:", sessionId);
       try {
         const { data, error } = await supabase.functions.invoke("verify-payment", {
           body: { sessionId }
         });
+        console.log("verify-payment response:", { data, error });
         if (error) throw new Error(error.message);
         setResult(data);
       } catch (err) {
         console.error("verify-payment error", err);
-        toast({ title: "Kunde inte hämta kvitto", variant: "destructive" });
+        toast({ title: "Kunde inte hämta kvitto", description: err instanceof Error ? err.message : "Okänt fel", variant: "destructive" });
       } finally {
         setLoading(false);
       }
