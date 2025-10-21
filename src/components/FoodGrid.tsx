@@ -3,6 +3,8 @@ import meatballsImage from "@/assets/meatballs.jpg";
 import pastaImage from "@/assets/pasta.jpg";
 import soupImage from "@/assets/soup.jpg";
 import applePieImage from "@/assets/apple-pie.jpg";
+import thaiCurryImage from "@/assets/thai-curry.jpg";
+import falafelImage from "@/assets/falafel-hummus.jpg";
 
 const mockFoodItems = [
   {
@@ -66,7 +68,7 @@ const mockFoodItems = [
     cookTime: "35 min",
     distance: "1.8 km",
     seller: "Siriporn T.",
-    image: pastaImage, // Placeholder - would need separate image
+    image: thaiCurryImage,
     tags: ["Asiatiskt", "Kryddigt"],
     isFavorite: false
   },
@@ -79,7 +81,7 @@ const mockFoodItems = [
     cookTime: "15 min",
     distance: "0.9 km",
     seller: "Ahmed M.",
-    image: soupImage, // Placeholder - would need separate image
+    image: falafelImage,
     tags: ["Vegetariskt", "Mellan"],
     isFavorite: false
   }
