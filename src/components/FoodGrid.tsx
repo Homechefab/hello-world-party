@@ -2,7 +2,7 @@ import FoodCard from "./FoodCard";
 import meatballsImage from "@/assets/meatballs.jpg";
 import pastaImage from "@/assets/pasta.jpg";
 import soupImage from "@/assets/soup.jpg";
-import applePieImage from "@/assets/apple-pie.jpg";
+import chickenRiceImage from "@/assets/chicken-rice.jpg";
 import thaiCurryImage from "@/assets/thai-curry.jpg";
 import falafelImage from "@/assets/falafel-hummus.jpg";
 
@@ -47,16 +47,16 @@ const mockFoodItems = [
     isFavorite: false
   },
   {
-    title: "Hemgjord äppelpaj",
-    description: "Klassisk äppelpaj med kanel och vaniljsås. Gjord på äpplen från egna trädgården.",
-    price: 75,
+    title: "Grillad kyckling med ris",
+    description: "Saftig grillad kyckling serverad med fluffigt vitt ris och färska grönsaker.",
+    price: 79,
     rating: 4.7,
-    reviews: 42,
-    cookTime: "15 min",
+    reviews: 35,
+    cookTime: "25 min",
     distance: "1.5 km",
-    seller: "Gunnar S.",
-    image: applePieImage,
-    tags: ["Dessert", "Hemgjort"],
+    seller: "Maria H.",
+    image: chickenRiceImage,
+    tags: ["Hälsosamt", "Protein"],
     isFavorite: true
   },
   {
