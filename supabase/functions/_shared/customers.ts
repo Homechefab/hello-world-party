@@ -1,5 +1,5 @@
-import { SupabaseClient } from '@supabase/supabase-js';
-import Stripe from 'stripe';
+import type { SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
+import Stripe from 'https://esm.sh/stripe@18.5.0';
 
 export async function createOrRetrieveCustomer({
   userId,
