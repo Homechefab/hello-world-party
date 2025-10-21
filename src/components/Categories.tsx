@@ -19,7 +19,7 @@ const PopularChefs = () => {
               Inga kockar registrerade än
             </h3>
             <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-              Vi arbetar på att få fler kockar att registrera sig. Bli den första att registrera dig som kock här!
+              Ingen kock har registrerat sig än. Vill du vara först?
             </p>
             <div className="flex gap-4 justify-center">
               <Link to="/chef/application">

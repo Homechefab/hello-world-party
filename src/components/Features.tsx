@@ -6,25 +6,25 @@ const features = [
   {
     icon: Shield,
     title: "Säkert & tryggt",
-    description: "Alla våra kockar är verifierade och alla transaktioner är säkra",
+    description: "Verifierade kockar och säkra betalningar",
     color: "text-green-600"
   },
   {
     icon: Clock,
     title: "Snabb leverans",
-    description: "Hämta din mat inom 30 minuter eller få leverans hem till dörren",
+    description: "Hämta din mat inom 30 minuter eller få den levererad hem",
     color: "text-blue-600"
   },
   {
     icon: Star,
     title: "Högsta kvalitet",
-    description: "Vi garanterar färska ingredienser och hemlagad kvalitet",
+    description: "Färska råvaror och äkta hemlagad mat",
     color: "text-yellow-600"
   },
   {
     icon: Heart,
     title: "Stöd lokala kockar",
-    description: "Hjälp din grannar att tjäna extra pengar på det de älskar",
+    description: "Hjälp dina grannar att tjäna pengar på det de kan bäst",
     color: "text-red-600"
   }
 ];
@@ -45,10 +45,10 @@ const Features = () => {
             Varför välja Homechef?
           </Badge>
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
-            Upplev äkta hemlagad mat
+            Äkta hemlagad mat från dina grannar
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Från din grannes kök till ditt bord. Vi kopplar samman matälskare med passionerade hemmakockar.
+            Vi kopplar ihop dig med duktiga kockar i ditt område som lagar mat hemma.
           </p>
         </div>
         
