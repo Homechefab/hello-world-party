@@ -89,10 +89,10 @@ const KitchenRequirements = () => {
               Kökskrav
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent">
-              Krav och riktlinjer
+              Krav för ditt kök
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              För att få sälja mat från ditt kök måste det uppfylla kommunens krav för livsmedelssäkerhet. 
+              För att sälja mat från ditt kök måste det uppfylla vissa krav. 
               Här hittar du all information du behöver.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -169,9 +169,9 @@ const KitchenRequirements = () => {
       <section className="py-16 bg-secondary/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Nödvändig utrustning</h2>
+            <h2 className="text-3xl font-bold mb-4">Vad behöver du ha?</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Dessa verktyg och utrustning behöver du för att uppfylla kraven
+              Grundläggande utrustning du behöver i ditt kök
             </p>
           </div>
           
@@ -204,9 +204,9 @@ const KitchenRequirements = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Så här ansöker du om tillstånd</h2>
+            <h2 className="text-3xl font-bold mb-4">Så här får du ditt kök godkänt</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Följ dessa steg för att få ditt kök godkänt av kommunen
+              Steg för steg till godkänt kök
             </p>
           </div>
           
@@ -233,9 +233,9 @@ const KitchenRequirements = () => {
         <div className="container mx-auto px-4">
           <Card className="max-w-4xl mx-auto text-center">
             <CardHeader>
-              <CardTitle className="text-2xl">Behöver du hjälp med ditt kök?</CardTitle>
+              <CardTitle className="text-2xl">Behöver du hjälp?</CardTitle>
               <CardDescription>
-                Vårt team hjälper dig genom hela processen att få ditt kök godkänt
+                Vi hjälper dig få ditt kök godkänt
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">

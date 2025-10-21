@@ -14,7 +14,7 @@ const mainChefServices = [
   {
     image: sellFoodImage,
     title: "Sälj din mat",
-    description: "Skapa och sälj dina egna rätter till hungriga kunder",
+    description: "Lägg upp din meny och nå kunder i ditt område",
     href: "/chef/application",
     icon: ChefHat,
     color: "from-green-500 to-green-600"
@@ -22,7 +22,7 @@ const mainChefServices = [
   {
     image: privateChefImage,
     title: "Privatkock-tjänster",
-    description: "Erbjud dina tjänster som privatkock för speciella evenemang",
+    description: "Laga mat hemma hos kunder för speciella tillfällen",
     href: "/chef/private-services",
     icon: Users,
     color: "from-purple-500 to-purple-600"
@@ -30,7 +30,7 @@ const mainChefServices = [
   {
     image: experienceImage,
     title: "Matupplevelser",
-    description: "Skapa unika matupplevelser hemma hos dig",
+    description: "Bjud in kunder till matlagningskurser och middagar",
     href: "/chef/experiences",
     icon: Calendar,
     color: "from-amber-500 to-amber-600"
@@ -38,7 +38,7 @@ const mainChefServices = [
   {
     image: cateringImage,
     title: "Catering",
-    description: "Erbjud professionell catering till företag och privatpersoner",
+    description: "Ta cateringuppdrag för event och firmafester",
     href: "/chef/catering",
     icon: Utensils,
     color: "from-blue-500 to-blue-600"
@@ -49,7 +49,7 @@ const otherChefServices = [
   {
     image: approvedKitchenImage,
     title: "Kök-krav",
-    description: "Lär dig vad som krävs för att få ditt kök godkänt",
+    description: "Vad som krävs för att få sälja mat från ditt kök",
     href: "/chef/kitchen-requirements",
     icon: Shield,
     color: "from-orange-500 to-orange-600"
@@ -57,7 +57,7 @@ const otherChefServices = [
   {
     image: businessRegistrationImage,
     title: "Registrera näringsverksamhet",
-    description: "Lär dig starta företag, skatter, avdrag och försäkringar",
+    description: "Starta företag, hantera skatter och hitta rätt försäkring",
     href: "/chef/business-registration",
     icon: Building2,
     color: "from-blue-500 to-blue-600"
@@ -70,10 +70,10 @@ const ChefServices = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            Vad vill du göra som kock?
+            Välj hur du vill jobba
           </h2>
           <p className="text-muted-foreground">
-            Utveckla ditt kockyrke och nå fler kunder genom våra olika tjänster
+            Bygg ditt matföretag på det sätt som passar dig bäst
           </p>
         </div>
         

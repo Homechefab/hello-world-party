@@ -25,37 +25,37 @@ const PrivateChefServices = () => {
     {
       icon: Calendar,
       title: "Speciella evenemang",
-      description: "Caterera bröllop, födelsedagar och företagsevenemang"
+      description: "Laga mat för bröllop, födelsedagar och företagsevent"
     },
     {
       icon: ChefHat,
       title: "Matlagningskurser",
-      description: "Lär ut dina färdigheter i kundens hem"
+      description: "Håll matlagningskurser hemma hos kunder"
     },
     {
       icon: Star,
       title: "Exklusiva menyer",
-      description: "Skapa skräddarsydda menyer för varje tillfälle"
+      description: "Anpassa menyer efter kundens önskemål"
     },
     {
       icon: BookOpen,
       title: "Recept",
-      description: "Sälja unika recept och matlagningsguider"
+      description: "Sälj recept och guider till dina följare"
     }
   ];
 
   const benefits = [
-    "Sätt dina egna priser",
-    "Flexibla arbetstider",
-    "Direkta betalningar via plattformen",
-    "Marknadsföring mot premiumkunder",
-    "Dedikerad support för privatkockar"
+    "Du sätter själv priser och arbetstider",
+    "Betalt direkt via plattformen",
+    "Vi marknadsför dig mot våra kunder",
+    "Personlig support när du behöver",
+    "Bygg din egen kundbas"
   ];
 
   const requirements = [
-    "Godkänt kök med kommunalt tillstånd",
-    "Egenkontroller och HACCP-kunskap",
-    "Registrerad näringslivsverksamhet"
+    "Godkänt kök enligt kommunens krav",
+    "Kunskap om egenkontroll och HACCP",
+    "Eget företag (enskild firma eller aktiebolag)"
   ];
 
   return (
@@ -69,10 +69,10 @@ const PrivateChefServices = () => {
               Privatkock-tjänster
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent">
-              Erbjud dina tjänster som privatkock
+              Jobba som privatkock
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-              Ta din kockkarriär till nästa nivå genom att erbjuda exklusiva privatkocktjänster för speciella tillfällen och personliga middagar.
+              Laga mat hemma hos kunder för speciella tillfällen och personliga middagar.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/chef/application">
@@ -90,9 +90,9 @@ const PrivateChefServices = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Olika typer av privatkocktjänster</h2>
+            <h2 className="text-3xl font-bold mb-4">Vad kan du erbjuda?</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Diversifiera dina inkomstkällor genom att erbjuda olika typer av kulinariska upplevelser
+              Olika sätt att jobba som privatkock
             </p>
           </div>
           
@@ -207,9 +207,9 @@ const PrivateChefServices = () => {
       {/* CTA Section */}
       <section className="py-16 bg-gradient-to-r from-primary/10 to-accent/10">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Redo att börja som privatkock?</h2>
+          <h2 className="text-3xl font-bold mb-4">Redo att börja?</h2>
           <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Utöka din kockkarriär och skapa extraordinära matupplevelser för exklusiva kunder.
+            Ansök idag och börja ta emot uppdrag som privatkock.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/chef/application">

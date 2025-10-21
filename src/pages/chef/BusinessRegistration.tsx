@@ -15,10 +15,10 @@ const BusinessRegistration = () => {
             </Button>
           </Link>
           <h1 className="text-3xl font-bold text-foreground mb-2">
-            Registrera näringsverksamhet
+            Starta eget företag
           </h1>
           <p className="text-muted-foreground">
-            Allt du behöver veta för att starta ditt matföretag
+            Vad du behöver veta för att starta ditt matföretag
           </p>
         </div>
         
