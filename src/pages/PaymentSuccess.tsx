@@ -8,7 +8,15 @@ import { useToast } from "@/hooks/use-toast";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
-  const sessionId = useMemo(() => searchParams.get("session_id"), [searchParams]);
+  const sessionId = useMemo(() => {
+    const fromUrl = searchParams.get("session_id");
+    if (fromUrl) return fromUrl;
+    try {
+      return typeof window !== 'undefined' ? window.sessionStorage.getItem('last_checkout_session_id') : null;
+    } catch {
+      return null;
+    }
+  }, [searchParams]);
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState<any>(null);
   const { toast } = useToast();

@@ -53,6 +53,9 @@ export const StripeCheckout: React.FC<StripeCheckoutProps> = ({
       }
 
       if (data.url) {
+        if (data.sessionId) {
+          try { sessionStorage.setItem('last_checkout_session_id', data.sessionId); } catch {}
+        }
         // Öppna Stripe Checkout i ny flik
         window.open(data.url, '_blank');
         
