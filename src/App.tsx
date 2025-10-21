@@ -55,6 +55,7 @@ import Preferences from "./pages/settings/Preferences";
 import Profile from "./pages/Profile";
 import MyOrders from "./pages/MyOrders";
 import MyPoints from "./pages/MyPoints";
+import PaymentDemo from "./pages/PaymentDemo";
 
 const queryClient = new QueryClient();
 
@@ -92,6 +93,7 @@ const App = () => {
             <Route path="/auth" element={<PublicLayout><Auth /></PublicLayout>} />
             <Route path="/notification-signup" element={<PublicLayout><NotificationSignup /></PublicLayout>} />
             <Route path="/chef/application" element={<PublicLayout><ChefApplication /></PublicLayout>} />
+            <Route path="/payment-demo" element={<PublicLayout><PaymentDemo /></PublicLayout>} />
 
             {/* Protected routes */}
             <Route path="/dashboard" element={<RoleBasedLayout><Dashboard /></RoleBasedLayout>} />
