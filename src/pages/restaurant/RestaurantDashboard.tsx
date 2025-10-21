@@ -110,8 +110,8 @@ const RestaurantDashboard = () => {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Restaurangdashboard</h1>
-            <p className="text-muted-foreground">Hantera dina beställningar och följ upp försäljningen</p>
+            <h1 className="text-3xl font-bold text-foreground">Min restaurang</h1>
+            <p className="text-muted-foreground">Översikt över beställningar och försäljning</p>
           </div>
           <div className="flex gap-3">
             <Button variant="outline">
@@ -155,7 +155,7 @@ const RestaurantDashboard = () => {
                   Senaste beställningarna
                 </CardTitle>
                 <CardDescription>
-                  Hantera inkommande och pågående beställningar
+                  Nya och pågående beställningar
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -196,7 +196,7 @@ const RestaurantDashboard = () => {
                   Populära rätter
                 </CardTitle>
                 <CardDescription>
-                  Dina mest sålda rätter denna månad
+                  Era bästsäljare denna månad
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -231,7 +231,7 @@ const RestaurantDashboard = () => {
                 Försäljningsrapport
               </CardTitle>
               <CardDescription>
-                Se detaljerad försäljningsstatistik
+                Detaljerad försäljningsstatistik
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -248,7 +248,7 @@ const RestaurantDashboard = () => {
                 Öppettider
               </CardTitle>
               <CardDescription>
-                Hantera när ni tar emot beställningar
+                När ni tar emot beställningar
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -265,7 +265,7 @@ const RestaurantDashboard = () => {
                 Leveransinställningar
               </CardTitle>
               <CardDescription>
-                Konfigurera leveransområden och avgifter
+                Ställ in leveransområden och avgifter
               </CardDescription>
             </CardHeader>
             <CardContent>
