@@ -14,7 +14,7 @@ const customerServices = [
   {
     image: pickupImage,
     title: "Beställ mat för avhämtning",
-    description: "Hämta hemlagad mat direkt från kocken i ditt närområde",
+    description: "Hämta färdig hemlagad mat direkt hos kocken nära dig",
     href: "/pickup",
     icon: ShoppingBag,
     color: "from-blue-500 to-blue-600"
@@ -22,7 +22,7 @@ const customerServices = [
   {
     image: experienceImage,
     title: "Upplevelsepaket, mat hos kocken",
-    description: "Njut av en unik middag hemma hos en professionell kock",
+    description: "Ät middag hemma hos en duktig kock",
     href: "/experiences",
     icon: Calendar,
     color: "from-purple-500 to-purple-600"
@@ -30,7 +30,7 @@ const customerServices = [
   {
     image: privateChefImage,
     title: "Anlita en privatkock",
-    description: "Få en kock hem till dig för speciella tillfällen och evenemang",
+    description: "Få en kock hem till dig för fester och event",
     href: "/private-chef",
     icon: Users,
     color: "from-gold-500 to-gold-600"
@@ -38,7 +38,7 @@ const customerServices = [
   {
     image: cateringImage,
     title: "Beställ catering",
-    description: "Professionell catering för företag, fester och speciella event",
+    description: "Catering för företag, fester och speciella tillfällen",
     href: "/catering",
     icon: Utensils,
     color: "from-orange-500 to-orange-600"
@@ -54,7 +54,7 @@ const CustomerServices = () => {
             Vad vill du göra idag?
           </h2>
           <p className="text-muted-foreground">
-            Välj från våra populära alternativ för att upptäcka hemlagad mat
+            Välj vad du vill göra och hitta hemlagad mat nära dig
           </p>
         </div>
         
@@ -113,7 +113,7 @@ const CustomerServices = () => {
                 Vill du bli kock på Homechef?
               </h3>
               <p className="text-white mb-8 max-w-2xl mx-auto font-medium text-lg drop-shadow-lg">
-                Förvandla din passion för matlagning till en inkomstkälla. Sätt ditt eget pris, jobba när du vill och nå hungriga kunder i ditt område.
+                Tjäna pengar på din matlagning. Sätt ditt eget pris, jobba när du vill och nå kunder nära dig.
               </p>
               
               {/* Fördelar grid */}

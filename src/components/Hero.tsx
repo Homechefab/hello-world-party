@@ -26,7 +26,7 @@ const Hero = () => {
             <span className="block text-xl md:text-2xl font-normal text-yellow-cream">hemlagad mat nära dig</span>
           </h1>
           <p className="text-xl mb-8 text-white/90 leading-relaxed">
-            Hitta unika maträtter tillagade av passionerade hemmakockar.
+            Beställ hemlagad mat från duktiga kockar i ditt område.
           </p>
           
           <div id="search" className="bg-white/95 backdrop-blur-sm rounded-xl p-6 shadow-xl">
@@ -42,7 +42,7 @@ const Hero = () => {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Sök maträtter eller ange din stad/adress"
+                    placeholder="Vad vill du äta? Skriv stad eller adress"
                     className="w-full pl-12 pr-4 py-3 bg-white border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-foreground"
                   />
                 </div>

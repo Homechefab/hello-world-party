@@ -9,7 +9,7 @@ import falafelImage from "@/assets/falafel-hummus.jpg";
 const mockFoodItems = [
   {
     title: "Hemgjorda köttbullar",
-    description: "Klassiska svenska köttbullar med gräddsås och lingonsylt. Gjorda på kött från lokala gårdar.",
+    description: "Klassiska svenska köttbullar med gräddsås och lingon. Gjorda på kött från lokala gårdar.",
     price: 85,
     rating: 4.8,
     reviews: 24,
@@ -22,7 +22,7 @@ const mockFoodItems = [
   },
   {
     title: "Krämig carbonara",
-    description: "Autentisk italiensk pasta carbonara med ägg, parmesan och guanciale. Tillagad enligt familjerecept.",
+    description: "Italiensk pasta carbonara med ägg, parmesan och guanciale. Gammalt familjerecept.",
     price: 95,
     rating: 4.9,
     reviews: 18,
@@ -35,7 +35,7 @@ const mockFoodItems = [
   },
   {
     title: "Grönsaksoppa",
-    description: "Näringsrik soppa gjord på säsongens färska grönsaker. Serveras med hemgjort bröd.",
+    description: "Nyttig soppa på säsongens grönsaker. Kommer med hemgjort bröd.",
     price: 65,
     rating: 4.6,
     reviews: 31,
