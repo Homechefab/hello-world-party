@@ -20,53 +20,53 @@ const RestaurantPartnership = () => {
   const benefits = [
     {
       icon: Users,
-      title: "Utöka din kundkrets",
-      description: "Nå nya kunder som söker autentisk restaurangmat hemma"
+      title: "Fler kunder",
+      description: "Nå hundratals nya kunder som vill ha er mat hemma"
     },
     {
       icon: TrendingUp,
-      title: "Öka försäljningen",
-      description: "Generera extra intäkter genom hemkörning"
+      title: "Mer försäljning",
+      description: "Extra intäkter utan behov av större lokal"
     },
     {
       icon: Truck,
-      title: "Enkel hemkörning",
-      description: "Vi sköter leveransen eller du kan använda egna förare"
+      title: "Smidig leverans",
+      description: "Vi ordnar leveransen, eller använd era egna förare"
     },
     {
       icon: CreditCard,
-      title: "Säkra betalningar",
-      description: "Snabba och säkra betalningar direkt till ditt konto"
+      title: "Snabba utbetalningar",
+      description: "Pengarna kommer in direkt på ert konto"
     }
   ];
 
   const services = [
     {
       icon: Truck,
-      title: "Hemkörning för restauranger",
-      description: "Professionell hemkörning av era rätter till kunder",
-      features: ["Snabb leverans", "Temperaturkontroll", "Spårning i realtid"],
+      title: "Leverans",
+      description: "Vi ser till att maten kommer fram snabbt och varm",
+      features: ["Snabb leverans", "Rätt temperatur", "Spårning för kunden"],
       id: "hemkörning"
     },
     {
       icon: Target,
       title: "Marknadsföring",
-      description: "Vi marknadsför er restaurang på vår plattform",
-      features: ["Synlighet på startsidan", "Riktad marknadsföring", "SEO-optimering"],
+      description: "Er restaurang visas för tusentals hungriga kunder",
+      features: ["Synlighet på startsidan", "Marknadsföring i sociala medier", "SEO-optimering"],
       id: "marknadsföring"
     },
     {
       icon: Shield,
-      title: "Restaurangsupport",
-      description: "Dedikerad support för restaurangpartners",
-      features: ["24/7 support", "Teknisk hjälp", "Affärsrådgivning"],
+      title: "Support",
+      description: "Vi finns här för er dygnet runt",
+      features: ["Support via chatt", "Teknisk hjälp", "Tips för ökad försäljning"],
       id: "support"
     },
     {
       icon: CreditCard,
-      title: "Betalningslösningar",
-      description: "Säkra och enkla betalningslösningar",
-      features: ["Direktutbetalning", "Månadsrapporter", "Låga avgifter"],
+      title: "Betalningar",
+      description: "Enkla och säkra betalningar varje månad",
+      features: ["Direktutbetalning", "Tydliga rapporter", "Låga avgifter"],
       id: "betalningar"
     }
   ];
@@ -84,8 +84,8 @@ const RestaurantPartnership = () => {
             Bli restaurangpartner
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Anslut din restaurang till Homechef och börja leverera era rätter direkt hem till kunder. 
-            Öka er försäljning och nå nya målgrupper.
+            Börja leverera er mat hem till kunder i hela stan. 
+            Öka omsättningen utan att utöka antalet bord.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/restaurant/apply">
@@ -105,9 +105,9 @@ const RestaurantPartnership = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Fördelar med att bli partner</h2>
+            <h2 className="text-3xl font-bold mb-4">Därför ska ni bli partner</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Upptäck fördelarna med att ansluta er restaurang till Sveriges största plattform för hemkörning.
+              Vi är Sveriges största plattform för hemlagad mat - och vi vill ha med er.
             </p>
           </div>
           
@@ -133,9 +133,9 @@ const RestaurantPartnership = () => {
       <section id="våra-tjänster" className="py-16 bg-secondary/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Våra tjänster för restauranger</h2>
+            <h2 className="text-3xl font-bold mb-4">Vad vi hjälper er med</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Vi erbjuder kompletta lösningar för restauranger som vill satsa på hemkörning.
+              Allt ni behöver för att lyckas med hemkörning - vi fixar detaljerna.
             </p>
           </div>
           
@@ -173,9 +173,9 @@ const RestaurantPartnership = () => {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Så här fungerar det</h2>
+            <h2 className="text-3xl font-bold mb-4">Tre steg till start</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Enkla steg för att komma igång som restaurangpartner på Homechef.
+              Så enkelt börjar ni sälja er mat via Homechef.
             </p>
           </div>
           
@@ -184,27 +184,27 @@ const RestaurantPartnership = () => {
               <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-bold">
                 1
               </div>
-              <h3 className="font-semibold mb-4">Ansök som partner</h3>
+              <h3 className="font-semibold mb-4">Ansök</h3>
               <p className="text-muted-foreground">
-                Fyll i vår ansökan med information om er restaurang och era rätter
+                Berätta om er restaurang och vilka rätter ni vill sälja
               </p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-bold">
                 2
               </div>
-              <h3 className="font-semibold mb-4">Godkännande</h3>
+              <h3 className="font-semibold mb-4">Granskning</h3>
               <p className="text-muted-foreground">
-                Vi granskar er ansökan och kontrollerar tillstånd och kvalitet
+                Vi kollar tillstånd och kvalitet - tar max 2-3 dagar
               </p>
             </div>
             <div className="text-center">
               <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-bold">
                 3
               </div>
-              <h3 className="font-semibold mb-4">Börja leverera</h3>
+              <h3 className="font-semibold mb-4">Igång!</h3>
               <p className="text-muted-foreground">
-                Ladda upp er meny och börja ta emot beställningar för hemkörning
+                Ladda upp menyn och börja ta emot beställningar samma dag
               </p>
             </div>
           </div>
@@ -214,9 +214,9 @@ const RestaurantPartnership = () => {
       {/* CTA Section */}
       <section className="py-16 bg-gradient-to-r from-primary/10 to-accent/10">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Redo att börja?</h2>
+          <h2 className="text-3xl font-bold mb-4">Vill ni med?</h2>
           <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Anslut er restaurang idag och börja nå nya kunder genom hemkörning.
+            Ansök idag så hör vi av oss inom kort.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">

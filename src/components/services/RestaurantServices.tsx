@@ -19,23 +19,23 @@ const RestaurantServices = () => {
   const benefits = [
     {
       icon: Users,
-      title: "Utöka din kundkrets",
-      description: "Nå nya kunder som söker autentisk restaurangmat hemma"
+      title: "Fler kunder",
+      description: "Nå hundratals nya kunder som vill ha er mat hemma"
     },
     {
       icon: TrendingUp,
-      title: "Öka försäljningen",
-      description: "Generera extra intäkter genom att sälja dina specialiteter"
+      title: "Mer försäljning",
+      description: "Extra intäkter utan behov av fler bord"
     },
     {
       icon: Clock,
-      title: "Flexibel leverans",
-      description: "Bestäm själv när och hur mycket du vill leverera"
+      title: "Full flexibilitet",
+      description: "Ni styr själva när och hur mycket ni vill sälja"
     },
     {
       icon: Shield,
-      title: "Säker betalning",
-      description: "Garanterade betalningar direkt till ditt konto"
+      title: "Trygg betalning",
+      description: "Pengarna betalas direkt till ert konto"
     }
   ];
 
@@ -69,8 +69,8 @@ const RestaurantServices = () => {
             Anslut din restaurang till Homechef
           </h2>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Utöka din verksamhet genom att erbjuda dina specialiteter för hemkörning. 
-            Nå nya kunder och öka din försäljning med vår plattform.
+            Utöka er verksamhet med hemkörning och nå nya kunder. 
+            Behåll er kvalitet - vi hjälper er med resten.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
@@ -191,7 +191,7 @@ const RestaurantServices = () => {
           <CardHeader>
             <CardTitle className="text-2xl">Har du frågor?</CardTitle>
             <CardDescription>
-              Kontakta vårt restaurangteam för mer information om partnerskap
+              Kontakta oss om ni har frågor om partnerskapet
             </CardDescription>
           </CardHeader>
           <CardContent>

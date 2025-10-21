@@ -140,7 +140,7 @@ const RestaurantApplicationForm = () => {
               Ansök som restaurangpartner
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Fyll i formuläret nedan för att ansöka om att bli partner. Vi granskar alla ansökningar noggrant.
+              Fyll i formuläret så återkommer vi inom 2-3 arbetsdagar.
             </p>
           </div>
         </div>
@@ -152,7 +152,7 @@ const RestaurantApplicationForm = () => {
               <CardHeader>
                 <CardTitle>Ansökningsformulär</CardTitle>
                 <CardDescription>
-                  Alla fält markerade med * är obligatoriska
+                  Fält med * måste fyllas i
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -226,19 +226,19 @@ const RestaurantApplicationForm = () => {
                         id="description"
                         value={formData.description}
                         onChange={(e) => handleInputChange('description', e.target.value)}
-                        placeholder="Berätta om er restaurang, koncept och vad som gör er unika..."
+                        placeholder="Beskriv er restaurang, er inriktning och vad som gör er speciella..."
                         rows={4}
                         required
                       />
                     </div>
 
                     <div>
-                      <Label htmlFor="specialties">Specialiteter och signaturrätta</Label>
+                      <Label htmlFor="specialties">Specialiteter och signaturrätter</Label>
                       <Textarea
                         id="specialties"
                         value={formData.specialties}
                         onChange={(e) => handleInputChange('specialties', e.target.value)}
-                        placeholder="Lista era mest populära rätter och specialiteter..."
+                        placeholder="Era mest populära rätter..."
                         rows={3}
                       />
                     </div>
