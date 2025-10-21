@@ -56,6 +56,8 @@ import Profile from "./pages/Profile";
 import MyOrders from "./pages/MyOrders";
 import MyPoints from "./pages/MyPoints";
 import PaymentDemo from "./pages/PaymentDemo";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentCanceled from "./pages/PaymentCanceled";
 
 const queryClient = new QueryClient();
 
@@ -94,6 +96,8 @@ const App = () => {
             <Route path="/notification-signup" element={<PublicLayout><NotificationSignup /></PublicLayout>} />
             <Route path="/chef/application" element={<PublicLayout><ChefApplication /></PublicLayout>} />
             <Route path="/payment-demo" element={<PublicLayout><PaymentDemo /></PublicLayout>} />
+            <Route path="/payment-success" element={<PublicLayout><PaymentSuccess /></PublicLayout>} />
+            <Route path="/payment-canceled" element={<PublicLayout><PaymentCanceled /></PublicLayout>} />
 
             {/* Protected routes */}
             <Route path="/dashboard" element={<RoleBasedLayout><Dashboard /></RoleBasedLayout>} />

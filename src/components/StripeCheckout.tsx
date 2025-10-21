@@ -45,8 +45,6 @@ export const StripeCheckout: React.FC<StripeCheckoutProps> = ({
           priceId,
           quantity,
           dishName,
-          successUrl: `${window.location.origin}/payment-success`,
-          cancelUrl: `${window.location.origin}/payment-canceled`,
         }
       });
 
