@@ -119,7 +119,13 @@ const Header = () => {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          
+          <Link to="/payment-demo">
+            <Button variant="outline" size="sm" className="gap-2">
+              <CreditCard className="w-4 h-4" />
+              Betalningsdemo
+            </Button>
+          </Link>
+
           <Cart />
           
           <UserMenu />
