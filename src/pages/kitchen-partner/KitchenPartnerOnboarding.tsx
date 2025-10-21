@@ -164,7 +164,7 @@ export const KitchenPartnerOnboarding = () => {
             Bli Kökspartner
           </h1>
           <p className="text-muted-foreground">
-            Hyr ut ditt restaurangkök till passionerade hemmakockar och skapa extra intäkter
+            Hyr ut ditt kök till kockar och tjäna extra pengar
           </p>
         </div>
 
@@ -200,10 +200,10 @@ export const KitchenPartnerOnboarding = () => {
               {currentStep === 4 && "Dokument & Slutföra"}
             </CardTitle>
             <CardDescription>
-              {currentStep === 1 && "Berätta om ditt företag och kontaktinformation"}
-              {currentStep === 2 && "Detaljer om ditt kök och priser"}
-              {currentStep === 3 && "Vilka faciliteter finns och när är köket tillgängligt"}
-              {currentStep === 4 && "Ladda upp nödvändiga dokument och slutför ansökan"}
+              {currentStep === 1 && "Info om ditt företag och kontaktuppgifter"}
+              {currentStep === 2 && "Beskriv ditt kök och sätt pris"}
+              {currentStep === 3 && "Vad finns i köket och när är det ledigt"}
+              {currentStep === 4 && "Ladda upp dokument och skicka ansökan"}
             </CardDescription>
           </CardHeader>
 
@@ -337,7 +337,7 @@ export const KitchenPartnerOnboarding = () => {
                     id="description"
                     value={formData.description}
                     onChange={(e) => handleInputChange('description', e.target.value)}
-                    placeholder="Beskriv ditt kök, dess faciliteter och vad som gör det speciellt..."
+                    placeholder="Beskriv ditt kök, vilken utrustning som finns och vad som är speciellt..."
                     rows={4}
                   />
                 </div>
@@ -420,12 +420,12 @@ export const KitchenPartnerOnboarding = () => {
                 </div>
 
                 <div className="bg-secondary/50 p-4 rounded-lg">
-                  <h3 className="font-medium mb-2">Nästa steg:</h3>
+                  <h3 className="font-medium mb-2">Vad händer nu:</h3>
                   <ul className="text-sm text-muted-foreground space-y-1">
-                    <li>• Vi granskar din ansökan inom 2-3 arbetsdagar</li>
-                    <li>• Du får besked via e-post</li>
-                    <li>• Vid godkännande får du tillgång till partner-dashboarden</li>
-                    <li>• Då kan du börja ta emot bokningar från kockar</li>
+                    <li>• Vi kollar din ansökan inom 2-3 dagar</li>
+                    <li>• Du får svar via mejl</li>
+                    <li>• När du är godkänd får du tillgång till din dashboard</li>
+                    <li>• Då kan kockar börja boka ditt kök</li>
                   </ul>
                 </div>
               </div>

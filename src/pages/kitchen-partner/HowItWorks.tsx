@@ -7,23 +7,23 @@ const HowItWorks = () => {
   const steps = [
     {
       icon: <ChefHat className="w-12 h-12 text-primary" />,
-      title: "Registrera ditt kök",
-      description: "Skapa en profil och lägg upp information om ditt kök, öppettider och tillgängliga utrustning."
+      title: "Registrera",
+      description: "Lägg in ditt kök med info om utrustning och när det är ledigt."
     },
     {
       icon: <Clock className="w-12 h-12 text-primary" />,
-      title: "Sätt tillgänglighet",
-      description: "Bestäm när ditt kök är tillgängligt för uthyrning och vilka tider som passar er verksamhet."
+      title: "Välj tider",
+      description: "Bestäm när köket är ledigt och kan hyras ut."
     },
     {
       icon: <Shield className="w-12 h-12 text-primary" />,
-      title: "Godkänn hemmakockar",
-      description: "Granska och godkänn hemmakockar som vill hyra ditt kök. Du har full kontroll över vem som får tillgång."
+      title: "Kockar bokar",
+      description: "Kockar bokar ditt kök - alla är kontrollerade och godkända."
     },
     {
       icon: <TrendingUp className="w-12 h-12 text-primary" />,
-      title: "Tjäna pengar",
-      description: "Få betalt för outhyrd kapacitet och skapa nya intäktsströmmar för din restaurang."
+      title: "Få betalt",
+      description: "Pengarna betalas ut automatiskt efter varje bokning."
     }
   ];
 
@@ -35,7 +35,7 @@ const HowItWorks = () => {
             Så fungerar kökshyrning
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Förvandla ditt outhyrda kök till en lönsam tillgång. Låt passionerade hemmakockar använda ditt professionella kök under era lediga timmar.
+            Tjäna pengar på ditt kök när det står tomt. Låt hemkockar hyra det under era lediga timmar.
           </p>
         </div>
 
@@ -59,10 +59,10 @@ const HowItWorks = () => {
 
         <div className="bg-gradient-warm rounded-2xl p-8 text-center">
           <h2 className="text-3xl font-bold text-foreground mb-4">
-            Redo att börja tjäna pengar på ditt kök?
+            Redo att börja?
           </h2>
           <p className="text-muted-foreground mb-6 text-lg">
-            Registrera dig idag och börja hyra ut ditt kök till hemmakockar i ditt område.
+            Registrera dig idag och börja hyra ut till kockar i ditt område.
           </p>
           <Button asChild size="lg" className="text-lg px-8">
             <Link to="/kitchen-partner/register">

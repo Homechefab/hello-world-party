@@ -12,7 +12,7 @@ const kitchenPartnerServices = [
   {
     image: rentKitchenImage,
     title: "Hyr ut ditt restaurangkök",
-    description: "Maximera intäkterna från ditt restaurangkök genom att hyra ut till kockar",
+    description: "Tjäna pengar på ditt kök när du inte använder det själv",
     href: "/hyr-ut-ditt-kok",
     icon: Building,
     color: "from-purple-500 to-purple-600"
@@ -20,7 +20,7 @@ const kitchenPartnerServices = [
   {
     image: deliveryImage,
     title: "Homechef delivery",
-    description: "Samarbeta med oss för leveranstjänster och utöka din räckvidd",
+    description: "Bli partner för leveranser och nå fler kunder",
     href: "/delivery-partner/onboarding",
     icon: Truck,
     color: "from-blue-500 to-blue-600"
@@ -28,7 +28,7 @@ const kitchenPartnerServices = [
   {
     image: partnershipImage,
     title: "Samarbeta med oss",
-    description: "Bli en del av Homechef-familjen och väx tillsammans med oss",
+    description: "Bli en del av Homechef och väx med oss",
     href: "/partnership",
     icon: TrendingUp,
     color: "from-orange-500 to-orange-600"
@@ -36,7 +36,7 @@ const kitchenPartnerServices = [
   {
     image: securityImage,
     title: "Säkerhet & försäkring",
-    description: "Information om våra säkerhets- och försäkringslösningar",
+    description: "Så ser vi till att ditt kök är tryggt och försäkrat",
     href: "/kitchen-partner/security-insurance",
     icon: Shield,
     color: "from-green-500 to-green-600"
@@ -49,10 +49,10 @@ const KitchenPartnerServices = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-foreground mb-4">
-            Dina kökspartnertjänster
+            Tjänster för dig med restaurangkök
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Optimera ditt kök och skapa nya intäktsströmmar genom vårt partnerskapsprogram
+            Tjäna extra pengar när ditt kök står tomt
           </p>
         </div>
         
