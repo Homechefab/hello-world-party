@@ -2,10 +2,11 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, Calendar, Users, ChefHat, DollarSign, Star } from "lucide-react";
+import { ShoppingBag, Calendar, Users, ChefHat, DollarSign, Star, Utensils } from "lucide-react";
 import pickupImage from "@/assets/customer-pickup.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
+import cateringImage from "@/assets/catering-service.jpg";
 import becomeChefImage from "@/assets/become-chef-cooking.jpg";
 import chefRecruitmentBg from "@/assets/chef-recruitment-bg.jpg";
 
@@ -33,6 +34,14 @@ const customerServices = [
     href: "/private-chef",
     icon: Users,
     color: "from-gold-500 to-gold-600"
+  },
+  {
+    image: cateringImage,
+    title: "Beställ catering",
+    description: "Professionell catering för företag, fester och speciella event",
+    href: "/catering",
+    icon: Utensils,
+    color: "from-orange-500 to-orange-600"
   }
 ];
 
@@ -49,7 +58,7 @@ const CustomerServices = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
           {customerServices.map((service) => {
             const IconComponent = service.icon;
             return (
