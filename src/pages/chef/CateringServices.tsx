@@ -28,11 +28,11 @@ const services = [
 ];
 
 const benefits = [
-  "Flexibla ordervolymer - från 10 till 100+ portioner",
-  "Bestäm dina egna priser och menyer",
-  "Få hjälp med marknadsföring och bokningar",
+  "Du sätter själv priser och menyer",
   "Betalt direkt efter leverans",
-  "Möjlighet till återkommande kunder",
+  "Hjälp med marknadsföring och bokningar",
+  "Allt från 10 till 100+ portioner",
+  "Bygga återkommande kundrelationer",
   "Försäkring och support ingår"
 ];
 
@@ -58,10 +58,10 @@ const CateringServices = () => {
           <div className="container mx-auto px-4">
             <div className="max-w-2xl text-white">
               <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                Starta din cateringverksamhet
+                Tjäna pengar på catering
               </h1>
               <p className="text-lg md:text-xl mb-6">
-                Erbjud professionella cateringtjänster till företag och privatpersoner
+                Ta cateringuppdrag för företag och privatpersoner
               </p>
               <Link to="/chef/application">
                 <Button size="lg" className="bg-primary hover:bg-primary/90">
@@ -78,10 +78,10 @@ const CateringServices = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              Olika typer av cateringuppdrag
+              Olika typer av uppdrag
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Välj vilka typer av catering du vill erbjuda och bygg din verksamhet
+              Välj vilka typer av catering som passar dig
             </p>
           </div>
           
@@ -114,7 +114,7 @@ const CateringServices = () => {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-foreground mb-4">
-                Därför ska du erbjuda catering via Homechef
+                Därför ska du sälja catering hos oss
               </h2>
             </div>
             
@@ -136,10 +136,10 @@ const CateringServices = () => {
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold text-foreground mb-4">
-                Krav för att erbjuda catering
+                Detta behöver du
               </h2>
               <p className="text-muted-foreground">
-                För att säkerställa kvalitet och säkerhet krävs följande
+                För att sälja catering krävs följande
               </p>
             </div>
             
@@ -187,10 +187,10 @@ const CateringServices = () => {
       <section className="py-16 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-4">
-            Redo att starta din cateringverksamhet?
+            Redo att komma igång med catering?
           </h2>
           <p className="text-lg mb-8 opacity-90">
-            Ansök idag och börja ta emot cateringbeställningar
+            Ansök idag och börja ta emot beställningar
           </p>
           <Link to="/chef/application">
             <Button size="lg" variant="secondary">

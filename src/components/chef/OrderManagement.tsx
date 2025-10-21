@@ -178,7 +178,7 @@ export const OrderManagement = () => {
             Beställningshantering
           </CardTitle>
           <CardDescription>
-            Hantera alla dina inkommande beställningar
+            Se och hantera dina beställningar
           </CardDescription>
         </CardHeader>
       </Card>

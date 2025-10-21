@@ -132,9 +132,9 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">Fördefinierade rätter</h2>
+        <h2 className="text-2xl font-bold mb-2">Använd färdiga recept</h2>
         <p className="text-muted-foreground">
-          Välj från våra populära rätter och anpassa efter dina önskemål
+          Välj bland våra populära rätter och anpassa priset efter ditt kök
         </p>
       </div>
 
@@ -210,9 +210,9 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
-            <DialogTitle>Anpassa rätt</DialogTitle>
+            <DialogTitle>Anpassa och lägg till</DialogTitle>
             <DialogDescription>
-              Justera pris och beskrivning för {selectedTemplate?.name}
+              Sätt pris och anpassa beskrivningen för {selectedTemplate?.name}
             </DialogDescription>
           </DialogHeader>
 
