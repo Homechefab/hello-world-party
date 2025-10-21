@@ -75,14 +75,14 @@ export const AdminDashboard = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Admin Dashboard</h1>
-        <p className="text-muted-foreground">Hantera plattformen och användare</p>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Adminpanel</h1>
+        <p className="text-muted-foreground">Översikt och hantering av plattformen</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Totala Användare</CardTitle>
+            <CardTitle className="text-sm font-medium">Antal användare</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -93,29 +93,29 @@ export const AdminDashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Väntar Godkännande</CardTitle>
+            <CardTitle className="text-sm font-medium">Väntar på granskning</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.pendingApprovals}</div>
-            <p className="text-xs text-muted-foreground">Ansökningar att granska</p>
+            <p className="text-xs text-muted-foreground">Ansökningar att kolla</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Aktiva Klagmål</CardTitle>
+            <CardTitle className="text-sm font-medium">Klagomål</CardTitle>
             <AlertTriangle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.activeComplaints}</div>
-            <p className="text-xs text-muted-foreground">Behöver åtgärd</p>
+            <p className="text-xs text-muted-foreground">Behöver åtgärdas</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Slutförd Onboarding</CardTitle>
+            <CardTitle className="text-sm font-medium">Godkända</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -126,7 +126,7 @@ export const AdminDashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Omsättning</CardTitle>
+            <CardTitle className="text-sm font-medium">Omsättning</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -137,12 +137,12 @@ export const AdminDashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Aktiva Beställningar</CardTitle>
+            <CardTitle className="text-sm font-medium">Pågående beställningar</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.activeOrders}</div>
-            <p className="text-xs text-muted-foreground">Pågående leveranser</p>
+            <p className="text-xs text-muted-foreground">Just nu</p>
           </CardContent>
         </Card>
       </div>
@@ -168,10 +168,10 @@ export const AdminDashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle>Användarhantering</CardTitle>
-              <CardDescription>Hantera alla användare på plattformen</CardDescription>
+              <CardDescription>Se alla användare på plattformen</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">Användarhantering kommer snart...</p>
+              <p className="text-muted-foreground">Funktionen kommer snart...</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -180,10 +180,10 @@ export const AdminDashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle>Klagomålshantering</CardTitle>
-              <CardDescription>Hantera kundklagomål och rapporter</CardDescription>
+              <CardDescription>Se och hantera klagomål</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">Inga aktiva klagomål för tillfället.</p>
+              <p className="text-muted-foreground">Inga klagomål just nu.</p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -191,13 +191,13 @@ export const AdminDashboard = () => {
         <TabsContent value="settings">
           <Card>
             <CardHeader>
-              <CardTitle>Systeminställningar</CardTitle>
-              <CardDescription>Konfigurera plattformsinställningar</CardDescription>
+              <CardTitle>Inställningar</CardTitle>
+              <CardDescription>Ställ in systemparametrar</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span>Automatisk godkännande av kockar</span>
+                  <span>Automatiskt godkännande av kockar</span>
                   <Button variant="outline" size="sm">Inaktiverad</Button>
                 </div>
                 <div className="flex items-center justify-between">

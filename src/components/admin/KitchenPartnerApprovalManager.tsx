@@ -203,7 +203,7 @@ export const KitchenPartnerApprovalManager = () => {
 
         {application.rejection_reason && (
           <div className="mb-4 p-3 bg-red-50 rounded-lg border border-red-200">
-            <strong className="text-sm text-red-700">Anledning till avslag:</strong>
+            <strong className="text-sm text-red-700">Varför nekades ansökan:</strong>
             <p className="text-sm text-red-600 mt-1">{application.rejection_reason}</p>
           </div>
         )}
@@ -225,21 +225,21 @@ export const KitchenPartnerApprovalManager = () => {
                   onClick={() => setSelectedApplicationId(application.id)}
                 >
                   <XCircle className="w-4 h-4 mr-2" />
-                  Avslå
+                  Neka
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Avslå ansökan</AlertDialogTitle>
+                  <AlertDialogTitle>Neka ansökan</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Ange anledning till varför ansökan avslås. Detta kommer att skickas till sökanden.
+                    Skriv varför ansökan nekas. Detta skickas till sökanden.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
-                <Textarea
-                  placeholder="Ange anledning till avslag..."
-                  value={rejectionReason}
-                  onChange={(e) => setRejectionReason(e.target.value)}
-                />
+                  <Textarea
+                    placeholder="Ange anledning..."
+                    value={rejectionReason}
+                    onChange={(e) => setRejectionReason(e.target.value)}
+                  />
                 <AlertDialogFooter>
                   <AlertDialogCancel onClick={() => {
                     setRejectionReason('');
@@ -255,7 +255,7 @@ export const KitchenPartnerApprovalManager = () => {
                     }}
                     disabled={!rejectionReason.trim()}
                   >
-                    Avslå ansökan
+                    Neka ansökan
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
@@ -269,27 +269,27 @@ export const KitchenPartnerApprovalManager = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Kökspartner Ansökningar</h1>
-        <p className="text-muted-foreground">Hantera ansökningar från kökspartners</p>
+        <h1 className="text-3xl font-bold text-foreground mb-2">Ansökningar från kökspartners</h1>
+        <p className="text-muted-foreground">Se och hantera ansökningar</p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3 mb-8">
         <Card>
           <CardContent className="p-6">
             <div className="text-2xl font-bold text-yellow-600">{pendingApplications.length}</div>
-            <p className="text-sm text-muted-foreground">Väntar på granskning</p>
+            <p className="text-sm text-muted-foreground">Väntar</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-6">
             <div className="text-2xl font-bold text-green-600">{approvedApplications.length}</div>
-            <p className="text-sm text-muted-foreground">Godkända partners</p>
+            <p className="text-sm text-muted-foreground">Godkända</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-6">
             <div className="text-2xl font-bold text-red-600">{rejectedApplications.length}</div>
-            <p className="text-sm text-muted-foreground">Avslagna ansökningar</p>
+            <p className="text-sm text-muted-foreground">Nekade</p>
           </CardContent>
         </Card>
       </div>
@@ -311,7 +311,7 @@ export const KitchenPartnerApprovalManager = () => {
           {pendingApplications.length === 0 ? (
             <Card>
               <CardContent className="p-6 text-center">
-                <p className="text-muted-foreground">Inga väntande ansökningar</p>
+                <p className="text-muted-foreground">Inga ansökningar väntar</p>
               </CardContent>
             </Card>
           ) : (
@@ -325,7 +325,7 @@ export const KitchenPartnerApprovalManager = () => {
           {approvedApplications.length === 0 ? (
             <Card>
               <CardContent className="p-6 text-center">
-                <p className="text-muted-foreground">Inga godkända ansökningar än</p>
+                <p className="text-muted-foreground">Inga godkända än</p>
               </CardContent>
             </Card>
           ) : (
@@ -339,7 +339,7 @@ export const KitchenPartnerApprovalManager = () => {
           {rejectedApplications.length === 0 ? (
             <Card>
               <CardContent className="p-6 text-center">
-                <p className="text-muted-foreground">Inga avslagna ansökningar</p>
+                <p className="text-muted-foreground">Inga nekade ansökningar</p>
               </CardContent>
             </Card>
           ) : (
