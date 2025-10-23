@@ -56,12 +56,12 @@ export const StripeCheckout: React.FC<StripeCheckoutProps> = ({
         if (data.sessionId) {
           try { sessionStorage.setItem('last_checkout_session_id', data.sessionId); } catch {}
         }
-        // Öppna Stripe Checkout i ny flik
-        window.open(data.url, '_blank');
+        // Omdirigera till Stripe Checkout i samma flik så att session_id följer med tillbaka
+        window.location.href = data.url;
         
         toast({
           title: "Omdirigerar till betalning",
-          description: "Stripe Checkout öppnas i en ny flik",
+          description: "Du skickas till Stripe Checkout",
         });
       }
 
