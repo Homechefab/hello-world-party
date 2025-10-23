@@ -74,6 +74,29 @@ const MunicipalityRequirements = () => {
           </CardContent>
         </Card>
 
+        {/* Informationsvideo */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <FileText className="w-5 h-5 text-primary" />
+              Vägledning från kommunen
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              Lyssna på information om ansökningsprocessen för tillstånd från kommunen
+            </p>
+            <audio 
+              controls 
+              className="w-full"
+              preload="metadata"
+            >
+              <source src="/audio/municipality-guide.mp3" type="audio/mpeg" />
+              Din webbläsare stöder inte ljuduppspelning.
+            </audio>
+          </CardContent>
+        </Card>
+
         {/* Hygienrutiner och utrustning */}
         <Card className="mb-8">
           <CardHeader>
