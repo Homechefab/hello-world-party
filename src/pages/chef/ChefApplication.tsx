@@ -8,7 +8,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 import { CheckCircle, Upload, FileText, Shield, Clock } from "lucide-react";
 import Header from "@/components/Header";
-import MunicipalitySearch from "@/components/MunicipalitySearch";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -184,108 +183,6 @@ const ChefApplication = () => {
                 </p>
               </Card>
             </div>
-
-            {/* Krav sektion */}
-            <div className="bg-secondary/30 rounded-lg p-6 mb-8 max-w-4xl mx-auto">
-              <h2 className="text-2xl font-semibold mb-6 text-center">Krav för att bli kock</h2>
-              <p className="text-muted-foreground text-center mb-6">
-                För att sälja mat via Homechef måste du uppfylla följande krav enligt svensk livsmedelslagstiftning
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Vänster kolumn - Tillstånd och registrering */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-primary" />
-                    Tillstånd och registrering
-                  </h3>
-                  
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3 p-3 bg-white/50 rounded-lg">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-medium text-sm">Tillstånd från kommunen</p>
-                        <p className="text-xs text-muted-foreground">
-                          Du måste ansöka om tillstånd hos din lokala kommun för att bedriva livsmedelsverksamhet från hemmet. Kontakta miljö- och hälsoskyddsförvaltningen.
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start gap-3 p-3 bg-white/50 rounded-lg">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-medium text-sm">Registrerad näringsverksamhet</p>
-                        <p className="text-xs text-muted-foreground">
-                          Registrera din verksamhet hos Skatteverket och Bolagsverket för att kunna fakturera kunder lagligt.
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start gap-3 p-3 bg-white/50 rounded-lg">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-medium text-sm">Spårbarhetssystem</p>
-                        <p className="text-xs text-muted-foreground">
-                          Dokumentera alla ingredienser med leverantör och bäst-före-datum för att kunna spåra mat vid eventuella problem.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Höger kolumn - Hygienrutiner och kök */}
-                <div className="space-y-4">
-                  <h3 className="text-lg font-semibold flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-primary" />
-                    Hygienrutiner och utrustning
-                  </h3>
-                  
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3 p-3 bg-white/50 rounded-lg">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-medium text-sm">HACCP-rutiner</p>
-                        <p className="text-xs text-muted-foreground">
-                          Du måste följa systematiska hygienrutiner för temperaturkontroll, rengöring och dokumentation av alla moment i matlagningen.
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start gap-3 p-3 bg-white/50 rounded-lg">
-                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <p className="font-medium text-sm">Godkänt kök</p>
-                        <p className="text-xs text-muted-foreground">
-                          Köket måste inspekteras och godkännas av kommunen. Det ska ha separata ytor för rå och tillagad mat, samt tillräcklig kyl- och fryskapacitet.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                <div className="flex items-start gap-3">
-                  <Clock className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-medium text-amber-800 text-sm">Viktigt att veta</p>
-                    <p className="text-amber-700 text-xs">
-                      Processen för att få alla tillstånd kan ta 4-8 veckor. Vi hjälper dig genom hela processen och du kan börja din ansökan redan nu. Kontakta oss för vägledning!
-                    </p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Kommunsök sektion */}
-              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <h3 className="font-semibold text-blue-800 text-sm mb-3">Intresserad av att sälja mat hemifrån men saknar tillstånd från kommunen?</h3>
-                <p className="text-blue-700 text-xs mb-4">
-                  Sök på din adress för att få direktlänkar till ansökningsblanketter och e-tjänster för livsmedelsregistrering från din kommun.
-                </p>
-                <MunicipalitySearch />
-              </div>
-            </div>
-
           </div>
 
           {/* Application Section Heading */}
