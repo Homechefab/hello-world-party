@@ -52,17 +52,35 @@ export const StripeCheckout: React.FC<StripeCheckoutProps> = ({
         throw new Error(error.message);
       }
 
-      if (data.url) {
+      if (data?.url) {
         if (data.sessionId) {
-          try { sessionStorage.setItem('last_checkout_session_id', data.sessionId); } catch {}
+          try { 
+            sessionStorage.setItem('last_checkout_session_id', data.sessionId); 
+            console.log('Saved session ID:', data.sessionId);
+          } catch (e) {
+            console.error('Failed to save session ID:', e);
+          }
         }
-        // Omdirigera till Stripe Checkout i samma flik så att session_id följer med tillbaka
-        window.location.href = data.url;
+        
+        console.log('Opening Stripe Checkout:', data.url);
+        // Öppna Stripe Checkout i ny flik
+        const stripeWindow = window.open(data.url, '_blank');
+        
+        if (!stripeWindow) {
+          toast({
+            title: "Popup blockerad",
+            description: "Tillåt popup-fönster för att fortsätta till betalning",
+            variant: "destructive"
+          });
+          return;
+        }
         
         toast({
           title: "Omdirigerar till betalning",
-          description: "Du skickas till Stripe Checkout",
+          description: "Stripe Checkout öppnas i en ny flik",
         });
+      } else {
+        throw new Error('Ingen checkout-URL mottogs');
       }
 
     } catch (error) {
