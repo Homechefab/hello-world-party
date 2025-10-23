@@ -32,6 +32,7 @@ import CateringServices from "./pages/chef/CateringServices";
 import MealBoxes from "./pages/chef/MealBoxes";
 import ChefExperiences from "./pages/chef/ChefExperiences";
 import KitchenRequirements from "./pages/chef/KitchenRequirements";
+import MunicipalityRequirements from "./pages/chef/MunicipalityRequirements";
 import KitchenAssessment from "./pages/chef/KitchenAssessment";
 import ChefHome from "./pages/chef/ChefHome";
 import BusinessRegistration from "./pages/chef/BusinessRegistration";
@@ -112,6 +113,7 @@ const App = () => {
             <Route path="/chef/meal-boxes" element={<RoleBasedLayout><MealBoxes /></RoleBasedLayout>} />
             <Route path="/chef/experiences" element={<RoleBasedLayout><ChefExperiences /></RoleBasedLayout>} />
             <Route path="/chef/kitchen-requirements" element={<RoleBasedLayout><KitchenRequirements /></RoleBasedLayout>} />
+            <Route path="/chef/municipality-requirements" element={<RoleBasedLayout><MunicipalityRequirements /></RoleBasedLayout>} />
             <Route path="/chef/kitchen-assessment" element={<RoleBasedLayout><KitchenAssessment /></RoleBasedLayout>} />
             <Route path="/chef/business-registration" element={<RoleBasedLayout><BusinessRegistration /></RoleBasedLayout>} />
             <Route path="/kitchen-partner/dashboard" element={<RoleBasedLayout><KitchenPartnerDashboard /></RoleBasedLayout>} />
