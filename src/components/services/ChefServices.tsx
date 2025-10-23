@@ -10,6 +10,7 @@ import cateringImage from "@/assets/catering-service.jpg";
 import mealBoxesImage from "@/assets/meal-boxes.jpg";
 import approvedKitchenImage from "@/assets/swedish-villa-kitchen-realistic.jpg";
 import businessRegistrationImage from "@/assets/business-registration.jpg";
+import municipalityPermitImage from "@/assets/municipality-permit.jpg";
 
 const mainChefServices = [
   {
@@ -55,6 +56,14 @@ const mainChefServices = [
 ];
 
 const otherChefServices = [
+  {
+    image: municipalityPermitImage,
+    title: "Tillstånd från kommun",
+    description: "Ansök om tillstånd och registrera din livsmedelsverksamhet",
+    href: "/chef/municipality-requirements",
+    icon: CheckCircle,
+    color: "from-green-500 to-green-600"
+  },
   {
     image: approvedKitchenImage,
     title: "Kök-krav",
@@ -128,7 +137,7 @@ const ChefServices = () => {
         {/* Övrigt Section */}
         <div className="max-w-7xl mx-auto">
           <h3 className="text-xl font-semibold text-foreground mb-4">Övrigt</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {otherChefServices.map((service) => {
               const IconComponent = service.icon;
               return (
