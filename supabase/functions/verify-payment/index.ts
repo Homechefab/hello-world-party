@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -45,6 +46,46 @@ serve(async (req) => {
 
     // Get line items (for display)
     const items = await stripe.checkout.sessions.listLineItems(sessionId, { limit: 10 });
+    
+    // Save transaction to database with commission breakdown
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+    
+    const totalAmount = (session.amount_total || 0) / 100; // Convert from cents to SEK
+    const platformFee = totalAmount * 0.20; // 20% provision
+    const chefEarnings = totalAmount - platformFee;
+    const dishName = items.data[0]?.description || session.metadata?.dishName || "Okänd rätt";
+    
+    try {
+      const { error: dbError } = await supabaseClient
+        .from("payment_transactions")
+        .upsert({
+          stripe_session_id: session.id,
+          stripe_payment_intent_id: paymentIntentId,
+          stripe_charge_id: chargeId,
+          customer_email: session.customer_details?.email || "unknown@email.com",
+          dish_name: dishName,
+          quantity: items.data[0]?.quantity || 1,
+          total_amount: totalAmount,
+          platform_fee: platformFee,
+          chef_earnings: chefEarnings,
+          currency: (session.currency || "sek").toUpperCase(),
+          payment_status: session.payment_status || "unknown",
+          receipt_url: receiptUrl,
+        }, {
+          onConflict: "stripe_session_id"
+        });
+      
+      if (dbError) {
+        console.error("Error saving transaction:", dbError);
+      } else {
+        console.log("Transaction saved successfully");
+      }
+    } catch (error) {
+      console.error("Error saving to database:", error);
+    }
 
     return new Response(
       JSON.stringify({
@@ -65,6 +106,11 @@ serve(async (req) => {
           amount_total: i.amount_total,
           currency: i.currency,
         })),
+        commission_report: {
+          total_amount: totalAmount,
+          platform_fee: platformFee,
+          chef_earnings: chefEarnings,
+        }
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
