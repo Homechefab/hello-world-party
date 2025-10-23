@@ -426,6 +426,60 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_transactions: {
+        Row: {
+          chef_earnings: number
+          created_at: string
+          currency: string
+          customer_email: string
+          dish_name: string
+          id: string
+          payment_status: string
+          platform_fee: number
+          quantity: number
+          receipt_url: string | null
+          stripe_charge_id: string | null
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          chef_earnings: number
+          created_at?: string
+          currency?: string
+          customer_email: string
+          dish_name: string
+          id?: string
+          payment_status: string
+          platform_fee: number
+          quantity?: number
+          receipt_url?: string | null
+          stripe_charge_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id: string
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          chef_earnings?: number
+          created_at?: string
+          currency?: string
+          customer_email?: string
+          dish_name?: string
+          id?: string
+          payment_status?: string
+          platform_fee?: number
+          quantity?: number
+          receipt_url?: string | null
+          stripe_charge_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       points_transactions: {
         Row: {
           created_at: string
