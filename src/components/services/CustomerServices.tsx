@@ -7,7 +7,7 @@ import pickupImage from "@/assets/customer-pickup.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
 import cateringImage from "@/assets/catering-service.jpg";
-import mealBoxesImage from "@/assets/meal-boxes.jpg";
+import mealBoxesImage from "@/assets/pasta-mealbox.jpg";
 import becomeChefImage from "@/assets/become-chef-cooking.jpg";
 import chefRecruitmentBg from "@/assets/chef-recruitment-bg.jpg";
 
