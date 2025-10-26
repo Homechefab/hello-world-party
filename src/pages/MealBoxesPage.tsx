@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Package, Clock, Truck, Star, Filter } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import mealBoxesImage from "@/assets/meal-boxes.jpg";
+import chickenRiceImage from "@/assets/chicken-rice.jpg";
+import pastaImage from "@/assets/pasta.jpg";
+import meatballsImage from "@/assets/meatballs.jpg";
 
 const MealBoxesPage = () => {
   const [filter, setFilter] = useState("all");
@@ -17,29 +20,29 @@ const MealBoxesPage = () => {
       price: 89,
       prepTime: "30 min",
       rating: 4.8,
-      image: mealBoxesImage,
+      image: chickenRiceImage,
       available: true,
       delivery: true
     },
     {
       id: 2,
-      name: "Vegetarisk lasagne",
+      name: "Pasta med tomatsås",
       chef: "Erik Svensson",
       price: 95,
       prepTime: "25 min",
       rating: 4.9,
-      image: mealBoxesImage,
+      image: pastaImage,
       available: true,
       delivery: false
     },
     {
       id: 3,
-      name: "Laxfilé med potatis",
+      name: "Köttbullar med potatismos",
       chef: "Maria Johansson",
       price: 129,
       prepTime: "20 min",
       rating: 5.0,
-      image: mealBoxesImage,
+      image: meatballsImage,
       available: true,
       delivery: true
     }
