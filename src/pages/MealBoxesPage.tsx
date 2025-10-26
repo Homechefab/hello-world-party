@@ -15,9 +15,9 @@ const MealBoxesPage = () => {
   const mealBoxes = [
     {
       id: 1,
-      name: "Kycklinggryta med ris",
+      name: "Grillad kyckling med grönsaker & quinoa",
       chef: "Anna Andersson",
-      price: 89,
+      price: 95,
       prepTime: "30 min",
       rating: 4.8,
       image: chickenRiceImage,
@@ -26,9 +26,9 @@ const MealBoxesPage = () => {
     },
     {
       id: 2,
-      name: "Pasta med tomatsås",
+      name: "Pasta med färska tomater & basilika",
       chef: "Erik Svensson",
-      price: 95,
+      price: 89,
       prepTime: "25 min",
       rating: 4.9,
       image: pastaImage,
@@ -37,9 +37,9 @@ const MealBoxesPage = () => {
     },
     {
       id: 3,
-      name: "Köttbullar med potatismos",
+      name: "Köttbullar med mos & lingon",
       chef: "Maria Johansson",
-      price: 129,
+      price: 125,
       prepTime: "20 min",
       rating: 5.0,
       image: meatballsImage,
