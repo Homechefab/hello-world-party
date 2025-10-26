@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Package, Clock, Truck, Star, Filter } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import mealBoxesImage from "@/assets/meal-boxes.jpg";
-import chickenRiceImage from "@/assets/chicken-rice.jpg";
-import pastaImage from "@/assets/pasta.jpg";
-import meatballsImage from "@/assets/meatballs.jpg";
+import chickenRiceImage from "@/assets/chicken-rice-mealbox.jpg";
+import pastaImage from "@/assets/pasta-mealbox.jpg";
+import meatballsImage from "@/assets/meatballs-mealbox.jpg";
 
 const MealBoxesPage = () => {
   const [filter, setFilter] = useState("all");
