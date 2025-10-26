@@ -93,7 +93,7 @@ const MealBoxesPage = () => {
               <div className="relative h-48 overflow-hidden">
                 <img 
                   src={box.image} 
-                  alt={box.name}
+                  alt={`Matlåda ${box.name}`}
                   className="w-full h-full object-cover"
                 />
                 {box.delivery && (
