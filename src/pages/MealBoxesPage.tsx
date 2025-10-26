@@ -90,11 +90,13 @@ const MealBoxesPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {mealBoxes.map((box) => (
             <Card key={box.id} className="hover:shadow-card transition-all duration-300 hover:-translate-y-1">
-              <div className="relative h-48 overflow-hidden">
+              <div className="relative h-56 bg-muted flex items-center justify-center overflow-hidden">
                 <img 
-                  src={box.image} 
+                  src={box.image}
                   alt={`Matlåda ${box.name}`}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain p-4"
+                  loading="lazy"
+                  decoding="async"
                 />
                 {box.delivery && (
                   <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
