@@ -60,10 +60,10 @@ const CustomerServices = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            Vad vill du göra idag?
+            Din nästa smakupplevelse börjar här
           </h2>
           <p className="text-muted-foreground">
-            Välj vad du vill göra och hitta hemlagad mat nära dig
+            Upptäck äkta hemlagad mat – precis som du vill ha den
           </p>
         </div>
         
