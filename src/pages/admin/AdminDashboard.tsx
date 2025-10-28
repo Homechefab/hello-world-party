@@ -1,5 +1,3 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { 
   Users, 
   AlertTriangle, 
@@ -9,25 +7,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 
-export const AdminDashboard = () => {
-  const [selectedSection, setSelectedSection] = useState<string | null>(null);
-
-  const fetchData = async () => {
-    try {
-      await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }),
-        supabase.from('chefs').select('*', { count: 'exact', head: true }),
-        supabase.from('kitchen_partners').select('*', { count: 'exact', head: true })
-      ]);
-      // Data fetched but not used yet - will be implemented later
-    } catch (error) {
-      console.error('Fel vid hämtning av data:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+export function AdminDashboard() {
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -92,131 +72,75 @@ export const AdminDashboard = () => {
         </div>
       </div>
 
-      {selectedSection === 'partners' ? (
-        <div className="px-4">
-          <div className="mb-8">
-            <h2 className="text-2xl font-semibold">Ansökningar från kökspartners</h2>
-            <p className="text-sm text-muted-foreground">Se och hantera ansökningar</p>
+            <div className="grid grid-cols-5 gap-4 px-4">
+        <div>
+          <div className="w-full text-left p-4 rounded-lg bg-white border">
+            <h3 className="text-sm font-medium">Kock-ansökningar</h3>
+            <p className="text-xs text-muted-foreground mt-1">Ansökningar från kockar</p>
           </div>
-
-          <div className="grid grid-cols-3 gap-8 mb-8">
-            <div className="flex flex-col items-center p-6 border rounded-lg">
-              <p className="text-amber-500 text-2xl font-medium mb-1">0</p>
-              <p className="text-sm text-muted-foreground">Väntar</p>
-            </div>
-            <div className="flex flex-col items-center p-6 border rounded-lg">
-              <p className="text-emerald-500 text-2xl font-medium mb-1">0</p>
-              <p className="text-sm text-muted-foreground">Godkända</p>
-            </div>
-            <div className="flex flex-col items-center p-6 border rounded-lg">
-              <p className="text-rose-500 text-2xl font-medium mb-1">0</p>
-              <p className="text-sm text-muted-foreground">Nekade</p>
-            </div>
+          <div className="mt-4 text-sm text-muted-foreground text-center p-4 border rounded-lg">
+            Inga ansökningar att visa
           </div>
+        </div>
 
-          <div className="space-y-4">
-            <div className="flex items-center justify-between text-sm text-muted-foreground border-b pb-2">
-              <span>Väntar (0)</span>
-              <span>Godkända (0)</span>
-              <span>Avslagna (0)</span>
+        <div>
+          <div className="w-full text-left p-4 rounded-lg bg-white border">
+            <h3 className="text-sm font-medium">Kökspartner-ansökningar</h3>
+            <p className="text-xs text-muted-foreground mt-1">Nya kökspartners</p>
+          </div>
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            <div className="text-center p-2 border rounded-lg">
+              <p className="text-amber-500 text-lg font-medium">0</p>
+              <p className="text-xs text-muted-foreground">Väntar</p>
             </div>
-            
-            <div className="py-8 text-center text-sm text-muted-foreground">
-              Inga ansökningar väntar
+            <div className="text-center p-2 border rounded-lg">
+              <p className="text-emerald-500 text-lg font-medium">0</p>
+              <p className="text-xs text-muted-foreground">Godk.</p>
+            </div>
+            <div className="text-center p-2 border rounded-lg">
+              <p className="text-rose-500 text-lg font-medium">0</p>
+              <p className="text-xs text-muted-foreground">Nekade</p>
             </div>
           </div>
         </div>
-      ) : (
-        <div className="grid grid-cols-5 gap-4 px-4">
-          <div className="flex flex-col gap-4">
-            <button 
-              onClick={() => setSelectedSection('chefs')}
-              className="w-full text-left p-4 rounded-lg bg-white border hover:bg-gray-50"
-            >
-              <h3 className="text-sm font-medium">Kock-ansökningar</h3>
-              <p className="text-xs text-muted-foreground mt-1">Ansökningar från kockar</p>
-            </button>
-            
-            <div className="text-sm text-muted-foreground text-center p-4 border rounded-lg">
-              Inga ansökningar att visa
-            </div>
+
+        <div>
+          <div className="w-full text-left p-4 rounded-lg bg-white border">
+            <h3 className="text-sm font-medium">Användarhantering</h3>
+            <p className="text-xs text-muted-foreground mt-1">Hantera användare</p>
           </div>
-
-          <div className="flex flex-col gap-4">
-            <button 
-              onClick={() => setSelectedSection('partners')}
-              className="w-full text-left p-4 rounded-lg bg-white border hover:bg-gray-50"
-            >
-              <h3 className="text-sm font-medium">Kökspartner-ansökningar</h3>
-              <p className="text-xs text-muted-foreground mt-1">Nya kökspartners</p>
-            </button>
-
-            <div className="grid grid-cols-3 gap-2">
-              <div className="text-center p-2 border rounded-lg">
-                <p className="text-amber-500 text-lg font-medium">0</p>
-                <p className="text-xs text-muted-foreground">Väntar</p>
-              </div>
-              <div className="text-center p-2 border rounded-lg">
-                <p className="text-emerald-500 text-lg font-medium">0</p>
-                <p className="text-xs text-muted-foreground">Godk.</p>
-              </div>
-              <div className="text-center p-2 border rounded-lg">
-                <p className="text-rose-500 text-lg font-medium">0</p>
-                <p className="text-xs text-muted-foreground">Nekade</p>
-              </div>
-            </div>
+          <div className="mt-4 text-sm text-muted-foreground text-center p-4 border rounded-lg">
+            Ingen data att visa
           </div>
+        </div>
 
-          <div className="flex flex-col gap-4">
-            <button 
-              onClick={() => setSelectedSection('users')}
-              className="w-full text-left p-4 rounded-lg bg-white border hover:bg-gray-50"
-            >
-              <h3 className="text-sm font-medium">Användarhantering</h3>
-              <p className="text-xs text-muted-foreground mt-1">Hantera användare</p>
-            </button>
-
-            <div className="text-sm text-muted-foreground text-center p-4 border rounded-lg">
-              Ingen data att visa
-            </div>
+        <div>
+          <div className="w-full text-left p-4 rounded-lg bg-white border">
+            <h3 className="text-sm font-medium">Klagomål</h3>
+            <p className="text-xs text-muted-foreground mt-1">Rapporter och klagomål</p>
           </div>
-
-          <div className="flex flex-col gap-4">
-            <button 
-              onClick={() => setSelectedSection('complaints')}
-              className="w-full text-left p-4 rounded-lg bg-white border hover:bg-gray-50"
-            >
-              <h3 className="text-sm font-medium">Klagomål</h3>
-              <p className="text-xs text-muted-foreground mt-1">Rapporter och klagomål</p>
-            </button>
-
-            <div className="text-sm text-muted-foreground text-center p-4 border rounded-lg">
-              Inga klagomål just nu
-            </div>
+          <div className="mt-4 text-sm text-muted-foreground text-center p-4 border rounded-lg">
+            Inga klagomål just nu
           </div>
+        </div>
 
-          <div className="flex flex-col gap-4">
-            <button 
-              onClick={() => setSelectedSection('settings')}
-              className="w-full text-left p-4 rounded-lg bg-white border hover:bg-gray-50"
-            >
-              <h3 className="text-sm font-medium">Inställningar</h3>
-              <p className="text-xs text-muted-foreground mt-1">Systeminställningar</p>
-            </button>
-
-            <div className="space-y-2">
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <span className="text-sm">Godkännande</span>
-                <span className="text-sm font-medium">Manuell</span>
-              </div>
-              <div className="flex items-center justify-between p-4 border rounded-lg">
-                <span className="text-sm">Provision</span>
-                <span className="text-sm font-medium">15%</span>
-              </div>
+        <div>
+          <div className="w-full text-left p-4 rounded-lg bg-white border">
+            <h3 className="text-sm font-medium">Inställningar</h3>
+            <p className="text-xs text-muted-foreground mt-1">Systeminställningar</p>
+          </div>
+          <div className="mt-4 space-y-2">
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <span className="text-sm">Godkännande</span>
+              <span className="text-sm font-medium">Manuell</span>
+            </div>
+            <div className="flex items-center justify-between p-4 border rounded-lg">
+              <span className="text-sm">Provision</span>
+              <span className="text-sm font-medium">15%</span>
             </div>
           </div>
         </div>
-      )}
+      </div>
 
     </div>
   );
