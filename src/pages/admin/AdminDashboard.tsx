@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { ChefApprovalManager } from '@/components/admin/ChefApprovalManager';
 import { KitchenPartnerApprovalManager } from '@/components/admin/KitchenPartnerApprovalManager';
@@ -25,6 +24,15 @@ export const AdminDashboard = () => {
     totalRevenue: 0,
     activeOrders: 0
   });
+
+  const statsCards = [
+    { title: 'Antal användare', icon: Users, value: stats.totalUsers, subtitle: 'Aktiva användare' },
+    { title: 'Väntar på granskning', icon: Clock, value: stats.pendingApprovals, subtitle: 'Ansökningar att kolla' },
+    { title: 'Klagomål', icon: AlertTriangle, value: stats.activeComplaints, subtitle: 'Behöver åtgärdas' },
+    { title: 'Godkända', icon: CheckCircle, value: stats.completedOnboardings, subtitle: 'Godkända användare' },
+    { title: 'Omsättning', icon: DollarSign, value: `${stats.totalRevenue} kr`, subtitle: 'Denna månad' },
+    { title: 'Pågående beställningar', icon: TrendingUp, value: stats.activeOrders, subtitle: 'Just nu' }
+  ];
 
   useEffect(() => {
     fetchStats();
@@ -80,139 +88,86 @@ export const AdminDashboard = () => {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 mb-8">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Antal användare</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalUsers}</div>
-            <p className="text-xs text-muted-foreground">Aktiva användare</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Väntar på granskning</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.pendingApprovals}</div>
-            <p className="text-xs text-muted-foreground">Ansökningar att kolla</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Klagomål</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.activeComplaints}</div>
-            <p className="text-xs text-muted-foreground">Behöver åtgärdas</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Godkända</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.completedOnboardings}</div>
-            <p className="text-xs text-muted-foreground">Godkända användare</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Omsättning</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.totalRevenue} kr</div>
-            <p className="text-xs text-muted-foreground">Denna månad</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pågående beställningar</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.activeOrders}</div>
-            <p className="text-xs text-muted-foreground">Just nu</p>
-          </CardContent>
-        </Card>
+        {statsCards.map((stat, index) => (
+          <Card key={index}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+              <stat.icon className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{stat.value}</div>
+              <p className="text-xs text-muted-foreground">{stat.subtitle}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      <Tabs defaultValue="chefs" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="chefs">Kock-ansökningar</TabsTrigger>
-          <TabsTrigger value="kitchen-partners">Kökspartner-ansökningar</TabsTrigger>
-          <TabsTrigger value="users">Användarhantering</TabsTrigger>
-          <TabsTrigger value="complaints">Klagomål</TabsTrigger>
-          <TabsTrigger value="settings">Inställningar</TabsTrigger>
-        </TabsList>
+      <div className="space-y-6">
+        <div className="grid grid-cols-5 gap-4">
+          <Card className="col-span-1">
+            <CardHeader>
+              <CardTitle>Kock-ansökningar</CardTitle>
+              <CardDescription>Ansökningar från kockar</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChefApprovalManager />
+            </CardContent>
+          </Card>
 
-        <TabsContent value="chefs">
-          <ChefApprovalManager />
-        </TabsContent>
+          <Card className="col-span-1">
+            <CardHeader>
+              <CardTitle>Kökspartner-ansökningar</CardTitle>
+              <CardDescription>Nya kökspartners</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <KitchenPartnerApprovalManager />
+            </CardContent>
+          </Card>
 
-        <TabsContent value="kitchen-partners">
-          <KitchenPartnerApprovalManager />
-        </TabsContent>
-
-        <TabsContent value="users">
-          <Card>
+          <Card className="col-span-1">
             <CardHeader>
               <CardTitle>Användarhantering</CardTitle>
-              <CardDescription>Se alla användare på plattformen</CardDescription>
+              <CardDescription>Hantera användare</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">Funktionen kommer snart...</p>
+              <div className="text-sm text-muted-foreground">
+                Ingen data att visa
+              </div>
             </CardContent>
           </Card>
-        </TabsContent>
 
-        <TabsContent value="complaints">
-          <Card>
+          <Card className="col-span-1">
             <CardHeader>
-              <CardTitle>Klagomålshantering</CardTitle>
-              <CardDescription>Se och hantera klagomål</CardDescription>
+              <CardTitle>Klagomål</CardTitle>
+              <CardDescription>Rapporter och klagomål</CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">Inga klagomål just nu.</p>
+              <div className="text-sm text-muted-foreground">
+                Inga klagomål just nu
+              </div>
             </CardContent>
           </Card>
-        </TabsContent>
 
-        <TabsContent value="settings">
-          <Card>
+          <Card className="col-span-1">
             <CardHeader>
               <CardTitle>Inställningar</CardTitle>
-              <CardDescription>Ställ in systemparametrar</CardDescription>
+              <CardDescription>Systeminställningar</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span>Automatiskt godkännande av kockar</span>
-                  <Button variant="outline" size="sm">Inaktiverad</Button>
+                  <span className="text-sm">Godkännande</span>
+                  <Button variant="outline" size="sm">Manuell</Button>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span>Minimipris per rätt</span>
-                  <Button variant="outline" size="sm">50 kr</Button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Provision (%)</span>
+                  <span className="text-sm">Provision</span>
                   <Button variant="outline" size="sm">15%</Button>
                 </div>
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+      </div>
 
     </div>
   );
