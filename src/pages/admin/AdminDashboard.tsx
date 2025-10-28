@@ -98,91 +98,82 @@ export const AdminDashboard = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-5 gap-8">
+      <div className="grid grid-cols-5 gap-12 px-4">
         <div className="col-span-1">
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold">Kock-ansökningar</h3>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-1">Kock-ansökningar</h3>
             <p className="text-sm text-muted-foreground">Ansökningar från kockar</p>
           </div>
           
-          <div className="space-y-1">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Väntar</span>
-              <span className="font-medium">0</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Granskade</span>
-              <span className="font-medium">0</span>
-            </div>
-          </div>
-          
-          <div className="mt-4 text-sm text-muted-foreground text-center p-4 border rounded-lg">
-            Inga ansökningar att visa
+          <div className="h-[120px] flex items-center justify-center border rounded-lg">
+            <p className="text-sm text-muted-foreground">Inga ansökningar att visa</p>
           </div>
         </div>
 
         <div className="col-span-1">
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold">Kökspartner-ansökningar</h3>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-1">Kökspartner-ansökningar</h3>
             <p className="text-sm text-muted-foreground">Nya kökspartners</p>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex gap-4">
-              <div className="flex-1 text-center p-2 border rounded-lg">
-                <div className="text-2xl font-bold">0</div>
-                <div className="text-xs text-muted-foreground">Väntar</div>
+          <div className="space-y-6">
+            <div className="grid grid-cols-3 gap-2">
+              <div className="text-center py-3 px-2 border rounded-lg">
+                <p className="text-amber-500 text-lg font-medium mb-1">0</p>
+                <p className="text-xs text-muted-foreground">Väntar</p>
               </div>
-              <div className="flex-1 text-center p-2 border rounded-lg">
-                <div className="text-2xl font-bold">0</div>
-                <div className="text-xs text-muted-foreground">Godk.</div>
+              <div className="text-center py-3 px-2 border rounded-lg">
+                <p className="text-emerald-500 text-lg font-medium mb-1">0</p>
+                <p className="text-xs text-muted-foreground">Godk.</p>
               </div>
-              <div className="flex-1 text-center p-2 border rounded-lg">
-                <div className="text-2xl font-bold">0</div>
-                <div className="text-xs text-muted-foreground">Nekade</div>
+              <div className="text-center py-3 px-2 border rounded-lg">
+                <p className="text-rose-500 text-lg font-medium mb-1">0</p>
+                <p className="text-xs text-muted-foreground">Nekade</p>
               </div>
             </div>
-
-            <div className="text-sm text-muted-foreground text-center p-4 border rounded-lg">
-              Inga nekade ansökningar
+            
+            <div className="text-sm text-muted-foreground">
+              <p>Inga</p>
+              <p>ansökningar</p>
+              <p>väntar</p>
             </div>
           </div>
         </div>
 
         <div className="col-span-1">
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold">Användarhantering</h3>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-1">Användarhantering</h3>
             <p className="text-sm text-muted-foreground">Hantera användare</p>
           </div>
 
-          <div className="text-sm text-muted-foreground text-center p-4 border rounded-lg">
-            Ingen data att visa
+          <div className="h-[120px] flex items-center justify-center border rounded-lg">
+            <p className="text-sm text-muted-foreground">Ingen data att visa</p>
           </div>
         </div>
 
         <div className="col-span-1">
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold">Klagomål</h3>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-1">Klagomål</h3>
             <p className="text-sm text-muted-foreground">Rapporter och klagomål</p>
           </div>
 
-          <div className="text-sm text-muted-foreground text-center p-4 border rounded-lg">
-            Inga klagomål just nu
+          <div className="h-[120px] flex items-center justify-center border rounded-lg">
+            <p className="text-sm text-muted-foreground">Inga klagomål just nu</p>
           </div>
         </div>
 
         <div className="col-span-1">
-          <div className="mb-4">
-            <h3 className="text-lg font-semibold">Inställningar</h3>
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-1">Inställningar</h3>
             <p className="text-sm text-muted-foreground">Systeminställningar</p>
           </div>
 
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-2 border rounded-lg">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between px-4 py-3 border rounded-lg">
               <span className="text-sm">Godkännande</span>
               <span className="text-sm font-medium">Manuell</span>
             </div>
-            <div className="flex items-center justify-between p-2 border rounded-lg">
+            <div className="flex items-center justify-between px-4 py-3 border rounded-lg">
               <span className="text-sm">Provision</span>
               <span className="text-sm font-medium">15%</span>
             </div>
