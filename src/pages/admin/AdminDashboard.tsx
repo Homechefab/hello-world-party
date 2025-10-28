@@ -1,10 +1,6 @@
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ChefApprovalManager } from '@/components/admin/ChefApprovalManager';
-import { KitchenPartnerApprovalManager } from '@/components/admin/KitchenPartnerApprovalManager';
+import { useState, useEffect } from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
-import { useEffect } from 'react';
 import { 
   Users, 
   AlertTriangle, 
@@ -102,70 +98,95 @@ export const AdminDashboard = () => {
         ))}
       </div>
 
-      <div className="space-y-6">
-        <div className="grid grid-cols-5 gap-4">
-          <Card className="col-span-1">
-            <CardHeader>
-              <CardTitle>Kock-ansökningar</CardTitle>
-              <CardDescription>Ansökningar från kockar</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ChefApprovalManager />
-            </CardContent>
-          </Card>
+      <div className="grid grid-cols-5 gap-8">
+        <div className="col-span-1">
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold">Kock-ansökningar</h3>
+            <p className="text-sm text-muted-foreground">Ansökningar från kockar</p>
+          </div>
+          
+          <div className="space-y-1">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Väntar</span>
+              <span className="font-medium">0</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">Granskade</span>
+              <span className="font-medium">0</span>
+            </div>
+          </div>
+          
+          <div className="mt-4 text-sm text-muted-foreground text-center p-4 border rounded-lg">
+            Inga ansökningar att visa
+          </div>
+        </div>
 
-          <Card className="col-span-1">
-            <CardHeader>
-              <CardTitle>Kökspartner-ansökningar</CardTitle>
-              <CardDescription>Nya kökspartners</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <KitchenPartnerApprovalManager />
-            </CardContent>
-          </Card>
+        <div className="col-span-1">
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold">Kökspartner-ansökningar</h3>
+            <p className="text-sm text-muted-foreground">Nya kökspartners</p>
+          </div>
 
-          <Card className="col-span-1">
-            <CardHeader>
-              <CardTitle>Användarhantering</CardTitle>
-              <CardDescription>Hantera användare</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-sm text-muted-foreground">
-                Ingen data att visa
+          <div className="space-y-4">
+            <div className="flex gap-4">
+              <div className="flex-1 text-center p-2 border rounded-lg">
+                <div className="text-2xl font-bold">0</div>
+                <div className="text-xs text-muted-foreground">Väntar</div>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="col-span-1">
-            <CardHeader>
-              <CardTitle>Klagomål</CardTitle>
-              <CardDescription>Rapporter och klagomål</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="text-sm text-muted-foreground">
-                Inga klagomål just nu
+              <div className="flex-1 text-center p-2 border rounded-lg">
+                <div className="text-2xl font-bold">0</div>
+                <div className="text-xs text-muted-foreground">Godk.</div>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="col-span-1">
-            <CardHeader>
-              <CardTitle>Inställningar</CardTitle>
-              <CardDescription>Systeminställningar</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Godkännande</span>
-                  <Button variant="outline" size="sm">Manuell</Button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">Provision</span>
-                  <Button variant="outline" size="sm">15%</Button>
-                </div>
+              <div className="flex-1 text-center p-2 border rounded-lg">
+                <div className="text-2xl font-bold">0</div>
+                <div className="text-xs text-muted-foreground">Nekade</div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+
+            <div className="text-sm text-muted-foreground text-center p-4 border rounded-lg">
+              Inga nekade ansökningar
+            </div>
+          </div>
+        </div>
+
+        <div className="col-span-1">
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold">Användarhantering</h3>
+            <p className="text-sm text-muted-foreground">Hantera användare</p>
+          </div>
+
+          <div className="text-sm text-muted-foreground text-center p-4 border rounded-lg">
+            Ingen data att visa
+          </div>
+        </div>
+
+        <div className="col-span-1">
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold">Klagomål</h3>
+            <p className="text-sm text-muted-foreground">Rapporter och klagomål</p>
+          </div>
+
+          <div className="text-sm text-muted-foreground text-center p-4 border rounded-lg">
+            Inga klagomål just nu
+          </div>
+        </div>
+
+        <div className="col-span-1">
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold">Inställningar</h3>
+            <p className="text-sm text-muted-foreground">Systeminställningar</p>
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-2 border rounded-lg">
+              <span className="text-sm">Godkännande</span>
+              <span className="text-sm font-medium">Manuell</span>
+            </div>
+            <div className="flex items-center justify-between p-2 border rounded-lg">
+              <span className="text-sm">Provision</span>
+              <span className="text-sm font-medium">15%</span>
+            </div>
+          </div>
         </div>
       </div>
 
