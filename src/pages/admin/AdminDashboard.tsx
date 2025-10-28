@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Users, 
@@ -99,94 +98,99 @@ export const AdminDashboard = () => {
         ))}
       </div>
 
-      <Tabs defaultValue="chefs" className="w-full px-4">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="chefs" className="text-sm">Kock-ansökningar</TabsTrigger>
-          <TabsTrigger value="partners" className="text-sm">Kökspartner-ansökningar</TabsTrigger>
-          <TabsTrigger value="users" className="text-sm">Användarhantering</TabsTrigger>
-          <TabsTrigger value="complaints" className="text-sm">Klagomål</TabsTrigger>
-          <TabsTrigger value="settings" className="text-sm">Inställningar</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="chefs" className="mt-6">
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-1">Kock-ansökningar</h3>
-            <p className="text-sm text-muted-foreground">Ansökningar från kockar</p>
+      <div className="grid grid-cols-5 gap-4 px-4">
+        <div className="space-y-4">
+          <button 
+            className="w-full text-left p-4 rounded-lg bg-white border hover:bg-gray-50"
+            onClick={() => {}}
+          >
+            <h3 className="text-sm font-medium">Kock-ansökningar</h3>
+            <p className="text-xs text-muted-foreground mt-1">Ansökningar från kockar</p>
+          </button>
+          
+          <div className="text-sm text-muted-foreground text-center p-4 border rounded-lg">
+            Inga ansökningar att visa
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <button 
+            className="w-full text-left p-4 rounded-lg bg-white border hover:bg-gray-50"
+            onClick={() => {}}
+          >
+            <h3 className="text-sm font-medium">Kökspartner-ansökningar</h3>
+            <p className="text-xs text-muted-foreground mt-1">Nya kökspartners</p>
+          </button>
+
+          <div className="grid grid-cols-3 gap-2">
+            <div className="text-center p-2 border rounded-lg">
+              <p className="text-amber-500 text-lg font-medium">0</p>
+              <p className="text-xs text-muted-foreground">Väntar</p>
+            </div>
+            <div className="text-center p-2 border rounded-lg">
+              <p className="text-emerald-500 text-lg font-medium">0</p>
+              <p className="text-xs text-muted-foreground">Godk.</p>
+            </div>
+            <div className="text-center p-2 border rounded-lg">
+              <p className="text-rose-500 text-lg font-medium">0</p>
+              <p className="text-xs text-muted-foreground">Nekade</p>
+            </div>
           </div>
           
-          <div className="h-[120px] flex items-center justify-center border rounded-lg">
-            <p className="text-sm text-muted-foreground">Inga ansökningar att visa</p>
+          <div className="text-sm text-muted-foreground text-center p-4 border rounded-lg">
+            Inga nekade ansökningar
           </div>
-        </TabsContent>
+        </div>
 
-        <TabsContent value="partners" className="mt-6">
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-1">Kökspartner-ansökningar</h3>
-            <p className="text-sm text-muted-foreground">Nya kökspartners</p>
+        <div className="space-y-4">
+          <button 
+            className="w-full text-left p-4 rounded-lg bg-white border hover:bg-gray-50"
+            onClick={() => {}}
+          >
+            <h3 className="text-sm font-medium">Användarhantering</h3>
+            <p className="text-xs text-muted-foreground mt-1">Hantera användare</p>
+          </button>
+
+          <div className="text-sm text-muted-foreground text-center p-4 border rounded-lg">
+            Ingen data att visa
           </div>
+        </div>
 
-          <div className="space-y-6">
-            <div className="grid grid-cols-3 gap-2">
-              <div className="text-center py-3 px-2 border rounded-lg">
-                <p className="text-amber-500 text-lg font-medium mb-1">0</p>
-                <p className="text-xs text-muted-foreground">Väntar</p>
-              </div>
-              <div className="text-center py-3 px-2 border rounded-lg">
-                <p className="text-emerald-500 text-lg font-medium mb-1">0</p>
-                <p className="text-xs text-muted-foreground">Godk.</p>
-              </div>
-              <div className="text-center py-3 px-2 border rounded-lg">
-                <p className="text-rose-500 text-lg font-medium mb-1">0</p>
-                <p className="text-xs text-muted-foreground">Nekade</p>
-              </div>
-            </div>
-            
-            <div className="text-sm text-muted-foreground text-center">
-              <p>Inga ansökningar väntar</p>
-            </div>
+        <div className="space-y-4">
+          <button 
+            className="w-full text-left p-4 rounded-lg bg-white border hover:bg-gray-50"
+            onClick={() => {}}
+          >
+            <h3 className="text-sm font-medium">Klagomål</h3>
+            <p className="text-xs text-muted-foreground mt-1">Rapporter och klagomål</p>
+          </button>
+
+          <div className="text-sm text-muted-foreground text-center p-4 border rounded-lg">
+            Inga klagomål just nu
           </div>
-        </TabsContent>
+        </div>
 
-        <TabsContent value="users" className="mt-6">
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-1">Användarhantering</h3>
-            <p className="text-sm text-muted-foreground">Hantera användare</p>
-          </div>
+        <div className="space-y-4">
+          <button 
+            className="w-full text-left p-4 rounded-lg bg-white border hover:bg-gray-50"
+            onClick={() => {}}
+          >
+            <h3 className="text-sm font-medium">Inställningar</h3>
+            <p className="text-xs text-muted-foreground mt-1">Systeminställningar</p>
+          </button>
 
-          <div className="h-[120px] flex items-center justify-center border rounded-lg">
-            <p className="text-sm text-muted-foreground">Ingen data att visa</p>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="complaints" className="mt-6">
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-1">Klagomål</h3>
-            <p className="text-sm text-muted-foreground">Rapporter och klagomål</p>
-          </div>
-
-          <div className="h-[120px] flex items-center justify-center border rounded-lg">
-            <p className="text-sm text-muted-foreground">Inga klagomål just nu</p>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="settings" className="mt-6">
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold mb-1">Inställningar</h3>
-            <p className="text-sm text-muted-foreground">Systeminställningar</p>
-          </div>
-
-          <div className="space-y-3">
-            <div className="flex items-center justify-between px-4 py-3 border rounded-lg">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between p-4 border rounded-lg">
               <span className="text-sm">Godkännande</span>
               <span className="text-sm font-medium">Manuell</span>
             </div>
-            <div className="flex items-center justify-between px-4 py-3 border rounded-lg">
+            <div className="flex items-center justify-between p-4 border rounded-lg">
               <span className="text-sm">Provision</span>
               <span className="text-sm font-medium">15%</span>
             </div>
           </div>
-        </TabsContent>
-      </Tabs>
+        </div>
+      </div>
 
     </div>
   );
