@@ -1,0 +1,10 @@
+{
+  "name": "Homechef Admin Dashboard",
+  "description": "Admin dashboard for the Homechef platform",
+  "components": {
+    "adminDashboard": {
+      "path": "src/pages/admin/AdminDashboard.preview.tsx",
+      "routes": ["/admin/dashboard"]
+    }
+  }
+}
