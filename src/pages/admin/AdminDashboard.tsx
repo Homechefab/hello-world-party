@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Users, 
@@ -98,8 +99,16 @@ export const AdminDashboard = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-5 gap-12 px-4">
-        <div className="col-span-1">
+      <Tabs defaultValue="chefs" className="w-full px-4">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="chefs" className="text-sm">Kock-ansökningar</TabsTrigger>
+          <TabsTrigger value="partners" className="text-sm">Kökspartner-ansökningar</TabsTrigger>
+          <TabsTrigger value="users" className="text-sm">Användarhantering</TabsTrigger>
+          <TabsTrigger value="complaints" className="text-sm">Klagomål</TabsTrigger>
+          <TabsTrigger value="settings" className="text-sm">Inställningar</TabsTrigger>
+        </TabsList>
+        
+        <TabsContent value="chefs" className="mt-6">
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-1">Kock-ansökningar</h3>
             <p className="text-sm text-muted-foreground">Ansökningar från kockar</p>
@@ -108,9 +117,9 @@ export const AdminDashboard = () => {
           <div className="h-[120px] flex items-center justify-center border rounded-lg">
             <p className="text-sm text-muted-foreground">Inga ansökningar att visa</p>
           </div>
-        </div>
+        </TabsContent>
 
-        <div className="col-span-1">
+        <TabsContent value="partners" className="mt-6">
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-1">Kökspartner-ansökningar</h3>
             <p className="text-sm text-muted-foreground">Nya kökspartners</p>
@@ -132,15 +141,13 @@ export const AdminDashboard = () => {
               </div>
             </div>
             
-            <div className="text-sm text-muted-foreground">
-              <p>Inga</p>
-              <p>ansökningar</p>
-              <p>väntar</p>
+            <div className="text-sm text-muted-foreground text-center">
+              <p>Inga ansökningar väntar</p>
             </div>
           </div>
-        </div>
+        </TabsContent>
 
-        <div className="col-span-1">
+        <TabsContent value="users" className="mt-6">
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-1">Användarhantering</h3>
             <p className="text-sm text-muted-foreground">Hantera användare</p>
@@ -149,9 +156,9 @@ export const AdminDashboard = () => {
           <div className="h-[120px] flex items-center justify-center border rounded-lg">
             <p className="text-sm text-muted-foreground">Ingen data att visa</p>
           </div>
-        </div>
+        </TabsContent>
 
-        <div className="col-span-1">
+        <TabsContent value="complaints" className="mt-6">
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-1">Klagomål</h3>
             <p className="text-sm text-muted-foreground">Rapporter och klagomål</p>
@@ -160,9 +167,9 @@ export const AdminDashboard = () => {
           <div className="h-[120px] flex items-center justify-center border rounded-lg">
             <p className="text-sm text-muted-foreground">Inga klagomål just nu</p>
           </div>
-        </div>
+        </TabsContent>
 
-        <div className="col-span-1">
+        <TabsContent value="settings" className="mt-6">
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-1">Inställningar</h3>
             <p className="text-sm text-muted-foreground">Systeminställningar</p>
@@ -178,8 +185,8 @@ export const AdminDashboard = () => {
               <span className="text-sm font-medium">15%</span>
             </div>
           </div>
-        </div>
-      </div>
+        </TabsContent>
+      </Tabs>
 
     </div>
   );
