@@ -14,7 +14,7 @@ const RoleBasedServices = () => {
   // Show content based on active role
   return (
     <>
-      {role === 'customer' && <CustomerServices />}
+      {(role === 'customer' || !role) && <CustomerServices />}
       {role === 'chef' && <ChefServices />}
       {role === 'kitchen_partner' && <KitchenPartnerServices />}
       {role === 'restaurant' && <RestaurantServices />}
