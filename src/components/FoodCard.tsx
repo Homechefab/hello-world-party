@@ -14,6 +14,7 @@ interface FoodCardProps {
   image: string;
   tags: string[];
   isFavorite?: boolean;
+  onOrderClick?: () => void;
 }
 
 const FoodCard = ({ 
@@ -27,7 +28,8 @@ const FoodCard = ({
   seller, 
   image, 
   tags,
-  isFavorite = false 
+  isFavorite = false,
+  onOrderClick
 }: FoodCardProps) => {
   return (
     <div className="bg-card rounded-xl shadow-card hover:shadow-warm transition-all duration-300 hover:scale-105 overflow-hidden group">
@@ -77,7 +79,7 @@ const FoodCard = ({
         
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground">av {seller}</span>
-          <Button variant="food" size="sm">
+          <Button variant="food" size="sm" onClick={onOrderClick}>
             Beställ
           </Button>
         </div>

@@ -1,4 +1,6 @@
+import { useState } from "react";
 import FoodCard from "./FoodCard";
+import OrderDialog from "./OrderDialog";
 import meatballsImage from "@/assets/meatballs.jpg";
 import pastaImage from "@/assets/pasta.jpg";
 import soupImage from "@/assets/soup.jpg";
@@ -88,6 +90,14 @@ const mockFoodItems = [
 ];
 
 const FoodGrid = () => {
+  const [selectedDish, setSelectedDish] = useState<typeof mockFoodItems[0] | null>(null);
+  const [orderDialogOpen, setOrderDialogOpen] = useState(false);
+
+  const handleOrderClick = (dish: typeof mockFoodItems[0]) => {
+    setSelectedDish(dish);
+    setOrderDialogOpen(true);
+  };
+
   return (
     <section className="py-12">
       <div className="container mx-auto px-4">
@@ -108,7 +118,11 @@ const FoodGrid = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {mockFoodItems.map((item, index) => (
-            <FoodCard key={index} {...item} />
+            <FoodCard 
+              key={index} 
+              {...item} 
+              onOrderClick={() => handleOrderClick(item)}
+            />
           ))}
         </div>
         
@@ -118,6 +132,15 @@ const FoodGrid = () => {
           </button>
         </div>
       </div>
+
+      {/* Order Dialog */}
+      {selectedDish && (
+        <OrderDialog
+          open={orderDialogOpen}
+          onOpenChange={setOrderDialogOpen}
+          dish={selectedDish}
+        />
+      )}
     </section>
   );
 };
