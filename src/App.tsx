@@ -44,7 +44,7 @@ import PricingTerms from "./pages/kitchen-partner/PricingTerms";
 import SecurityInsurance from "./pages/kitchen-partner/SecurityInsurance";
 import PartnerSupport from "./pages/kitchen-partner/PartnerSupport";
 import DeliveryPartnerOnboarding from "./pages/delivery-partner/DeliveryPartnerOnboarding";
-import { AdminDashboard } from "./pages/admin/AdminDashboard";
+import AdminDashboard from "./pages/admin/index";
 import RestaurantPartnership from "./pages/restaurant/RestaurantPartnership";
 import RestaurantDashboard from "./pages/restaurant/RestaurantDashboard";
 import RestaurantApplicationForm from "./pages/restaurant/RestaurantApplicationForm";
