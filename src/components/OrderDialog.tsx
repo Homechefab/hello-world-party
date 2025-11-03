@@ -17,9 +17,10 @@ interface OrderDialogProps {
     image: string;
     seller: string;
   };
+  stripePriceId: string;
 }
 
-const OrderDialog = ({ open, onOpenChange, dish }: OrderDialogProps) => {
+const OrderDialog = ({ open, onOpenChange, dish, stripePriceId }: OrderDialogProps) => {
   const [quantity, setQuantity] = useState(1);
   const [showCheckout, setShowCheckout] = useState(false);
   const [deliveryAddress, setDeliveryAddress] = useState("");
@@ -60,7 +61,7 @@ const OrderDialog = ({ open, onOpenChange, dish }: OrderDialogProps) => {
               )}
             </div>
             <StripeCheckout
-              priceId="price_demo" 
+              priceId={stripePriceId}
               dishName={dish.title}
               price={dish.price}
               quantity={quantity}
