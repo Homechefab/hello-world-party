@@ -683,6 +683,59 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      },
+      user_verifications: {
+        Row: {
+          id: string
+          user_id: string
+          email_verified: boolean
+          phone_verified: boolean
+          identity_verified: boolean
+          business_verified: boolean
+          two_factor_enabled: boolean
+          identity_document_url: string | null
+          business_id: string | null
+          business_documents: string[] | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          email_verified?: boolean
+          phone_verified?: boolean
+          identity_verified?: boolean
+          business_verified?: boolean
+          two_factor_enabled?: boolean
+          identity_document_url?: string | null
+          business_id?: string | null
+          business_documents?: string[] | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          email_verified?: boolean
+          phone_verified?: boolean
+          identity_verified?: boolean
+          business_verified?: boolean
+          two_factor_enabled?: boolean
+          identity_document_url?: string | null
+          business_id?: string | null
+          business_documents?: string[] | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_verifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {
