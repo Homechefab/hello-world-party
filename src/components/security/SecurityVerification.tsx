@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { FileUpload } from "@/components/ui/file-upload.tsx"
+import { FileUpload } from "@/components/ui/file-upload"
 import { useSecurity } from "@/contexts/SecurityContext"
 import { CheckCircle2, Lock, ShieldAlert } from "lucide-react"
 
