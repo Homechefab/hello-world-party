@@ -20,6 +20,10 @@ const config: StorybookConfig = {
     "name": "@storybook/react-vite",
     "options": {}
   },
+  // Use local Storybook TS config and skip type checking to avoid app tsconfig issues in preview
+  typescript: {
+    check: false
+  },
   viteFinal: async (config) => {
     config.resolve = config.resolve || {};
     config.resolve.alias = {
