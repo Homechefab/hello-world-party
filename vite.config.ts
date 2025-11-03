@@ -15,9 +15,17 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080
   },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'es2020'
+    }
+  },
   build: {
     outDir: 'dist',
     target: 'esnext',
+    commonjsOptions: {
+      transformMixedEsModules: true
+    }
   },
   resolve: {
     alias: {
