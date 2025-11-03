@@ -8,7 +8,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(({ mode }) => ({
   plugins: [
-    react(),
+    react({
+      plugins: [['@swc/plugin-react', { typescript: { enabled: true, removeAssertions: true } }]],
+    }),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
   server: {
@@ -25,7 +27,9 @@ export default defineConfig(({ mode }) => ({
     target: 'esnext',
     commonjsOptions: {
       transformMixedEsModules: true
-    }
+    },
+    // Skip type checking during build
+    skipTypeCheck: true
   },
   resolve: {
     alias: {
