@@ -8,6 +8,16 @@ import chickenRiceImage from "@/assets/chicken-rice.jpg";
 import thaiCurryImage from "@/assets/thai-curry.jpg";
 import falafelImage from "@/assets/falafel-hummus.jpg";
 
+// Mapping of dish titles to Stripe Price IDs
+const dishPriceIds: Record<string, string> = {
+  "Hemgjorda köttbullar": "price_1SKl5741rPpIJXZ0RGnIxSzt",
+  "Krämig carbonara": "price_1SPTR841rPpIJXZ0CBZS8Dk8",
+  "Grönsaksoppa": "price_1SPTRQ41rPpIJXZ0Y28D38Um",
+  "Grillad kyckling med ris": "price_1SPTRi41rPpIJXZ0g3othuNg",
+  "Thai-curry": "price_1SKl5j41rPpIJXZ0hISmjkUX",
+  "Falafel med hummus": "price_1SPTRx41rPpIJXZ0uEcmHAFm",
+};
+
 const mockFoodItems = [
   {
     title: "Hemgjorda köttbullar",
@@ -139,6 +149,7 @@ const FoodGrid = () => {
           open={orderDialogOpen}
           onOpenChange={setOrderDialogOpen}
           dish={selectedDish}
+          stripePriceId={dishPriceIds[selectedDish.title]}
         />
       )}
     </section>
