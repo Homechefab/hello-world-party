@@ -80,7 +80,8 @@ const Auth = () => {
     setIsLoading(true);
     
     try {
-      const redirectUrl = `${window.location.origin}/auth/callback`;
+      // Use the current page as redirect URL
+      const redirectUrl = window.location.origin;
       
       // Special handling for Apple since it's not a standard OAuth provider
       if (provider === 'apple') {
@@ -97,10 +98,7 @@ const Auth = () => {
         provider,
         options: {
           redirectTo: redirectUrl,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent'
-          }
+          skipBrowserRedirect: false
         }
       });
 
