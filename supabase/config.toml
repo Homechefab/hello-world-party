@@ -20,8 +20,7 @@ max_client_conn = 100
 
 [realtime]
 enabled = true
-port = 54323
-ip_version = "ipv4"
+ip_version = "IPv4"
 
 [studio]
 enabled = true
@@ -31,39 +30,35 @@ openai_api_key = "env(OPENAI_API_KEY)"
 
 [inbucket]
 enabled = true
-port = 54325
-api_port = 54326
 smtp_port = 54327
 
 [storage]
 enabled = true
-port = 54328
 file_size_limit = "50MiB"
-image_transformation = { enabled = true }
 
 [auth]
 enabled = true
-port = 54329
 site_url = "http://127.0.0.1:3000"
 additional_redirect_urls = ["https://127.0.0.1:3000"]
 jwt_expiry = 3600
 enable_signup = true
-enable_confirmations = false
 
 [auth.email]
+enable_signup = true
+enable_confirmations = false
+
+[auth.external.google]
 enabled = true
-port = 54330
-smtp_admin_email = "admin@email.com"
-smtp_host = "127.0.0.1"
-smtp_port = 54327
-smtp_user = "fake_mail_user"
-smtp_pass = "fake_mail_password"
-smtp_sender_name = "fake_sender"
+client_id = "env(GOOGLE_CLIENT_ID)"
+secret = "env(GOOGLE_CLIENT_SECRET)"
+
+[auth.external.facebook]
+enabled = true
+client_id = "env(FACEBOOK_CLIENT_ID)"
+secret = "env(FACEBOOK_CLIENT_SECRET)"
 
 [edge_runtime]
 enabled = true
-port = 54331
-ip_version = "ipv4"
 policy = "oneshot"
 
 [functions.chat-ai]
