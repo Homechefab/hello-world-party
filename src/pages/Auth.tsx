@@ -80,11 +80,10 @@ const Auth = () => {
     setIsLoading(true);
     
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = `${window.location.origin}/auth/callback`;
       
       // Special handling for Apple since it's not a standard OAuth provider
       if (provider === 'apple') {
-        // Apple Sign In requires special setup - for now show a message
         toast({
           title: "Apple Sign In",
           description: "Apple Sign In kommer snart. Använd Google eller Facebook för tillfället.",
@@ -94,14 +93,26 @@ const Auth = () => {
         return;
       }
 
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
           redirectTo: redirectUrl,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent'
+          }
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Auth error:', error);
+        throw error;
+      }
+
+      // Check if we got a valid response
+      if (!data) {
+        throw new Error('Inget svar från autentiseringstjänsten');
+      }
 
     } catch (error: any) {
       toast({
