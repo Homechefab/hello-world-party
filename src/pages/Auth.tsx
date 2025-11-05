@@ -80,8 +80,11 @@ const Auth = () => {
     setIsLoading(true);
     
     try {
-      // Use the current page as redirect URL
-      const redirectUrl = window.location.origin;
+      // Get the full current URL as redirect
+      const redirectUrl = window.location.href;
+      
+      console.log('Starting OAuth with provider:', provider);
+      console.log('Redirect URL:', redirectUrl);
       
       // Special handling for Apple since it's not a standard OAuth provider
       if (provider === 'apple') {
@@ -98,27 +101,36 @@ const Auth = () => {
         provider,
         options: {
           redirectTo: redirectUrl,
-          skipBrowserRedirect: false
+          skipBrowserRedirect: false,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          }
         }
       });
+
+      console.log('OAuth response:', { data, error });
 
       if (error) {
         console.error('Auth error:', error);
         throw error;
       }
 
-      // Check if we got a valid response
-      if (!data) {
+      // If we have a URL, open it in the same window (this allows the OAuth flow)
+      if (data?.url) {
+        console.log('Redirecting to:', data.url);
+        window.location.href = data.url;
+      } else {
         throw new Error('Inget svar från autentiseringstjänsten');
       }
 
     } catch (error: any) {
+      console.error('Full error:', error);
       toast({
         title: "Inloggning misslyckades",
-        description: error.message,
+        description: error.message || 'Ett okänt fel inträffade',
         variant: "destructive"
       });
-    } finally {
       setIsLoading(false);
     }
   };
