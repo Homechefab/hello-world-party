@@ -160,9 +160,8 @@ const Footer = () => {
           <p>&copy; 2024 Homechef. Alla rättigheter förbehållna.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link to="/about" className="hover:text-primary transition-colors">Om oss</Link>
-            <Link to="#" className="hover:text-primary transition-colors">Integritetspolicy</Link>
-            <Link to="#" className="hover:text-primary transition-colors">Användarvillkor</Link>
-            <Link to="#" className="hover:text-primary transition-colors">Cookies</Link>
+            <Link to="/privacy-policy" className="hover:text-primary transition-colors">Sekretesspolicy</Link>
+            <Link to="/terms-of-service" className="hover:text-primary transition-colors">Användarvillkor</Link>
           </div>
         </div>
       </div>
