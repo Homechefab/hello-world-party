@@ -8,9 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(({ mode }) => ({
   plugins: [
-    react({
-      plugins: [['@swc/plugin-react', { typescript: { enabled: true, removeAssertions: true } }]],
-    }),
+    react(),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
   server: {
