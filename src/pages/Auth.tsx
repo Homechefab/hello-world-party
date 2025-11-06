@@ -77,22 +77,62 @@ const Auth = () => {
   };
 
   const handleSocialAuth = async (provider: 'google' | 'facebook' | 'apple') => {
-    // Special handling for Apple since it's not a standard OAuth provider
-    if (provider === 'apple') {
+    setIsLoading(true);
+    
+    try {
+      // Get the full current URL as redirect
+      const redirectUrl = window.location.href;
+      
+      console.log('Starting OAuth with provider:', provider);
+      console.log('Redirect URL:', redirectUrl);
+      
+      // Special handling for Apple since it's not a standard OAuth provider
+      if (provider === 'apple') {
+        toast({
+          title: "Apple Sign In",
+          description: "Apple Sign In kommer snart. Använd Google eller Facebook för tillfället.",
+          variant: "destructive"
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: redirectUrl,
+          skipBrowserRedirect: false,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          }
+        }
+      });
+
+      console.log('OAuth response:', { data, error });
+
+      if (error) {
+        console.error('Auth error:', error);
+        throw error;
+      }
+
+      // If we have a URL, open it in the same window (this allows the OAuth flow)
+      if (data?.url) {
+        console.log('Redirecting to:', data.url);
+        window.location.href = data.url;
+      } else {
+        throw new Error('Inget svar från autentiseringstjänsten');
+      }
+
+    } catch (error: any) {
+      console.error('Full error:', error);
       toast({
-        title: "Apple Sign In",
-        description: "Apple Sign In kommer snart. Använd Google eller Facebook för tillfället.",
+        title: "Inloggning misslyckades",
+        description: error.message || 'Ett okänt fel inträffade',
         variant: "destructive"
       });
-      return;
+      setIsLoading(false);
     }
-
-    // Show info that we're using email/password instead for now
-    toast({
-      title: "OAuth inte tillgängligt än",
-      description: "Använd e-post och lösenord för att skapa konto eller logga in. Google/Facebook login kräver ytterligare konfiguration.",
-      variant: "destructive"
-    });
   };
 
   return (
@@ -139,25 +179,25 @@ const Auth = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full"
-                  onClick={() => handleSocialAuth('facebook')}
-                  disabled={isLoading}
+                  className="w-full opacity-50 cursor-not-allowed"
+                  disabled={true}
+                  title="Facebook login kommer snart"
                 >
                   <svg className="w-5 h-5 mr-2" fill="#1877F2" viewBox="0 0 24 24">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                   </svg>
-                  Fortsätt med Facebook
+                  Fortsätt med Facebook (Kommer snart)
                 </Button>
 
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full"
-                  onClick={() => handleSocialAuth('apple')}
-                  disabled={isLoading}
+                  className="w-full opacity-50 cursor-not-allowed"
+                  disabled={true}
+                  title="Apple login kommer snart"
                 >
                   <Apple className="w-5 h-5 mr-2" />
-                  Fortsätt med Apple
+                  Fortsätt med Apple (Kommer snart)
                 </Button>
               </div>
 
