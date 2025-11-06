@@ -61,8 +61,9 @@ import MyPoints from "./pages/MyPoints";
 import PaymentDemo from "./pages/PaymentDemo";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermsOfService from "./pages/TermsOfService";
+import Privacy from "./pages/Privacy";
+import DataDeletion from "./pages/DataDeletion";
+import Terms from "./pages/Terms";
 
 const queryClient = new QueryClient();
 
@@ -104,8 +105,9 @@ const App = () => {
             <Route path="/payment-demo" element={<PublicLayout><PaymentDemo /></PublicLayout>} />
             <Route path="/payment-success" element={<PublicLayout><PaymentSuccess /></PublicLayout>} />
             <Route path="/payment-canceled" element={<PublicLayout><PaymentCanceled /></PublicLayout>} />
-            <Route path="/privacy-policy" element={<PublicLayout><PrivacyPolicy /></PublicLayout>} />
-            <Route path="/terms-of-service" element={<PublicLayout><TermsOfService /></PublicLayout>} />
+            <Route path="/privacy" element={<PublicLayout><Privacy /></PublicLayout>} />
+            <Route path="/terms" element={<PublicLayout><Terms /></PublicLayout>} />
+            <Route path="/data-deletion" element={<PublicLayout><DataDeletion /></PublicLayout>} />
 
             {/* Protected routes */}
             <Route path="/dashboard" element={<RoleBasedLayout><Dashboard /></RoleBasedLayout>} />
