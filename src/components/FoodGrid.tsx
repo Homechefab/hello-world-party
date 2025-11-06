@@ -1,12 +1,12 @@
 import { useState } from "react";
 import FoodCard from "./FoodCard";
 import OrderDialog from "./OrderDialog";
-import meatballsImage from "@/assets/meatballs.jpg";
-import pastaImage from "@/assets/pasta.jpg";
-import soupImage from "@/assets/soup.jpg";
-import chickenRiceImage from "@/assets/chicken-rice.jpg";
-import thaiCurryImage from "@/assets/thai-curry.jpg";
-import falafelImage from "@/assets/falafel-hummus.jpg";
+import meatballsImage from "@/assets/real-meatballs.jpg";
+import pastaImage from "@/assets/real-pasta.jpg";
+import soupImage from "@/assets/real-soup.jpg";
+import chickenRiceImage from "@/assets/real-chicken-rice.jpg";
+import thaiCurryImage from "@/assets/real-thai-curry.jpg";
+import falafelImage from "@/assets/real-falafel.jpg";
 
 // Mapping of dish titles to Stripe Price IDs
 const dishPriceIds: Record<string, string> = {
