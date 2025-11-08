@@ -15,6 +15,7 @@ import {
   Target
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import RestaurantFAQ from "@/components/services/RestaurantFAQ";
 
 const RestaurantPartnership = () => {
   const benefits = [
@@ -234,6 +235,13 @@ const RestaurantPartnership = () => {
               Mejla oss
             </Button>
           </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <RestaurantFAQ />
         </div>
       </section>
     </div>
