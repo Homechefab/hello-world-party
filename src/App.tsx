@@ -41,7 +41,6 @@ import { KitchenPartnerDashboard } from "./pages/kitchen-partner/KitchenPartnerD
 import { KitchenPartnerOnboarding } from "./pages/kitchen-partner/KitchenPartnerOnboarding";
 import KitchenPartnerHowItWorks from "./pages/kitchen-partner/HowItWorks";
 import PricingTerms from "./pages/kitchen-partner/PricingTerms";
-import SecurityInsurance from "./pages/kitchen-partner/SecurityInsurance";
 import PartnerSupport from "./pages/kitchen-partner/PartnerSupport";
 import DeliveryPartnerOnboarding from "./pages/delivery-partner/DeliveryPartnerOnboarding";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
@@ -94,8 +93,6 @@ const App = () => {
             <Route path="/hyr-ut-ditt-kok" element={<PublicLayout><HyrUtDittKokInfo /></PublicLayout>} />
             <Route path="/kitchen-partner/how-it-works" element={<PublicLayout><KitchenPartnerHowItWorks /></PublicLayout>} />
             <Route path="/kitchen-partner/pricing-terms" element={<PublicLayout><PricingTerms /></PublicLayout>} />
-            <Route path="/kitchen-partner/security" element={<Navigate to="/kitchen-partner/security-insurance" replace />} />
-            <Route path="/kitchen-partner/security-insurance" element={<PublicLayout><SecurityInsurance /></PublicLayout>} />
             <Route path="/kitchen-partner/support" element={<PublicLayout><PartnerSupport /></PublicLayout>} />
             <Route path="/restaurant" element={<PublicLayout><RestaurantPartnership /></PublicLayout>} />
             <Route path="/restaurant/partnership" element={<PublicLayout><RestaurantPartnership /></PublicLayout>} />

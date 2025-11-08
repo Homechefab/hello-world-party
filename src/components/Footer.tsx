@@ -88,7 +88,6 @@ const Footer = () => {
               <li><Link to="/hyr-ut-ditt-kok" className="hover:text-primary transition-colors">Hyr ut ditt restaurangkök</Link></li>
               <li><Link to="/kitchen-partner/how-it-works" className="hover:text-primary transition-colors">Så fungerar det</Link></li>
               <li><Link to="/kitchen-partner/pricing-terms" className="hover:text-primary transition-colors">Priser & villkor</Link></li>
-              <li><Link to="/kitchen-partner/security-insurance" className="hover:text-primary transition-colors">Säkerhet & försäkring</Link></li>
               <li><Link to="/kitchen-partner/support" className="hover:text-primary transition-colors">Partnersupport</Link></li>
             </ul>
           </div>
