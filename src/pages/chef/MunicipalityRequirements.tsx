@@ -8,7 +8,13 @@ const MunicipalityRequirements = () => {
     {
       title: "Tillstånd från kommunen",
       description: "Du måste ansöka om tillstånd hos din lokala kommun för att bedriva livsmedelsverksamhet från hemmet. Kontakta miljö- och hälsoskyddsförvaltningen.",
-      icon: Building2
+      icon: Building2,
+      details: [
+        "I samband med registrering tar miljöförvaltningen ut en avgift",
+        "För år 2025 är registreringsavgiften 1 555 kronor (samma som 2024)",
+        "Avgiften kan variera mellan olika kommuner beroende på deras taxa",
+        "Du betalar avgiften när du får en faktura från miljöförvaltningen efter att de avslutat arbetet med administrationen"
+      ]
     }
   ];
 
@@ -125,9 +131,19 @@ const MunicipalityRequirements = () => {
                   <div className="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                     <IconComponent className="w-5 h-5 text-primary" />
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground mb-1">{req.title}</h3>
-                    <p className="text-sm text-muted-foreground">{req.description}</p>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-foreground mb-2">{req.title}</h3>
+                    <p className="text-sm text-muted-foreground mb-3">{req.description}</p>
+                    {req.details && (
+                      <ul className="space-y-1.5 ml-4">
+                        {req.details.map((detail, detailIndex) => (
+                          <li key={detailIndex} className="text-sm text-muted-foreground flex items-start gap-2">
+                            <CheckCircle className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                            <span>{detail}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 </div>
               );
