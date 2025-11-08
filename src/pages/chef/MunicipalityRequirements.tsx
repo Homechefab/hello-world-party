@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, FileText, ClipboardCheck, Building2, Shield, Thermometer, Droplets } from "lucide-react";
 import MunicipalitySearch from "@/components/MunicipalitySearch";
 import ApplicationTimeline from "@/components/chef/ApplicationTimeline";
+import ChefFAQ from "@/components/chef/ChefFAQ";
 
 const MunicipalityRequirements = () => {
   const requirements = [
@@ -272,6 +273,9 @@ const MunicipalityRequirements = () => {
             <MunicipalitySearch />
           </CardContent>
         </Card>
+
+        {/* FAQ Section */}
+        <ChefFAQ />
       </div>
     </div>
   );
