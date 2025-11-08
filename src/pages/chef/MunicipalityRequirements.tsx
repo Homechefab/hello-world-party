@@ -9,7 +9,10 @@ const MunicipalityRequirements = () => {
       title: "Tillstånd från kommunen",
       description: "Du måste ansöka om tillstånd hos din lokala kommun för att bedriva livsmedelsverksamhet från hemmet. Kontakta miljö- och hälsoskyddsförvaltningen.",
       icon: Building2
-    },
+    }
+  ];
+
+  const goodToHave = [
     {
       title: "Registrerad näringsverksamhet",
       description: "Registrera din verksamhet hos Skatteverket och Bolagsverket för att kunna fakturera kunder lagligt.",
@@ -48,12 +51,12 @@ const MunicipalityRequirements = () => {
           </p>
         </div>
 
-        {/* Tillstånd och registrering */}
+        {/* Tillstånd och krav */}
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileText className="w-5 h-5 text-primary" />
-              Tillstånd och registrering
+              Tillstånd och krav
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -67,6 +70,32 @@ const MunicipalityRequirements = () => {
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">{req.title}</h3>
                     <p className="text-sm text-muted-foreground">{req.description}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </CardContent>
+        </Card>
+
+        {/* Bra att ha */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ClipboardCheck className="w-5 h-5 text-primary" />
+              Bra att ha
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {goodToHave.map((item, index) => {
+              const IconComponent = item.icon;
+              return (
+                <div key={index} className="flex items-start gap-4 p-4 border rounded-lg hover:bg-accent/50 transition-colors">
+                  <div className="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                    <IconComponent className="w-5 h-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-foreground mb-1">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground">{item.description}</p>
                   </div>
                 </div>
               );
