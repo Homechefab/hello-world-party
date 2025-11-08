@@ -2,6 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, FileText, ClipboardCheck, Building2, Shield, Thermometer, Droplets } from "lucide-react";
 import MunicipalitySearch from "@/components/MunicipalitySearch";
+import ApplicationTimeline from "@/components/chef/ApplicationTimeline";
 
 const MunicipalityRequirements = () => {
   const requirements = [
@@ -114,6 +115,9 @@ const MunicipalityRequirements = () => {
             För att sälja mat via Homechef måste du uppfylla följande krav enligt svensk livsmedelslagstiftning
           </p>
         </div>
+
+        {/* Application Timeline */}
+        <ApplicationTimeline />
 
         {/* Tillstånd och krav */}
         <Card className="mb-8">
