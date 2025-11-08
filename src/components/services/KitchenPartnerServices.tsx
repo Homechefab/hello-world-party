@@ -2,11 +2,10 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Building, Calendar, Shield, TrendingUp, Truck } from "lucide-react";
+import { Building, Calendar, TrendingUp, Truck } from "lucide-react";
 import rentKitchenImage from "@/assets/service-rent-kitchen.jpg";
 import deliveryImage from "@/assets/service-delivery.jpg";
 import partnershipImage from "@/assets/partnership-collaboration.jpg";
-import securityImage from "@/assets/security-insurance-kitchen.jpg";
 
 const kitchenPartnerServices = [
   {
@@ -32,14 +31,6 @@ const kitchenPartnerServices = [
     href: "/partnership",
     icon: TrendingUp,
     color: "from-orange-500 to-orange-600"
-  },
-  {
-    image: securityImage,
-    title: "Säkerhet & försäkring",
-    description: "Så ser vi till att ditt kök är tryggt och försäkrat",
-    href: "/kitchen-partner/security-insurance",
-    icon: Shield,
-    color: "from-green-500 to-green-600"
   }
 ];
 
