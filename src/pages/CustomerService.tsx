@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Phone, Mail, MessageCircle, Clock, Users, HeadphonesIcon, CheckCircle } from "lucide-react";
+import CustomerFAQ from "@/components/services/CustomerFAQ";
 
 const CustomerService = () => {
   const contactMethods = [
@@ -50,43 +51,6 @@ const CustomerService = () => {
       title: "Teknisk support",
       description: "App-problem, buggrapporter och tekniska frågor",
       topics: ["App kraschar", "Rapportera bugg", "Kompatibilitet", "Uppdateringar"]
-    }
-  ];
-
-  const faqCategories = [
-    {
-      title: "Beställningar",
-      questions: [
-        {
-          q: "Hur avbokar jag en beställning?",
-          a: "Du kan avboka kostnadsfritt upp till 2 timmar före upphämtningstid via din orderhistorik eller genom att kontakta kocken direkt."
-        },
-        {
-          q: "Vad händer om kocken är sjuk?",
-          a: "Om kocken blir sjuk får du automatiskt pengarna tillbaka eller kan omvandla till kredit för framtida beställningar."
-        },
-        {
-          q: "Kan jag ändra upphämtningstid?",
-          a: "Ja, kontakta kocken direkt via meddelanden eller ring vår kundservice så hjälper vi till att koordinera."
-        }
-      ]
-    },
-    {
-      title: "Betalningar",
-      questions: [
-        {
-          q: "Vilka betalningssätt accepteras?",
-          a: "Vi accepterar alla större kredit-/betalkort samt Klarna. Alla betalningar är säkra och krypterade."
-        },
-        {
-          q: "När debiteras mitt kort?",
-          a: "Ditt kort debiteras direkt när du bekräftar beställningen. Vid Klarna gäller deras betalningsvillkor."
-        },
-        {
-          q: "Hur får jag refund?",
-          a: "Refunds behandlas inom 3-5 arbetsdagar tillbaka till samma betalningsmetod du använde vid köpet."
-        }
-      ]
     }
   ];
 
@@ -189,41 +153,8 @@ const CustomerService = () => {
 
       {/* FAQ Section */}
       <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">
-              Vanliga frågor
-            </h2>
-            <p className="text-muted-foreground">
-              Här hittar du svar på de vanligaste frågorna
-            </p>
-          </div>
-
-          <div className="max-w-4xl mx-auto space-y-8">
-            {faqCategories.map((category, categoryIndex) => (
-              <div key={categoryIndex}>
-                <h3 className="text-2xl font-semibold text-foreground mb-6 border-b border-border pb-2">
-                  {category.title}
-                </h3>
-                <div className="space-y-4">
-                  {category.questions.map((item, questionIndex) => (
-                    <Card key={questionIndex}>
-                      <CardHeader>
-                        <CardTitle className="text-lg text-foreground">
-                          {item.q}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="text-muted-foreground">
-                          {item.a}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="container mx-auto px-4 max-w-4xl">
+          <CustomerFAQ />
         </div>
       </section>
 

@@ -14,6 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRole } from "@/hooks/useRole";
 import { HyrUtDittKok } from "./HyrUtDittKok";
 import rentKitchenImage from "@/assets/service-rent-kitchen.jpg";
+import KitchenPartnerFAQ from "@/components/services/KitchenPartnerFAQ";
 
 const HyrUtDittKokInfo = () => {
   const { user } = useAuth();
@@ -266,6 +267,13 @@ const HyrUtDittKokInfo = () => {
               Registrera ditt kök nu
             </Link>
           </Button>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <KitchenPartnerFAQ />
         </div>
       </section>
     </div>
