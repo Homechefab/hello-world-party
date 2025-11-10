@@ -22,28 +22,59 @@ serve(async (req) => {
 
     // Get environment variables
     const klarnaApiKey = Deno.env.get("KLARNA_API_KEY");
-    const klarnaRegion = Deno.env.get("KLARNA_REGION") || "eu"; // eu, na, or oc
+    const klarnaRegion = Deno.env.get("KLARNA_REGION") || "eu";
     
     if (!klarnaApiKey) {
       throw new Error("KLARNA_API_KEY is not set in Supabase secrets");
     }
 
-    // Create Supabase client for user authentication
+    // Create Supabase clients
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
 
-    // Parse request body
-    const { amount, currency = "SEK", orderLines, userEmail } = await req.json();
+    const supabaseService = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+      { auth: { persistSession: false } }
+    );
+
+    // Parse request body - accept dishId and quantity instead of amount
+    const { dishId, quantity, userEmail } = await req.json();
     
-    if (!amount || !orderLines) {
-      throw new Error("Amount and orderLines are required");
+    if (!dishId || !quantity) {
+      throw new Error("dishId and quantity are required");
     }
 
-    logStep("Received payment request", { amount, currency, orderLines });
+    if (quantity < 1 || quantity > 100) {
+      throw new Error("Quantity must be between 1 and 100");
+    }
 
-    // Try to get authenticated user, but allow guest checkout
+    logStep("Received payment request", { dishId, quantity });
+
+    // Look up the dish price from database
+    const { data: dish, error: dishError } = await supabaseService
+      .from('dishes')
+      .select('id, name, price, chef_id')
+      .eq('id', dishId)
+      .single();
+
+    if (dishError || !dish) {
+      logStep('Dish lookup failed', { error: dishError });
+      throw new Error('Invalid dish ID');
+    }
+
+    logStep('Dish found', { name: dish.name, price: dish.price });
+
+    // Calculate total amount server-side (price in SEK, convert to öre for Klarna)
+    const unitPriceInOre = Math.round(dish.price * 100);
+    const totalAmountInOre = unitPriceInOre * quantity;
+    const taxAmountInOre = Math.round(totalAmountInOre * 0.2); // 20% VAT
+
+    logStep('Calculated amounts', { unitPriceInOre, quantity, totalAmountInOre, taxAmountInOre });
+
+    // Try to get authenticated user
     let user = null;
     let customerEmail = userEmail || "guest@homechef.se";
     
@@ -61,7 +92,19 @@ serve(async (req) => {
       logStep("No authenticated user, proceeding as guest", { email: customerEmail });
     }
 
-    // Determine Klarna API endpoint based on region
+    // Build order lines with validated server-side prices
+    const orderLines = [{
+      type: "physical",
+      reference: dish.id,
+      name: dish.name,
+      quantity: quantity,
+      unit_price: unitPriceInOre,
+      tax_rate: 2000, // 20% in basis points
+      total_amount: unitPriceInOre * quantity,
+      total_tax_amount: Math.round(unitPriceInOre * quantity * 0.2)
+    }];
+
+    // Determine Klarna API endpoint
     const apiEndpoints = {
       eu: "https://api.klarna.com",
       na: "https://api-na.klarna.com", 
@@ -72,10 +115,10 @@ serve(async (req) => {
     // Create Klarna checkout session
     const klarnaOrder = {
       purchase_country: "SE",
-      purchase_currency: currency,
+      purchase_currency: "SEK",
       locale: "sv-SE",
-      order_amount: amount,
-      order_tax_amount: Math.round(amount * 0.2), // 20% moms
+      order_amount: totalAmountInOre,
+      order_tax_amount: taxAmountInOre,
       order_lines: orderLines,
       merchant_urls: {
         terms: `${req.headers.get("origin")}/terms`,
@@ -89,7 +132,7 @@ serve(async (req) => {
 
     logStep("Creating Klarna order", klarnaOrder);
 
-    // Call Klarna API to create checkout session
+    // Call Klarna API
     const klarnaResponse = await fetch(`${baseUrl}/checkout/v3/orders`, {
       method: "POST",
       headers: {
@@ -108,20 +151,14 @@ serve(async (req) => {
     const klarnaData = await klarnaResponse.json();
     logStep("Klarna checkout session created", { orderId: klarnaData.order_id });
 
-    // Optional: Store order in Supabase for tracking
+    // Store order in Supabase
     try {
-      const supabaseService = createClient(
-        Deno.env.get("SUPABASE_URL") ?? "",
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
-        { auth: { persistSession: false } }
-      );
-
       await supabaseService.from("orders").insert({
         user_id: user?.id,
         klarna_order_id: klarnaData.order_id,
         customer_email: customerEmail,
-        amount: amount,
-        currency: currency,
+        amount: dish.price * quantity,
+        currency: "SEK",
         status: "pending",
         order_lines: orderLines,
         created_at: new Date().toISOString()
@@ -130,7 +167,6 @@ serve(async (req) => {
       logStep("Order stored in Supabase", { orderId: klarnaData.order_id });
     } catch (dbError) {
       logStep("Failed to store order in Supabase", dbError);
-      // Continue anyway - payment is more important than logging
     }
 
     return new Response(JSON.stringify({
