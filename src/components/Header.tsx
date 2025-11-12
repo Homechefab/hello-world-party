@@ -177,37 +177,35 @@ const Header = () => {
               
               <div className="mt-8 space-y-6">
                 {/* Role Switcher - Mobile */}
-                {(roles.includes('admin') || roles.length > 1) && (
-                  <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground">Nuvarande roll:</p>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="w-full justify-between">
-                          <span className="flex items-center gap-2">
-                            <Users className="w-4 h-4" />
-                            {roleLabels[role || 'customer']}
-                          </span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-full z-50 bg-background">
-                        <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        {(['customer','chef','kitchen_partner','restaurant','admin'] as const).map((r) => (
-                          <DropdownMenuItem
-                            key={r}
-                            onClick={() => {
-                              handleRoleSwitch(r);
-                              setMenuOpen(false);
-                            }}
-                            className={role === r ? "bg-secondary" : ""}
-                          >
-                            {roleLabels[r]}
-                          </DropdownMenuItem>
-                        ))}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                )}
+                <div className="space-y-2">
+                  <p className="text-sm text-muted-foreground">Nuvarande roll:</p>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="w-full justify-between">
+                        <span className="flex items-center gap-2">
+                          <Users className="w-4 h-4" />
+                          {roleLabels[role || 'customer']}
+                        </span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-full z-50 bg-background">
+                      <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {(['customer','chef','kitchen_partner','restaurant','admin'] as const).map((r) => (
+                        <DropdownMenuItem
+                          key={r}
+                          onClick={() => {
+                            handleRoleSwitch(r);
+                            setMenuOpen(false);
+                          }}
+                          className={role === r ? "bg-secondary" : ""}
+                        >
+                          {roleLabels[r]}
+                        </DropdownMenuItem>
+                      ))}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
 
                 {/* Mobile Search */}
                 <div className="relative">
