@@ -53,6 +53,32 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
     });
   }, [authUser, role, loading, location.pathname, navigate]);
 
+  // Redirect to the correct dashboard when role changes to avoid race conditions
+  React.useEffect(() => {
+    if (loading) return;
+
+    const targets: Record<string, { base: string; target: string }> = {
+      admin: { base: '/admin', target: '/admin/dashboard' },
+      chef: { base: '/chef', target: '/chef/dashboard' },
+      kitchen_partner: { base: '/kitchen-partner', target: '/kitchen-partner/dashboard' },
+      restaurant: { base: '/restaurant', target: '/restaurant/dashboard' },
+      customer: { base: '/', target: '/' },
+    };
+
+    if (!role) {
+      const protectedBases = ['/chef', '/admin', '/kitchen-partner', '/restaurant'];
+      if (protectedBases.some((b) => location.pathname.startsWith(b))) {
+        navigate('/');
+      }
+      return;
+    }
+
+    const config = targets[role];
+    if (config && !location.pathname.startsWith(config.base)) {
+      navigate(config.target);
+    }
+  }, [role, loading, location.pathname, navigate]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
