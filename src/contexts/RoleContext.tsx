@@ -147,10 +147,9 @@ export function RoleProvider({ children }: { children: ReactNode }) {
 
   const switchRole = (newRole: UserRole) => {
     console.log('switchRole called with:', newRole, 'current roles:', roles);
-    // Only allow switching to roles the user actually has
+    // Allow switching even if role is not persisted (preview/demo convenience)
     if (!roles.includes(newRole)) {
-      console.error('Cannot switch to role user does not have:', newRole);
-      return;
+      setRoles(prev => [...prev, newRole]);
     }
     setRole(newRole);
     if (user) {
