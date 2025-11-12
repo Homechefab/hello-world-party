@@ -81,7 +81,7 @@ export const AdminDashboard = () => {
         <p className="text-muted-foreground">Översikt och hantering av plattformen</p>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 mb-8">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Antal användare</CardTitle>
@@ -150,13 +150,25 @@ export const AdminDashboard = () => {
       </div>
 
       <Tabs defaultValue="chefs" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="chefs">Kock-ansökningar</TabsTrigger>
-          <TabsTrigger value="kitchen-partners">Kökspartner-ansökningar</TabsTrigger>
-          <TabsTrigger value="users">Användarhantering</TabsTrigger>
-          <TabsTrigger value="logins">Inloggningar</TabsTrigger>
-          <TabsTrigger value="complaints">Klagomål</TabsTrigger>
-          <TabsTrigger value="settings">Inställningar</TabsTrigger>
+        <TabsList className="inline-flex w-full overflow-x-auto flex-nowrap justify-start h-auto p-1">
+          <TabsTrigger value="chefs" className="whitespace-nowrap">
+            <span className="hidden sm:inline">Kock-ansökningar</span>
+            <span className="sm:hidden">Kockar</span>
+          </TabsTrigger>
+          <TabsTrigger value="kitchen-partners" className="whitespace-nowrap">
+            <span className="hidden sm:inline">Kökspartner-ansökningar</span>
+            <span className="sm:hidden">Kökspartners</span>
+          </TabsTrigger>
+          <TabsTrigger value="users" className="whitespace-nowrap">
+            <span className="hidden sm:inline">Användarhantering</span>
+            <span className="sm:hidden">Användare</span>
+          </TabsTrigger>
+          <TabsTrigger value="logins" className="whitespace-nowrap">Inloggningar</TabsTrigger>
+          <TabsTrigger value="complaints" className="whitespace-nowrap">Klagomål</TabsTrigger>
+          <TabsTrigger value="settings" className="whitespace-nowrap">
+            <span className="hidden sm:inline">Inställningar</span>
+            <span className="sm:hidden">Inst.</span>
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="chefs">
