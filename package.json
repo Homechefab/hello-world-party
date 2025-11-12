@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "lovable:dev": "vite --mode development",
     "lovable:build": "vite build --mode preview",
-    "lovable:serve": "vite preview --mode preview"
+    "lovable:serve": "vite preview --mode preview",
+    "create-test-accounts": "bun run scripts/create-test-accounts.ts"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.2",
