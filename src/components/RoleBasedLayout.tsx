@@ -33,7 +33,7 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
     const roleRoutes = {
       chef: ['/chef'],
       admin: ['/admin'],
-      kitchen_partner: ['/partner'],
+      kitchen_partner: ['/kitchen-partner'],
       restaurant: ['/restaurant']
     };
 
@@ -46,11 +46,7 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
         }
         
         if (role !== requiredRole) {
-          if (role === 'chef' && requiredRole === 'chef' && location.pathname !== '/chef/dashboard') {
-            navigate('/chef/application');
-          } else {
-            navigate('/');
-          }
+          navigate('/');
           return;
         }
       }

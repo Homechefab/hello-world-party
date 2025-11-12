@@ -39,13 +39,16 @@ const Header = () => {
   const handleRoleSwitch = (newRole: string) => {
     switchRole(newRole as any);
     toast.success(`Bytte till ${roleLabels[newRole]}`);
-    
-    // Navigate to admin dashboard, otherwise go to home
-    if (newRole === 'admin') {
-      navigate('/admin/dashboard');
-    } else {
-      navigate('/');
-    }
+
+    const targetByRole: Record<string, string> = {
+      customer: '/',
+      admin: '/admin/dashboard',
+      chef: '/chef/dashboard',
+      kitchen_partner: '/kitchen-partner/dashboard',
+      restaurant: '/restaurant/dashboard',
+    };
+
+    navigate(targetByRole[newRole] || '/');
   };
 
   // Removed auth requirement - all features available
