@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { ChefApprovalManager } from '@/components/admin/ChefApprovalManager';
 import { KitchenPartnerApprovalManager } from '@/components/admin/KitchenPartnerApprovalManager';
+import { LoginLogsViewer } from '@/components/admin/LoginLogsViewer';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect } from 'react';
 import { 
@@ -148,10 +149,11 @@ export const AdminDashboard = () => {
       </div>
 
       <Tabs defaultValue="chefs" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="chefs">Kock-ansökningar</TabsTrigger>
           <TabsTrigger value="kitchen-partners">Kökspartner-ansökningar</TabsTrigger>
           <TabsTrigger value="users">Användarhantering</TabsTrigger>
+          <TabsTrigger value="logins">Inloggningar</TabsTrigger>
           <TabsTrigger value="complaints">Klagomål</TabsTrigger>
           <TabsTrigger value="settings">Inställningar</TabsTrigger>
         </TabsList>
@@ -174,6 +176,10 @@ export const AdminDashboard = () => {
               <p className="text-muted-foreground">Funktionen kommer snart...</p>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="logins">
+          <LoginLogsViewer />
         </TabsContent>
 
         <TabsContent value="complaints">
