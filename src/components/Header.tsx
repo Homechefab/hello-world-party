@@ -43,7 +43,7 @@ const Header = () => {
     const targetByRole: Record<string, string> = {
       customer: '/',
       admin: '/admin/dashboard',
-      chef: '/chef/dashboard',
+      chef: '/',
       kitchen_partner: '/kitchen-partner/dashboard',
       restaurant: '/restaurant/dashboard',
     };
