@@ -45,7 +45,7 @@ const Header = () => {
       admin: '/admin/dashboard',
       chef: '/',
       kitchen_partner: '/kitchen-partner/dashboard',
-      restaurant: '/restaurant/dashboard',
+      restaurant: '/',
     };
 
     navigate(targetByRole[newRole] || '/');
