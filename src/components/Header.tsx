@@ -37,6 +37,13 @@ const Header = () => {
   };
 
   const handleRoleSwitch = (newRole: string) => {
+    // Only allow navigation if the user actually has the role (customer always allowed)
+    const canUse = newRole === 'customer' || roles.includes(newRole as any);
+    if (!canUse) {
+      toast.error(`Du har inte behörighet till rollen ${roleLabels[newRole]}`);
+      return;
+    }
+
     switchRole(newRole as any);
     toast.success(`Bytte till ${roleLabels[newRole]}`);
 
@@ -111,13 +118,13 @@ const Header = () => {
             <DropdownMenuContent align="end" className="w-48 z-50 bg-background">
               <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {(['customer','chef','kitchen_partner','restaurant','admin'] as const).map((r) => (
+              {(["customer", ...roles] as string[]).map((r) => (
                 <DropdownMenuItem
                   key={r}
                   onClick={() => handleRoleSwitch(r)}
                   className={role === r ? "bg-secondary" : ""}
                 >
-                  {roleLabels[r]}
+                  {roleLabels[r] || r}
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -192,7 +199,7 @@ const Header = () => {
                       <DropdownMenuContent className="w-full z-50 bg-background">
                         <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        {(['customer','chef','kitchen_partner','restaurant','admin'] as const).map((r) => (
+                        {(["customer", ...roles] as string[]).map((r) => (
                           <DropdownMenuItem
                             key={r}
                             onClick={() => {
@@ -201,7 +208,7 @@ const Header = () => {
                             }}
                             className={role === r ? "bg-secondary" : ""}
                           >
-                            {roleLabels[r]}
+                            {roleLabels[r] || r}
                           </DropdownMenuItem>
                         ))}
                       </DropdownMenuContent>
