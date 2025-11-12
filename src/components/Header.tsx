@@ -192,7 +192,7 @@ const Header = () => {
                       <DropdownMenuContent className="w-full z-50 bg-background">
                         <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        {(["customer", ...roles] as string[]).map((r) => (
+                        {(['customer','chef','kitchen_partner','restaurant','admin'] as const).map((r) => (
                           <DropdownMenuItem
                             key={r}
                             onClick={() => {
@@ -201,7 +201,7 @@ const Header = () => {
                             }}
                             className={role === r ? "bg-secondary" : ""}
                           >
-                            {roleLabels[r] || r}
+                            {roleLabels[r]}
                           </DropdownMenuItem>
                         ))}
                       </DropdownMenuContent>
