@@ -176,7 +176,7 @@ const Header = () => {
               </SheetHeader>
               
               <div className="mt-8 space-y-6">
-                {/* Role Switcher - Mobile (only customer and chef roles) */}
+                {/* Role Switcher - Mobile */}
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">Nuvarande roll:</p>
                   <DropdownMenu>
@@ -191,7 +191,7 @@ const Header = () => {
                     <DropdownMenuContent className="w-full z-50 bg-background">
                       <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      {(['customer','chef'] as const).map((r) => (
+                      {(['customer','chef','kitchen_partner','restaurant','admin'] as const).map((r) => (
                         <DropdownMenuItem
                           key={r}
                           onClick={() => {
