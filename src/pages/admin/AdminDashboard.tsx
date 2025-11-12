@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { ChefApprovalManager } from '@/components/admin/ChefApprovalManager';
 import { KitchenPartnerApprovalManager } from '@/components/admin/KitchenPartnerApprovalManager';
 import { LoginLogsViewer } from '@/components/admin/LoginLogsViewer';
+import { UserManagement } from '@/components/admin/UserManagement';
 import { supabase } from '@/integrations/supabase/client';
 import { useEffect } from 'react';
 import { 
@@ -167,15 +168,7 @@ export const AdminDashboard = () => {
         </TabsContent>
 
         <TabsContent value="users">
-          <Card>
-            <CardHeader>
-              <CardTitle>Användarhantering</CardTitle>
-              <CardDescription>Se alla användare på plattformen</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Funktionen kommer snart...</p>
-            </CardContent>
-          </Card>
+          <UserManagement />
         </TabsContent>
 
         <TabsContent value="logins">
