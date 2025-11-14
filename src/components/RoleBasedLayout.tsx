@@ -33,7 +33,7 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
     const roleRoutes = {
       chef: ['/chef'],
       admin: ['/admin'],
-      kitchen_partner: ['/partner'],
+      kitchen_partner: ['/kitchen-partner'],
       restaurant: ['/restaurant']
     };
 
@@ -46,16 +46,38 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
         }
         
         if (role !== requiredRole) {
-          if (role === 'chef' && requiredRole === 'chef' && location.pathname !== '/chef/dashboard') {
-            navigate('/chef/application');
-          } else {
-            navigate('/');
-          }
+          navigate('/');
           return;
         }
       }
     });
   }, [authUser, role, loading, location.pathname, navigate]);
+
+  // Redirect to the correct dashboard when role changes to avoid race conditions
+  React.useEffect(() => {
+    if (loading) return;
+
+    const targets: Record<string, { base: string; target: string }> = {
+      admin: { base: '/admin', target: '/admin/dashboard' },
+      chef: { base: '/chef', target: '/chef/dashboard' },
+      kitchen_partner: { base: '/kitchen-partner', target: '/kitchen-partner/dashboard' },
+      restaurant: { base: '/restaurant', target: '/restaurant/dashboard' },
+      customer: { base: '/', target: '/' },
+    };
+
+    if (!role) {
+      const protectedBases = ['/chef', '/admin', '/kitchen-partner', '/restaurant'];
+      if (protectedBases.some((b) => location.pathname.startsWith(b))) {
+        navigate('/');
+      }
+      return;
+    }
+
+    const config = targets[role];
+    if (config && !location.pathname.startsWith(config.base)) {
+      navigate(config.target);
+    }
+  }, [role, loading, location.pathname, navigate]);
 
   if (loading) {
     return (
