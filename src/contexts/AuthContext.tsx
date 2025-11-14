@@ -20,9 +20,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     // Set up auth listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       const u = session?.user ? { email: session.user.email ?? '', id: session.user.id } : null;
       setUser(u);
+      
+      // Log sign in events
+      if (event === 'SIGNED_IN' && session?.user) {
+        setTimeout(() => {
+          supabase.from('login_logs').insert({
+            user_id: session.user.id,
+            email: session.user.email ?? '',
+            user_agent: navigator.userAgent
+          }).then(({ error }) => {
+            if (error) console.error('Failed to log login:', error);
+          });
+        }, 0);
+      }
     });
 
     // Then check existing session
