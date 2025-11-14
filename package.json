@@ -76,6 +76,7 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^7.4.4",
+    "@react-native-community/cli": "latest",
     "@chromatic-com/storybook": "4.1.1",
     "@eslint/js": "^9.9.0",
     "@storybook/addon-a11y": "9.1.10",
