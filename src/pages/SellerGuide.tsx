@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   ChefHat, 
   DollarSign, 
@@ -348,28 +347,33 @@ const SellerGuide = () => {
           {/* Säljarcommunityn */}
           <section id="community" className="mb-16">
             <h2 className="text-3xl font-bold text-center mb-8">Säljarcommunityn</h2>
-            <Tabs defaultValue="forum" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 mb-8">
-                {communityFeatures.map((feature) => (
-                  <TabsTrigger key={feature.id} value={feature.id} className="flex items-center gap-2">
-                    {feature.icon}
-                    <span className="hidden sm:inline">{feature.title}</span>
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {communityFeatures.map((feature) => (
-                <TabsContent key={feature.id} value={feature.id}>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-3">
+                <Dialog key={feature.id}>
+                  <DialogTrigger asChild>
+                    <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-3">
+                          <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center text-white">
+                            {feature.icon}
+                          </div>
+                          {feature.title}
+                        </CardTitle>
+                        <CardDescription>{feature.description}</CardDescription>
+                      </CardHeader>
+                    </Card>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                      <DialogTitle className="flex items-center gap-3">
                         <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center text-white">
                           {feature.icon}
                         </div>
                         {feature.title}
-                      </CardTitle>
-                      <CardDescription>{feature.content.intro}</CardDescription>
-                    </CardHeader>
-                    <CardContent>
+                      </DialogTitle>
+                      <DialogDescription>{feature.content.intro}</DialogDescription>
+                    </DialogHeader>
+                    <div className="mt-4">
                       <ul className="space-y-3">
                         {feature.content.features.map((item, index) => (
                           <li key={index} className="flex items-start gap-3">
@@ -378,11 +382,11 @@ const SellerGuide = () => {
                           </li>
                         ))}
                       </ul>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
+                    </div>
+                  </DialogContent>
+                </Dialog>
               ))}
-            </Tabs>
+            </div>
           </section>
 
           {/* CTA sektion */}
