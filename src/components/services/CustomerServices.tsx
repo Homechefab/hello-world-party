@@ -125,22 +125,6 @@ const CustomerServices = () => {
                 Tjäna pengar på din matlagning. Sätt ditt eget pris, jobba när du vill och nå kunder nära dig.
               </p>
               
-              {/* Fördelar grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 max-w-3xl mx-auto">
-                <div className="flex items-center justify-center gap-2 text-sm font-medium text-white drop-shadow-lg">
-                  <DollarSign className="w-5 h-5 text-green-400 drop-shadow-lg" />
-                  <span>Tjäna extra pengar</span>
-                </div>
-                <div className="flex items-center justify-center gap-2 text-sm font-medium text-white drop-shadow-lg">
-                  <Users className="w-5 h-5 text-blue-400 drop-shadow-lg" />
-                  <span>Nå fler kunder</span>
-                </div>
-                <div className="flex items-center justify-center gap-2 text-sm font-medium text-white drop-shadow-lg">
-                  <Star className="w-5 h-5 text-yellow-400 drop-shadow-lg" />
-                  <span>Säker plattform</span>
-                </div>
-              </div>
-              
               <Link to="/chef/application">
                 <Button size="lg" className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white border-0 shadow-xl hover:shadow-2xl transition-all transform hover:scale-105">
                   Ansök om att bli kock
