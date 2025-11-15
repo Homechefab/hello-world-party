@@ -112,14 +112,8 @@ const LiveChat = () => {
       return 'Hej! Just nu har vi tekniska problem med chatten. Ring oss gärna på 0734234686 (vardagar 08:00-17:00) så hjälper vi dig direkt! 😊';
     }
   };
-    if (message.includes('tack') || message.includes('thanks')) {
-      return 'Så kul att jag kunde hjälpa! Om du har fler frågor är jag här. Du kan också alltid ringa oss på 0734234686 för direkt hjälp. Ha en fantastisk dag! 😊';
-    }
-    
-    return 'Tack för din fråga! Jag hjälper dig gärna med information om Homechef - beställa mat, bli kock, hyra kök, boka privatkock eller matlagningsupplevelser. För specifik hjälp kan du ringa oss på 0734234686 (vardagar 08:00-17:00). Vad behöver du veta mer om?';
-  };
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
 
     const userMessage: Message = {
@@ -136,21 +130,23 @@ const LiveChat = () => {
     setIsTyping(true);
 
     // Get AI response
-    const aiResponse = generateAIResponse(currentMessage);
+    try {
+      const aiResponse = await generateAIResponse(currentMessage);
       
-    setTimeout(() => {
       setIsTyping(false);
       const supportMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: aiResponse,
         sender: 'support',
         timestamp: new Date(),
-        senderName: 'Emma från support'
+        senderName: 'AI Assistent'
       };
       setMessages(prev => [...prev, supportMessage]);
-    }, 1000);
-
-    toast.success('Meddelande skickat!');
+      toast.success('Meddelande skickat!');
+    } catch (error) {
+      setIsTyping(false);
+      toast.error('Kunde inte skicka meddelande. Försök igen.');
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
