@@ -64,6 +64,7 @@ const Header = () => {
   const menuItems = [
     { title: "Hem", href: "/", icon: Home },
     { title: "Kategorier", href: "#kategorier", icon: UtensilsCrossed },
+    { title: "Logokoncept", href: "/logo-concepts", icon: ChefHat },
     { title: "Betalningsdemo", href: "/payment-demo", icon: CreditCard },
     { title: "Om oss", href: "/about", icon: Info },
     { title: "Kontakt", href: "#kontakt", icon: Phone },
