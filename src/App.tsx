@@ -130,7 +130,7 @@ const App = () => {
             <Route path="/chef/försäljningsstatistik" element={<PublicLayout><SalesStatistics /></PublicLayout>} />
             <Route path="/chef/mentorskap" element={<PublicLayout><Mentorship /></PublicLayout>} />
             <Route path="/kitchen-partner/dashboard" element={<RoleBasedLayout><KitchenPartnerDashboard /></RoleBasedLayout>} />
-            <Route path="/kitchen-partner/register" element={<RoleBasedLayout><KitchenPartnerOnboarding /></RoleBasedLayout>} />
+            <Route path="/kitchen-partner/register" element={<PublicLayout><KitchenPartnerOnboarding /></PublicLayout>} />
             <Route path="/delivery-partner/onboarding" element={<RoleBasedLayout><DeliveryPartnerOnboarding /></RoleBasedLayout>} />
             <Route path="/admin/dashboard" element={<RoleBasedLayout><AdminDashboard /></RoleBasedLayout>} />
             <Route path="/restaurant/dashboard" element={<RoleBasedLayout><RestaurantDashboard /></RoleBasedLayout>} />
