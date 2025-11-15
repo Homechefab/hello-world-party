@@ -2,7 +2,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, FileText, ClipboardCheck, Building2, Shield, Thermometer, Droplets } from "lucide-react";
 import MunicipalitySearch from "@/components/MunicipalitySearch";
-import ApplicationTimeline from "@/components/chef/ApplicationTimeline";
 import ChefFAQ from "@/components/chef/ChefFAQ";
 
 const MunicipalityRequirements = () => {
@@ -117,8 +116,6 @@ const MunicipalityRequirements = () => {
           </p>
         </div>
 
-        {/* Application Timeline */}
-        <ApplicationTimeline />
 
         {/* Tillstånd och krav */}
         <Card className="mb-8">
