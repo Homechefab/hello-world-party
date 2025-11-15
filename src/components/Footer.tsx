@@ -22,7 +22,7 @@ const Footer = () => {
               <img 
                 src={homechefLogo} 
                 alt="Homechef" 
-                className="h-40 w-auto object-contain"
+                className="h-48 w-auto object-contain"
               />
             </Link>
             <p className="text-muted-foreground leading-relaxed">

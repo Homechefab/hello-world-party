@@ -82,7 +82,7 @@ const Header = () => {
           <img 
             src={homechefLogo} 
             alt="Homechef" 
-            className="h-28 w-auto object-contain"
+            className="h-36 w-auto object-contain"
           />
         </Link>
         
