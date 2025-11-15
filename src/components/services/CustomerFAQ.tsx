@@ -10,7 +10,7 @@ const CustomerFAQ = () => {
     },
     {
       question: "Är maten säker att äta?",
-      answer: "Ja, absolut! Alla kockar på Homechef måste ha godkänt livsmedelstillstånd från kommunen och följa alla hygienregler. Kockarna kontrolleras regelbundet och vi tar livsmedelssäkerhet på största allvar. Dessutom kan du läsa omdömen från andra kunder innan du beställer."
+      answer: "Ja, absolut! Alla kockar har tillstånd från kommunen och plattformen ställer krav på kunskap om hygien och säkerställande av rutiner. Vi tar livsmedelssäkerhet på största allvar och kockarna följer alla nödvändiga hygienregler."
     },
     {
       question: "Vad kostar leveransen?",
