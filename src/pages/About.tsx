@@ -23,17 +23,17 @@ const About = () => {
 
   const milestones = [
     {
-      year: "2023",
+      year: "2025",
       title: "Grundades",
       description: "Homechef startades med visionen att koppla samman matälskare"
     },
     {
-      year: "2024",
+      year: "2025",
       title: "Första kockarna",
       description: "Våra första hemmakockar började sälja sin mat på plattformen"
     },
     {
-      year: "2024",
+      year: "2025",
       title: "Lansering",
       description: "Officiell lansering av Homechef i Sverige"
     },
