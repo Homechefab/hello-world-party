@@ -134,7 +134,7 @@ const App = () => {
             <Route path="/delivery-partner/onboarding" element={<RoleBasedLayout><DeliveryPartnerOnboarding /></RoleBasedLayout>} />
             <Route path="/admin/dashboard" element={<RoleBasedLayout><AdminDashboard /></RoleBasedLayout>} />
             <Route path="/restaurant/dashboard" element={<RoleBasedLayout><RestaurantDashboard /></RoleBasedLayout>} />
-            <Route path="/restaurant/apply" element={<RoleBasedLayout><RestaurantApplicationForm /></RoleBasedLayout>} />
+            <Route path="/restaurant/apply" element={<PublicLayout><RestaurantApplicationForm /></PublicLayout>} />
             <Route path="/profile" element={<RoleBasedLayout><Profile /></RoleBasedLayout>} />
             <Route path="/my-orders" element={<RoleBasedLayout><MyOrders /></RoleBasedLayout>} />
             <Route path="/my-points" element={<RoleBasedLayout><MyPoints /></RoleBasedLayout>} />
