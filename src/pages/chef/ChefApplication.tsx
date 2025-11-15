@@ -190,9 +190,12 @@ const ChefApplication = () => {
             <p className="text-base text-muted-foreground mb-2">
               För att sälja mat krävs tillstånd från kommun
             </p>
-            <h2 className="text-2xl font-bold text-foreground mb-4">
-              Har du redan tillstånd från kommunen? Skicka in ansökan och kom igång inom 24h
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              Har du redan tillstånd från kommunen?
             </h2>
+            <p className="text-lg text-foreground">
+              Skicka in ansökan och kom igång inom 24h
+            </p>
           </div>
 
           {/* Steg-indikator */}
