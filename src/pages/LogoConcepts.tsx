@@ -1,72 +1,39 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
-import logoConcept1 from "@/assets/logo-concept-1-warm-home.png";
-import logoConcept2 from "@/assets/logo-concept-2-chefs-home.png";
-import logoConcept3 from "@/assets/logo-concept-3-community.png";
-import logoConcept4 from "@/assets/logo-concept-4-fork-home.png";
+import logoNew from "@/assets/homechef-logo-new.png";
+import logoVariant from "@/assets/homechef-logo-variant.png";
 
 const LogoConcepts = () => {
   const concepts = [
     {
       id: 1,
-      title: "Varmt Hem-Kök",
-      image: logoConcept1,
-      description: "Hus med rök som bildar ett hjärta",
-      colors: "Orange/Terrakotta + Beige",
+      title: "HC Monogram - Klassisk",
+      image: logoNew,
+      description: "Elegant serif HC-monogram med kockshatt ovanpå",
+      colors: "Svart på vit",
       pros: [
-        "Stark emotionell koppling",
-        "Varma färger stimulerar aptit",
-        "Autenticitet genom handritad känsla"
-      ],
-      cons: [
-        "Kan uppfattas som lite lekfull/barnslig"
-      ]
-    },
-    {
-      id: 2,
-      title: "Chef's Home",
-      image: logoConcept2,
-      description: "Kockhatt integrerad med hustak",
-      colors: "Röd + Grädvit",
-      pros: [
-        "Tydlig professionell signal",
-        "Bra balans mellan hemkänsla och expertis",
-        "Enkel, minnesvärd form"
-      ],
-      cons: [
-        "Lite mindre unik (liknande koncept används)"
-      ]
-    },
-    {
-      id: 3,
-      title: "Community Kitchen",
-      image: logoConcept3,
-      description: "Människor runt matskål",
-      colors: "Orange gradient + Brun",
-      pros: [
-        "Starkt gemenskapsfokus",
-        "Passar marketplace-konceptet",
-        "Visar delande och gemenskap"
-      ],
-      cons: [
-        "Mer komplex, kan bli otydlig i liten storlek"
-      ]
-    },
-    {
-      id: 4,
-      title: "Fork & Home",
-      image: logoConcept4,
-      description: "Gaffel som bildar hustaget",
-      colors: "Korall + Mörkgrön",
-      pros: [
-        "Superenkel och direkt igenkännbar",
-        "Perfekt som app-ikon",
-        "Modern och professionell",
-        "Skalbar till alla storlekar"
+        "Luxuös och premiumkänsla",
+        "Tydlig kockshatt-symbol",
+        "Elegant serif-typografi",
+        "Perfekt för varumärkesigenkänning"
       ],
       cons: [],
       recommended: true
+    },
+    {
+      id: 2,
+      title: "HC Monogram - Integrerad",
+      image: logoVariant,
+      description: "HC-monogram med kockshatt integrerad i H:et",
+      colors: "Svart på vit",
+      pros: [
+        "Kockshatten är del av designen",
+        "Unik och minnesvärd",
+        "Professionell och clean",
+        "Skalbar till alla storlekar"
+      ],
+      cons: []
     }
   ];
 
@@ -74,13 +41,13 @@ const LogoConcepts = () => {
     <div className="min-h-screen bg-background py-12 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Homechef Logokoncept</h1>
+          <h1 className="text-4xl font-bold mb-4">Homechef Nya Logotyp</h1>
           <p className="text-muted-foreground text-lg">
-            Forskningsbaserade designförslag för att bygga förtroende och locka kunder
+            HC-monogram i elegant serif-stil med integrerad kockshatt
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {concepts.map((concept) => (
             <Card key={concept.id} className={concept.recommended ? "border-primary border-2" : ""}>
               <CardHeader>
@@ -146,22 +113,22 @@ const LogoConcepts = () => {
         </div>
 
         <div className="mt-12 text-center">
-          <Card className="bg-muted/50">
+          <Card className="bg-muted/50 max-w-4xl mx-auto">
             <CardHeader>
-              <CardTitle>Forskningsgrund</CardTitle>
+              <CardTitle>Designprinciper</CardTitle>
             </CardHeader>
             <CardContent className="text-left space-y-4 text-sm">
               <p>
-                <strong>Minimalistiska logotyper ökar förtroende med 13%</strong> (Journal of Consumer Research, 2024)
+                <strong>Monogram-logotyper för premium brands</strong> - HC-monogrammet skapar en luxuös och professionell känsla, liknande de mest framgångsrika matvarumärkena.
               </p>
               <p>
-                <strong>Enkel form = 78% bättre igenkänning</strong> - Människor kommer ihåg enkla symboler mycket bättre
+                <strong>Serif-typografi bygger förtroende</strong> - Serif-fonter associeras med kvalitet, tradition och tillförlitlighet, perfekt för matbranschen.
               </p>
               <p>
-                <strong>Varma färger (orange/röd) stimulerar aptit</strong> och skapar energi, därför används de av de flesta matplattformar
+                <strong>Kockshatten som igenkänningstecken</strong> - Den integrerade kockshatten gör logotypen omedelbart förståelig som matrelaterad utan att vara överdrivet detaljerad.
               </p>
               <p>
-                <strong>Rundade former signalerar värme och tillgänglighet</strong> vilket är viktigt för hemlagad mat
+                <strong>Svartvit = tidlös och skalbar</strong> - En svartvit logotyp fungerar i alla storlekar och på alla bakgrunder, från app-ikoner till reklamskyltar.
               </p>
             </CardContent>
           </Card>
