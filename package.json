@@ -11,7 +11,10 @@
     "lovable:dev": "vite --mode development",
     "lovable:build": "vite build --mode preview",
     "lovable:serve": "vite preview --mode preview",
-    "create-test-accounts": "bun run scripts/create-test-accounts.ts"
+    "create-test-accounts": "bun run scripts/create-test-accounts.ts",
+    "lint": "eslint \"src/**/*.{ts,tsx,js,jsx}\" --ext .ts,.tsx,.js,.jsx",
+    "lint:fix": "eslint \"src/**/*.{ts,tsx,js,jsx}\" --fix",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.2",
@@ -101,6 +104,15 @@
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "husky": "^8.0.0",
+    "lint-staged": "^14.0.0"
+  }
+  ,
+  "lint-staged": {
+    "src/**/*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "git add"
+    ]
   }
 }

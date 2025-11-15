@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ChefHat, Search, Menu, Home, UtensilsCrossed, Info, Phone, Users, CreditCard } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRole } from "@/hooks/useRole";
+import type { UserRole } from "@/types/user";
 import { Cart } from "@/components/Cart";
 import UserMenu from "@/components/UserMenu";
 import homechefLogo from "@/assets/homechef-logo-orange.png";
@@ -44,11 +45,11 @@ const Header = () => {
     }
   };
 
-  const handleRoleSwitch = (newRole: string) => {
-    switchRole(newRole as any);
+  const handleRoleSwitch = (newRole: UserRole) => {
+    switchRole(newRole);
     toast.success(`Bytte till ${roleLabels[newRole]}`);
 
-    const targetByRole: Record<string, string> = {
+    const targetByRole: Record<UserRole, string> = {
       customer: '/',
       admin: '/admin/dashboard',
       chef: '/',
