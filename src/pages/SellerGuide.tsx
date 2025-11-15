@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   ChefHat, 
   DollarSign, 
@@ -138,28 +139,68 @@ const SellerGuide = () => {
 
   const communityFeatures = [
     {
+      id: "forum",
       icon: <MessageCircle className="w-6 h-6" />,
       title: "Kockforum",
       description: "Diskutera recept, tips och utmaningar med andra kockar",
-      action: "Gå med i diskussionen"
+      content: {
+        intro: "Vårt aktiva kockforum är platsen där du kan dela erfarenheter och få stöd från andra säljare.",
+        features: [
+          "Ställ frågor och få svar från erfarna kockar",
+          "Dela recept och matlagningstekniker",
+          "Diskutera utmaningar och lösningar",
+          "Hitta samarbetspartners i din region",
+          "Delta i veckovisa teman och diskussioner"
+        ]
+      }
     },
     {
+      id: "monthly-chef",
       icon: <Award className="w-6 h-6" />,
       title: "Månadens kock",
       description: "Tävla om att bli månadens kock med extra exponering",
-      action: "Se aktuell tävling"
+      content: {
+        intro: "Varje månad utser vi en kock som utmärkt sig genom kvalitet, kreativitet och kundnöjdhet.",
+        features: [
+          "Extra synlighet på startsidan i en månad",
+          "Framhävd i vårt nyhetsbrev till 50 000+ kunder",
+          "Diplom och certifikat att visa upp",
+          "Intervju i vårt kockmagasin",
+          "Bonuspoäng och rabatt på plattformsavgifter"
+        ]
+      }
     },
     {
+      id: "statistics",
       icon: <TrendingUp className="w-6 h-6" />,
       title: "Försäljningsstatistik",
       description: "Jämför din prestanda med andra kockar anonymt",
-      action: "Visa statistik"
+      content: {
+        intro: "Få insikt i hur din försäljning presterar jämfört med andra kockar i din kategori.",
+        features: [
+          "Se genomsnittlig försäljning per rätt",
+          "Jämför dina priser med marknaden",
+          "Analysera dina mest populära rätter",
+          "Få tips på optimala prissättningar",
+          "Anonymiserad data som respekterar integritet"
+        ]
+      }
     },
     {
+      id: "mentorship",
       icon: <Users className="w-6 h-6" />,
       title: "Mentorskap",
       description: "Få hjälp av erfarna kockar eller hjälp nybörjare",
-      action: "Hitta mentor"
+      content: {
+        intro: "Vårt mentorskapsprogram kopplar samman nya kockar med erfarna säljare.",
+        features: [
+          "Matchning med mentor baserat på specialitet",
+          "Månatliga mentorskapsmöten",
+          "Dela bästa praxis och lärdomar",
+          "Bli mentor och hjälp andra att växa",
+          "Nätverka och bygga långsiktiga relationer"
+        ]
+      }
     }
   ];
 
@@ -307,26 +348,41 @@ const SellerGuide = () => {
           {/* Säljarcommunityn */}
           <section id="community" className="mb-16">
             <h2 className="text-3xl font-bold text-center mb-8">Säljarcommunityn</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {communityFeatures.map((feature, index) => (
-                <Card key={index} className="group hover:shadow-lg transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center text-white">
-                        {feature.icon}
-                      </div>
-                      {feature.title}
-                    </CardTitle>
-                    <CardDescription>{feature.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-white transition-colors">
-                      {feature.action}
-                    </Button>
-                  </CardContent>
-                </Card>
+            <Tabs defaultValue="forum" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 mb-8">
+                {communityFeatures.map((feature) => (
+                  <TabsTrigger key={feature.id} value={feature.id} className="flex items-center gap-2">
+                    {feature.icon}
+                    <span className="hidden sm:inline">{feature.title}</span>
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+              {communityFeatures.map((feature) => (
+                <TabsContent key={feature.id} value={feature.id}>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-3">
+                        <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center text-white">
+                          {feature.icon}
+                        </div>
+                        {feature.title}
+                      </CardTitle>
+                      <CardDescription>{feature.content.intro}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <ul className="space-y-3">
+                        {feature.content.features.map((item, index) => (
+                          <li key={index} className="flex items-start gap-3">
+                            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                            <span>{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
               ))}
-            </div>
+            </Tabs>
           </section>
 
           {/* CTA sektion */}
