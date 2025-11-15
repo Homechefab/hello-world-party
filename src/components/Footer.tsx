@@ -43,7 +43,22 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground">För köpare</h4>
             <ul className="space-y-2 text-muted-foreground">
-              <li><Link to="/search" className="hover:text-primary transition-colors">Sök mat</Link></li>
+              <li>
+                <button 
+                  onClick={() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    setTimeout(() => {
+                      const searchInput = document.querySelector('input[placeholder*="Sök efter hemlagad mat"]') as HTMLInputElement;
+                      if (searchInput) {
+                        searchInput.focus();
+                      }
+                    }, 300);
+                  }}
+                  className="hover:text-primary transition-colors"
+                >
+                  Sök mat
+                </button>
+              </li>
               <li>
                 <button 
                   onClick={() => {
