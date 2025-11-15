@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { useSearchParams, Link } from "react-router-dom";
+import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, MapPin, ChefHat, Clock, UtensilsCrossed, Sparkles } from "lucide-react";
+import { Star, MapPin, ChefHat, Clock, UtensilsCrossed, Sparkles, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Chef {
@@ -87,12 +87,21 @@ const calculateDistance = (searchLocation: string, chefAddress: string): number 
 
 const SearchResults = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const query = searchParams.get('q') || '';
+  const [searchInput, setSearchInput] = useState(query);
   const [chefs, setChefs] = useState<Chef[]>([]);
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [loading, setLoading] = useState(true);
   
   const [showingNearby, setShowingNearby] = useState(false);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchInput.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchInput)}`);
+    }
+  };
 
   useEffect(() => {
     const searchContent = async () => {
@@ -298,9 +307,23 @@ const SearchResults = () => {
               </div>
             )}
             {!query && (
-              <p className="text-xl text-white/90">
-                Upptäck {chefs.length} kockar och {dishes.length} rätter
-              </p>
+              <div className="space-y-4">
+                <p className="text-xl text-white/90">
+                  Sök bland {chefs.length} kockar och {dishes.length} rätter
+                </p>
+                <form onSubmit={handleSearch} className="max-w-2xl mx-auto">
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                    <input
+                      type="text"
+                      placeholder="Sök efter mat, kockar eller områden..."
+                      value={searchInput}
+                      onChange={(e) => setSearchInput(e.target.value)}
+                      className="w-full pl-12 pr-4 py-4 bg-white/95 backdrop-blur-sm border-2 border-white/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent text-foreground text-lg"
+                    />
+                  </div>
+                </form>
+              </div>
             )}
           </div>
         </div>

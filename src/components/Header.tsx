@@ -25,6 +25,7 @@ import {
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const { isChef, role, roles, switchRole } = useRole();
   const navigate = useNavigate();
 
@@ -34,6 +35,13 @@ const Header = () => {
     kitchen_partner: 'Kökspartner',
     restaurant: 'Restaurang',
     admin: 'Administratör'
+  };
+
+  const handleSearch = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    }
   };
 
   const handleRoleSwitch = (newRole: string) => {
@@ -88,14 +96,16 @@ const Header = () => {
         
         {/* Desktop Search - hidden on mobile */}
         <div className="hidden lg:flex items-center gap-4 flex-1 max-w-md mx-8">
-          <div className="relative flex-1">
+          <form onSubmit={handleSearch} className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <input
               type="text"
               placeholder="Sök efter hemlagad mat..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-secondary/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
-          </div>
+          </form>
         </div>
 
         {/* Desktop Actions - hidden on mobile */}
@@ -208,14 +218,19 @@ const Header = () => {
                 </div>
 
                 {/* Mobile Search */}
-                <div className="relative">
+                <form onSubmit={(e) => {
+                  handleSearch(e);
+                  setMenuOpen(false);
+                }} className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                   <input
                     type="text"
                     placeholder="Sök efter hemlagad mat..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-10 pr-4 py-3 bg-secondary/50 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                   />
-                </div>
+                </form>
 
                 {/* Navigation Menu */}
                 <nav className="space-y-1">
