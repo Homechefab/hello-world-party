@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRole } from "@/hooks/useRole";
 import { Cart } from "@/components/Cart";
 import UserMenu from "@/components/UserMenu";
-import homechefMascot from "@/assets/homechef-mascot.png";
+import homechefLogo from "@/assets/homechef-logo-orange.png";
 import { toast } from "sonner";
 import {
   Sheet,
@@ -79,20 +79,11 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
-          {homechefMascot ? (
-            <img 
-              src={homechefMascot} 
-              alt="HomeChef Mascot" 
-              className="w-10 h-10 object-contain"
-            />
-          ) : (
-            <div className="w-10 h-10 flex items-center justify-center bg-primary/10 rounded-lg">
-              <ChefHat className="w-6 h-6 text-primary" />
-            </div>
-          )}
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            Homechef
-          </h1>
+          <img 
+            src={homechefLogo} 
+            alt="Homechef" 
+            className="h-10 w-auto object-contain"
+          />
         </Link>
         
         {/* Desktop Search - hidden on mobile */}
