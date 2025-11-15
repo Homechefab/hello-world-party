@@ -51,6 +51,15 @@ const Hero = () => {
                 </Button>
               </div>
             </form>
+            
+            <div className="mt-4 pt-4 border-t border-border/50">
+              <Link to="/logo-concepts">
+                <Button variant="outline" className="w-full md:w-auto gap-2">
+                  <ChefHat className="w-4 h-4" />
+                  Visa nya logokoncept
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
