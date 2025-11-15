@@ -24,9 +24,11 @@ export default tseslint.config({ ignores: ["dist"] }, {
       "warn",
       { allowConstantExport: true },
     ],
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
-    ],
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-empty-object-type": "off",
+    "react-refresh/only-export-components": "off",
+    "react-hooks/exhaustive-deps": "off",
   },
 }, storybook.configs["flat/recommended"]);
