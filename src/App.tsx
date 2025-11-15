@@ -37,6 +37,10 @@ import MunicipalityRequirements from "./pages/chef/MunicipalityRequirements";
 import KitchenAssessment from "./pages/chef/KitchenAssessment";
 import ChefHome from "./pages/chef/ChefHome";
 import BusinessRegistration from "./pages/chef/BusinessRegistration";
+import ChefForum from "./pages/chef/ChefForum";
+import ChefOfTheMonth from "./pages/chef/ChefOfTheMonth";
+import SalesStatistics from "./pages/chef/SalesStatistics";
+import Mentorship from "./pages/chef/Mentorship";
 import { KitchenPartnerDashboard } from "./pages/kitchen-partner/KitchenPartnerDashboard";
 import { KitchenPartnerOnboarding } from "./pages/kitchen-partner/KitchenPartnerOnboarding";
 import KitchenPartnerHowItWorks from "./pages/kitchen-partner/HowItWorks";
@@ -121,6 +125,10 @@ const App = () => {
             <Route path="/chef/municipality-requirements" element={<RoleBasedLayout><MunicipalityRequirements /></RoleBasedLayout>} />
             <Route path="/chef/kitchen-assessment" element={<RoleBasedLayout><KitchenAssessment /></RoleBasedLayout>} />
             <Route path="/chef/business-registration" element={<RoleBasedLayout><BusinessRegistration /></RoleBasedLayout>} />
+            <Route path="/chef/kockforum" element={<PublicLayout><ChefForum /></PublicLayout>} />
+            <Route path="/chef/månadens-kock" element={<PublicLayout><ChefOfTheMonth /></PublicLayout>} />
+            <Route path="/chef/försäljningsstatistik" element={<PublicLayout><SalesStatistics /></PublicLayout>} />
+            <Route path="/chef/mentorskap" element={<PublicLayout><Mentorship /></PublicLayout>} />
             <Route path="/kitchen-partner/dashboard" element={<RoleBasedLayout><KitchenPartnerDashboard /></RoleBasedLayout>} />
             <Route path="/kitchen-partner/register" element={<RoleBasedLayout><KitchenPartnerOnboarding /></RoleBasedLayout>} />
             <Route path="/delivery-partner/onboarding" element={<RoleBasedLayout><DeliveryPartnerOnboarding /></RoleBasedLayout>} />
