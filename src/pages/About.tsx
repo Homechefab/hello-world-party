@@ -109,9 +109,11 @@ const About = () => {
               Vår historia
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Homechef föddes ur en enkel tanke: varför ska vi acceptera att all mat 
-              kommer från stora kedjor när det finns så många talangfulla hemmakockar 
-              runt omkring oss?
+              Tänk dig doften av hembakt bröd från din grannes kök. Smaken av mormors 
+              köttbullar, perfekt kryddade med decennier av erfarenhet. Det är dessa magiska 
+              måltider – fyllda med passion, tradition och kärlek – som vi vill göra tillgängliga 
+              för alla. Homechef föddes ur övertygelsen att de bästa måltiderna kommer från 
+              hjärtat, inte från fabrikens löpande band.
             </p>
           </div>
 
