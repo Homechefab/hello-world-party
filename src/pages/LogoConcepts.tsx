@@ -3,11 +3,28 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
 import logoNew from "@/assets/homechef-logo-new.png";
 import logoVariant from "@/assets/homechef-logo-variant.png";
+import logoOrange from "@/assets/homechef-logo-orange.png";
 
 const LogoConcepts = () => {
   const concepts = [
     {
       id: 1,
+      title: "HC Monogram - Orange Edition",
+      image: logoOrange,
+      description: "Elegant orange HC-monogram med kockshatt centrerad ovanpå",
+      colors: "Orange och vitt",
+      pros: [
+        "Vibrant och aptitretande färg",
+        "Kockshatten centrerad som symbol",
+        "Elegant serif-typografi",
+        "Sticker ut och är minnesvärd",
+        "Perfekt för matbranschen"
+      ],
+      cons: [],
+      recommended: true
+    },
+    {
+      id: 2,
       title: "HC Monogram - Klassisk",
       image: logoNew,
       description: "Elegant serif HC-monogram med kockshatt ovanpå",
@@ -16,13 +33,12 @@ const LogoConcepts = () => {
         "Luxuös och premiumkänsla",
         "Tydlig kockshatt-symbol",
         "Elegant serif-typografi",
-        "Perfekt för varumärkesigenkänning"
+        "Tidlös och professionell"
       ],
-      cons: [],
-      recommended: true
+      cons: []
     },
     {
-      id: 2,
+      id: 3,
       title: "HC Monogram - Integrerad",
       image: logoVariant,
       description: "HC-monogram med kockshatt integrerad i H:et",
@@ -30,8 +46,7 @@ const LogoConcepts = () => {
       pros: [
         "Kockshatten är del av designen",
         "Unik och minnesvärd",
-        "Professionell och clean",
-        "Skalbar till alla storlekar"
+        "Professionell och clean"
       ],
       cons: []
     }
@@ -47,7 +62,7 @@ const LogoConcepts = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {concepts.map((concept) => (
             <Card key={concept.id} className={concept.recommended ? "border-primary border-2" : ""}>
               <CardHeader>
