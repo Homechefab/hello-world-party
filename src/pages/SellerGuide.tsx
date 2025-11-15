@@ -351,8 +351,8 @@ const SellerGuide = () => {
               {communityFeatures.map((feature) => {
                 const linkMap: { [key: string]: string } = {
                   'forum': '/chef/kockforum',
-                  'chef-of-month': '/chef/månadens-kock',
-                  'sales-stats': '/chef/försäljningsstatistik',
+                  'monthly-chef': '/chef/månadens-kock',
+                  'statistics': '/chef/försäljningsstatistik',
                   'mentorship': '/chef/mentorskap'
                 };
                 
