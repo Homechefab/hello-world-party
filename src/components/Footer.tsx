@@ -43,7 +43,7 @@ const Footer = () => {
           <div className="space-y-4">
             <h4 className="font-semibold text-foreground">För köpare</h4>
             <ul className="space-y-2 text-muted-foreground">
-              <li><Link to="/search-results" className="hover:text-primary transition-colors">Sök mat</Link></li>
+              <li><Link to="/search" className="hover:text-primary transition-colors">Sök mat</Link></li>
               <li>
                 <button 
                   onClick={() => {
