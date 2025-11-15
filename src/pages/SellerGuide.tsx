@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   ChefHat, 
   DollarSign, 
@@ -348,10 +347,17 @@ const SellerGuide = () => {
           <section id="community" className="mb-16">
             <h2 className="text-3xl font-bold text-center mb-8">Säljarcommunityn</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {communityFeatures.map((feature) => (
-                <Dialog key={feature.id}>
-                  <DialogTrigger asChild>
-                    <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+              {communityFeatures.map((feature) => {
+                const linkMap: { [key: string]: string } = {
+                  'forum': '/chef/kockforum',
+                  'chef-of-month': '/chef/månadens-kock',
+                  'sales-stats': '/chef/försäljningsstatistik',
+                  'mentorship': '/chef/mentorskap'
+                };
+                
+                return (
+                  <Link key={feature.id} to={linkMap[feature.id]}>
+                    <Card className="cursor-pointer hover:shadow-lg transition-shadow h-full">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-3">
                           <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center text-white">
@@ -362,30 +368,9 @@ const SellerGuide = () => {
                         <CardDescription>{feature.description}</CardDescription>
                       </CardHeader>
                     </Card>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-2xl">
-                    <DialogHeader>
-                      <DialogTitle className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center text-white">
-                          {feature.icon}
-                        </div>
-                        {feature.title}
-                      </DialogTitle>
-                      <DialogDescription>{feature.content.intro}</DialogDescription>
-                    </DialogHeader>
-                    <div className="mt-4">
-                      <ul className="space-y-3">
-                        {feature.content.features.map((item, index) => (
-                          <li key={index} className="flex items-start gap-3">
-                            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           </section>
 
