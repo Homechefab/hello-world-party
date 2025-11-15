@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { MessageCircle, X, Send, User, Bot, Clock, Minimize2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Message {
   id: string;
@@ -17,6 +18,7 @@ interface Message {
 }
 
 const LiveChat = () => {
+  const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -25,13 +27,45 @@ const LiveChat = () => {
       text: 'Hej! Välkommen till Homechef. Hur kan jag hjälpa dig idag?',
       sender: 'support',
       timestamp: new Date(),
-      senderName: 'Emma från support'
+      senderName: 'AI Assistent'
     }
   ]);
   const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isOnline, setIsOnline] = useState(true);
+  const [userRole, setUserRole] = useState<string>('customer');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Fetch user role
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (!user?.id) {
+        setUserRole('customer');
+        return;
+      }
+
+      try {
+        const { data, error } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .single();
+
+        if (error) {
+          console.log('No role found, defaulting to customer');
+          setUserRole('customer');
+        } else {
+          setUserRole(data.role || 'customer');
+          console.log('User role:', data.role);
+        }
+      } catch (error) {
+        console.error('Error fetching user role:', error);
+        setUserRole('customer');
+      }
+    };
+
+    fetchUserRole();
+  }, [user]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -41,41 +75,43 @@ const LiveChat = () => {
     scrollToBottom();
   }, [messages]);
 
-  const generateAIResponse = (userMessage: string): string => {
-    const message = userMessage.toLowerCase();
-    
-    if (message.includes('hej') || message.includes('hello') || message.includes('hallå')) {
-      return 'Hej och välkommen till Homechef! 🍽️ Jag hjälper dig gärna med frågor om våra tjänster - beställa mat, bli kock, hyra kök eller boka privatkock. Vad kan jag hjälpa dig med idag?';
+  const generateAIResponse = async (userMessage: string): Promise<string> => {
+    try {
+      // Prepare conversation history
+      const conversationMessages = messages
+        .filter(m => m.sender === 'user' || m.sender === 'support')
+        .map(m => ({
+          role: m.sender === 'user' ? 'user' : 'assistant',
+          content: m.text
+        }));
+
+      // Add the new user message
+      conversationMessages.push({
+        role: 'user',
+        content: userMessage
+      });
+
+      console.log('Calling AI with role:', userRole);
+
+      const { data, error } = await supabase.functions.invoke('chat-ai', {
+        body: { 
+          messages: conversationMessages,
+          userRole: userRole,
+          userId: user?.id
+        }
+      });
+
+      if (error) {
+        console.error('Error calling AI function:', error);
+        throw error;
+      }
+
+      return data.message || 'Ledsen, jag kunde inte generera ett svar. Ring oss på 0734234686!';
+    } catch (error) {
+      console.error('Error generating AI response:', error);
+      return 'Hej! Just nu har vi tekniska problem med chatten. Ring oss gärna på 0734234686 (vardagar 08:00-17:00) så hjälper vi dig direkt! 😊';
     }
-    
-    if (message.includes('beställ') || message.includes('order') || message.includes('mat') || message.includes('köpa')) {
-      return 'För att beställa mat går du till vår hemsida och klickar på "Beställ mat". Där kan du söka bland lokala kockar och deras rätter. Har du problem med din beställning kan du ringa oss på 0734234686!';
-    }
-    
-    if (message.includes('kock') || message.includes('chef') || message.includes('sälja') || message.includes('sälja mat')) {
-      return 'Som kock på Homechef kan du sälja din hemlagade mat! Gå till "Sälja mat" för att registrera dig som kock. Vi har strikta hygienregler för att säkerställa kvalitet. Har du frågor om att bli kock? Ring 0734234686!';
-    }
-    
-    if (message.includes('kök') || message.includes('hyra') || message.includes('kitchen') || message.includes('hyra kök')) {
-      return 'Du kan hyra professionella kök genom vår plattform! Perfekt för catering, events eller större matlagning. Gå till "Hyra kök" för att se tillgängliga alternativ. För mer info, ring 0734234686!';
-    }
-    
-    if (message.includes('privatkock') || message.includes('private chef') || message.includes('event')) {
-      return 'Vi erbjuder privatkockar för events, middagar och speciella tillfällen! Gå till "Privatkock" för att se våra duktiga kockar och boka. Ring 0734234686 för personlig rådgivning!';
-    }
-    
-    if (message.includes('upplevelse') || message.includes('experience') || message.includes('matlagning')) {
-      return 'Våra matlagningsupplevelser är perfekta för teambuilding, dejter eller bara för kul! Du får laga mat tillsammans med professionella kockar. Boka under "Upplevelser". Frågor? Ring 0734234686!';
-    }
-    
-    if (message.includes('betala') || message.includes('betalning') || message.includes('payment') || message.includes('klarna')) {
-      return 'Vi använder säkra betalningar via Klarna. Du kan betala med kort, banköverföring eller delbetalning. All betalning sker säkert och krypterat. Problem med betalning? Ring 0734234686!';
-    }
-    
-    if (message.includes('problem') || message.includes('hjälp') || message.includes('support')) {
-      return 'Vi hjälper gärna till! För snabb hjälp ring oss på 0734234686 (vardagar 08:00-17:00). Du kan också maila oss eller använda denna chat. Vad behöver du hjälp med specifikt?';
-    }
-    
+  };
     if (message.includes('tack') || message.includes('thanks')) {
       return 'Så kul att jag kunde hjälpa! Om du har fler frågor är jag här. Du kan också alltid ringa oss på 0734234686 för direkt hjälp. Ha en fantastisk dag! 😊';
     }
