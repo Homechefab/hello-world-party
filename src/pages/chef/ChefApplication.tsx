@@ -187,7 +187,7 @@ const ChefApplication = () => {
 
           {/* Application Section Heading */}
           <div className="text-center mb-8">
-            <p className="text-sm text-muted-foreground mb-2">
+            <p className="text-base text-muted-foreground mb-2">
               För att sälja mat krävs tillstånd från kommun
             </p>
             <h2 className="text-3xl font-bold text-foreground mb-4">
