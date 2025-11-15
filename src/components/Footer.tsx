@@ -1,7 +1,8 @@
-import { ChefHat, Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 import { useRole } from "@/hooks/useRole";
 import { Link, useNavigate } from "react-router-dom";
 import { scrollToSection } from "@/utils/scrollUtils";
+import homechefLogo from "@/assets/homechef-logo-orange.png";
 
 const Footer = () => {
   const { isChef, isRestaurant } = useRole();
@@ -17,12 +18,13 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-                <ChefHat className="w-5 h-5 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-foreground">Homechef</h3>
-            </div>
+            <Link to="/" className="flex items-center">
+              <img 
+                src={homechefLogo} 
+                alt="Homechef" 
+                className="h-12 w-auto object-contain"
+              />
+            </Link>
             <p className="text-muted-foreground leading-relaxed">
               Sveriges första marknadsplats för hemlagad mat. Upptäck unika rätter från passionerade hemmakockar i ditt närområde.
             </p>
