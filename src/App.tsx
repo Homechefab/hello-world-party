@@ -107,7 +107,9 @@ const App = () => {
             <Route path="/payment-success" element={<PublicLayout><PaymentSuccess /></PublicLayout>} />
             <Route path="/payment-canceled" element={<PublicLayout><PaymentCanceled /></PublicLayout>} />
             <Route path="/privacy" element={<PublicLayout><Privacy /></PublicLayout>} />
+            <Route path="/privacy-policy" element={<PublicLayout><Privacy /></PublicLayout>} />
             <Route path="/terms" element={<PublicLayout><Terms /></PublicLayout>} />
+            <Route path="/terms-of-service" element={<PublicLayout><Terms /></PublicLayout>} />
             <Route path="/data-deletion" element={<PublicLayout><DataDeletion /></PublicLayout>} />
 
             {/* Protected routes */}
