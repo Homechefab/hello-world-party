@@ -15,7 +15,8 @@ import {
   Eye,
   User,
   FileText,
-  AlertCircle
+  AlertCircle,
+  Building
 } from 'lucide-react';
 
 interface ChefApplication {
