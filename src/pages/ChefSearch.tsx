@@ -1,10 +1,7 @@
-// @ts-nocheck
 import { useState } from "react";
-import { Search, MapPin, Filter, Star, Users, Clock, ChefHat } from "lucide-react";
+import { Search, MapPin, Filter, ChefHat } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 
 interface SearchFilters {
   query: string;

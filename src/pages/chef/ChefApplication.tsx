@@ -96,7 +96,8 @@ const ChefApplication = () => {
         setTimeout(() => {
           navigate("/chef/application-pending");
         }, 2000);
-      } catch (error) {
+      } catch (err) {
+        console.error(err);
         toast({
           title: "Fel vid skickning",
           description: "Något gick fel. Försök igen senare.",

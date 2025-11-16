@@ -103,7 +103,8 @@ const RestaurantApplicationForm = () => {
       
       toast.success("Din ansökan har skickats! Vi återkommer inom 2-3 arbetsdagar.");
       navigate("/restaurant/partnership");
-    } catch (error) {
+    } catch (_error) {
+      console.error(_error);
       toast.error("Något gick fel. Försök igen senare.");
     } finally {
       setIsSubmitting(false);

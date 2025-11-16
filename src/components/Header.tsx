@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { ComponentType, SVGProps, FormEvent } from "react";
 import { ChefHat, Search, Menu, Home, UtensilsCrossed, Info, Phone, Users, CreditCard } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRole } from "@/hooks/useRole";
@@ -30,7 +31,7 @@ const Header = () => {
   const { isChef, role, switchRole } = useRole();
   const navigate = useNavigate();
 
-  const roleLabels: Record<string, string> = {
+  const roleLabels: Record<UserRole, string> = {
     customer: 'Kund',
     chef: 'Kock',
     kitchen_partner: 'Kökspartner',
@@ -38,7 +39,7 @@ const Header = () => {
     admin: 'Administratör'
   };
 
-  const handleSearch = (e?: React.FormEvent) => {
+  const handleSearch = (e?: FormEvent<HTMLFormElement>) => {
     if (e) e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
@@ -62,7 +63,11 @@ const Header = () => {
 
   // Removed auth requirement - all features available
 
-  const menuItems = [
+  const menuItems: Array<{
+    title: string;
+    href: string;
+    icon: ComponentType<SVGProps<SVGSVGElement>>;
+  }> = [
     { title: "Hem", href: "/", icon: Home },
     { title: "Kategorier", href: "#kategorier", icon: UtensilsCrossed },
     { title: "Logokoncept", href: "/logo-concepts", icon: ChefHat },

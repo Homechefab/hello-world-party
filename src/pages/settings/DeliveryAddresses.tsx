@@ -36,13 +36,7 @@ const DeliveryAddresses = () => {
     is_default: false
   });
 
-  useEffect(() => {
-    if (user) {
-      fetchAddresses();
-    }
-  }, [user]);
-
-  const fetchAddresses = async () => {
+  const fetchAddresses = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('delivery_addresses')
@@ -68,7 +62,13 @@ const DeliveryAddresses = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchAddresses();
+    }
+  }, [fetchAddresses, user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

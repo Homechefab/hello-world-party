@@ -1,11 +1,10 @@
-// @ts-nocheck
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ShoppingBag, Clock, CheckCircle, XCircle, Star, MapPin, Calendar, Package, Truck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRole } from "@/hooks/useRole";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -36,17 +35,7 @@ const MyOrders = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    if (usingMockData) {
-      // Use mock data for testing
-      setOrders(mockOrders);
-      setLoading(false);
-    } else if (user) {
-      fetchOrders();
-    }
-  }, [user, usingMockData]);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       // Fetch real orders from Supabase
       const { data, error } = await supabase
@@ -78,7 +67,17 @@ const MyOrders = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (usingMockData) {
+      // Use mock data for testing
+      setOrders(mockOrders);
+      setLoading(false);
+    } else if (user) {
+      fetchOrders();
+    }
+  }, [fetchOrders, user, usingMockData]);
 
   const getStatusColor = (status: string) => {
     switch (status) {

@@ -1,8 +1,7 @@
-// @ts-nocheck
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Phone, Mail, MessageCircle, Clock, Users, HeadphonesIcon, CheckCircle } from "lucide-react";
+import { Phone, Mail, MessageCircle, Users, HeadphonesIcon, CheckCircle } from "lucide-react";
 import CustomerFAQ from "@/components/services/CustomerFAQ";
 
 const CustomerService = () => {

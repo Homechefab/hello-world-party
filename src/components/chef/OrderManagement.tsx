@@ -1,19 +1,14 @@
-// @ts-nocheck
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Clock, 
   CheckCircle, 
   Package, 
   Phone, 
-  MapPin, 
-  Calendar,
-  Eye,
-  MessageCircle
+  Calendar
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -40,11 +35,7 @@ export const OrderManagement = () => {
   const [activeTab, setActiveTab] = useState('active');
   const { toast } = useToast();
 
-  useEffect(() => {
-    loadOrders();
-  }, []);
-
-  const loadOrders = async () => {
+  const loadOrders = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('orders')
@@ -66,11 +57,14 @@ export const OrderManagement = () => {
         customer_name: 'Demo Kund',
         customer_phone: '08-123 456 78',
         pickup_instructions: order.special_instructions,
-        dishes: order.order_items?.map((item: any) => ({
-          title: item.dishes?.name || 'Okänd rätt',
-          quantity: item.quantity,
-          price: item.dishes?.price || 0
-        })) || []
+        dishes: order.order_items?.map((item: unknown) => {
+          const typedItem = item as { dishes?: { name?: string; price?: number }; quantity: number };
+          return {
+            title: typedItem.dishes?.name || 'Okänd rätt',
+            quantity: typedItem.quantity,
+            price: typedItem.dishes?.price || 0
+          };
+        }) || []
       })) || [];
 
       setOrders(transformedOrders);
@@ -84,7 +78,11 @@ export const OrderManagement = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    loadOrders();
+  }, [loadOrders]);
 
   const updateOrderStatus = async (orderId: string, newStatus: Order['status']) => {
     try {

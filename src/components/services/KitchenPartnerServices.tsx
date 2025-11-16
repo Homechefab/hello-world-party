@@ -1,8 +1,7 @@
-// @ts-nocheck
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Building, Calendar, TrendingUp, Truck } from "lucide-react";
+import { Building, TrendingUp, Truck } from "lucide-react";
 import rentKitchenImage from "@/assets/service-rent-kitchen.jpg";
 import deliveryImage from "@/assets/service-delivery.jpg";
 import partnershipImage from "@/assets/partnership-collaboration.jpg";

@@ -133,7 +133,7 @@ const ApplicationTimeline = () => {
 
           {/* Timeline steps */}
           <div className="space-y-8">
-            {steps.map((step, index) => (
+            {steps.map((step, _index) => (
               <div key={step.id} className="relative">
                 {/* Step indicator */}
                 <div className="absolute left-0 w-12 h-12 bg-background flex items-center justify-center">

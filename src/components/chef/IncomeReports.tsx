@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -37,13 +37,7 @@ const IncomeReports = () => {
   const { toast } = useToast();
   const { user } = useAuth();
 
-  useEffect(() => {
-    if (user) {
-      fetchIncomeData();
-    }
-  }, [user, selectedPeriod]);
-
-  const fetchIncomeData = async () => {
+  const fetchIncomeData = useCallback(async () => {
     if (!user?.id) return;
 
     setLoading(true);
@@ -119,18 +113,25 @@ const IncomeReports = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, selectedPeriod, toast]);
 
-  const processIncomeData = (orders: any[]): IncomeData => {
-    const totalRevenue = orders.reduce((sum, order) => sum + parseFloat(order.total_amount || 0), 0);
-    const ordersCount = orders.length;
+  useEffect(() => {
+    if (user) {
+      fetchIncomeData();
+    }
+  }, [user, fetchIncomeData]);
+
+  const processIncomeData = (orders: unknown[]): IncomeData => {
+    const typedOrders = orders as Array<{ total_amount?: string | number; created_at: string; order_items?: unknown[] }>;
+    const totalRevenue = typedOrders.reduce((sum, order) => sum + parseFloat(String(order.total_amount || 0)), 0);
+    const ordersCount = typedOrders.length;
     const averageOrder = ordersCount > 0 ? totalRevenue / ordersCount : 0;
     const taxableAmount = totalRevenue * 0.75; // Rough estimate after expenses
 
     // Monthly breakdown
     const monthlyMap = new Map<string, { amount: number; orders: number }>();
     
-    orders.forEach(order => {
+    typedOrders.forEach(order => {
       const date = new Date(order.created_at);
       const monthKey = date.toLocaleDateString('sv-SE', { year: 'numeric', month: 'long' });
       
@@ -139,7 +140,7 @@ const IncomeReports = () => {
       }
       
       const current = monthlyMap.get(monthKey)!;
-      current.amount += parseFloat(order.total_amount || 0);
+      current.amount += parseFloat(String(order.total_amount || 0));
       current.orders += 1;
     });
 
@@ -152,8 +153,9 @@ const IncomeReports = () => {
     // Dish breakdown
     const dishMap = new Map<string, { amount: number; orders: number }>();
     
-    orders.forEach(order => {
-      order.order_items?.forEach((item: any) => {
+    typedOrders.forEach(order => {
+      const items = order.order_items as Array<{ dishes?: { name?: string }; total_price?: string | number; quantity: number }> | undefined;
+      items?.forEach((item) => {
         const dishName = item.dishes?.name || 'Okänd rätt';
         
         if (!dishMap.has(dishName)) {
@@ -161,7 +163,7 @@ const IncomeReports = () => {
         }
         
         const current = dishMap.get(dishName)!;
-        current.amount += parseFloat(item.total_price || 0);
+        current.amount += parseFloat(String(item.total_price || 0));
         current.orders += item.quantity;
       });
     });

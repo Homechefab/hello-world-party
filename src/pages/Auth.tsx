@@ -65,10 +65,11 @@ const Auth = () => {
           description: "Du är nu inloggad.",
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as Error
       toast({
         title: "Fel uppstod",
-        description: error.message,
+        description: err?.message ?? String(error),
         variant: "destructive"
       });
     } finally {
@@ -124,11 +125,12 @@ const Auth = () => {
         throw new Error('Inget svar från autentiseringstjänsten');
       }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Full error:', error);
+      const err = error as Error
       toast({
         title: "Inloggning misslyckades",
-        description: error.message || 'Ett okänt fel inträffade',
+        description: err?.message ?? 'Ett okänt fel inträffade',
         variant: "destructive"
       });
       setIsLoading(false);

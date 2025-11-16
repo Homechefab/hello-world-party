@@ -40,10 +40,10 @@ export const RegisterForm = ({ onToggleMode }: RegisterFormProps) => {
         title: "Registrering lyckades!",
         description: "Kolla din e-post för att bekräfta ditt konto.",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Fel vid registrering",
-        description: error.message,
+        description: error instanceof Error ? error.message : "Ett fel uppstod vid registrering",
         variant: "destructive",
       });
     } finally {
@@ -61,10 +61,10 @@ export const RegisterForm = ({ onToggleMode }: RegisterFormProps) => {
       });
 
       if (error) throw error;
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Fel vid social registrering",
-        description: error.message,
+        description: error instanceof Error ? error.message : "Ett fel uppstod vid social registrering",
         variant: "destructive",
       });
     }
