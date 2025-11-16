@@ -37,9 +37,9 @@ interface ChefApplication {
 
 export const ChefApprovalManager = () => {
   const { toast } = useToast();
-  const [_selectedApplication, setSelectedApplication] = useState<ChefApplication | null>(null);
+  const [selectedApplication, setSelectedApplication] = useState<ChefApplication | null>(null);
   const [reviewNotes, setReviewNotes] = useState('');
-  const [_loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   // Applications will be loaded from Supabase
   const [applications, setApplications] = useState<ChefApplication[]>([]);
