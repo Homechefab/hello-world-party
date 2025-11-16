@@ -16,9 +16,27 @@ import {
   ArrowLeft
 } from 'lucide-react';
 
+export type OnboardingForm = {
+  personal: {
+    fullName: string;
+    email: string;
+    phone: string;
+    address: string;
+  };
+  business: {
+    businessName: string;
+    description: string;
+    municipality: string;
+  };
+  documents: {
+    selfControlPlan: File | null;
+    businessLicense: File | null;
+  };
+};
+
 export const ChefOnboarding = () => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<OnboardingForm>({
     personal: {
       fullName: '',
       email: '',
@@ -57,14 +75,18 @@ export const ChefOnboarding = () => {
     }
   };
 
-  const updateFormData = (section: string, field: string, value: any) => {
+  const updateFormData = <K extends keyof OnboardingForm, F extends keyof OnboardingForm[K]>(
+    section: K,
+    field: F,
+    value: OnboardingForm[K][F]
+  ) => {
     setFormData(prev => ({
       ...prev,
       [section]: {
-        ...prev[section as keyof typeof prev],
-        [field]: value
-      }
-    }));
+        ...(prev[section] as Record<string, unknown>),
+        [field as string]: value,
+      },
+    } as OnboardingForm));
   };
 
   const renderStepContent = () => {

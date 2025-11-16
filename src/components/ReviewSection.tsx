@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Star, ThumbsUp, User, Calendar } from "lucide-react";
+import { Star, ThumbsUp, User as _User, Calendar } from "lucide-react";
 
 import { useToast } from "@/hooks/use-toast";
 interface Review {
@@ -61,7 +60,8 @@ const mockReviews: Review[] = [
   }
 ];
 
-const ReviewSection = ({ dishId, averageRating, totalReviews, reviews = mockReviews }: ReviewsProps) => {
+const ReviewSection = ({ dishId: _dishId, averageRating, totalReviews, reviews = mockReviews }: ReviewsProps) => {
+  // dishId parameter is required by the interface but not yet used in the implementation
   const [newReview, setNewReview] = useState({ rating: 0, comment: "" });
   const [hoveredStar, setHoveredStar] = useState(0);
   const { toast } = useToast();

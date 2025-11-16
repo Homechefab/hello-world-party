@@ -1,4 +1,4 @@
-// @ts-nocheck
+// Removed @ts-nocheck to allow type checking
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, FileText, ClipboardCheck, Building2, Shield, Thermometer, Droplets } from "lucide-react";
 import MunicipalitySearch from "@/components/MunicipalitySearch";

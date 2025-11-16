@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { UserRole } from '@/types/user';
@@ -104,9 +102,9 @@ export const UserManagement = () => {
 
       // Uppdatera listan
       await fetchUsers();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Fel vid uppdatering av roll:', error);
-      toast.error(error.message || 'Kunde inte uppdatera roll');
+      toast.error(error instanceof Error ? error.message : 'Kunde inte uppdatera roll');
     } finally {
       setUpdatingUser(null);
     }

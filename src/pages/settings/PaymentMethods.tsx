@@ -31,13 +31,7 @@ const PaymentMethods = () => {
     is_default: false
   });
 
-  useEffect(() => {
-    if (user) {
-      fetchPaymentMethods();
-    }
-  }, [user]);
-
-  const fetchPaymentMethods = async () => {
+  const fetchPaymentMethods = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('payment_methods')
@@ -60,7 +54,13 @@ const PaymentMethods = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchPaymentMethods();
+    }
+  }, [fetchPaymentMethods, user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

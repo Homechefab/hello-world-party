@@ -1,14 +1,12 @@
-// @ts-nocheck
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, Calendar, Users, ChefHat, DollarSign, Star, Utensils, Package } from "lucide-react";
+import { ShoppingBag, Calendar, Users, Utensils, Package } from "lucide-react";
 import pickupImage from "@/assets/customer-pickup.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
 import cateringImage from "@/assets/catering-service.jpg";
 import mealBoxesImage from "@/assets/meal-boxes.jpg";
-import becomeChefImage from "@/assets/become-chef-cooking.jpg";
 import chefRecruitmentBg from "@/assets/chef-recruitment-bg.jpg";
 
 const customerServices = [

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -8,17 +7,14 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { 
   Building2,
   FileText,
-  Calculator,
   Shield,
   CheckCircle,
   AlertTriangle,
   ExternalLink,
   CreditCard,
   Phone,
-  Mail,
   Clock,
-  BookOpen,
-  Gavel
+  BookOpen
 } from 'lucide-react';
 
 const BusinessSetup = () => {
@@ -113,7 +109,7 @@ const BusinessSetup = () => {
     }
   ];
 
-  const taxInfo = [
+  const _taxInfo = [
     {
       category: 'Inkomstskatt',
       rate: '~30-35%',
@@ -134,7 +130,7 @@ const BusinessSetup = () => {
     }
   ];
 
-  const deductions = [
+  const _deductions = [
     {
       category: 'Ingredienser & råvaror',
       percentage: '100%',

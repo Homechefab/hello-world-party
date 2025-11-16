@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { useState } from "react";
 import Hero from "@/components/Hero";
 import PopularChefs from "@/components/Categories";
@@ -20,8 +19,8 @@ interface SearchFilters {
 
 const Index = () => {
   console.log('Index component rendering');
-  const { role, loading } = useRole();
-  const [filters, setFilters] = useState<SearchFilters>({
+  const { role, loading: _loading } = useRole();
+  const [_filters, _setFilters] = useState<SearchFilters>({
     query: "",
     category: "",
     priceRange: "",

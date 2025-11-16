@@ -1,15 +1,12 @@
-// @ts-nocheck
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useState, useEffect, useCallback } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { useEffect } from 'react';
 import { 
   CheckCircle, 
   XCircle, 
@@ -17,7 +14,6 @@ import {
   Download, 
   Eye,
   User,
-  Building,
   FileText,
   AlertCircle
 } from 'lucide-react';
@@ -41,18 +37,14 @@ interface ChefApplication {
 
 export const ChefApprovalManager = () => {
   const { toast } = useToast();
-  const [selectedApplication, setSelectedApplication] = useState<ChefApplication | null>(null);
+  const [_selectedApplication, _setSelectedApplication] = useState<ChefApplication | null>(null);
   const [reviewNotes, setReviewNotes] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [_loading, _setLoading] = useState(true);
 
   // Applications will be loaded from Supabase
   const [applications, setApplications] = useState<ChefApplication[]>([]);
 
-  useEffect(() => {
-    fetchApplications();
-  }, []);
-
-  const fetchApplications = async () => {
+  const fetchApplications = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('chefs')
@@ -70,32 +62,47 @@ export const ChefApprovalManager = () => {
       }
 
       // Transform data to match ChefApplication interface
-      const transformedData = (data || []).map((chef: any) => ({
-        id: chef.id,
-        applicantName: chef.profiles?.full_name || 'Okänd',
-        email: chef.profiles?.email || '',
-        phone: chef.profiles?.phone || '',
-        businessName: chef.business_name,
-        municipality: 'Ej angivet', // Vi kan lägga till detta fält senare
-        description: 'Ej angivet',
-        status: chef.kitchen_approved ? 'approved' as const : 'pending' as const,
-        appliedDate: new Date(chef.created_at).toLocaleDateString('sv-SE'),
-        documents: {
-          selfControlPlan: chef.hygiene_certificate_url,
-          businessLicense: undefined
-        }
-      }));
+      const transformedData = (data || []).map((chef: unknown) => {
+        const typedChef = chef as {
+          id: string;
+          user_id?: string;
+          business_name?: string;
+          description?: string;
+          created_at: string;
+          kitchen_approved?: boolean;
+          profiles?: { full_name?: string; email?: string; phone?: string };
+        };
+        return {
+          id: typedChef.id,
+          applicantName: typedChef.profiles?.full_name || 'Okänd',
+          email: typedChef.profiles?.email || '',
+          phone: typedChef.profiles?.phone || '',
+          businessName: typedChef.business_name || '',
+          municipality: 'Ej angivet',
+          description: 'Ej angivet',
+          status: typedChef.kitchen_approved ? 'approved' as const : 'pending' as const,
+          appliedDate: new Date(typedChef.created_at).toLocaleDateString('sv-SE'),
+          documents: {
+            selfControlPlan: undefined,
+            businessLicense: undefined
+          }
+        };
+      });
 
       setApplications(transformedData);
-    } catch (error) {
+    } catch {
       toast({
         title: "Något gick fel",
         variant: "destructive"
       });
     } finally {
-      setLoading(false);
+      _setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchApplications();
+  }, [fetchApplications]);
 
   const getStatusBadge = (status: string) => {
     switch (status) {

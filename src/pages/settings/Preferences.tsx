@@ -35,13 +35,7 @@ const Preferences = () => {
   const [newFavoriteDish, setNewFavoriteDish] = useState('');
   const [newDietaryRestriction, setNewDietaryRestriction] = useState('');
 
-  useEffect(() => {
-    if (user) {
-      fetchPreferences();
-    }
-  }, [user]);
-
-  const fetchPreferences = async () => {
+  const fetchPreferences = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('user_preferences')
@@ -70,7 +64,13 @@ const Preferences = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      fetchPreferences();
+    }
+  }, [fetchPreferences, user]);
 
   const handleSave = async () => {
   setSaving(true);

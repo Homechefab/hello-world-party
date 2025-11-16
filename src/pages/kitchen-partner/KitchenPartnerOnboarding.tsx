@@ -135,7 +135,8 @@ export const KitchenPartnerOnboarding = () => {
         title: "Ansökan skickad!",
         description: "Vi kommer att granska din ansökan och återkomma inom 2-3 arbetsdagar"
       });
-    } catch (error) {
+    } catch (err) {
+      console.error(err);
       toast({
         title: "Fel vid skickning", 
         description: "Något gick fel. Försök igen senare.",

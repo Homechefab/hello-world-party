@@ -1,5 +1,4 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { CheckCircle2 } from "lucide-react";
 import logoNew from "@/assets/homechef-logo-new.png";
 import logoVariant from "@/assets/homechef-logo-variant.png";

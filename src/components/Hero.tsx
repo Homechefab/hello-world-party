@@ -1,8 +1,7 @@
-// @ts-nocheck
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Search, MapPin, ShoppingCart, ChefHat, Building } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-food.jpg";
 
 const Hero = () => {

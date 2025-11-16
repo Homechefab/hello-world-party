@@ -145,11 +145,11 @@ export const DocumentUpload = ({ onSuccess }: DocumentUploadProps) => {
         onSuccess();
       }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Upload error:', error);
       toast({
         title: "Uppladdning misslyckades",
-        description: error.message || "Något gick fel vid uppladdning av dokumentet.",
+        description: error instanceof Error ? error.message : "Något gick fel vid uppladdning av dokumentet.",
         variant: "destructive",
       });
       setUploading(false);

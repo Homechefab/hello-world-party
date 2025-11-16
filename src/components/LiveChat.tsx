@@ -1,9 +1,7 @@
-// @ts-nocheck
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { MessageCircle, X, Send, User, Bot, Clock, Minimize2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -32,7 +30,7 @@ const LiveChat = () => {
   ]);
   const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
-  const [isOnline, setIsOnline] = useState(true);
+  const [isOnline, _setIsOnline] = useState(true);
   const [userRole, setUserRole] = useState<string>('customer');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -143,7 +141,7 @@ const LiveChat = () => {
       };
       setMessages(prev => [...prev, supportMessage]);
       toast.success('Meddelande skickat!');
-    } catch (error) {
+    } catch {
       setIsTyping(false);
       toast.error('Kunde inte skicka meddelande. Försök igen.');
     }

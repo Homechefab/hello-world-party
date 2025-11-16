@@ -18,7 +18,28 @@ const PaymentSuccess = () => {
     }
   }, [searchParams]);
   const [loading, setLoading] = useState(true);
-  const [result, setResult] = useState<any>(null);
+    type PaymentLineItem = {
+      description: string;
+      quantity: number;
+      amount_total: number;
+      currency?: string;
+    };
+
+    type PaymentResult = {
+      amount_total?: number;
+      currency?: string;
+      payment_status?: string;
+      customer_email?: string;
+      commission_report?: {
+        total_amount: number;
+        platform_fee: number;
+        chef_earnings: number;
+      };
+      receipt_url?: string;
+      line_items?: PaymentLineItem[];
+    };
+
+    const [result, setResult] = useState<PaymentResult | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -152,7 +173,7 @@ const PaymentSuccess = () => {
                 <div className="pt-4">
                   <h3 className="font-medium mb-2">Artiklar</h3>
                   <ul className="list-disc list-inside text-sm text-muted-foreground">
-                    {result.line_items.map((it: any, idx: number) => (
+                    {result.line_items.map((it: PaymentLineItem, idx: number) => (
                       <li key={idx}>
                         {it.description} × {it.quantity} — {(it.amount_total / 100).toLocaleString('sv-SE')} {it.currency?.toUpperCase?.()}
                       </li>

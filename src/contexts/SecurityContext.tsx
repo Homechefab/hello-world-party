@@ -65,6 +65,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         description: 'Din inloggning är nu säkrare.',
       });
     } catch (error) {
+      console.error('enableTwoFactor error:', error);
       toast({
         title: 'Fel vid aktivering av tvåfaktorsautentisering',
         description: 'Försök igen senare.',
@@ -85,6 +86,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         description: 'Du kan aktivera den igen när som helst.',
       });
     } catch (error) {
+      console.error('disableTwoFactor error:', error);
       toast({
         title: 'Fel vid inaktivering av tvåfaktorsautentisering',
         description: 'Försök igen senare.',
@@ -125,6 +127,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         description: 'Vi granskar dina dokument och återkommer.',
       });
     } catch (error) {
+      console.error('verifyIdentity error:', error);
       toast({
         title: 'Fel vid ID-verifiering',
         description: 'Kontrollera dokumenten och försök igen.',
@@ -177,6 +180,7 @@ export function SecurityProvider({ children }: { children: ReactNode }) {
         description: 'Vi granskar din företagsinformation och återkommer.',
       });
     } catch (error) {
+      console.error('verifyBusiness error:', error);
       toast({
         title: 'Fel vid företagsverifiering',
         description: 'Kontrollera informationen och försök igen.',

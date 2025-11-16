@@ -1,11 +1,9 @@
-// @ts-nocheck
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Clock, DollarSign, Plus, Check } from "lucide-react";
@@ -41,11 +39,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
   const { toast } = useToast();
   const { user } = useAuth();
 
-  useEffect(() => {
-    fetchTemplates();
-  }, []);
-
-  const fetchTemplates = async () => {
+  const fetchTemplates = useCallback(async () => {
     try {
       const { data, error } = await supabase
         .from('dish_templates')
@@ -58,11 +52,15 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
       console.error('Error fetching templates:', error);
       toast({
         title: "Fel",
-        description: "Kunde inte ladda fördefinierade rätter",
+        description: "Kunde inte ladda rättmallar",
         variant: "destructive",
       });
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    fetchTemplates();
+  }, [fetchTemplates]);
 
   const categories = ["Alla", ...Array.from(new Set(templates.map(t => t.category)))];
   const filteredTemplates = activeCategory === "Alla" 

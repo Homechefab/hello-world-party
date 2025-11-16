@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { User, Save, Mail, Phone, MapPin, Calendar, Star, TrendingUp, Shield, Bell, Clock } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -16,7 +16,17 @@ const Profile = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [recentActivity, setRecentActivity] = useState<any[]>([]);
+  type Activity = {
+    type: 'order' | 'review';
+    id: string;
+    title: string;
+    description: string;
+    amount?: string;
+    rating?: number;
+    date: string;
+  };
+
+  const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
   
   const [profile, setProfile] = useState({
     full_name: '',
@@ -43,12 +53,12 @@ const Profile = () => {
         setLoading(false);
       }
     };
-    
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.id]);
 
-  const fetchProfile = async () => {
+    loadData();
+     
+  }, [fetchProfile, fetchRecentActivity, fetchUserStats, user?.id]);
+
+  const fetchProfile = useCallback(async () => {
     try {
       if (!user?.id) return;
       const { data, error } = await supabase
@@ -76,9 +86,9 @@ const Profile = () => {
       console.error('Error fetching profile:', error);
       toast.error('Kunde inte hämta profilinformation');
     }
-  };
+  }, [user?.id, user?.email]);
 
-  const fetchUserStats = async () => {
+  const fetchUserStats = useCallback(async () => {
     try {
       if (!user?.id) return;
 
@@ -135,9 +145,9 @@ const Profile = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user?.id]);
 
-  const fetchRecentActivity = async () => {
+  const fetchRecentActivity = useCallback(async () => {
     try {
       if (!user?.id) return;
 
@@ -197,7 +207,7 @@ const Profile = () => {
       console.error('Error fetching recent activity:', error);
       setRecentActivity([]);
     }
-  };
+  }, [user?.id]);
 
   const handleSave = async () => {
     setSaving(true);

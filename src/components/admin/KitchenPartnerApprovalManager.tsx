@@ -55,8 +55,8 @@ export const KitchenPartnerApprovalManager = () => {
         return;
       }
 
-      setApplications((data as any) || []);
-    } catch (error) {
+      setApplications((data as unknown) || []);
+    } catch {
       toast.error('Något gick fel');
     } finally {
       setLoading(false);
@@ -76,7 +76,7 @@ export const KitchenPartnerApprovalManager = () => {
 
       toast.success('Ansökan godkänd!');
       fetchApplications();
-    } catch (error) {
+    } catch {
       toast.error('Något gick fel');
     }
   };
@@ -97,7 +97,7 @@ export const KitchenPartnerApprovalManager = () => {
       setRejectionReason('');
       setSelectedApplicationId(null);
       fetchApplications();
-    } catch (error) {
+    } catch {
       toast.error('Något gick fel');
     }
   };

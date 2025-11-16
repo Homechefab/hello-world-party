@@ -38,10 +38,10 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
       
       // Navigate to home page after successful login
       navigate('/');
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Fel vid inloggning",
-        description: error.message,
+        description: error instanceof Error ? error.message : "Ett fel uppstod vid inloggning",
         variant: "destructive",
       });
     } finally {
@@ -59,10 +59,10 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
       });
 
       if (error) throw error;
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast({
         title: "Fel vid social inloggning",
-        description: error.message,
+        description: error instanceof Error ? error.message : "Ett fel uppstod vid inloggning",
         variant: "destructive",
       });
     }

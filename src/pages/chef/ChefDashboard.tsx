@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -27,8 +27,28 @@ export const ChefDashboard = () => {
   const [searchParams] = useSearchParams();
   const tabFromUrl = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState(tabFromUrl || 'overview');
-  const [dishes, setDishes] = useState<any[]>([]);
-  const [orders, setOrders] = useState<any[]>([]);
+  type Dish = {
+    id: string;
+    name: string;
+    description: string;
+    price: number;
+    available: boolean;
+    category: string;
+    preparation_time: number;
+    image_url: string | null;
+  };
+
+  type Order = {
+    id: string;
+    status: string;
+    total_amount: number;
+    customer_name: string;
+    created_at: string;
+    dishes?: { name: string; price: number } | Array<{ name: string; price: number }>;
+  };
+
+  const [dishes, setDishes] = useState<Dish[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -39,11 +59,7 @@ export const ChefDashboard = () => {
     totalDishes: dishes.length
   };
 
-  useEffect(() => {
-    loadChefData();
-  }, []);
-
-  const loadChefData = async () => {
+  const loadChefData = useCallback(async () => {
     try {
       // Since we're using mock users, let's create some mock data for the dashboard
       // In a real app, we would query with the actual user's chef_id from Supabase
@@ -105,7 +121,11 @@ export const ChefDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [toast]);
+
+  useEffect(() => {
+    loadChefData();
+  }, [loadChefData]);
 
   const toggleDishStatus = async (dishId: string, isActive: boolean) => {
     try {

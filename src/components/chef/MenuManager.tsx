@@ -1,10 +1,9 @@
-// @ts-nocheck
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,7 +16,6 @@ import {
   Eye, 
   EyeOff,
   Save,
-  Trash2,
   ChefHat
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -48,13 +46,7 @@ const MenuManager = () => {
   const { toast } = useToast();
   const { user } = useAuth();
 
-  useEffect(() => {
-    if (activeTab === "my-menu") {
-      fetchMyDishes();
-    }
-  }, [activeTab, user]);
-
-  const fetchMyDishes = async () => {
+  const fetchMyDishes = useCallback(async () => {
     if (!user?.id) return;
 
     try {
@@ -83,7 +75,13 @@ const MenuManager = () => {
         variant: "destructive",
       });
     }
-  };
+  }, [user, toast]);
+
+  useEffect(() => {
+    if (activeTab === "my-menu") {
+      fetchMyDishes();
+    }
+  }, [activeTab, fetchMyDishes]);
 
   const handleEditDish = (dish: Dish) => {
     setEditingDish({ ...dish });
