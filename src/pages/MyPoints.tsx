@@ -106,61 +106,6 @@ const MyPoints = () => {
     }
   }, [fetchTransactions, fetchUserPoints, user, usingMockData]);
 
-  const fetchUserPoints = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('user_points')
-        .select('*')
-        .eq('user_id', user?.id)
-        .maybeSingle();
-
-      if (error && error.code !== 'PGRST116') throw error;
-      
-      if (data) {
-        setUserPoints(data);
-      } else {
-        // Create initial points record
-        const { data: newRecord, error: insertError } = await supabase
-          .from('user_points')
-          .insert({
-            user_id: user?.id,
-            total_points: 0,
-            current_points: 0,
-            points_used: 0,
-            total_purchases: 0,
-            next_discount_at: 5
-          })
-          .select()
-          .maybeSingle();
-
-        if (insertError) throw insertError;
-        setUserPoints(newRecord);
-      }
-    } catch (error) {
-      console.error('Error fetching user points:', error);
-      toast.error('Kunde inte hämta poänginformation');
-    }
-  };
-
-  const fetchTransactions = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('points_transactions')
-        .select('*')
-        .eq('user_id', user?.id)
-        .order('created_at', { ascending: false })
-        .limit(20);
-
-      if (error) throw error;
-      setTransactions(data || []);
-    } catch (error) {
-      console.error('Error fetching transactions:', error);
-      toast.error('Kunde inte hämta transaktioner');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const getProgressToNextDiscount = () => {
     if (!userPoints) return 0;
     const purchasesToNext = userPoints.next_discount_at - userPoints.total_purchases;
