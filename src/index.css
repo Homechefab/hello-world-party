@@ -125,6 +125,18 @@ All colors MUST be HSL.
     max-width: 100vw;
   }
 
+  /* Prevent media from causing overflow on small screens */
+  img, video, canvas, svg, iframe {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Prevent negative-offset carousel controls from creating horizontal scroll */
+  [aria-roledescription="carousel"] {
+    overflow: hidden;
+  }
+
   body {
     @apply bg-background text-foreground;
   }
