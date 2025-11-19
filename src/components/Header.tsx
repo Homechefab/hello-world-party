@@ -81,7 +81,7 @@ const Header = () => {
   // Role functions have been removed
 
   return (
-    <header className="bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 shadow-soft" style={{paddingTop: 'env(safe-area-inset-top)'}}>
+    <header className="bg-white/95 backdrop-blur-sm border-b border-border sticky z-50 shadow-soft" style={{paddingTop: 'env(safe-area-inset-top)', top: 'env(safe-area-inset-top)'}}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
