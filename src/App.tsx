@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import useEdgeSwipeBack from "@/hooks/useEdgeSwipeBack";
 import useAutoSafeArea from "@/hooks/useAutoSafeArea";
 import { RoleBasedLayout } from "@/components/RoleBasedLayout";
@@ -81,8 +81,8 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <BrowserRouter>
-          <Routes>
+        <Routes>
+
             {/* Public routes */}
             <Route path="/" element={<PublicLayout><Index /></PublicLayout>} />
             <Route path="/dish/:id" element={<PublicLayout><DishPage /></PublicLayout>} />
@@ -153,14 +153,13 @@ const App = () => {
             <Route path="/settings/payment-methods" element={<RoleBasedLayout><PaymentMethods /></RoleBasedLayout>} />
             <Route path="/settings/preferences" element={<RoleBasedLayout><Preferences /></RoleBasedLayout>} />
 
-            <Route path="*" element={<PublicLayout><NotFound /></PublicLayout>} />
-          </Routes>
-        </BrowserRouter>
+        </Routes>
         <Toaster />
         <Sonner />
       </TooltipProvider>
     </QueryClientProvider>
   );
 };
+
 
 export default App;
