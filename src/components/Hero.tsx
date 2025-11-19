@@ -19,7 +19,7 @@ const Hero = () => {
       </div>
       
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-2xl text-white">
+        <div className="max-w-2xl text-white mx-auto">
           <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">
             Homechef
             <span className="block text-xl md:text-2xl font-normal text-yellow-cream">hemlagad mat nära dig</span>
@@ -28,7 +28,7 @@ const Hero = () => {
             Beställ hemlagad mat från duktiga kockar i ditt område.
           </p>
           
-          <div id="search" className="bg-white/95 backdrop-blur-sm rounded-xl p-6 shadow-xl">
+          <div id="search" className="bg-white/95 backdrop-blur-sm rounded-xl p-4 md:p-6 shadow-xl max-w-xl mx-auto">
             <form onSubmit={(e) => {
               e.preventDefault();
               console.log("Search submitted with query:", searchQuery);
