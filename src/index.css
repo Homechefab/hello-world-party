@@ -140,6 +140,7 @@ All colors MUST be HSL.
   /* reset default body spacing and support safe-area for notches */
   body {
     margin: 0;
+    padding-top: env(safe-area-inset-top);
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
     -webkit-text-size-adjust: 100%;

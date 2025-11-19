@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import useEdgeSwipeBack from "@/hooks/useEdgeSwipeBack";
 import { RoleBasedLayout } from "@/components/RoleBasedLayout";
 import { PublicLayout } from "@/components/PublicLayout";
 import Index from "./pages/Index";
@@ -72,6 +73,8 @@ import LogoConcepts from "./pages/LogoConcepts";
 const queryClient = new QueryClient();
 
 const App = () => {
+  // enable left-edge right-swipe to go back on mobile webviews
+  useEdgeSwipeBack();
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
