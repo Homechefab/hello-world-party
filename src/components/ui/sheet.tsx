@@ -60,6 +60,13 @@ const SheetContent = React.forwardRef<
     <SheetPrimitive.Content
       ref={ref}
       className={cn(sheetVariants({ side }), className)}
+      // ensure content respects device safe areas (notch / dynamic island)
+      style={{
+        ...(props as any).style,
+        // base padding in classes is p-6 (1.5rem) — add safe-area insets on top/bottom
+        paddingTop: `calc(env(safe-area-inset-top, 0px) + 1.5rem)`,
+        paddingBottom: `calc(env(safe-area-inset-bottom, 0px) + 1.5rem)`,
+      }}
       {...props}
     >
       {children}
