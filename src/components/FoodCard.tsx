@@ -44,9 +44,10 @@ const FoodCard = ({
         }`}>
           <Heart className="w-4 h-4" fill={isFavorite ? "currentColor" : "none"} />
         </button>
-        <div className="absolute bottom-3 left-3 flex gap-2">
+        {/* Overlay tags only on medium+ screens; on small screens show simple text tags below to avoid boxed overlays and horizontal overflow */}
+        <div className="absolute bottom-3 left-3 flex gap-2 hidden md:flex">
           {tags.slice(0, 2).map((tag) => (
-            <Badge key={tag} variant="secondary" className="bg-white/90 text-foreground">
+            <Badge key={tag} variant="secondary" className="bg-white/80 text-foreground">
               {tag}
             </Badge>
           ))}
@@ -54,6 +55,14 @@ const FoodCard = ({
       </div>
       
       <div className="p-4">
+        {/* Mobile: show tags as plain text below the image to avoid boxed overlays */}
+        <div className="flex gap-2 mt-2 md:hidden">
+          {tags.slice(0, 2).map((tag) => (
+            <span key={tag} className="text-sm text-muted-foreground font-medium truncate">
+              {tag}
+            </span>
+          ))}
+        </div>
         <div className="flex items-start justify-between mb-2">
           <h3 className="font-semibold text-lg text-foreground line-clamp-1">{title}</h3>
           <span className="font-bold text-primary text-xl">{price} kr</span>
