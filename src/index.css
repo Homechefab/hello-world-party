@@ -1,3 +1,5 @@
+/* stylelint-disable at-rule-no-unknown */
+/* PostCSS/Tailwind directives below — stylelint/other linters may not understand them */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -118,11 +120,16 @@ All colors MUST be HSL.
 @layer base {
   * {
     @apply border-border;
+    /* Make sizing predictable to avoid elements overflowing the viewport */
+    box-sizing: border-box;
   }
 
   html, body {
     overflow-x: hidden;
     max-width: 100vw;
+    /* Ensure the page never expands wider than the viewport */
+    width: 100%;
+    position: relative;
   }
 
   /* Prevent media from causing overflow on small screens */
@@ -139,5 +146,19 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Prevent any top-level container from exceeding the viewport width
+     This helps in webviews / mobile wrappers where large padding or
+     transforms can cause horizontal scrolling. */
+  #root, .App, main {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  /* Avoid rubber-band / horizontal overscroll on supported browsers */
+  html, body {
+    overscroll-behavior-x: none;
   }
 }
