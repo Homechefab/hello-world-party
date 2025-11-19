@@ -8,9 +8,11 @@ interface PublicLayoutProps {
 
 export const PublicLayout = ({ children }: PublicLayoutProps) => {
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="min-h-screen bg-background overflow-x-hidden rounded-lg border border-border/30">
       <Header />
-      {children}
+      <main className="p-2 md:p-4">
+        {children}
+      </main>
       
       {/* Live Chat Widget */}
       <LiveChat />
