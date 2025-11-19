@@ -81,19 +81,19 @@ const Header = () => {
   // Role functions have been removed
 
   return (
-    <header className="bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 shadow-soft">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+    <header className="bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 shadow-soft" style={{paddingTop: 'env(safe-area-inset-top)'}}>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img 
             src={homechefLogo} 
             alt="Homechef" 
-            className="h-10 w-auto md:h-20 lg:h-28 object-contain"
+            className="h-10 w-auto md:h-16 lg:h-24 object-contain"
           />
         </Link>
         
-        {/* Desktop Search - hidden on mobile */}
-        <div className="hidden lg:flex items-center gap-4 flex-1 max-w-md mx-8">
+  {/* Desktop Search - hidden on mobile */}
+  <div className="hidden lg:flex items-center gap-4 flex-1 max-w-md mx-6 lg:mx-8">
           <form onSubmit={handleSearch} className="relative flex-1">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <input
@@ -163,8 +163,8 @@ const Header = () => {
           )}
         </div>
 
-        {/* Mobile Hamburger Menu */}
-        <div className="md:hidden">
+  {/* Mobile Hamburger Menu */}
+  <div className="md:hidden mr-2 -mr-1">
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">

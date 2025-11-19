@@ -14,10 +14,10 @@ const Footer = () => {
   };
   return (
     <footer className="bg-gradient-warm border-t border-border">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 items-start">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12" style={{paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))'}}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 items-start lg:divide-x lg:divide-border">
           {/* Brand */}
-          <div className="space-y-4">
+          <div className="space-y-4 lg:pr-6">
             <Link to="/" className="flex items-center">
               <img 
                 src={homechefLogo} 
@@ -42,7 +42,7 @@ const Footer = () => {
           </div>
 
           {/* För köpare */}
-          <div className="space-y-4">
+          <div className="space-y-4 lg:px-6">
             <h4 className="font-semibold text-foreground">För köpare</h4>
             <ul className="space-y-2 text-muted-foreground">
               <li>
@@ -84,7 +84,7 @@ const Footer = () => {
           </div>
 
           {/* För säljare - Show for all users */}
-          <div className="space-y-4">
+          <div className="space-y-4 lg:px-6">
             <h4 className="font-semibold text-foreground">För säljare</h4>
             <ul className="space-y-2 text-muted-foreground">
               <li><Link to="/chef/application" className="hover:text-primary transition-colors">Bli hemmakock</Link></li>
@@ -99,7 +99,7 @@ const Footer = () => {
           </div>
 
           {/* För kökspartner */}
-          <div className="space-y-4">
+          <div className="space-y-4 lg:px-6">
             <h4 className="font-semibold text-foreground">För kökspartner</h4>
             <ul className="space-y-2 text-muted-foreground">
               <li><Link to="/hyr-ut-ditt-kok" className="hover:text-primary transition-colors">Hyr ut ditt restaurangkök</Link></li>
@@ -110,7 +110,7 @@ const Footer = () => {
           </div>
 
           {/* För restauranger */}
-          <div className="space-y-4">
+          <div className="space-y-4 lg:px-6">
             <h4 className="font-semibold text-foreground">För restauranger</h4>
             <ul className="space-y-2 text-muted-foreground">
               <li><Link to="/restaurant" className="hover:text-primary transition-colors">Bli restaurangpartner</Link></li>
@@ -172,7 +172,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="border-t border-border mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-muted-foreground text-sm">
+  <div className="border-t border-border mt-8 pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-center text-muted-foreground text-sm">
           <p>&copy; 2024 Homechef. Alla rättigheter förbehållna.</p>
           <div className="flex gap-6 mt-4 md:mt-0">
             <Link to="/about" className="hover:text-primary transition-colors">Om oss</Link>
