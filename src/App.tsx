@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import useEdgeSwipeBack from "@/hooks/useEdgeSwipeBack";
+import useAutoSafeArea from "@/hooks/useAutoSafeArea";
 import { RoleBasedLayout } from "@/components/RoleBasedLayout";
 import { PublicLayout } from "@/components/PublicLayout";
 import Index from "./pages/Index";
@@ -75,6 +76,8 @@ const queryClient = new QueryClient();
 const App = () => {
   // enable left-edge right-swipe to go back on mobile webviews
   useEdgeSwipeBack();
+  // auto-adjust fixed/absolute elements so they don't hide under notches / dynamic island
+  useAutoSafeArea();
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
