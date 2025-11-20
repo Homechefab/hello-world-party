@@ -16,32 +16,38 @@ export type Database = {
     Tables: {
       chefs: {
         Row: {
+          application_status: string | null
           business_name: string
           created_at: string
           hygiene_certificate_url: string | null
           id: string
           kitchen_approved: boolean | null
           municipality_approval_date: string | null
+          rejection_reason: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          application_status?: string | null
           business_name: string
           created_at?: string
           hygiene_certificate_url?: string | null
           id?: string
           kitchen_approved?: boolean | null
           municipality_approval_date?: string | null
+          rejection_reason?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          application_status?: string | null
           business_name?: string
           created_at?: string
           hygiene_certificate_url?: string | null
           id?: string
           kitchen_approved?: boolean | null
           municipality_approval_date?: string | null
+          rejection_reason?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -190,6 +196,7 @@ export type Database = {
       document_submissions: {
         Row: {
           ai_analysis: string | null
+          chef_id: string | null
           created_at: string
           document_type: string
           document_url: string
@@ -204,6 +211,7 @@ export type Database = {
         }
         Insert: {
           ai_analysis?: string | null
+          chef_id?: string | null
           created_at?: string
           document_type?: string
           document_url: string
@@ -218,6 +226,7 @@ export type Database = {
         }
         Update: {
           ai_analysis?: string | null
+          chef_id?: string | null
           created_at?: string
           document_type?: string
           document_url?: string
@@ -230,7 +239,15 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "document_submissions_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
+            referencedRelation: "chefs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       Farhan: {
         Row: {
