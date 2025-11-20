@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Minus, Plus, ShoppingBag } from "lucide-react";
 import { StripeCheckout } from "./StripeCheckout";
+import { useToast } from "@/hooks/use-toast";
 
 interface OrderDialogProps {
   open: boolean;
@@ -33,9 +34,11 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId }: OrderDialogPro
     }
   };
 
+  const { toast } = useToast();
+
   const handleProceedToPayment = () => {
     if (!deliveryAddress.trim()) {
-      alert("Vänligen ange en leveransadress");
+      toast({ title: "Vänligen ange en leveransadress", variant: "destructive" });
       return;
     }
     setShowCheckout(true);
