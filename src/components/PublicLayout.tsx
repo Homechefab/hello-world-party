@@ -1,12 +1,15 @@
 import { ReactNode } from 'react';
 import LiveChat from './LiveChat';
 import Header from './Header';
+import useAutoSafeArea from '@/hooks/useAutoSafeArea';
 
 interface PublicLayoutProps {
   children: ReactNode;
 }
 
 export const PublicLayout = ({ children }: PublicLayoutProps) => {
+  useAutoSafeArea();
+  
   return (
     <div className="min-h-screen bg-background overflow-x-hidden rounded-lg border border-border/30">
       <Header />
