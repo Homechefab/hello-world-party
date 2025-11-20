@@ -19,30 +19,14 @@ interface SearchFilters {
 
 const Index = () => {
   console.log('Index component rendering');
-  const { role, loading: _loading } = useRole();
-  const [_filters, _setFilters] = useState<SearchFilters>({
-    query: "",
-    category: "",
-    priceRange: "",
-    rating: "",
-    location: "",
-    sortBy: "relevance"
-  });
-
-  console.log('Index: About to render components');
   
   return (
     <div className="min-h-screen bg-background">
       <Hero />
       <RoleBasedServices />
-      {/* Show these sections only for customer role */}
-      {(role === 'customer' || !role) && (
-        <>
-          <PopularChefs />
-          <FoodGrid />
-          <Features />
-        </>
-      )}
+      <PopularChefs />
+      <FoodGrid />
+      <Features />
       <Footer />
     </div>
   );
