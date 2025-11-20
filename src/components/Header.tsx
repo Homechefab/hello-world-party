@@ -183,6 +183,7 @@ const Header = () => {
             <SheetContent 
               side="right" 
               className="w-80 bg-background/95 backdrop-blur-sm pt-4"
+              data-no-safe-adjust
             >
               <SheetHeader>
                 <SheetTitle className="flex items-center gap-2 text-left">
