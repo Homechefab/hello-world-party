@@ -1,17 +1,11 @@
 import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 import { useRole } from "@/hooks/useRole";
-import { Link, useNavigate } from "react-router-dom";
-import { scrollToSection } from "@/utils/scrollUtils";
+import { Link } from "react-router-dom";
 import homechefLogo from "@/assets/homechef-logo-orange.png";
 
 const Footer = () => {
   const { isChef, isRestaurant } = useRole();
-  const navigate = useNavigate();
-
-  const handleRestaurantLink = (hash: string) => {
-    navigate(`/restaurant/partnership${hash}`);
-    scrollToSection(hash);
-  };
+  
   return (
     <footer className="bg-gradient-warm border-t border-border rounded-xl mt-4">
       <div className="max-w-4xl mx-auto px-6 py-8" style={{paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))'}}>

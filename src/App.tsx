@@ -153,6 +153,9 @@ const App = () => {
             <Route path="/settings/payment-methods" element={<RoleBasedLayout><PaymentMethods /></RoleBasedLayout>} />
             <Route path="/settings/preferences" element={<RoleBasedLayout><Preferences /></RoleBasedLayout>} />
 
+            {/* Fallback */}
+            <Route path="*" element={<PublicLayout><NotFound /></PublicLayout>} />
+
         </Routes>
         <Toaster />
         <Sonner />
