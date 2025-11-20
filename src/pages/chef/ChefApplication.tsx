@@ -477,6 +477,12 @@ const ChefApplication = () => {
                                   title: "Dokument uppladdad",
                                   description: "Ditt kommunbeslut har laddats upp."
                                 });
+                                // Gå automatiskt vidare till steg 4 efter uppladdning
+                                setTimeout(() => {
+                                  if (currentStep === 3) {
+                                    handleNext();
+                                  }
+                                }, 1000);
                               }}
                             />
                           </DialogContent>
