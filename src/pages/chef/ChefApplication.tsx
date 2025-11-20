@@ -5,12 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-
-import { CheckCircle, Upload, FileText, Shield, Clock } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { CheckCircle, Upload, FileText, Shield } from "lucide-react";
 import Header from "@/components/Header";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { DocumentUpload } from "@/components/DocumentUpload";
 
 
 
@@ -41,6 +42,7 @@ const ChefApplication = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -399,23 +401,58 @@ const ChefApplication = () => {
                       <Card className="p-4">
                         <div className="flex items-center gap-3 mb-3">
                           <FileText className="w-5 h-5 text-primary" />
-                          <h4 className="font-medium">Livsmedelshygienbevis</h4>
+                          <h4 className="font-medium">Kommunbeslut</h4>
                         </div>
-                        <Button variant="outline" size="sm" className="w-full">
-                          <Upload className="w-4 h-4 mr-2" />
-                          Ladda upp
-                        </Button>
+                        <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="sm" className="w-full">
+                              <Upload className="w-4 h-4 mr-2" />
+                              Ladda upp
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                            <DialogHeader>
+                              <DialogTitle>Ladda upp dokument</DialogTitle>
+                            </DialogHeader>
+                            <DocumentUpload 
+                              onSuccess={() => {
+                                setUploadDialogOpen(false);
+                                toast({
+                                  title: "Dokument uppladdad",
+                                  description: "Ditt dokument har laddats upp och kommer att granskas."
+                                });
+                              }}
+                            />
+                          </DialogContent>
+                        </Dialog>
                       </Card>
 
                       <Card className="p-4">
                         <div className="flex items-center gap-3 mb-3">
                           <Shield className="w-5 h-5 text-primary" />
-                          <h4 className="font-medium">Näringsregistrering</h4>
+                          <h4 className="font-medium">Livsmedelshygienbevis</h4>
                         </div>
-                        <Button variant="outline" size="sm" className="w-full">
-                          <Upload className="w-4 h-4 mr-2" />
-                          Ladda upp
-                        </Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="outline" size="sm" className="w-full">
+                              <Upload className="w-4 h-4 mr-2" />
+                              Ladda upp
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                            <DialogHeader>
+                              <DialogTitle>Ladda upp hygienbevis</DialogTitle>
+                            </DialogHeader>
+                            <DocumentUpload 
+                              onSuccess={() => {
+                                toast({
+                                  title: "Dokument uppladdad",
+                                  description: "Ditt hygienbevis har laddats upp."
+                                });
+                              }}
+                            />
+                          </DialogContent>
+                        </Dialog>
                       </Card>
                     </div>
                   </div>
