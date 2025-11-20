@@ -4,12 +4,14 @@ import { useAuth } from '../hooks/useAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
 import LiveChat from './LiveChat';
 import Header from './Header';
+import useAutoSafeArea from '@/hooks/useAutoSafeArea';
 
 interface RoleBasedLayoutProps {
   children: ReactNode;
 }
 
 export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
+  useAutoSafeArea();
   const { role, loading } = useRole();
   const { user: authUser } = useAuth();
   const navigate = useNavigate();
