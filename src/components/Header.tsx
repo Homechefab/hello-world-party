@@ -182,11 +182,11 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent 
               side="right" 
-              className="w-80 bg-background/95 backdrop-blur-sm pt-4"
+              className="w-80 bg-background/95 backdrop-blur-sm !pt-0 !pb-4 !px-4"
               data-no-safe-adjust
             >
-              <SheetHeader>
-                <SheetTitle className="flex items-center gap-2 text-left">
+              <SheetHeader className="!pt-0 !mt-0 !pb-3">
+                <SheetTitle className="flex items-center gap-2 text-left !pt-0 !mt-0">
                   <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
                     <ChefHat className="w-5 h-5 text-white" />
                   </div>
@@ -196,7 +196,7 @@ const Header = () => {
                 </SheetTitle>
               </SheetHeader>
               
-              <div className="mt-4 space-y-6">
+              <div className="mt-2 space-y-6">
                 {/* Role Switcher - Mobile */}
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">Nuvarande roll:</p>
