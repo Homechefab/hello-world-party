@@ -181,10 +181,6 @@ const Header = () => {
             <SheetContent 
               side="right" 
               className="w-80 bg-background/95 backdrop-blur-sm p-4"
-              style={{
-                paddingTop: '1rem',
-                paddingBottom: '1rem'
-              }}
             >
               <div className="space-y-6">
                 {/* Role Switcher - Mobile */}

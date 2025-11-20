@@ -60,19 +60,11 @@ const SheetContent = React.forwardRef<
     <SheetPrimitive.Content
       ref={ref}
       className={cn(sheetVariants({ side }), className)}
-      style={{
-        ...(props as any).style,
-        // base padding in classes is p-6 (1.5rem) — add safe-area insets on top/bottom
-        paddingTop: `calc(env(safe-area-inset-top, 0px) + 1.5rem)`,
-        paddingBottom: `calc(env(safe-area-inset-bottom, 0px) + 1.5rem)`,
-      }}
       {...props}
     >
       {children}
       <SheetPrimitive.Close
-        className="absolute right-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary"
-        // place the close button below the safe-area inset
-        style={{ top: `calc(env(safe-area-inset-top, 0px) + 1rem)` }}
+        className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary"
       >
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
