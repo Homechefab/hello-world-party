@@ -138,22 +138,22 @@ All colors MUST be HSL.
   }
   
   body {
-    /* Global padding/margin so content doesn't touch edges */
-    padding: 1rem;
+    /* Global padding/margin so content doesn't touch edges - NO TOP PADDING */
+    padding: 0 1rem 1rem 1rem;
     margin: 0;
   }
   
   /* On mobile, use smaller padding */
   @media (max-width: 768px) {
     body {
-      padding: 0.75rem;
+      padding: 0 0.75rem 0.75rem 0.75rem;
     }
   }
   
   /* On desktop, use larger padding */
   @media (min-width: 1024px) {
     body {
-      padding: 1.5rem;
+      padding: 0 1.5rem 1.5rem 1.5rem;
     }
   }
 
