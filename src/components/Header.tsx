@@ -86,13 +86,13 @@ const Header = () => {
       <div className="fixed top-0 left-0 right-0 bg-gradient-to-b from-primary/5 to-transparent z-40" style={{ height: 'env(safe-area-inset-top, 0px)' }} />
       
       <header className="bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 shadow-soft pt-safe">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img 
             src={homechefLogo} 
             alt="Homechef" 
-            className="h-10 w-auto md:h-16 lg:h-24 object-contain"
+            className="h-14 w-auto md:h-20 lg:h-28 object-contain"
           />
         </Link>
         
@@ -171,8 +171,8 @@ const Header = () => {
   <div className="md:hidden mr-2 -mr-1">
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Menu className="w-6 h-6" />
+              <Button variant="ghost" size="icon" className="h-12 w-12">
+                <Menu className="w-7 h-7" />
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-80 bg-background/95 backdrop-blur-sm">
