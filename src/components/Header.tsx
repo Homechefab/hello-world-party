@@ -182,8 +182,7 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent 
               side="right" 
-              className="w-80 bg-background/95 backdrop-blur-sm"
-              style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}
+              className="w-80 bg-background/95 backdrop-blur-sm pt-4"
             >
               <SheetHeader>
                 <SheetTitle className="flex items-center gap-2 text-left">
@@ -196,7 +195,7 @@ const Header = () => {
                 </SheetTitle>
               </SheetHeader>
               
-              <div className="mt-8 space-y-6">
+              <div className="mt-4 space-y-6">
                 {/* Role Switcher - Mobile */}
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">Nuvarande roll:</p>
