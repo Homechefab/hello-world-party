@@ -85,13 +85,19 @@ const Header = () => {
       className="bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 shadow-soft"
       data-no-safe-adjust
     >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 flex items-center justify-between">
+      <div 
+        className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between"
+        style={{ 
+          paddingTop: 'max(1rem, env(safe-area-inset-top))',
+          paddingBottom: '1rem'
+        }}
+      >
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img 
             src={homechefLogo} 
             alt="Homechef" 
-            className="h-14 w-auto md:h-20 lg:h-28 object-contain"
+            className="h-16 w-auto md:h-24 lg:h-32 object-contain"
           />
         </Link>
         
@@ -170,11 +176,15 @@ const Header = () => {
   <div className="md:hidden mr-2 -mr-1">
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-12 w-12">
-                <Menu className="w-7 h-7" />
+              <Button variant="ghost" size="icon" className="h-14 w-14">
+                <Menu className="w-8 h-8" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-80 bg-background/95 backdrop-blur-sm">
+            <SheetContent 
+              side="right" 
+              className="w-80 bg-background/95 backdrop-blur-sm"
+              style={{ paddingTop: 'max(1rem, env(safe-area-inset-top))' }}
+            >
               <SheetHeader>
                 <SheetTitle className="flex items-center gap-2 text-left">
                   <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
