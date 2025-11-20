@@ -1,15 +1,12 @@
 import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
-import { useRole } from "@/hooks/useRole";
 import { Link } from "react-router-dom";
 import homechefLogo from "@/assets/homechef-logo-orange.png";
 
 const Footer = () => {
-  const { isChef, isRestaurant } = useRole();
-  
   return (
     <footer className="bg-gradient-warm border-t border-border rounded-xl mt-4">
-      <div className="max-w-4xl mx-auto px-6 py-8" style={{paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))'}}>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
+      <div className="max-w-7xl mx-auto px-6 py-12" style={{paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))'}}>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
           {/* Brand */}
           <div className="space-y-3">
             <Link to="/" className="flex items-center">
@@ -35,36 +32,72 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* För köpare */}
           <div className="space-y-3">
-            <h4 className="font-semibold text-foreground text-sm">Snabblänkar</h4>
+            <h4 className="font-semibold text-foreground text-sm">För köpare</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link to="/" className="hover:text-primary transition-colors">Beställ mat</Link></li>
               <li><Link to="/how-it-works" className="hover:text-primary transition-colors">Så fungerar det</Link></li>
-              <li><Link to="/chef/application" className="hover:text-primary transition-colors">Bli hemmakock</Link></li>
-              <li><Link to="/hyr-ut-ditt-kok" className="hover:text-primary transition-colors">Hyr ut kök</Link></li>
-              <li><Link to="/restaurant" className="hover:text-primary transition-colors">För restauranger</Link></li>
-              {isChef && (
-                <li><Link to="/chef/dashboard" className="hover:text-primary transition-colors">Min dashboard</Link></li>
-              )}
-              {isRestaurant && (
-                <li><Link to="/restaurant/dashboard" className="hover:text-primary transition-colors">Restaurangdashboard</Link></li>
-              )}
+              <li><Link to="/pickup" className="hover:text-primary transition-colors">Upphämtning</Link></li>
+              <li><Link to="/meal-boxes" className="hover:text-primary transition-colors">Matlådor</Link></li>
             </ul>
           </div>
 
-          {/* Kontakt */}
+          {/* För säljare/kockar */}
           <div className="space-y-3">
-            <h4 className="font-semibold text-foreground text-sm">Kontakt</h4>
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
+            <h4 className="font-semibold text-foreground text-sm">För säljare</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link to="/chef/application" className="hover:text-primary transition-colors">Bli hemmakock</Link></li>
+              <li><Link to="/sell" className="hover:text-primary transition-colors">Sälj mat</Link></li>
+              <li><Link to="/chef/onboarding" className="hover:text-primary transition-colors">Komma igång</Link></li>
+              <li><Link to="/seller-guide" className="hover:text-primary transition-colors">Säljarguide</Link></li>
+            </ul>
+          </div>
+
+          {/* För kökspartner */}
+          <div className="space-y-3">
+            <h4 className="font-semibold text-foreground text-sm">För kökspartner</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link to="/hyr-ut-ditt-kok" className="hover:text-primary transition-colors">Hyr ut ditt restaurangkök</Link></li>
+              <li><Link to="/kitchen-partner/how-it-works" className="hover:text-primary transition-colors">Så fungerar det</Link></li>
+              <li><Link to="/kitchen-partner/pricing-terms" className="hover:text-primary transition-colors">Priser & villkor</Link></li>
+              <li><Link to="/kitchen-partner/support" className="hover:text-primary transition-colors">Partnersupport</Link></li>
+            </ul>
+          </div>
+
+          {/* För restauranger */}
+          <div className="space-y-3">
+            <h4 className="font-semibold text-foreground text-sm">För restauranger</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link to="/restaurant" className="hover:text-primary transition-colors">Bli restaurangpartner</Link></li>
+              <li><Link to="/restaurant/partnership" className="hover:text-primary transition-colors">Hemkörning</Link></li>
+              <li><Link to="/restaurant/partnership" className="hover:text-primary transition-colors">Marknadsföring</Link></li>
+              <li><Link to="/restaurant/partnership" className="hover:text-primary transition-colors">Support</Link></li>
+              <li><Link to="/restaurant/partnership" className="hover:text-primary transition-colors">Betalningar</Link></li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Kontakt sektion */}
+        <div className="border-t border-border pt-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="space-y-2">
+              <h4 className="font-semibold text-foreground text-sm">Kontakt</h4>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Mail className="w-4 h-4 text-primary flex-shrink-0" />
                 <span>Info@homechef.com</span>
               </div>
-              <div className="flex items-center gap-2">
+            </div>
+            <div className="space-y-2">
+              <h4 className="font-semibold text-foreground text-sm invisible">-</h4>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Phone className="w-4 h-4 text-primary flex-shrink-0" />
                 <span>0734234686</span>
               </div>
-              <div className="flex items-center gap-2">
+            </div>
+            <div className="space-y-2">
+              <h4 className="font-semibold text-foreground text-sm invisible">-</h4>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
                 <span>Båstad</span>
               </div>
