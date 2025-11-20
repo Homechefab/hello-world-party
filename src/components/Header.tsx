@@ -80,7 +80,7 @@ const Header = () => {
 
   return (
     <header
-      className={`bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 w-full transition-opacity ${menuOpen ? 'md:opacity-100 opacity-0 pointer-events-none md:pointer-events-auto' : ''}`}
+      className={`bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 w-full ${menuOpen ? 'md:block hidden' : ''}`}
       data-no-safe-adjust
     >
       <div 
