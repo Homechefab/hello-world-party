@@ -43,6 +43,11 @@ const ChefApplication = () => {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [chefId, setChefId] = useState<string | null>(null);
+  const [documentsUploaded, setDocumentsUploaded] = useState({
+    municipalPermit: false,
+    hygieneCertificate: false
+  });
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -62,10 +67,8 @@ const ChefApplication = () => {
   });
 
   const handleNext = async () => {
-    if (currentStep < 4) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      // Skicka ansökan till databasen
+    // När man går från steg 3 till 4, skapa chef-ansökan först
+    if (currentStep === 3) {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         
@@ -78,12 +81,55 @@ const ChefApplication = () => {
           return;
         }
 
-        const { error } = await supabase.from('chefs').insert({
-          business_name: formData.businessName,
-          user_id: user.id,
-          municipality_approved: false,
-          kitchen_approved: false
+        // Skapa chef-ansökan
+        const { data: newChef, error } = await supabase
+          .from('chefs')
+          .insert({
+            business_name: formData.businessName,
+            user_id: user.id,
+            municipality_approved: false,
+            kitchen_approved: false,
+            application_status: 'pending'
+          })
+          .select()
+          .single();
+
+        if (error) {
+          throw error;
+        }
+
+        setChefId(newChef.id);
+        setCurrentStep(4);
+
+      } catch (err) {
+        console.error(err);
+        toast({
+          title: "Fel vid skapande av ansökan",
+          description: "Något gick fel. Försök igen senare.",
+          variant: "destructive"
         });
+      }
+    } else if (currentStep < 4) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      // Steg 4 - Skicka in ansökan
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user || !chefId) {
+          toast({
+            title: "Fel",
+            description: "Något gick fel med ansökan. Försök igen.",
+            variant: "destructive"
+          });
+          return;
+        }
+
+        // Uppdatera chef-ansökan till "under review"
+        const { error } = await supabase
+          .from('chefs')
+          .update({ application_status: 'under_review' })
+          .eq('id', chefId);
 
         if (error) {
           throw error;
@@ -126,7 +172,8 @@ const ChefApplication = () => {
       case 2:
         return formData.experience && formData.specialties && formData.motivation;
       case 3:
-        return formData.hasKitchen && formData.hasHygieneCertificate;
+        // Kräv att minst kommunbeslut har laddats upp
+        return formData.hasKitchen && formData.hasHygieneCertificate && documentsUploaded.municipalPermit;
       case 4:
         return formData.agreesToTerms && formData.agreesToBackground;
       default:
@@ -394,32 +441,41 @@ const ChefApplication = () => {
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Dokumentuppladdning</h3>
                     <p className="text-sm text-muted-foreground">
-                      Du kan ladda upp dessa dokument nu eller senare under granskningsprocessen.
+                      Ladda upp ditt kommunbeslut (obligatoriskt). Hygienbeviset kan laddas upp senare.
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Card className="p-4">
+                      <Card className="p-4 border-2 border-primary/20">
                         <div className="flex items-center gap-3 mb-3">
                           <FileText className="w-5 h-5 text-primary" />
-                          <h4 className="font-medium">Kommunbeslut</h4>
+                          <h4 className="font-medium">Kommunbeslut *</h4>
+                          {documentsUploaded.municipalPermit && (
+                            <CheckCircle className="w-5 h-5 text-green-500 ml-auto" />
+                          )}
                         </div>
                         <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
                           <DialogTrigger asChild>
-                            <Button variant="outline" size="sm" className="w-full">
+                            <Button 
+                              variant={documentsUploaded.municipalPermit ? "outline" : "default"} 
+                              size="sm" 
+                              className="w-full"
+                            >
                               <Upload className="w-4 h-4 mr-2" />
-                              Ladda upp
+                              {documentsUploaded.municipalPermit ? "Uppladdad" : "Ladda upp"}
                             </Button>
                           </DialogTrigger>
                           <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                             <DialogHeader>
-                              <DialogTitle>Ladda upp dokument</DialogTitle>
+                              <DialogTitle>Ladda upp kommunbeslut</DialogTitle>
                             </DialogHeader>
                             <DocumentUpload 
+                              chefId={chefId || undefined}
                               onSuccess={() => {
                                 setUploadDialogOpen(false);
+                                setDocumentsUploaded(prev => ({ ...prev, municipalPermit: true }));
                                 toast({
                                   title: "Dokument uppladdad",
-                                  description: "Ditt dokument har laddats upp och kommer att granskas."
+                                  description: "Ditt kommunbeslut har laddats upp."
                                 });
                               }}
                             />
@@ -430,13 +486,20 @@ const ChefApplication = () => {
                       <Card className="p-4">
                         <div className="flex items-center gap-3 mb-3">
                           <Shield className="w-5 h-5 text-primary" />
-                          <h4 className="font-medium">Livsmedelshygienbevis</h4>
+                          <h4 className="font-medium">Livsmedelshygienbevis (valfritt)</h4>
+                          {documentsUploaded.hygieneCertificate && (
+                            <CheckCircle className="w-5 h-5 text-green-500 ml-auto" />
+                          )}
                         </div>
                         <Dialog>
                           <DialogTrigger asChild>
-                            <Button variant="outline" size="sm" className="w-full">
+                            <Button 
+                              variant={documentsUploaded.hygieneCertificate ? "outline" : "secondary"} 
+                              size="sm" 
+                              className="w-full"
+                            >
                               <Upload className="w-4 h-4 mr-2" />
-                              Ladda upp
+                              {documentsUploaded.hygieneCertificate ? "Uppladdad" : "Ladda upp"}
                             </Button>
                           </DialogTrigger>
                           <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -444,7 +507,9 @@ const ChefApplication = () => {
                               <DialogTitle>Ladda upp hygienbevis</DialogTitle>
                             </DialogHeader>
                             <DocumentUpload 
+                              chefId={chefId || undefined}
                               onSuccess={() => {
+                                setDocumentsUploaded(prev => ({ ...prev, hygieneCertificate: true }));
                                 toast({
                                   title: "Dokument uppladdad",
                                   description: "Ditt hygienbevis har laddats upp."
