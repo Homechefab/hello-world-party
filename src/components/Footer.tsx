@@ -36,10 +36,11 @@ const Footer = () => {
           <div className="space-y-3">
             <h4 className="font-semibold text-foreground text-sm">För köpare</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/" className="hover:text-primary transition-colors">Beställ mat</Link></li>
+              <li><Link to="/" className="hover:text-primary transition-colors">Sök runt</Link></li>
+              <li><Link to="/" className="hover:text-primary transition-colors">Populära kockar</Link></li>
               <li><Link to="/how-it-works" className="hover:text-primary transition-colors">Så fungerar det</Link></li>
-              <li><Link to="/pickup" className="hover:text-primary transition-colors">Upphämtning</Link></li>
-              <li><Link to="/meal-boxes" className="hover:text-primary transition-colors">Matlådor</Link></li>
+              <li><Link to="/secure-payments" className="hover:text-primary transition-colors">Säkra betalningar</Link></li>
+              <li><Link to="/customer-service" className="hover:text-primary transition-colors">Kundservice</Link></li>
             </ul>
           </div>
 
@@ -48,9 +49,11 @@ const Footer = () => {
             <h4 className="font-semibold text-foreground text-sm">För säljare</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link to="/chef/application" className="hover:text-primary transition-colors">Bli hemmakock</Link></li>
-              <li><Link to="/sell" className="hover:text-primary transition-colors">Sälj mat</Link></li>
-              <li><Link to="/chef/onboarding" className="hover:text-primary transition-colors">Komma igång</Link></li>
-              <li><Link to="/seller-guide" className="hover:text-primary transition-colors">Säljarguide</Link></li>
+              <li><Link to="/seller-guide" className="hover:text-primary transition-colors">Säljguide</Link></li>
+              <li><Link to="/sell" className="hover:text-primary transition-colors">Prissättning</Link></li>
+              <li><Link to="/chef/kitchen-requirements" className="hover:text-primary transition-colors">Säkerhetsregler</Link></li>
+              <li><Link to="/chef/forum" className="hover:text-primary transition-colors">Säljarecommunity</Link></li>
+              <li><Link to="/chef/dashboard" className="hover:text-primary transition-colors">Kök Tilläggsboard</Link></li>
             </ul>
           </div>
 
