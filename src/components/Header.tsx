@@ -81,8 +81,12 @@ const Header = () => {
   // Role functions have been removed
 
   return (
-    <header className="bg-white/95 backdrop-blur-sm border-b border-border sticky z-50 shadow-soft" style={{paddingTop: 'env(safe-area-inset-top)', top: 'env(safe-area-inset-top)'}}>
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
+    <>
+      {/* iOS safe area background - extends to very top */}
+      <div className="fixed top-0 left-0 right-0 bg-gradient-to-b from-primary/5 to-transparent z-40" style={{ height: 'env(safe-area-inset-top, 0px)' }} />
+      
+      <header className="bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 shadow-soft pt-safe">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <img 
@@ -280,6 +284,7 @@ const Header = () => {
         </div>
       </div>
     </header>
+    </>
   );
 };
 
