@@ -30,6 +30,7 @@ import { ChefDashboard } from "./pages/chef/ChefDashboard";
 import { ChefOnboarding } from "./pages/chef/ChefOnboarding";
 import ChefApplication from "./pages/chef/ChefApplication";
 import ApplicationPending from "./pages/chef/ApplicationPending";
+import ApplicationStatus from "./pages/chef/ApplicationStatus";
 import PrivateChefServices from "./pages/chef/PrivateChefServices";
 import CateringServices from "./pages/chef/CateringServices";
 import MealBoxes from "./pages/chef/MealBoxes";
@@ -110,6 +111,7 @@ const App = () => {
             <Route path="/auth" element={<PublicLayout><Auth /></PublicLayout>} />
             <Route path="/notification-signup" element={<PublicLayout><NotificationSignup /></PublicLayout>} />
             <Route path="/chef/application" element={<PublicLayout><ChefApplication /></PublicLayout>} />
+            <Route path="/chef/application-status" element={<RoleBasedLayout><ApplicationStatus /></RoleBasedLayout>} />
             <Route path="/payment-demo" element={<PublicLayout><PaymentDemo /></PublicLayout>} />
             <Route path="/payment-success" element={<PublicLayout><PaymentSuccess /></PublicLayout>} />
             <Route path="/payment-canceled" element={<PublicLayout><PaymentCanceled /></PublicLayout>} />
