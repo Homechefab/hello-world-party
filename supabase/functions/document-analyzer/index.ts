@@ -49,31 +49,45 @@ serve(async (req) => {
       throw new Error('Invalid authentication token');
     }
 
-    // Download the document content
+    // Extract the storage path from the URL
+    // URL format: https://.../storage/v1/object/public/documents/path
+    const urlParts = documentUrl.split('/documents/');
+    if (urlParts.length < 2) {
+      throw new Error('Invalid document URL format');
+    }
+    const storagePath = decodeURIComponent(urlParts[1]);
+    
+    console.log('Downloading document from storage path:', storagePath);
+
+    // Download the document content using Supabase Storage API
     let documentContent: string;
     
     try {
-      const response = await fetch(documentUrl);
-      if (!response.ok) {
-        throw new Error(`Failed to fetch document: ${response.status}`);
+      const { data: fileData, error: downloadError } = await supabase.storage
+        .from('documents')
+        .download(storagePath);
+        
+      if (downloadError || !fileData) {
+        console.error('Failed to download document:', downloadError);
+        throw new Error('Failed to download document from storage');
       }
       
-      const contentType = response.headers.get('content-type');
+      const contentType = fileData.type;
       console.log('Document content type:', contentType);
       
       if (contentType?.includes('application/pdf')) {
         // For PDF files, we'll analyze them as binary data
-        const arrayBuffer = await response.arrayBuffer();
+        const arrayBuffer = await fileData.arrayBuffer();
         const uint8Array = new Uint8Array(arrayBuffer);
         documentContent = `PDF document with ${uint8Array.length} bytes`;
       } else if (contentType?.includes('image/')) {
         // For images, we'll use OpenAI Vision API
-        const arrayBuffer = await response.arrayBuffer();
+        const arrayBuffer = await fileData.arrayBuffer();
         const base64 = btoa(String.fromCharCode(...new Uint8Array(arrayBuffer)));
         documentContent = `data:${contentType};base64,${base64}`;
       } else {
         // For text documents
-        documentContent = await response.text();
+        documentContent = await fileData.text();
       }
     } catch (error) {
       console.error('Failed to fetch document:', error);
