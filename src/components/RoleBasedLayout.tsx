@@ -93,7 +93,7 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden rounded-lg border border-border/30">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       <Header />
       <main className="p-4 md:p-6 lg:p-8 max-w-7xl mx-auto">
         {children}
