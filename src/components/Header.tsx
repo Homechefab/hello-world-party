@@ -11,8 +11,6 @@ import { toast } from "sonner";
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -182,20 +180,9 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent 
               side="right" 
-              className="w-80 bg-background/95 backdrop-blur-sm pt-4"
+              className="w-80 bg-background/95 backdrop-blur-sm"
             >
-              <SheetHeader>
-                <SheetTitle className="flex items-center gap-2 text-left">
-                  <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-                    <ChefHat className="w-5 h-5 text-white" />
-                  </div>
-                  <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent font-bold">
-                    Homechef
-                  </span>
-                </SheetTitle>
-              </SheetHeader>
-              
-              <div className="mt-4 space-y-6">
+              <div className="space-y-6">
                 {/* Role Switcher - Mobile */}
                 <div className="space-y-2">
                   <p className="text-sm text-muted-foreground">Nuvarande roll:</p>
