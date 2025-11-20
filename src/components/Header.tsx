@@ -82,22 +82,27 @@ const Header = () => {
 
   return (
     <header
-      className="bg-white/95 backdrop-blur-sm border-b border-border sticky top-0 z-50 shadow-soft"
-      data-no-safe-adjust
+      className="bg-white/95 backdrop-blur-sm border-b border-border z-50 w-full"
+      style={{ 
+        position: 'sticky',
+        top: 0,
+        left: 0,
+        right: 0
+      }}
     >
       <div 
         className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between"
         style={{ 
-          paddingTop: 'max(1rem, env(safe-area-inset-top))',
-          paddingBottom: '1rem'
+          paddingTop: 'max(1.25rem, env(safe-area-inset-top, 0px))',
+          paddingBottom: '1.25rem'
         }}
       >
-        {/* Logo */}
+        {/* Logo - Larger size */}
         <Link to="/" className="flex items-center gap-2">
           <img 
             src={homechefLogo} 
             alt="Homechef" 
-            className="h-16 w-auto md:h-24 lg:h-32 object-contain"
+            className="h-20 w-auto md:h-28 lg:h-36 object-contain"
           />
         </Link>
         
@@ -172,12 +177,12 @@ const Header = () => {
           )}
         </div>
 
-  {/* Mobile Hamburger Menu */}
+  {/* Mobile Hamburger Menu - Larger */}
   <div className="md:hidden mr-2 -mr-1">
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-14 w-14">
-                <Menu className="w-8 h-8" />
+              <Button variant="ghost" size="icon" className="h-16 w-16">
+                <Menu className="w-9 h-9" />
               </Button>
             </SheetTrigger>
             <SheetContent 
