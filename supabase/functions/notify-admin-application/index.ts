@@ -13,11 +13,12 @@ const corsHeaders = {
 };
 
 interface NotificationRequest {
-  type: 'chef' | 'kitchen_partner';
+  type: 'chef' | 'kitchen_partner' | 'chef_rejection';
   application_id: string;
   applicant_name: string;
   applicant_email: string;
-  business_name: string;
+  business_name?: string;
+  rejection_reason?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -27,10 +28,69 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { type, application_id, applicant_name, applicant_email, business_name }: NotificationRequest = await req.json();
+    const { type, application_id, applicant_name, applicant_email, business_name, rejection_reason }: NotificationRequest = await req.json();
 
     console.log(`Sending notification for ${type} application:`, application_id);
 
+    // Handle rejection notification
+    if (type === 'chef_rejection') {
+      const emailResponse = await resend.emails.send({
+        from: "HomeChef <onboarding@resend.dev>",
+        to: [applicant_email],
+        subject: "Angående din kockansökan hos HomeChef",
+        html: `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style>
+              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+              .header { background-color: #f97316; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+              .content { background-color: #f9fafb; padding: 30px; border-radius: 0 0 8px 8px; }
+              .info-box { background-color: white; padding: 20px; margin: 20px 0; border-left: 4px solid #dc2626; border-radius: 4px; }
+              .footer { text-align: center; margin-top: 30px; color: #666; font-size: 12px; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>Din kockansökan</h1>
+              </div>
+              <div class="content">
+                <p>Hej ${applicant_name},</p>
+                <p>Tack för din intresse för att bli kock hos HomeChef. Efter att ha granskat din ansökan måste vi tyvärr meddela att vi inte kan godkänna den just nu.</p>
+                
+                <div class="info-box">
+                  <p><strong>Anledning:</strong></p>
+                  <p>${rejection_reason}</p>
+                </div>
+
+                <p>Du är välkommen att skicka in en ny ansökan när du har åtgärdat ovanstående punkter.</p>
+                
+                <p>Med vänliga hälsningar,<br>HomeChef-teamet</p>
+
+                <div class="footer">
+                  <p>Detta är ett automatiskt meddelande från HomeChef-plattformen.</p>
+                </div>
+              </div>
+            </div>
+          </body>
+          </html>
+        `,
+      });
+
+      console.log("Rejection email sent successfully:", emailResponse);
+
+      return new Response(JSON.stringify(emailResponse), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+          ...corsHeaders,
+        },
+      });
+    }
+
+    // Handle admin notification for new application
     const typeLabel = type === 'chef' ? 'Kock' : 'Kökspartner';
     const dashboardTab = type === 'chef' ? 'chefs' : 'kitchen-partners';
     const dashboardUrl = `https://rkucenozpmaixfphpiub.supabase.co?tab=${dashboardTab}`;
