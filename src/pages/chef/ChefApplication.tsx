@@ -87,7 +87,6 @@ const ChefApplication = () => {
           .insert({
             business_name: formData.businessName,
             user_id: user.id,
-            municipality_approved: false,
             kitchen_approved: false,
             application_status: 'pending'
           })
