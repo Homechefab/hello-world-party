@@ -6,6 +6,7 @@ import { useRole } from "@/hooks/useRole";
 import type { UserRole } from "@/types/user";
 import { Cart } from "@/components/Cart";
 import UserMenu from "@/components/UserMenu";
+import { AdminNotifications } from "@/components/admin/AdminNotifications";
 import homechefLogo from "@/assets/homechef-logo-orange.png";
 import { toast } from "sonner";
 import {
@@ -144,6 +145,8 @@ const Header = () => {
             </Button>
           </Link>
 
+          {role === 'admin' && <AdminNotifications />}
+          
           <Cart />
           
           <UserMenu />
