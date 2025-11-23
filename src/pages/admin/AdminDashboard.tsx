@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChefApprovalManager } from '@/components/admin/ChefApprovalManager';
 import { KitchenPartnerApprovalManager } from '@/components/admin/KitchenPartnerApprovalManager';
@@ -18,6 +19,8 @@ import {
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
+  const [searchParams] = useSearchParams();
+  const defaultTab = searchParams.get('tab') || 'chefs';
   
   const [stats, setStats] = useState({
     totalUsers: 0,
@@ -149,7 +152,7 @@ export const AdminDashboard = () => {
         </Card>
       </div>
 
-      <Tabs defaultValue="chefs" className="space-y-6">
+      <Tabs defaultValue={defaultTab} className="space-y-6">
         <TabsList className="inline-flex w-full overflow-x-auto flex-nowrap justify-start h-auto p-1">
           <TabsTrigger value="chefs" className="whitespace-nowrap">
             <span className="hidden sm:inline">Kock-ansökningar</span>
