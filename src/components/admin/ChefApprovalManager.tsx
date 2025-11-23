@@ -29,8 +29,9 @@ interface ChefApplication {
   description: string;
   status: 'pending' | 'approved' | 'rejected' | 'under_review';
   appliedDate: string;
+  rejectionReason?: string;
   documents: {
-    selfControlPlan?: string;
+    selfControlPlan?: any;
     businessLicense?: string;
   };
   notes?: string;
@@ -40,6 +41,8 @@ export const ChefApprovalManager = () => {
   const { toast } = useToast();
   const [selectedApplication, setSelectedApplication] = useState<ChefApplication | null>(null);
   const [reviewNotes, setReviewNotes] = useState('');
+  const [rejectionReason, setRejectionReason] = useState('');
+  const [showRejectionDialog, setShowRejectionDialog] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Applications will be loaded from Supabase
@@ -108,8 +111,11 @@ export const ChefApprovalManager = () => {
             ? 'approved' as const 
             : chef.application_status === 'under_review'
             ? 'under_review' as const
+            : chef.application_status === 'rejected'
+            ? 'rejected' as const
             : 'pending' as const,
           appliedDate: new Date(chef.created_at).toLocaleDateString('sv-SE'),
+          rejectionReason: chef.rejection_reason,
           documents: {
             selfControlPlan: chefDocuments.length > 0 ? chefDocuments : undefined,
             businessLicense: undefined
@@ -162,22 +168,112 @@ export const ChefApprovalManager = () => {
     }
   };
 
-  const handleStatusChange = (applicationId: string, newStatus: 'approved' | 'rejected' | 'under_review') => {
-    setApplications(prev => 
-      prev.map(app => 
-        app.id === applicationId 
-          ? { ...app, status: newStatus, notes: reviewNotes }
-          : app
-      )
-    );
+  const handleStatusChange = async (applicationId: string, newStatus: 'approved' | 'rejected' | 'under_review') => {
+    if (newStatus === 'rejected') {
+      // Öppna dialog för att ange anledning
+      setSelectedApplication(applications.find(app => app.id === applicationId) || null);
+      setShowRejectionDialog(true);
+      return;
+    }
 
-    toast({
-      title: "Status uppdaterad",
-      description: `Ansökan har markerats som ${newStatus === 'approved' ? 'godkänd' : newStatus === 'rejected' ? 'nekad' : 'under granskning'}`
-    });
+    try {
+      const { error } = await supabase
+        .from('chefs')
+        .update({ 
+          application_status: newStatus,
+          kitchen_approved: newStatus === 'approved'
+        })
+        .eq('id', applicationId);
 
-    setSelectedApplication(null);
-    setReviewNotes('');
+      if (error) throw error;
+
+      setApplications(prev => 
+        prev.map(app => 
+          app.id === applicationId 
+            ? { ...app, status: newStatus, notes: reviewNotes }
+            : app
+        )
+      );
+
+      toast({
+        title: newStatus === 'approved' ? "Ansökan godkänd!" : "Status uppdaterad",
+        description: newStatus === 'approved' 
+          ? "Ansökande har nu tillgång till kock-funktioner" 
+          : "Ansökan markerad för granskning"
+      });
+
+      setSelectedApplication(null);
+      setReviewNotes('');
+    } catch (err) {
+      toast({
+        title: "Fel",
+        description: "Kunde inte uppdatera status",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleRejectWithReason = async () => {
+    if (!selectedApplication || !rejectionReason.trim()) {
+      toast({
+        title: "Anledning krävs",
+        description: "Du måste ange en anledning för avslag",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('chefs')
+        .update({ 
+          application_status: 'rejected',
+          rejection_reason: rejectionReason,
+          kitchen_approved: false
+        })
+        .eq('id', selectedApplication.id);
+
+      if (error) throw error;
+
+      // Skicka e-post till sökande
+      try {
+        await supabase.functions.invoke('notify-admin-application', {
+          body: {
+            type: 'chef_rejection',
+            application_id: selectedApplication.id,
+            applicant_name: selectedApplication.applicantName,
+            applicant_email: selectedApplication.email,
+            rejection_reason: rejectionReason
+          }
+        });
+      } catch (notifyError) {
+        console.error('Failed to send rejection notification:', notifyError);
+      }
+
+      setApplications(prev => 
+        prev.map(app => 
+          app.id === selectedApplication.id 
+            ? { ...app, status: 'rejected', rejectionReason: rejectionReason }
+            : app
+        )
+      );
+
+      toast({
+        title: "Ansökan nekad",
+        description: "Sökande har informerats via e-post"
+      });
+
+      setShowRejectionDialog(false);
+      setSelectedApplication(null);
+      setRejectionReason('');
+      setReviewNotes('');
+    } catch (err) {
+      toast({
+        title: "Fel",
+        description: "Kunde inte neka ansökan",
+        variant: "destructive"
+      });
+    }
   };
 
   const pendingCount = applications.filter(app => app.status === 'pending').length;
@@ -245,7 +341,7 @@ export const ChefApprovalManager = () => {
                       onClick={() => setSelectedApplication(application)}
                     >
                       <Eye className="w-4 h-4 mr-2" />
-                      Granska
+                      {application.status === 'rejected' ? 'Visa detaljer' : 'Granska'}
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
@@ -353,6 +449,18 @@ export const ChefApprovalManager = () => {
                         />
                       </div>
 
+                      {/* Show rejection reason if rejected */}
+                      {application.status === 'rejected' && application.rejectionReason && (
+                        <Card className="border-red-200 bg-red-50">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-lg text-red-800">Anledning till avslag</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <p className="text-sm text-red-700">{application.rejectionReason}</p>
+                          </CardContent>
+                        </Card>
+                      )}
+
                       {/* Action Buttons */}
                       {application.status !== 'approved' && application.status !== 'rejected' && (
                         <div className="flex gap-3 pt-4">
@@ -397,6 +505,51 @@ export const ChefApprovalManager = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* Rejection Dialog */}
+      <Dialog open={showRejectionDialog} onOpenChange={setShowRejectionDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Neka ansökan</DialogTitle>
+            <DialogDescription>
+              Ange anledning till varför ansökan nekas. Sökande kommer att informeras via e-post.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="rejectionReason">Anledning till avslag *</Label>
+              <Textarea
+                id="rejectionReason"
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                placeholder="Beskriv varför ansökan nekas..."
+                rows={4}
+                className="mt-2"
+              />
+            </div>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowRejectionDialog(false);
+                  setRejectionReason('');
+                }}
+                className="flex-1"
+              >
+                Avbryt
+              </Button>
+              <Button
+                onClick={handleRejectWithReason}
+                variant="destructive"
+                className="flex-1"
+                disabled={!rejectionReason.trim()}
+              >
+                Neka ansökan
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
