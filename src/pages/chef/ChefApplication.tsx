@@ -81,24 +81,49 @@ const ChefApplication = () => {
           return;
         }
 
-        // Skapa chef-ansökan
-        const { data: newChef, error } = await supabase
+        // Kolla först om det redan finns en chef-profil
+        const { data: existingChef } = await supabase
           .from('chefs')
-          .insert({
-            business_name: formData.businessName,
-            user_id: user.id,
-            kitchen_approved: false,
-            application_status: 'pending'
-          })
-          .select()
-          .single();
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
 
-        if (error) {
-          throw error;
+        if (existingChef) {
+          // Använd befintlig profil och uppdatera den
+          const { error: updateError } = await supabase
+            .from('chefs')
+            .update({
+              business_name: formData.businessName,
+              application_status: 'pending'
+            })
+            .eq('id', existingChef.id);
+
+          if (updateError) {
+            throw updateError;
+          }
+
+          setChefId(existingChef.id);
+          setCurrentStep(4);
+        } else {
+          // Skapa ny chef-ansökan
+          const { data: newChef, error } = await supabase
+            .from('chefs')
+            .insert({
+              business_name: formData.businessName,
+              user_id: user.id,
+              kitchen_approved: false,
+              application_status: 'pending'
+            })
+            .select()
+            .single();
+
+          if (error) {
+            throw error;
+          }
+
+          setChefId(newChef.id);
+          setCurrentStep(4);
         }
-
-        setChefId(newChef.id);
-        setCurrentStep(4);
 
       } catch (err) {
         console.error(err);
