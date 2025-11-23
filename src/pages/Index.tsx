@@ -18,14 +18,19 @@ interface SearchFilters {
 }
 
 const Index = () => {
+  const { role } = useRole();
   console.log('Index component rendering');
   
   return (
     <div className="min-h-screen bg-background">
       <Hero />
       <RoleBasedServices />
-      <PopularChefs />
-      <FoodGrid />
+      {role !== 'chef' && (
+        <>
+          <PopularChefs />
+          <FoodGrid />
+        </>
+      )}
       <Features />
       <Footer />
     </div>
