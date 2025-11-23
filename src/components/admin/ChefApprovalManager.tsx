@@ -47,11 +47,9 @@ export const ChefApprovalManager = () => {
 
   const fetchApplications = useCallback(async () => {
     try {
-      const { data, error } = await supabase
+      const { data: chefs, error } = await supabase
         .from('chefs')
-        .select(`
-          *
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -62,27 +60,33 @@ export const ChefApprovalManager = () => {
         return;
       }
 
+      // Hämta profiler separat för alla chef user_ids
+      const userIds = chefs?.map(chef => chef.user_id).filter(Boolean) || [];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, email, phone')
+        .in('id', userIds);
+
+      const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+
       // Transform data to match ChefApplication interface
-      const transformedData = (data || []).map((chef: unknown) => {
-        const typedChef = chef as {
-          id: string;
-          user_id?: string;
-          business_name?: string;
-          description?: string;
-          created_at: string;
-          kitchen_approved?: boolean;
-          profiles?: { full_name?: string; email?: string; phone?: string };
-        };
+      const transformedData = (chefs || []).map((chef) => {
+        const profile = profileMap.get(chef.user_id);
+        
         return {
-          id: typedChef.id,
-          applicantName: typedChef.profiles?.full_name || 'Okänd',
-          email: typedChef.profiles?.email || '',
-          phone: typedChef.profiles?.phone || '',
-          businessName: typedChef.business_name || '',
+          id: chef.id,
+          applicantName: profile?.full_name || 'Okänd',
+          email: profile?.email || '',
+          phone: profile?.phone || '',
+          businessName: chef.business_name || 'Inget företagsnamn angivet',
           municipality: 'Ej angivet',
           description: 'Ej angivet',
-          status: typedChef.kitchen_approved ? 'approved' as const : 'pending' as const,
-          appliedDate: new Date(typedChef.created_at).toLocaleDateString('sv-SE'),
+          status: chef.application_status === 'approved' 
+            ? 'approved' as const 
+            : chef.application_status === 'under_review'
+            ? 'under_review' as const
+            : 'pending' as const,
+          appliedDate: new Date(chef.created_at).toLocaleDateString('sv-SE'),
           documents: {
             selfControlPlan: undefined,
             businessLicense: undefined
