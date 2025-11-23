@@ -173,24 +173,12 @@ export const Cart = () => {
                 </div>
               
               <div className="border-t pt-4 flex-shrink-0 bg-background">
-                <div className="flex justify-between items-center mb-2">
-                    <span className="text-lg font-semibold">Totalt:</span>
-                    <span className="text-lg font-bold">{state.total} kr</span>
-                  </div>
-                  
-                  <div className="mb-4 p-3 bg-muted rounded-lg text-xs space-y-1">
-                    <div className="font-medium">Provisionsfördelning:</div>
-                    <div className="flex justify-between text-muted-foreground">
-                      <span>Homechef provision (20%):</span>
-                      <span>{(state.total * 0.20).toFixed(2)} kr</span>
-                    </div>
-                    <div className="flex justify-between text-muted-foreground">
-                      <span>Kockens intäkt (80%):</span>
-                      <span>{(state.total * 0.80).toFixed(2)} kr</span>
-                    </div>
-                  </div>
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-lg font-semibold">Totalt:</span>
+                  <span className="text-lg font-bold">{state.total} kr</span>
+                </div>
 
-                  <Button 
+                <Button
                     className="w-full" 
                     size="lg"
                     onClick={handleCheckout}
