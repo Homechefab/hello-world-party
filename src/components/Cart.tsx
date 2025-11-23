@@ -112,24 +112,23 @@ export const Cart = () => {
             )}
           </Button>
         </SheetTrigger>
-        <SheetContent className="w-[400px] sm:w-[540px] flex flex-col">
+        <SheetContent className="w-[400px] sm:w-[540px] flex flex-col h-full overflow-hidden">
           <SheetHeader className="flex-shrink-0">
             <SheetTitle>Varukorg</SheetTitle>
           </SheetHeader>
           
-          <div className="flex flex-col flex-1 overflow-hidden">
-            {state.items.length === 0 ? (
-              <div className="flex-1 flex items-center justify-center">
-                <div className="text-center">
-                  <ShoppingBag className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">Din varukorg är tom</p>
-                </div>
+          {state.items.length === 0 ? (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <ShoppingBag className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">Din varukorg är tom</p>
               </div>
-            ) : (
-              <>
-                <div className="flex-1 overflow-y-auto py-6">
-                  <div className="space-y-4">
-                    {state.items.map((item) => (
+            </div>
+          ) : (
+            <>
+              <div className="flex-1 overflow-y-auto py-6 min-h-0">
+                <div className="space-y-4">
+                  {state.items.map((item) => (
                       <div key={item.id} className="flex items-center space-x-4 border-b pb-4">
                         {item.image && (
                           <img
@@ -172,9 +171,9 @@ export const Cart = () => {
                     ))}
                   </div>
                 </div>
-                
-                <div className="border-t pt-4 flex-shrink-0 bg-background">
-                  <div className="flex justify-between items-center mb-2">
+              
+              <div className="border-t pt-4 flex-shrink-0 bg-background">
+                <div className="flex justify-between items-center mb-2">
                     <span className="text-lg font-semibold">Totalt:</span>
                     <span className="text-lg font-bold">{state.total} kr</span>
                   </div>
@@ -213,9 +212,8 @@ export const Cart = () => {
                     )}
                   </Button>
                 </div>
-              </>
-            )}
-          </div>
+            </>
+          )}
         </SheetContent>
       </Sheet>
 
