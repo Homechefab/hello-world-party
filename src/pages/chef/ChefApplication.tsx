@@ -67,8 +67,8 @@ const ChefApplication = () => {
   });
 
   const handleNext = async () => {
-    // När man går från steg 3 till 4, skapa chef-ansökan först
-    if (currentStep === 3) {
+    // När man går från steg 2 till 3, skapa chef-ansökan så att chefId finns för dokumentuppladdning
+    if (currentStep === 2 && !chefId) {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         
@@ -103,7 +103,7 @@ const ChefApplication = () => {
           }
 
           setChefId(existingChef.id);
-          setCurrentStep(4);
+          setCurrentStep(3);
         } else {
           // Skapa ny chef-ansökan
           const { data: newChef, error } = await supabase
@@ -122,7 +122,7 @@ const ChefApplication = () => {
           }
 
           setChefId(newChef.id);
-          setCurrentStep(4);
+          setCurrentStep(3);
         }
 
       } catch (err) {
@@ -196,7 +196,7 @@ const ChefApplication = () => {
       case 2:
         return formData.experience && formData.specialties && formData.motivation;
       case 3:
-        // Kräv att minst kommunbeslut har laddats upp
+        // Kräv checkboxar och dokumentuppladdning
         return formData.hasKitchen && formData.hasHygieneCertificate && documentsUploaded.municipalPermit;
       case 4:
         return formData.agreesToTerms && formData.agreesToBackground;
