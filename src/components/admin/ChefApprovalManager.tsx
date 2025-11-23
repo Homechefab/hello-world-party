@@ -37,7 +37,11 @@ interface ChefApplication {
   notes?: string;
 }
 
-export const ChefApprovalManager = () => {
+interface ChefApprovalManagerProps {
+  showArchived?: boolean;
+}
+
+export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManagerProps) => {
   const { toast } = useToast();
   const [selectedApplication, setSelectedApplication] = useState<ChefApplication | null>(null);
   const [reviewNotes, setReviewNotes] = useState('');
@@ -50,10 +54,18 @@ export const ChefApprovalManager = () => {
 
   const fetchApplications = useCallback(async () => {
     try {
-      const { data: chefs, error } = await supabase
+      let query = supabase
         .from('chefs')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .select('*');
+
+      // Filter based on showArchived prop
+      if (showArchived) {
+        query = query.in('application_status', ['approved', 'rejected']);
+      } else {
+        query = query.in('application_status', ['pending', 'under_review']);
+      }
+
+      const { data: chefs, error } = await query.order('created_at', { ascending: false });
 
       if (error) {
         toast({
@@ -132,7 +144,7 @@ export const ChefApprovalManager = () => {
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, [toast, showArchived]);
 
   useEffect(() => {
     fetchApplications();
@@ -281,17 +293,19 @@ export const ChefApprovalManager = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Ansökningar från kockar</h2>
-        <div className="flex gap-2">
-          <Badge variant="outline" className="bg-yellow-50">
-            {pendingCount} Väntar
-          </Badge>
-          <Badge variant="outline" className="bg-blue-50">
-            {underReviewCount} Granskas
-          </Badge>
+      {!showArchived && (
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold">Ansökningar från kockar</h2>
+          <div className="flex gap-2">
+            <Badge variant="outline" className="bg-yellow-50">
+              {pendingCount} Väntar
+            </Badge>
+            <Badge variant="outline" className="bg-blue-50">
+              {underReviewCount} Granskas
+            </Badge>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="grid gap-4">
         {applications.map((application) => (
