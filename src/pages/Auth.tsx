@@ -4,12 +4,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { ChefHat, Apple } from 'lucide-react';
+import { ChefHat, Apple, Users, Store, Utensils } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { UserRole } from '@/types/user';
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,9 +19,17 @@ const Auth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [selectedRole, setSelectedRole] = useState<UserRole>('customer');
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const roleOptions = [
+    { value: 'customer' as UserRole, label: 'Kund', icon: Users, description: 'Beställ mat från hemkockar' },
+    { value: 'chef' as UserRole, label: 'Kock', icon: ChefHat, description: 'Sälja din mat från hemmet' },
+    { value: 'kitchen_partner' as UserRole, label: 'Kökshyresvärd', icon: Store, description: 'Hyra ut ditt kök' },
+    { value: 'restaurant' as UserRole, label: 'Restaurang', icon: Utensils, description: 'Samarbeta med oss' },
+  ];
 
   // Redirect if already logged in
   useEffect(() => {
@@ -35,7 +45,7 @@ const Auth = () => {
     try {
       if (isSignUp) {
         const redirectUrl = `${window.location.origin}/`;
-        const { error } = await supabase.auth.signUp({
+        const { data: authData, error } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -47,6 +57,29 @@ const Auth = () => {
         });
 
         if (error) throw error;
+
+        // Create profile and role after signup
+        if (authData.user) {
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .insert({
+              id: authData.user.id,
+              email,
+              full_name: fullName,
+              role: selectedRole,
+            });
+
+          if (profileError) console.error('Profile creation error:', profileError);
+
+          const { error: roleError } = await supabase
+            .from('user_roles')
+            .insert({
+              user_id: authData.user.id,
+              role: selectedRole,
+            });
+
+          if (roleError) console.error('Role creation error:', roleError);
+        }
 
         toast({
           title: "Konto skapat!",
@@ -217,17 +250,40 @@ const Auth = () => {
               {/* Email/Password Form */}
               <form onSubmit={handleEmailAuth} className="space-y-4">
                 {isSignUp && (
-                  <div>
-                    <Label htmlFor="fullName">Fullständigt namn</Label>
-                    <Input
-                      id="fullName"
-                      type="text"
-                      placeholder="Anna Andersson"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      required
-                    />
-                  </div>
+                  <>
+                    <div>
+                      <Label htmlFor="fullName">Fullständigt namn</Label>
+                      <Input
+                        id="fullName"
+                        type="text"
+                        placeholder="Anna Andersson"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        required
+                      />
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <Label>Välj din roll</Label>
+                      <RadioGroup value={selectedRole} onValueChange={(value) => setSelectedRole(value as UserRole)}>
+                        {roleOptions.map((option) => {
+                          const Icon = option.icon;
+                          return (
+                            <div key={option.value} className="flex items-start space-x-3 border rounded-lg p-4 cursor-pointer hover:bg-accent transition-colors">
+                              <RadioGroupItem value={option.value} id={option.value} />
+                              <Label htmlFor={option.value} className="flex items-start gap-3 cursor-pointer flex-1">
+                                <Icon className="w-5 h-5 mt-0.5 text-primary" />
+                                <div className="flex-1">
+                                  <div className="font-medium">{option.label}</div>
+                                  <div className="text-sm text-muted-foreground">{option.description}</div>
+                                </div>
+                              </Label>
+                            </div>
+                          );
+                        })}
+                      </RadioGroup>
+                    </div>
+                  </>
                 )}
                 
                 <div>
