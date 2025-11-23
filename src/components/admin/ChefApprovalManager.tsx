@@ -64,23 +64,46 @@ export const ChefApprovalManager = () => {
       const userIds = chefs?.map(chef => chef.user_id).filter(Boolean) || [];
       const { data: profiles } = await supabase
         .from('profiles')
-        .select('id, full_name, email, phone')
+        .select('id, full_name, email, phone, address')
         .in('id', userIds);
 
+      // Hämta dokument för alla chef_ids
+      const chefIds = chefs?.map(chef => chef.id).filter(Boolean) || [];
+      const { data: documents } = await supabase
+        .from('document_submissions')
+        .select('*')
+        .in('chef_id', chefIds)
+        .order('created_at', { ascending: false });
+
       const profileMap = new Map(profiles?.map(p => [p.id, p]) || []);
+      
+      // Gruppera dokument per chef_id
+      const documentsMap = new Map<string, typeof documents>();
+      documents?.forEach(doc => {
+        if (doc.chef_id) {
+          if (!documentsMap.has(doc.chef_id)) {
+            documentsMap.set(doc.chef_id, []);
+          }
+          documentsMap.get(doc.chef_id)?.push(doc);
+        }
+      });
 
       // Transform data to match ChefApplication interface
       const transformedData = (chefs || []).map((chef) => {
         const profile = profileMap.get(chef.user_id);
+        const chefDocuments = documentsMap.get(chef.id) || [];
+        
+        // Hitta senaste dokumentet för att få municipality
+        const latestDoc = chefDocuments[0];
         
         return {
           id: chef.id,
           applicantName: profile?.full_name || 'Okänd',
           email: profile?.email || '',
-          phone: profile?.phone || '',
+          phone: profile?.phone || 'Ej angivet',
           businessName: chef.business_name || 'Inget företagsnamn angivet',
-          municipality: 'Ej angivet',
-          description: 'Ej angivet',
+          municipality: latestDoc?.municipality || profile?.address || 'Ej angivet',
+          description: 'Matlagning och catering från hemköket',
           status: chef.application_status === 'approved' 
             ? 'approved' as const 
             : chef.application_status === 'under_review'
@@ -88,7 +111,7 @@ export const ChefApprovalManager = () => {
             : 'pending' as const,
           appliedDate: new Date(chef.created_at).toLocaleDateString('sv-SE'),
           documents: {
-            selfControlPlan: undefined,
+            selfControlPlan: chefDocuments.length > 0 ? chefDocuments : undefined,
             businessLicense: undefined
           }
         };
@@ -290,32 +313,31 @@ export const ChefApprovalManager = () => {
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-3">
-                          {application.documents.selfControlPlan && (
-                            <div className="flex items-center justify-between p-3 border rounded-lg">
-                              <div>
-                                <p className="font-medium">Egenkontrollplan</p>
-                                <p className="text-sm text-muted-foreground">{application.documents.selfControlPlan}</p>
-                              </div>
-                              <Button variant="outline" size="sm">
+                          {application.documents.selfControlPlan && Array.isArray(application.documents.selfControlPlan) ? (
+                            application.documents.selfControlPlan.map((doc: any, index: number) => (
+                              <div key={doc.id} className="flex items-center justify-between p-3 border rounded-lg">
+                                <div className="flex-1">
+                                  <p className="font-medium">Kommun beslut #{index + 1}</p>
+                                  <p className="text-sm text-muted-foreground">
+                                    Kommun: {doc.municipality || 'Ej angivet'}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    Uppladdad: {new Date(doc.created_at).toLocaleDateString('sv-SE')}
+                                  </p>
+                                </div>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm"
+                                  onClick={() => window.open(doc.document_url, '_blank')}
+                                >
                                 <Download className="w-4 h-4 mr-2" />
-                                Ladda ner
+                                Visa
                               </Button>
                             </div>
+                          ))
+                          ) : (
+                            <p className="text-sm text-muted-foreground">Inga dokument uppladdade än</p>
                           )}
-                          
-                          {application.documents.businessLicense && (
-                            <div className="flex items-center justify-between p-3 border rounded-lg">
-                              <div>
-                                <p className="font-medium">F-skattsedel/Näringstillstånd</p>
-                                <p className="text-sm text-muted-foreground">{application.documents.businessLicense}</p>
-                              </div>
-                              <Button variant="outline" size="sm">
-                                <Download className="w-4 h-4 mr-2" />
-                                Ladda ner
-                              </Button>
-                            </div>
-                          )}
-                          
                         </CardContent>
                       </Card>
 
