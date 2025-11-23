@@ -68,7 +68,7 @@ const ChefApplication = () => {
 
   const handleNext = async () => {
     // När man går från steg 2 till 3, skapa chef-ansökan så att chefId finns för dokumentuppladdning
-    if (currentStep === 2 && !chefId) {
+    if (currentStep === 2) {
       try {
         const { data: { user } } = await supabase.auth.getUser();
         
@@ -93,7 +93,7 @@ const ChefApplication = () => {
           const { error: updateError } = await supabase
             .from('chefs')
             .update({
-              business_name: formData.businessName,
+              business_name: formData.businessName || '',
               application_status: 'pending'
             })
             .eq('id', existingChef.id);
@@ -109,7 +109,7 @@ const ChefApplication = () => {
           const { data: newChef, error } = await supabase
             .from('chefs')
             .insert({
-              business_name: formData.businessName,
+              business_name: formData.businessName || 'Mitt kök',
               user_id: user.id,
               kitchen_approved: false,
               application_status: 'pending'
@@ -488,27 +488,29 @@ const ChefApplication = () => {
                               {documentsUploaded.municipalPermit ? "Uppladdad" : "Ladda upp"}
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+                           <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
                             <DialogHeader>
                               <DialogTitle>Ladda upp kommunbeslut</DialogTitle>
                             </DialogHeader>
-                            <DocumentUpload 
-                              chefId={chefId || undefined}
-                              onSuccess={() => {
-                                setUploadDialogOpen(false);
-                                setDocumentsUploaded(prev => ({ ...prev, municipalPermit: true }));
-                                toast({
-                                  title: "Dokument uppladdad",
-                                  description: "Ditt kommunbeslut har laddats upp."
-                                });
-                                // Gå automatiskt vidare till steg 4 efter uppladdning
-                                setTimeout(() => {
-                                  if (currentStep === 3) {
-                                    handleNext();
-                                  }
-                                }, 1000);
-                              }}
-                            />
+                            {chefId ? (
+                              <DocumentUpload 
+                                chefId={chefId}
+                                onSuccess={() => {
+                                  setUploadDialogOpen(false);
+                                  setDocumentsUploaded(prev => ({ ...prev, municipalPermit: true }));
+                                  toast({
+                                    title: "Dokument uppladdad",
+                                    description: "Ditt kommunbeslut har laddats upp."
+                                  });
+                                }}
+                              />
+                            ) : (
+                              <div className="p-6 text-center">
+                                <p className="text-muted-foreground">
+                                  Laddar...
+                                </p>
+                              </div>
+                            )}
                           </DialogContent>
                         </Dialog>
                       </Card>
