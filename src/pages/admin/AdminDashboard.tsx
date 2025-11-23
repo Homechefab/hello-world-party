@@ -161,6 +161,7 @@ export const AdminDashboard = () => {
             <span className="hidden sm:inline">Kökspartner-ansökningar</span>
             <span className="sm:hidden">Kökspartners</span>
           </TabsTrigger>
+          <TabsTrigger value="archive" className="whitespace-nowrap">Arkiv</TabsTrigger>
           <TabsTrigger value="users" className="whitespace-nowrap">
             <span className="hidden sm:inline">Användarhantering</span>
             <span className="sm:hidden">Användare</span>
@@ -174,11 +175,23 @@ export const AdminDashboard = () => {
         </TabsList>
 
         <TabsContent value="chefs">
-          <ChefApprovalManager />
+          <ChefApprovalManager showArchived={false} />
         </TabsContent>
 
         <TabsContent value="kitchen-partners">
           <KitchenPartnerApprovalManager />
+        </TabsContent>
+
+        <TabsContent value="archive">
+          <Card>
+            <CardHeader>
+              <CardTitle>Arkiverade ansökningar</CardTitle>
+              <CardDescription>Alla hanterade ansökningar (godkända och nekade)</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChefApprovalManager showArchived={true} />
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="users">
