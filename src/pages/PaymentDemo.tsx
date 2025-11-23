@@ -1,19 +1,85 @@
-import { StripeCheckout } from '@/components/StripeCheckout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+import { Plus } from 'lucide-react';
+import { useCart } from '@/contexts/CartContext';
+import { Cart } from '@/components/Cart';
+import { useToast } from '@/hooks/use-toast';
+import meatballsImg from '@/assets/meatballs.jpg';
+import pastaImg from '@/assets/pasta.jpg';
+import soupImg from '@/assets/soup.jpg';
+
+const dishes = [
+  {
+    id: '1',
+    dishId: 'dish_1',
+    name: 'Köttbullar med potatismos',
+    price: 89,
+    chefId: 'chef_demo',
+    chefName: 'Demo Kock',
+    image: meatballsImg,
+    description: 'Klassiska svenska köttbullar med krämigt potatismos',
+    priceId: 'price_1SKl5741rPpIJXZ0RGnIxSzt'
+  },
+  {
+    id: '2',
+    dishId: 'dish_2',
+    name: 'Hemlagad Lasagne',
+    price: 149,
+    chefId: 'chef_demo',
+    chefName: 'Demo Kock',
+    image: pastaImg,
+    description: 'Hemlagad lasagne med köttfärs och generösa lager av ost',
+    priceId: 'price_1SKl5O41rPpIJXZ0nSXiiEVh'
+  },
+  {
+    id: '3',
+    dishId: 'dish_3',
+    name: 'Thai Röd Curry',
+    price: 129,
+    chefId: 'chef_demo',
+    chefName: 'Demo Kock',
+    image: soupImg,
+    description: 'Kryddig thailändsk röd curry med kokosmjölk',
+    priceId: 'price_1SKl5j41rPpIJXZ0hISmjkUX'
+  }
+];
 
 /**
- * Payment Demo Page - Visar exempel på Stripe-betalningar
+ * Payment Demo Page - Visar exempel på Stripe-betalningar med varukorg
  */
 const PaymentDemo = () => {
+  const { addItem } = useCart();
+  const { toast } = useToast();
+
+  const handleAddToCart = (dish: typeof dishes[0]) => {
+    addItem({
+      id: dish.id,
+      dishId: dish.dishId,
+      name: dish.name,
+      price: dish.price,
+      chefId: dish.chefId,
+      chefName: dish.chefName,
+      image: dish.image
+    });
+    
+    toast({
+      title: "Tillagd i varukorgen",
+      description: `${dish.name} har lagts till i din varukorg`,
+    });
+  };
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="max-w-6xl mx-auto space-y-8">
-        <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold">Betalningsdemo med Stripe</h1>
-          <p className="text-muted-foreground">
-            Testa hur betalningsflödet fungerar. Använd testkortet <code className="bg-muted px-2 py-1 rounded">4242 4242 4242 4242</code>
-          </p>
+        <div className="flex justify-between items-center">
+          <div className="text-center flex-1">
+            <h1 className="text-4xl font-bold">Betalningsdemo med Stripe</h1>
+            <p className="text-muted-foreground mt-2">
+              Lägg till maträtter i varukorgen, logga in och betala säkert
+            </p>
+          </div>
+          <Cart />
         </div>
 
         <Card>
@@ -44,36 +110,37 @@ const PaymentDemo = () => {
         <Separator />
 
         <div className="space-y-4">
-          <h2 className="text-2xl font-bold">Testa betalningar</h2>
+          <h2 className="text-2xl font-bold">Välj maträtter</h2>
           <p className="text-muted-foreground">
-            Klicka på "Betala med Stripe" för att öppna Stripe Checkout. 
-            När checkout-sidan öppnas kan du använda testkortet för att simulera en betalning.
+            Lägg till maträtter i varukorgen för att testa betalningsflödet
           </p>
           
           <div className="grid md:grid-cols-3 gap-6">
-            <StripeCheckout
-              priceId="price_1SKl5741rPpIJXZ0RGnIxSzt"
-              dishName="Köttbullar med potatismos"
-              price={89}
-              quantity={1}
-              description="Klassiska svenska köttbullar med krämigt potatismos"
-            />
-
-            <StripeCheckout
-              priceId="price_1SKl5O41rPpIJXZ0nSXiiEVh"
-              dishName="Hemlagad Lasagne"
-              price={149}
-              quantity={1}
-              description="Hemlagad lasagne med köttfärs och generösa lager av ost"
-            />
-
-            <StripeCheckout
-              priceId="price_1SKl5j41rPpIJXZ0hISmjkUX"
-              dishName="Thai Röd Curry"
-              price={129}
-              quantity={1}
-              description="Kryddig thailändsk röd curry med kokosmjölk"
-            />
+            {dishes.map((dish) => (
+              <Card key={dish.id} className="overflow-hidden">
+                <img 
+                  src={dish.image} 
+                  alt={dish.name}
+                  className="w-full h-48 object-cover"
+                />
+                <CardHeader>
+                  <CardTitle className="text-lg">{dish.name}</CardTitle>
+                  <CardDescription>{dish.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-2xl font-bold">{dish.price} kr</span>
+                    <Button 
+                      onClick={() => handleAddToCart(dish)}
+                      size="sm"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Lägg till
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
 
