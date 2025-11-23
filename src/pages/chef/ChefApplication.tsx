@@ -149,14 +149,40 @@ const ChefApplication = () => {
           return;
         }
 
-        // Uppdatera chef-ansökan till "under review"
+        // Hämta användarens profil för e-postnotifiering
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name, email')
+          .eq('id', user.id)
+          .single();
+
+        // Uppdatera chef-ansökan till "under review" och spara business_name
         const { error } = await supabase
           .from('chefs')
-          .update({ application_status: 'under_review' })
+          .update({ 
+            application_status: 'under_review',
+            business_name: formData.businessName || 'Mitt företag'
+          })
           .eq('id', chefId);
 
         if (error) {
           throw error;
+        }
+
+        // Skicka notifiering till admin via edge function
+        try {
+          await supabase.functions.invoke('notify-admin-application', {
+            body: {
+              type: 'chef',
+              application_id: chefId,
+              applicant_name: profile?.full_name || user.email || 'Okänd',
+              applicant_email: profile?.email || user.email || '',
+              business_name: formData.businessName || 'Mitt företag'
+            }
+          });
+        } catch (notifyError) {
+          console.error('Failed to send admin notification:', notifyError);
+          // Fortsätt även om notifieringen misslyckas
         }
 
         toast({
