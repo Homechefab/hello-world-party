@@ -116,15 +116,29 @@ export const KitchenPartnerOnboarding = () => {
     }
 
     try {
+      // Get the current user
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      if (userError || !user) {
+        toast({
+          title: "Autentiseringsfel",
+          description: "Du måste vara inloggad för att skicka en ansökan",
+          variant: "destructive"
+        });
+        return;
+      }
+
       const { error } = await supabase.from('kitchen_partners').insert({
         business_name: formData.businessName,
         address: `${formData.address}, ${formData.city}`,
         kitchen_size: parseInt(formData.kitchenSize) || 0,
         hourly_rate: parseFloat(formData.hourlyRate) || 0,
         kitchen_description: formData.description,
+        equipment_details: formData.facilities.join(', '),
+        municipality: formData.city,
         approved: false,
         application_status: 'pending',
-        user_id: 'temp-user-id' // Detta behöver kopplas till riktig användar-auth
+        user_id: user.id
       });
 
       if (error) {
