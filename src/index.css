@@ -154,27 +154,10 @@ All colors MUST be HSL.
   }
   
   body {
-    /* NO top padding, only sides and bottom with safe area */
-    padding-left: max(1rem, env(safe-area-inset-left));
-    padding-right: max(1rem, env(safe-area-inset-right));
-    padding-bottom: env(safe-area-inset-bottom);
-    padding-top: 0;
+    /* Remove all padding - app takes full screen */
+    padding: 0;
     margin: 0;
     -webkit-text-size-adjust: 100%;
-  }
-  
-  @media (min-width: 768px) {
-    body {
-      padding-left: max(1.5rem, env(safe-area-inset-left));
-      padding-right: max(1.5rem, env(safe-area-inset-right));
-    }
-  }
-
-  @media (min-width: 1024px) {
-    body {
-      padding-left: max(2rem, env(safe-area-inset-left));
-      padding-right: max(2rem, env(safe-area-inset-right));
-    }
   }
 
   /* Prevent media from causing overflow on small screens */
