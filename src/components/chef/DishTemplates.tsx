@@ -132,7 +132,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
       <div className="text-center">
         <h2 className="text-2xl font-bold mb-2">Använd färdiga recept</h2>
         <p className="text-muted-foreground">
-          Välj bland våra rättmallar och anpassa efter ditt kök
+          Välj bland våra populära rätter och anpassa priset efter ditt kök
         </p>
       </div>
 
