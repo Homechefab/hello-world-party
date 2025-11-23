@@ -174,7 +174,7 @@ const Header = () => {
         </div>
 
   {/* Mobile Hamburger Menu - Larger */}
-  <div className="md:hidden mr-2 -mr-1">
+  <div className="md:hidden mr-2">
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="h-16 w-16">
