@@ -14,9 +14,10 @@ serve(async (req) => {
   }
 
   try {
-    const { priceId, quantity, dishName, successUrl, cancelUrl } = await req.json();
+    const body = await req.json();
+    const { priceId, quantity, dishName, items, totalAmount, successUrl, cancelUrl } = body;
 
-    console.log("Creating checkout session:", { priceId, quantity, dishName });
+    console.log("Creating checkout session:", body);
 
     // Initialize Stripe
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
@@ -56,29 +57,48 @@ serve(async (req) => {
       }
     }
 
-    // Create checkout session
-    // Note: Stripe tar 1.4% + 1.80 kr per transaktion
-    // För att Homechef ska ta 20%, kan vi lägga till application_fee_amount
-    // men det kräver Stripe Connect. För nu skapar vi bara sessionen.
-    const session = await stripe.checkout.sessions.create({
-      customer: customerId,
-      customer_email: customerId ? undefined : userEmail,
-      line_items: [
+    // Prepare line items - either from cart items or single item
+    let lineItems;
+    if (items && Array.isArray(items) && items.length > 0) {
+      // Cart checkout with multiple items
+      lineItems = items.map((item: any) => ({
+        price_data: {
+          currency: 'sek',
+          product_data: {
+            name: item.name,
+          },
+          unit_amount: item.price, // Already in öre from frontend
+        },
+        quantity: item.quantity,
+      }));
+    } else if (priceId) {
+      // Single item checkout (fallback for direct StripeCheckout component usage)
+      lineItems = [
         {
           price: priceId,
           quantity: quantity || 1,
         },
-      ],
+      ];
+    } else {
+      throw new Error("No items or priceId provided");
+    }
+
+    // Create checkout session
+    const session = await stripe.checkout.sessions.create({
+      customer: customerId,
+      customer_email: customerId ? undefined : userEmail,
+      line_items: lineItems,
       mode: "payment",
       success_url: successUrl || `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl || `${req.headers.get("origin")}/payment-canceled`,
       metadata: {
-        dish_name: dishName,
+        dish_name: dishName || 'Multiple items',
         platform_fee_percentage: "20", // 20% provision för Homechef
+        total_amount: totalAmount || '',
       },
       payment_intent_data: {
         metadata: {
-          dish_name: dishName,
+          dish_name: dishName || 'Multiple items',
           platform_fee_percentage: "20",
         },
       },
