@@ -8,7 +8,6 @@ import { KitchenPartnerApprovalManager } from '@/components/admin/KitchenPartner
 import { LoginLogsViewer } from '@/components/admin/LoginLogsViewer';
 import { UserManagement } from '@/components/admin/UserManagement';
 import { supabase } from '@/integrations/supabase/client';
-import { useEffect } from 'react';
 import { 
   Users, 
   AlertTriangle, 
