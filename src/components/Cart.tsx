@@ -112,12 +112,12 @@ export const Cart = () => {
             )}
           </Button>
         </SheetTrigger>
-        <SheetContent className="w-[400px] sm:w-[540px]">
-          <SheetHeader>
+        <SheetContent className="w-[400px] sm:w-[540px] flex flex-col">
+          <SheetHeader className="flex-shrink-0">
             <SheetTitle>Varukorg</SheetTitle>
           </SheetHeader>
           
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col flex-1 overflow-hidden">
             {state.items.length === 0 ? (
               <div className="flex-1 flex items-center justify-center">
                 <div className="text-center">
@@ -127,7 +127,7 @@ export const Cart = () => {
               </div>
             ) : (
               <>
-                <div className="flex-1 py-6">
+                <div className="flex-1 overflow-y-auto py-6">
                   <div className="space-y-4">
                     {state.items.map((item) => (
                       <div key={item.id} className="flex items-center space-x-4 border-b pb-4">
@@ -173,7 +173,7 @@ export const Cart = () => {
                   </div>
                 </div>
                 
-                <div className="border-t pt-4">
+                <div className="border-t pt-4 flex-shrink-0 bg-background">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-lg font-semibold">Totalt:</span>
                     <span className="text-lg font-bold">{state.total} kr</span>
