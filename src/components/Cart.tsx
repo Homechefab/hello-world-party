@@ -1,24 +1,102 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { ShoppingBag, Plus, Minus, Trash2 } from "lucide-react";
+import { ShoppingBag, Plus, Minus, Trash2, CreditCard, Loader2 } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useState } from "react";
 import { AuthDialog } from "@/components/auth/AuthDialog";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 export const Cart = () => {
-  const { state, updateQuantity, removeItem } = useCart();
+  const { state, updateQuantity, removeItem, clearCart } = useCart();
   const { user } = useAuth();
   const [showAuth, setShowAuth] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const { toast } = useToast();
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!user) {
       setShowAuth(true);
       return;
     }
-    // Proceed to checkout
-    console.log("Proceeding to checkout with items:", state.items);
+    
+    if (state.items.length === 0) {
+      toast({
+        title: "Tom varukorg",
+        description: "Lägg till varor innan du går till betalning",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsProcessing(true);
+
+    try {
+      // Skapa line items för Stripe
+      const lineItems = state.items.map(item => ({
+        // Här kan du antingen använda en fast price_id eller skapa en dynamisk price
+        // För demo använder vi priset direkt (kräver att create-checkout stödjer price_data)
+        name: item.name,
+        price: item.price * 100, // Stripe använder öre
+        quantity: item.quantity
+      }));
+
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: {
+          items: lineItems,
+          totalAmount: state.total,
+        }
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (data?.url) {
+        // Spara session ID om det finns
+        if (data.sessionId) {
+          try { 
+            sessionStorage.setItem('last_checkout_session_id', data.sessionId); 
+          } catch (e) {
+            console.error('Failed to save session ID:', e);
+          }
+        }
+        
+        // Öppna Stripe Checkout i ny flik
+        const stripeWindow = window.open(data.url, '_blank');
+        
+        if (!stripeWindow) {
+          toast({
+            title: "Popup blockerad",
+            description: "Tillåt popup-fönster för att fortsätta till betalning",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        toast({
+          title: "Omdirigerar till betalning",
+          description: "Stripe Checkout öppnas i en ny flik",
+        });
+
+        // Rensa varukorgen efter lyckad omdirigering
+        clearCart();
+      } else {
+        throw new Error('Ingen checkout-URL mottogs');
+      }
+
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast({
+        title: "Betalningsfel",
+        description: error instanceof Error ? error.message : "Något gick fel med betalningen",
+        variant: "destructive"
+      });
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -96,17 +174,43 @@ export const Cart = () => {
                 </div>
                 
                 <div className="border-t pt-4">
-                  <div className="flex justify-between items-center mb-4">
+                  <div className="flex justify-between items-center mb-2">
                     <span className="text-lg font-semibold">Totalt:</span>
                     <span className="text-lg font-bold">{state.total} kr</span>
                   </div>
+                  
+                  <div className="mb-4 p-3 bg-muted rounded-lg text-xs space-y-1">
+                    <div className="font-medium">Provisionsfördelning:</div>
+                    <div className="flex justify-between text-muted-foreground">
+                      <span>Homechef provision (20%):</span>
+                      <span>{(state.total * 0.20).toFixed(2)} kr</span>
+                    </div>
+                    <div className="flex justify-between text-muted-foreground">
+                      <span>Kockens intäkt (80%):</span>
+                      <span>{(state.total * 0.80).toFixed(2)} kr</span>
+                    </div>
+                  </div>
+
                   <Button 
                     className="w-full" 
                     size="lg"
                     onClick={handleCheckout}
+                    disabled={isProcessing || state.items.length === 0}
                     variant="food"
                   >
-                    {user ? "Slutför beställning" : "Logga in för att beställa"}
+                    {isProcessing ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Bearbetar...
+                      </>
+                    ) : user ? (
+                      <>
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Betala {state.total} kr
+                      </>
+                    ) : (
+                      "Logga in för att beställa"
+                    )}
                   </Button>
                 </div>
               </>
