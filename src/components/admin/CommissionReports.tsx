@@ -59,14 +59,20 @@ export const CommissionReports = () => {
       });
       if (error) throw error;
       
-      // Open in new window
-      const blob = new Blob([data], { type: 'text/html' });
+      // Create blob from PDF data and download
+      const blob = new Blob([data], { type: 'application/pdf' });
       const url = URL.createObjectURL(blob);
-      window.open(url, '_blank');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `provisionsunderlag-${sessionId}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
       
       toast({
-        title: 'Rapport genererad',
-        description: 'Provisionsunderlaget öppnas i en ny flik'
+        title: 'PDF nedladdad',
+        description: 'Provisionsunderlaget har laddats ner som PDF'
       });
     } catch (err) {
       toast({ 
