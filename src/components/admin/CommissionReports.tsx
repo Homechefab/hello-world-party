@@ -59,21 +59,27 @@ export const CommissionReports = () => {
       });
       if (error) throw error;
       
-      // Create blob from PDF data and download
-      const blob = new Blob([data], { type: 'application/pdf' });
+      // Open HTML report in new window for printing as PDF
+      const blob = new Blob([data], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `provisionsunderlag-${sessionId}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      const printWindow = window.open(url, '_blank');
+      
+      // Add print dialog after content loads
+      if (printWindow) {
+        printWindow.onload = () => {
+          setTimeout(() => {
+            printWindow.print();
+          }, 250);
+        };
+      }
       
       toast({
-        title: 'PDF nedladdad',
-        description: 'Provisionsunderlaget har laddats ner som PDF'
+        title: 'Rapport öppnad',
+        description: 'Använd Ctrl+P eller Cmd+P för att spara som PDF'
       });
+      
+      // Clean up after a delay
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
     } catch (err) {
       toast({ 
         title: 'Kunde inte generera rapport', 
