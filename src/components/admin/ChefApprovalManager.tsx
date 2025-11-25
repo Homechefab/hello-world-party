@@ -439,8 +439,9 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
                                   variant="outline" 
                                   size="sm"
                                   onClick={async () => {
-                                    // Extract path from document_url (remove bucket prefix if exists)
-                                    const path = doc.document_url.replace('documents/', '');
+                                    // Extract the file path from the full URL (everything after /documents/)
+                                    const urlParts = doc.document_url.split('/documents/');
+                                    const path = urlParts[urlParts.length - 1];
                                     
                                     // Generate signed URL for private bucket
                                     const { data, error } = await supabase.storage
