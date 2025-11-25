@@ -438,10 +438,30 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
                                  <Button 
                                   variant="outline" 
                                   size="sm"
-                                  onClick={() => window.open(doc.document_url, '_blank')}
+                                  onClick={async () => {
+                                    try {
+                                      // Fetch the file and trigger download
+                                      const response = await fetch(doc.document_url);
+                                      const blob = await response.blob();
+                                      const url = window.URL.createObjectURL(blob);
+                                      const a = document.createElement('a');
+                                      a.href = url;
+                                      a.download = doc.document_url.split('/').pop() || 'document.pdf';
+                                      document.body.appendChild(a);
+                                      a.click();
+                                      document.body.removeChild(a);
+                                      window.URL.revokeObjectURL(url);
+                                    } catch (error) {
+                                      toast({
+                                        title: "Kunde inte ladda ner dokument",
+                                        description: error instanceof Error ? error.message : "Ett fel uppstod",
+                                        variant: "destructive"
+                                      });
+                                    }
+                                  }}
                                 >
                                  <Download className="w-4 h-4 mr-2" />
-                                 Visa
+                                 Ladda ner
                                </Button>
                             </div>
                           ))
