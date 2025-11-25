@@ -435,14 +435,35 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
                                     Uppladdad: {new Date(doc.created_at).toLocaleDateString('sv-SE')}
                                   </p>
                                 </div>
-                                <Button 
+                                 <Button 
                                   variant="outline" 
                                   size="sm"
-                                  onClick={() => window.open(doc.document_url, '_blank')}
+                                  onClick={async () => {
+                                    // Extract path from document_url (remove bucket prefix if exists)
+                                    const path = doc.document_url.replace('documents/', '');
+                                    
+                                    // Generate signed URL for private bucket
+                                    const { data, error } = await supabase.storage
+                                      .from('documents')
+                                      .createSignedUrl(path, 3600); // 1 hour expiry
+                                    
+                                    if (error) {
+                                      toast({
+                                        title: "Kunde inte öppna dokument",
+                                        description: error.message,
+                                        variant: "destructive"
+                                      });
+                                      return;
+                                    }
+                                    
+                                    if (data?.signedUrl) {
+                                      window.open(data.signedUrl, '_blank');
+                                    }
+                                  }}
                                 >
-                                <Download className="w-4 h-4 mr-2" />
-                                Visa
-                              </Button>
+                                 <Download className="w-4 h-4 mr-2" />
+                                 Visa
+                               </Button>
                             </div>
                           ))
                           ) : (
