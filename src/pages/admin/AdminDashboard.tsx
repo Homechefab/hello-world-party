@@ -7,6 +7,7 @@ import { ChefApprovalManager } from '@/components/admin/ChefApprovalManager';
 import { KitchenPartnerApprovalManager } from '@/components/admin/KitchenPartnerApprovalManager';
 import { LoginLogsViewer } from '@/components/admin/LoginLogsViewer';
 import { UserManagement } from '@/components/admin/UserManagement';
+import { CommissionReports } from '@/components/admin/CommissionReports';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Users, 
@@ -162,6 +163,7 @@ export const AdminDashboard = () => {
             <span className="sm:hidden">Kökspartners</span>
           </TabsTrigger>
           <TabsTrigger value="archive" className="whitespace-nowrap">Arkiv</TabsTrigger>
+          <TabsTrigger value="commission" className="whitespace-nowrap">Provisionsunderlag</TabsTrigger>
           <TabsTrigger value="users" className="whitespace-nowrap">
             <span className="hidden sm:inline">Användarhantering</span>
             <span className="sm:hidden">Användare</span>
@@ -192,6 +194,10 @@ export const AdminDashboard = () => {
               <ChefApprovalManager showArchived={true} />
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="commission">
+          <CommissionReports />
         </TabsContent>
 
         <TabsContent value="users">
