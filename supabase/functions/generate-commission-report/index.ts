@@ -42,14 +42,378 @@ serve(async (req) => {
       );
     }
 
-    // Generate PDF using basic PDF structure
-    const pdfContent = generatePDF(transaction);
+    // Calculate VAT (12% for food in Sweden)
+    const vatRate = 0.12;
+    const amountExclVat = transaction.total_amount / (1 + vatRate);
+    const vatAmount = transaction.total_amount - amountExclVat;
+    
+    // Calculate commission percentages
+    const platformPercentage = 20;
+    const chefPercentage = 80;
 
-    return new Response(pdfContent, {
+    // Generate HTML that looks like a professional receipt
+    const htmlReport = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Provisionsunderlag - ${transaction.stripe_session_id}</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: #1a1a1a;
+      background: #f5f5f5;
+      padding: 40px 20px;
+    }
+    
+    .receipt {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      border: 1px solid #e1e4e8;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #EA580C 0%, #FB923C 100%);
+      color: white;
+      padding: 32px 40px;
+      text-align: center;
+    }
+    
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    
+    .header .subtitle {
+      font-size: 14px;
+      opacity: 0.95;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .content {
+      padding: 40px;
+    }
+    
+    .section {
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid #e1e4e8;
+    }
+    
+    .section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      font-size: 14px;
+    }
+    
+    .info-label {
+      color: #6b7280;
+      font-weight: 500;
+    }
+    
+    .info-value {
+      color: #1a1a1a;
+      font-weight: 500;
+      text-align: right;
+    }
+    
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px 20px;
+      background: #f9fafb;
+      border-radius: 6px;
+      margin-bottom: 16px;
+    }
+    
+    .item-details {
+      flex: 1;
+    }
+    
+    .item-name {
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+    }
+    
+    .item-quantity {
+      font-size: 13px;
+      color: #6b7280;
+    }
+    
+    .item-price {
+      font-weight: 600;
+      color: #1a1a1a;
+      font-size: 16px;
+    }
+    
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      font-size: 14px;
+    }
+    
+    .summary-row.total {
+      border-top: 2px solid #e1e4e8;
+      padding-top: 16px;
+      margin-top: 8px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    
+    .commission-box {
+      background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+      border-left: 4px solid #F59E0B;
+      padding: 24px;
+      border-radius: 8px;
+      margin: 24px 0;
+    }
+    
+    .commission-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #92400E;
+      margin-bottom: 16px;
+    }
+    
+    .commission-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      font-size: 15px;
+    }
+    
+    .commission-row .label {
+      color: #78350F;
+      font-weight: 500;
+    }
+    
+    .commission-row .value {
+      font-weight: 700;
+      color: #78350F;
+    }
+    
+    .platform-fee {
+      color: #EA580C !important;
+    }
+    
+    .chef-earnings {
+      color: #16A34A !important;
+    }
+    
+    .payment-method {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: #f9fafb;
+      border-radius: 6px;
+    }
+    
+    .payment-icon {
+      width: 40px;
+      height: 40px;
+      background: #EA580C;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+    }
+    
+    .footer {
+      background: #f9fafb;
+      padding: 24px 40px;
+      text-align: center;
+      font-size: 12px;
+      color: #6b7280;
+    }
+    
+    .footer p {
+      margin: 4px 0;
+    }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: #DEF7EC;
+      color: #03543F;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      
+      .receipt {
+        border: none;
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="receipt">
+    <div class="header">
+      <h1>Homechef AB</h1>
+      <div class="subtitle">Provisionsunderlag</div>
+    </div>
+    
+    <div class="content">
+      <!-- Transaction Details -->
+      <div class="section">
+        <div class="section-title">Transaktionsdetaljer</div>
+        <div class="info-row">
+          <span class="info-label">Transaktion</span>
+          <span class="info-value">#${transaction.id.slice(0, 8)}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Datum</span>
+          <span class="info-value">${new Date(transaction.created_at).toLocaleDateString('sv-SE', { 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          })}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Kund</span>
+          <span class="info-value">${transaction.customer_email}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Status</span>
+          <span class="info-value">
+            <span class="status-badge">${transaction.payment_status === 'paid' ? 'Betald' : transaction.payment_status}</span>
+          </span>
+        </div>
+      </div>
+      
+      <!-- Order Items -->
+      <div class="section">
+        <div class="section-title">Beställning</div>
+        <div class="order-item">
+          <div class="item-details">
+            <div class="item-name">${transaction.dish_name}</div>
+            <div class="item-quantity">Antal: ${transaction.quantity} st</div>
+          </div>
+          <div class="item-price">${transaction.total_amount.toFixed(2)} ${transaction.currency}</div>
+        </div>
+      </div>
+      
+      <!-- Payment Summary -->
+      <div class="section">
+        <div class="section-title">Sammanfattning</div>
+        <div class="summary-row">
+          <span>Delsumma (exkl. moms)</span>
+          <span>${amountExclVat.toFixed(2)} ${transaction.currency}</span>
+        </div>
+        <div class="summary-row">
+          <span>Moms (12%)</span>
+          <span>${vatAmount.toFixed(2)} ${transaction.currency}</span>
+        </div>
+        <div class="summary-row total">
+          <span>Totalt</span>
+          <span>${transaction.total_amount.toFixed(2)} ${transaction.currency}</span>
+        </div>
+      </div>
+      
+      <!-- Commission Breakdown -->
+      <div class="commission-box">
+        <div class="commission-title">Provisionsfördelning</div>
+        <div class="commission-row">
+          <span class="label">Homechef provision (${platformPercentage}%)</span>
+          <span class="value platform-fee">${transaction.platform_fee.toFixed(2)} ${transaction.currency}</span>
+        </div>
+        <div class="commission-row">
+          <span class="label">Kock (${chefPercentage}%)</span>
+          <span class="value chef-earnings">${transaction.chef_earnings.toFixed(2)} ${transaction.currency}</span>
+        </div>
+      </div>
+      
+      <!-- Payment Method -->
+      <div class="section">
+        <div class="section-title">Betalningsmetod</div>
+        <div class="payment-method">
+          <div class="payment-icon">💳</div>
+          <div>
+            <div style="font-weight: 600; color: #1a1a1a;">Stripe Checkout</div>
+            <div style="font-size: 12px; color: #6b7280;">Session: ${transaction.stripe_session_id.slice(0, 20)}...</div>
+          </div>
+        </div>
+        ${transaction.receipt_url ? `
+        <div style="margin-top: 12px;">
+          <a href="${transaction.receipt_url}" style="color: #EA580C; text-decoration: none; font-size: 13px; font-weight: 500;">
+            → Visa kundkvitto i Stripe
+          </a>
+        </div>
+        ` : ''}
+      </div>
+      
+      <!-- Accounting Info -->
+      <div class="section">
+        <div class="section-title">Bokföringsinformation</div>
+        <div class="info-row">
+          <span class="info-label">Payment Intent ID</span>
+          <span class="info-value" style="font-family: monospace; font-size: 12px;">${transaction.stripe_payment_intent_id || 'N/A'}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Charge ID</span>
+          <span class="info-value" style="font-family: monospace; font-size: 12px;">${transaction.stripe_charge_id || 'N/A'}</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p><strong>Homechef AB</strong></p>
+      <p>Detta provisionsunderlag är automatiskt genererat och utgör underlag för bokföring</p>
+      <p>Genererat: ${new Date().toLocaleString('sv-SE')}</p>
+    </div>
+  </div>
+</body>
+</html>
+    `;
+
+    return new Response(htmlReport, {
       headers: { 
         ...corsHeaders, 
-        "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="provisionsunderlag-${transaction.stripe_session_id}.pdf"`
+        "Content-Type": "text/html; charset=utf-8"
       },
     });
   } catch (error) {
@@ -61,123 +425,3 @@ serve(async (req) => {
     });
   }
 });
-
-function generatePDF(transaction: any): Uint8Array {
-  // Basic PDF structure with text content
-  const content = `
-HOMECHEF AB - PROVISIONSUNDERLAG
-
-Transaktionsdetaljer
---------------------
-Transaktions-ID: ${transaction.stripe_session_id}
-Datum: ${new Date(transaction.created_at).toLocaleString('sv-SE')}
-Kund: ${transaction.customer_email}
-Betalningsstatus: ${transaction.payment_status}
-
-Beställning
------------
-Rätt: ${transaction.dish_name}
-Antal: ${transaction.quantity} st
-
-Provisionsfördelning
---------------------
-Totalt belopp: ${transaction.total_amount.toFixed(2)} ${transaction.currency}
-Homechef provision (20%): ${transaction.platform_fee.toFixed(2)} ${transaction.currency}
-Kock (80%): ${transaction.chef_earnings.toFixed(2)} ${transaction.currency}
-
-Bokföringsinformation
----------------------
-Intäktskonto (Försäljning): ${transaction.total_amount.toFixed(2)} ${transaction.currency}
-Homechef provision: ${transaction.platform_fee.toFixed(2)} ${transaction.currency}
-Kock utbetalning: ${transaction.chef_earnings.toFixed(2)} ${transaction.currency}
-Stripe Payment Intent ID: ${transaction.stripe_payment_intent_id || 'N/A'}
-Stripe Charge ID: ${transaction.stripe_charge_id || 'N/A'}
-
---------------------
-Homechef AB - Provisionsunderlag genererat ${new Date().toLocaleString('sv-SE')}
-Detta dokument är automatiskt genererat och utgör underlag för bokföring
-`;
-
-  // Create simple PDF structure
-  const pdfHeader = `%PDF-1.4
-1 0 obj
-<<
-/Type /Catalog
-/Pages 2 0 R
->>
-endobj
-2 0 obj
-<<
-/Type /Pages
-/Kids [3 0 R]
-/Count 1
->>
-endobj
-3 0 obj
-<<
-/Type /Page
-/Parent 2 0 R
-/Resources <<
-/Font <<
-/F1 4 0 R
->>
->>
-/MediaBox [0 0 612 792]
-/Contents 5 0 R
->>
-endobj
-4 0 obj
-<<
-/Type /Font
-/Subtype /Type1
-/BaseFont /Courier
->>
-endobj
-5 0 obj
-<<
-/Length ${content.length + 50}
->>
-stream
-BT
-/F1 10 Tf
-50 750 Td
-`;
-
-  const lines = content.split('\n');
-  let yPos = 750;
-  const pdfLines: string[] = [];
-  
-  for (const line of lines) {
-    if (line.trim()) {
-      pdfLines.push(`(${line.replace(/\(/g, '\\(').replace(/\)/g, '\\)')}) Tj`);
-    }
-    yPos -= 15;
-    pdfLines.push(`0 -15 Td`);
-  }
-
-  const pdfBody = pdfLines.join('\n');
-
-  const pdfFooter = `
-ET
-endstream
-endobj
-xref
-0 6
-0000000000 65535 f 
-0000000009 00000 n 
-0000000058 00000 n 
-0000000115 00000 n 
-0000000262 00000 n 
-0000000341 00000 n 
-trailer
-<<
-/Size 6
-/Root 1 0 R
->>
-startxref
-${pdfHeader.length + pdfBody.length + 150}
-%%EOF`;
-
-  const fullPDF = pdfHeader + pdfBody + pdfFooter;
-  return new TextEncoder().encode(fullPDF);
-}
