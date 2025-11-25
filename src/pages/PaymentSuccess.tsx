@@ -103,61 +103,12 @@ const PaymentSuccess = () => {
                 </div>
               </div>
 
-              {result?.commission_report && (
-                <div className="p-4 bg-muted rounded-lg space-y-2">
-                  <h3 className="font-semibold text-sm">Provisionsfördelning</h3>
-                  <div className="grid grid-cols-3 gap-2 text-sm">
-                    <div>
-                      <p className="text-muted-foreground">Totalt:</p>
-                      <p className="font-medium">{result.commission_report.total_amount.toFixed(2)} {result.currency?.toUpperCase?.()}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Provision (20%):</p>
-                      <p className="font-medium text-blue-600">{result.commission_report.platform_fee.toFixed(2)} {result.currency?.toUpperCase?.()}</p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground">Kock (80%):</p>
-                      <p className="font-medium text-green-600">{result.commission_report.chef_earnings.toFixed(2)} {result.currency?.toUpperCase?.()}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
 
               <div className="flex gap-3 pt-2 flex-wrap">
                 {result?.receipt_url && (
                   <a href={result.receipt_url} target="_blank" rel="noreferrer">
                     <Button className="gap-2">
-                      <ReceiptText className="w-4 h-4" /> Kundkvitto
-                    </Button>
-                  </a>
-                )}
-                {sessionId && (
-                  <a 
-                    href={`${import.meta.env.VITE_SUPABASE_URL || 'https://rkucenozpmaixfphpiub.supabase.co'}/functions/v1/generate-commission-report`}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={async (e) => {
-                      e.preventDefault();
-                      try {
-                        const { data, error } = await supabase.functions.invoke('generate-commission-report', {
-                          body: { sessionId }
-                        });
-                        if (error) throw error;
-                        // Open in new window
-                        const blob = new Blob([data], { type: 'text/html' });
-                        const url = URL.createObjectURL(blob);
-                        window.open(url, '_blank');
-                      } catch (err) {
-                        toast({ 
-                          title: "Kunde inte generera provisionsunderlag", 
-                          description: err instanceof Error ? err.message : "Okänt fel",
-                          variant: "destructive" 
-                        });
-                      }
-                    }}
-                  >
-                    <Button variant="outline" className="gap-2">
-                      <ReceiptText className="w-4 h-4" /> Provisionsunderlag
+                      <ReceiptText className="w-4 h-4" /> Visa kvitto
                     </Button>
                   </a>
                 )}
