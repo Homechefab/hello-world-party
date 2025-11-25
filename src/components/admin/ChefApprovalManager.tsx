@@ -438,28 +438,9 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
                                  <Button 
                                   variant="outline" 
                                   size="sm"
-                                  onClick={async () => {
-                                    // Extract the file path from the full URL (everything after /documents/)
-                                    const urlParts = doc.document_url.split('/documents/');
-                                    const path = urlParts[urlParts.length - 1];
-                                    
-                                    // Generate signed URL for private bucket
-                                    const { data, error } = await supabase.storage
-                                      .from('documents')
-                                      .createSignedUrl(path, 3600); // 1 hour expiry
-                                    
-                                    if (error) {
-                                      toast({
-                                        title: "Kunde inte öppna dokument",
-                                        description: error.message,
-                                        variant: "destructive"
-                                      });
-                                      return;
-                                    }
-                                    
-                                    if (data?.signedUrl) {
-                                      window.open(data.signedUrl, '_blank');
-                                    }
+                                  onClick={() => {
+                                    // Open the public URL directly
+                                    window.open(doc.document_url, '_blank');
                                   }}
                                 >
                                  <Download className="w-4 h-4 mr-2" />
