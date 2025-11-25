@@ -42,92 +42,14 @@ serve(async (req) => {
       );
     }
 
-    // Generate HTML report for commission breakdown
-    const reportHTML = `
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; }
-    .header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }
-    .logo { font-size: 24px; font-weight: bold; color: #2563eb; }
-    .section { margin: 20px 0; padding: 15px; background: #f9fafb; border-radius: 8px; }
-    .row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e5e7eb; }
-    .row:last-child { border-bottom: none; }
-    .label { font-weight: 600; color: #374151; }
-    .value { color: #111827; }
-    .highlight { background: #dbeafe; padding: 15px; border-radius: 8px; margin: 20px 0; }
-    .total { font-size: 18px; font-weight: bold; }
-    .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280; text-align: center; }
-  </style>
-</head>
-<body>
-  <div class="header">
-    <div class="logo">🏠 HOMECHEF</div>
-    <h1>Provisionsunderlag</h1>
-    <p>Datum: ${new Date(transaction.created_at).toLocaleDateString('sv-SE')}</p>
-  </div>
+    // Generate PDF using basic PDF structure
+    const pdfContent = generatePDF(transaction);
 
-  <div class="section">
-    <h2>Transaktionsdetaljer</h2>
-    <div class="row">
-      <span class="label">Transaktions-ID:</span>
-      <span class="value">${transaction.id}</span>
-    </div>
-    <div class="row">
-      <span class="label">Stripe Session:</span>
-      <span class="value">${transaction.stripe_session_id}</span>
-    </div>
-    <div class="row">
-      <span class="label">Kund:</span>
-      <span class="value">${transaction.customer_email}</span>
-    </div>
-    <div class="row">
-      <span class="label">Rätt:</span>
-      <span class="value">${transaction.dish_name}</span>
-    </div>
-    <div class="row">
-      <span class="label">Antal:</span>
-      <span class="value">${transaction.quantity} st</span>
-    </div>
-  </div>
-
-  <div class="highlight">
-    <h2>Provisionsfördelning</h2>
-    <div class="row">
-      <span class="label">Totalt belopp (inkl. moms):</span>
-      <span class="value total">${transaction.total_amount.toFixed(2)} ${transaction.currency}</span>
-    </div>
-    <div class="row">
-      <span class="label">Homechef provision (20%):</span>
-      <span class="value" style="color: #2563eb; font-weight: bold;">${transaction.platform_fee.toFixed(2)} ${transaction.currency}</span>
-    </div>
-    <div class="row">
-      <span class="label">Kockens intäkt (80%):</span>
-      <span class="value" style="color: #059669; font-weight: bold;">${transaction.chef_earnings.toFixed(2)} ${transaction.currency}</span>
-    </div>
-  </div>
-
-  <div class="section">
-    <h2>Bokföringsinformation</h2>
-    <p><strong>Betalningsstatus:</strong> ${transaction.payment_status}</p>
-    <p><strong>Valuta:</strong> ${transaction.currency}</p>
-    <p><strong>Datum:</strong> ${new Date(transaction.created_at).toLocaleString('sv-SE')}</p>
-  </div>
-
-  <div class="footer">
-    <p>Detta underlag är genererat för bokföring och ska användas som grund för provisionsutbetalning.</p>
-    <p>Homechef AB | Org.nr: XXX XXX-XXXX | info@homechef.se</p>
-  </div>
-</body>
-</html>
-    `;
-
-    return new Response(reportHTML, {
-      headers: {
-        ...corsHeaders,
-        "Content-Type": "text/html; charset=utf-8",
+    return new Response(pdfContent, {
+      headers: { 
+        ...corsHeaders, 
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="provisionsunderlag-${transaction.stripe_session_id}.pdf"`
       },
     });
   } catch (error) {
@@ -139,3 +61,123 @@ serve(async (req) => {
     });
   }
 });
+
+function generatePDF(transaction: any): Uint8Array {
+  // Basic PDF structure with text content
+  const content = `
+HOMECHEF AB - PROVISIONSUNDERLAG
+
+Transaktionsdetaljer
+--------------------
+Transaktions-ID: ${transaction.stripe_session_id}
+Datum: ${new Date(transaction.created_at).toLocaleString('sv-SE')}
+Kund: ${transaction.customer_email}
+Betalningsstatus: ${transaction.payment_status}
+
+Beställning
+-----------
+Rätt: ${transaction.dish_name}
+Antal: ${transaction.quantity} st
+
+Provisionsfördelning
+--------------------
+Totalt belopp: ${transaction.total_amount.toFixed(2)} ${transaction.currency}
+Homechef provision (20%): ${transaction.platform_fee.toFixed(2)} ${transaction.currency}
+Kock (80%): ${transaction.chef_earnings.toFixed(2)} ${transaction.currency}
+
+Bokföringsinformation
+---------------------
+Intäktskonto (Försäljning): ${transaction.total_amount.toFixed(2)} ${transaction.currency}
+Homechef provision: ${transaction.platform_fee.toFixed(2)} ${transaction.currency}
+Kock utbetalning: ${transaction.chef_earnings.toFixed(2)} ${transaction.currency}
+Stripe Payment Intent ID: ${transaction.stripe_payment_intent_id || 'N/A'}
+Stripe Charge ID: ${transaction.stripe_charge_id || 'N/A'}
+
+--------------------
+Homechef AB - Provisionsunderlag genererat ${new Date().toLocaleString('sv-SE')}
+Detta dokument är automatiskt genererat och utgör underlag för bokföring
+`;
+
+  // Create simple PDF structure
+  const pdfHeader = `%PDF-1.4
+1 0 obj
+<<
+/Type /Catalog
+/Pages 2 0 R
+>>
+endobj
+2 0 obj
+<<
+/Type /Pages
+/Kids [3 0 R]
+/Count 1
+>>
+endobj
+3 0 obj
+<<
+/Type /Page
+/Parent 2 0 R
+/Resources <<
+/Font <<
+/F1 4 0 R
+>>
+>>
+/MediaBox [0 0 612 792]
+/Contents 5 0 R
+>>
+endobj
+4 0 obj
+<<
+/Type /Font
+/Subtype /Type1
+/BaseFont /Courier
+>>
+endobj
+5 0 obj
+<<
+/Length ${content.length + 50}
+>>
+stream
+BT
+/F1 10 Tf
+50 750 Td
+`;
+
+  const lines = content.split('\n');
+  let yPos = 750;
+  const pdfLines: string[] = [];
+  
+  for (const line of lines) {
+    if (line.trim()) {
+      pdfLines.push(`(${line.replace(/\(/g, '\\(').replace(/\)/g, '\\)')}) Tj`);
+    }
+    yPos -= 15;
+    pdfLines.push(`0 -15 Td`);
+  }
+
+  const pdfBody = pdfLines.join('\n');
+
+  const pdfFooter = `
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000262 00000 n 
+0000000341 00000 n 
+trailer
+<<
+/Size 6
+/Root 1 0 R
+>>
+startxref
+${pdfHeader.length + pdfBody.length + 150}
+%%EOF`;
+
+  const fullPDF = pdfHeader + pdfBody + pdfFooter;
+  return new TextEncoder().encode(fullPDF);
+}
