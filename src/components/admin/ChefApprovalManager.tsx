@@ -438,9 +438,34 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
                                  <Button 
                                   variant="outline" 
                                   size="sm"
-                                  onClick={() => {
-                                    // Open the public URL directly
-                                    window.open(doc.document_url, '_blank');
+                                  onClick={async () => {
+                                    try {
+                                      // Extract the file path from the URL
+                                      // URL format: https://.../storage/v1/object/public/documents/path/to/file
+                                      const urlParts = doc.document_url.split('/object/public/documents/');
+                                      const filePath = urlParts.length > 1 ? urlParts[1] : doc.document_url.split('/documents/').pop();
+                                      
+                                      // Get the public URL using Supabase client
+                                      const { data } = supabase.storage
+                                        .from('documents')
+                                        .getPublicUrl(filePath);
+                                      
+                                      if (data?.publicUrl) {
+                                        window.open(data.publicUrl, '_blank');
+                                      } else {
+                                        toast({
+                                          title: "Kunde inte öppna dokument",
+                                          description: "Dokumentet kunde inte hittas",
+                                          variant: "destructive"
+                                        });
+                                      }
+                                    } catch (error) {
+                                      toast({
+                                        title: "Kunde inte öppna dokument",
+                                        description: error instanceof Error ? error.message : "Ett fel uppstod",
+                                        variant: "destructive"
+                                      });
+                                    }
                                   }}
                                 >
                                  <Download className="w-4 h-4 mr-2" />
