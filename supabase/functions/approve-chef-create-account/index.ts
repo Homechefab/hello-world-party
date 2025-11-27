@@ -280,10 +280,17 @@ function generateWelcomeEmail(fullName: string, email: string, password: string)
         <p>Du kan nu logga in på din profil och börja lägga upp rätter, hantera beställningar och mycket mer.</p>
         
         <center>
-          <a href="https://211e56d1-e9f5-433c-89dc-4ce2d7998096.lovableproject.com/" class="button">
-            Logga in nu
+          <a href="https://211e56d1-e9f5-433c-89dc-4ce2d7998096.lovableproject.com/chef/welcome" class="button">
+            Kom igång med guiden
           </a>
         </center>
+        
+        <p style="margin-top: 20px; text-align: center;">
+          Eller gå direkt till 
+          <a href="https://211e56d1-e9f5-433c-89dc-4ce2d7998096.lovableproject.com/" style="color: #ff6b35;">
+            din dashboard
+          </a>
+        </p>
         
         <p>Om du har några frågor eller behöver hjälp, tveka inte att kontakta oss.</p>
         
