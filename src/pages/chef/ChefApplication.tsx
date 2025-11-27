@@ -91,7 +91,14 @@ const ChefApplication = () => {
             .from('chefs')
             .update({
               business_name: formData.businessName || '',
-              application_status: 'pending'
+              application_status: 'pending',
+              full_name: formData.fullName,
+              phone: formData.phone,
+              address: formData.address,
+              city: formData.city,
+              postal_code: formData.postalCode,
+              experience: formData.experience,
+              specialties: formData.specialties
             })
             .eq('id', existingChef.id);
 
@@ -109,7 +116,14 @@ const ChefApplication = () => {
               business_name: formData.businessName || 'Mitt kök',
               user_id: user.id,
               kitchen_approved: false,
-              application_status: 'pending'
+              application_status: 'pending',
+              full_name: formData.fullName,
+              phone: formData.phone,
+              address: formData.address,
+              city: formData.city,
+              postal_code: formData.postalCode,
+              experience: formData.experience,
+              specialties: formData.specialties
             })
             .select()
             .single();
@@ -153,12 +167,19 @@ const ChefApplication = () => {
           .eq('id', user.id)
           .single();
 
-        // Uppdatera chef-ansökan till "under review" och spara business_name
+        // Uppdatera chef-ansökan till "under review" och spara all data
         const { error } = await supabase
           .from('chefs')
           .update({ 
             application_status: 'under_review',
-            business_name: formData.businessName || 'Mitt företag'
+            business_name: formData.businessName || 'Mitt företag',
+            full_name: formData.fullName,
+            phone: formData.phone,
+            address: formData.address,
+            city: formData.city,
+            postal_code: formData.postalCode,
+            experience: formData.experience,
+            specialties: formData.specialties
           })
           .eq('id', chefId);
 

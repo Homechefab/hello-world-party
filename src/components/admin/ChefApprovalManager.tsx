@@ -35,6 +35,11 @@ interface ChefApplication {
     businessLicense?: string;
   };
   notes?: string;
+  address?: string;
+  city?: string;
+  postalCode?: string;
+  experience?: string;
+  specialties?: string;
 }
 
 interface ChefApprovalManagerProps {
@@ -113,11 +118,11 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
         
         return {
           id: chef.id,
-          applicantName: profile?.full_name || 'Okänd',
+          applicantName: chef.full_name || profile?.full_name || 'Okänd',
           email: profile?.email || '',
-          phone: profile?.phone || 'Ej angivet',
+          phone: chef.phone || profile?.phone || 'Ej angivet',
           businessName: chef.business_name || 'Inget företagsnamn angivet',
-          municipality: latestDoc?.municipality || profile?.address || 'Ej angivet',
+          municipality: latestDoc?.municipality || chef.city || profile?.address || 'Ej angivet',
           description: 'Matlagning och catering från hemköket',
           status: chef.application_status === 'approved' 
             ? 'approved' as const 
@@ -131,7 +136,12 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
           documents: {
             selfControlPlan: chefDocuments.length > 0 ? chefDocuments : undefined,
             businessLicense: undefined
-          }
+          },
+          address: chef.address,
+          city: chef.city,
+          postalCode: chef.postal_code,
+          experience: chef.experience,
+          specialties: chef.specialties
         };
       });
 
@@ -390,26 +400,38 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
                               <p className="text-sm">{application.phone}</p>
                             </div>
                             <div>
-                              <Label className="text-sm font-medium">Kommun</Label>
-                              <p className="text-sm">{application.municipality}</p>
+                              <Label className="text-sm font-medium">Adress</Label>
+                              <p className="text-sm">{application.address || 'Ej angivet'}</p>
+                            </div>
+                            <div>
+                              <Label className="text-sm font-medium">Stad</Label>
+                              <p className="text-sm">{application.city || 'Ej angivet'}</p>
+                            </div>
+                            <div>
+                              <Label className="text-sm font-medium">Postnummer</Label>
+                              <p className="text-sm">{application.postalCode || 'Ej angivet'}</p>
                             </div>
                           </div>
                         </CardContent>
                       </Card>
 
-                      {/* Företagsinfo */}
+                      {/* Företagsinfo & Matlagningsexpertis */}
                       <Card>
                         <CardHeader className="pb-3">
-                          <CardTitle className="text-lg">Företagsuppgifter</CardTitle>
+                          <CardTitle className="text-lg">Företagsuppgifter & Matlagningsexpertis</CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-2">
+                        <CardContent className="space-y-4">
                           <div>
                             <Label className="text-sm font-medium">Företagsnamn</Label>
                             <p className="text-sm">{application.businessName}</p>
                           </div>
                           <div>
-                            <Label className="text-sm font-medium">Beskrivning</Label>
-                            <p className="text-sm">{application.description}</p>
+                            <Label className="text-sm font-medium">Matlagningsexpertis</Label>
+                            <p className="text-sm whitespace-pre-wrap">{application.experience || 'Ej angivet'}</p>
+                          </div>
+                          <div>
+                            <Label className="text-sm font-medium">Specialiteter & köksstil</Label>
+                            <p className="text-sm whitespace-pre-wrap">{application.specialties || 'Ej angivet'}</p>
                           </div>
                         </CardContent>
                       </Card>
