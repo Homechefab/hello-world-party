@@ -7,7 +7,7 @@ import type { UserRole } from "@/types/user";
 import { Cart } from "@/components/Cart";
 import UserMenu from "@/components/UserMenu";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
-import homechefLogo from "@/assets/homechef-logo-orange.png";
+import homechefLogo from "@/assets/homechef-logo-modern.png";
 import { toast } from "sonner";
 import {
   Sheet,
@@ -96,7 +96,7 @@ const Header = () => {
           <img 
             src={homechefLogo} 
             alt="Homechef" 
-            className="h-20 w-auto md:h-28 lg:h-36 object-contain"
+            className="h-16 w-auto md:h-20 lg:h-24 object-contain"
           />
         </Link>
         

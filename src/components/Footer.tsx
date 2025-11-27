@@ -1,6 +1,6 @@
 import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-import homechefLogo from "@/assets/homechef-logo-orange.png";
+import homechefLogo from "@/assets/homechef-logo-modern.png";
 
 const Footer = () => {
   return (
@@ -13,7 +13,7 @@ const Footer = () => {
               <img 
                 src={homechefLogo} 
                 alt="Homechef" 
-                className="h-16 w-auto object-contain"
+                className="h-20 w-auto object-contain"
               />
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
