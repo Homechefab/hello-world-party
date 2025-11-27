@@ -50,7 +50,7 @@ const ChefApplication = () => {
   });
   const [formData, setFormData] = useState({
     fullName: "",
-    email: "",
+    contactEmail: "",
     phone: "",
     address: "",
     city: "",
@@ -67,74 +67,32 @@ const ChefApplication = () => {
     // När man går från steg 2 till 3, skapa chef-ansökan så att chefId finns för dokumentuppladdning
     if (currentStep === 2) {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (!user) {
-          toast({
-            title: "Ej inloggad",
-            description: "Du måste logga in för att skicka en ansökan.",
-            variant: "destructive"
-          });
-          return;
-        }
-
-        // Kolla först om det redan finns en chef-profil
-        const { data: existingChef } = await supabase
+        // Skapa ny chef-ansökan utan user_id (kommer att sättas vid godkännande)
+        const { data: newChef, error } = await supabase
           .from('chefs')
-          .select('*')
-          .eq('user_id', user.id)
-          .maybeSingle();
+          .insert({
+            business_name: formData.businessName || 'Mitt kök',
+            user_id: null,
+            kitchen_approved: false,
+            application_status: 'pending',
+            full_name: formData.fullName,
+            contact_email: formData.contactEmail,
+            phone: formData.phone,
+            address: formData.address,
+            city: formData.city,
+            postal_code: formData.postalCode,
+            experience: formData.experience,
+            specialties: formData.specialties
+          })
+          .select()
+          .single();
 
-        if (existingChef) {
-          // Använd befintlig profil och uppdatera den
-          const { error: updateError } = await supabase
-            .from('chefs')
-            .update({
-              business_name: formData.businessName || '',
-              application_status: 'pending',
-              full_name: formData.fullName,
-              phone: formData.phone,
-              address: formData.address,
-              city: formData.city,
-              postal_code: formData.postalCode,
-              experience: formData.experience,
-              specialties: formData.specialties
-            })
-            .eq('id', existingChef.id);
-
-          if (updateError) {
-            throw updateError;
-          }
-
-          setChefId(existingChef.id);
-          setCurrentStep(3);
-        } else {
-          // Skapa ny chef-ansökan
-          const { data: newChef, error } = await supabase
-            .from('chefs')
-            .insert({
-              business_name: formData.businessName || 'Mitt kök',
-              user_id: user.id,
-              kitchen_approved: false,
-              application_status: 'pending',
-              full_name: formData.fullName,
-              phone: formData.phone,
-              address: formData.address,
-              city: formData.city,
-              postal_code: formData.postalCode,
-              experience: formData.experience,
-              specialties: formData.specialties
-            })
-            .select()
-            .single();
-
-          if (error) {
-            throw error;
-          }
-
-          setChefId(newChef.id);
-          setCurrentStep(3);
+        if (error) {
+          throw error;
         }
+
+        setChefId(newChef.id);
+        setCurrentStep(3);
 
       } catch (err) {
         console.error(err);
@@ -149,9 +107,7 @@ const ChefApplication = () => {
     } else {
       // Steg 4 - Skicka in ansökan
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (!user || !chefId) {
+        if (!chefId) {
           toast({
             title: "Fel",
             description: "Något gick fel med ansökan. Försök igen.",
@@ -160,20 +116,14 @@ const ChefApplication = () => {
           return;
         }
 
-        // Hämta användarens profil för e-postnotifiering
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('full_name, email')
-          .eq('id', user.id)
-          .single();
-
-        // Uppdatera chef-ansökan till "under review" och spara all data
+        // Uppdatera chef-ansökan till "under review"
         const { error } = await supabase
           .from('chefs')
           .update({ 
             application_status: 'under_review',
             business_name: formData.businessName || 'Mitt företag',
             full_name: formData.fullName,
+            contact_email: formData.contactEmail,
             phone: formData.phone,
             address: formData.address,
             city: formData.city,
@@ -193,8 +143,8 @@ const ChefApplication = () => {
             body: {
               type: 'chef',
               application_id: chefId,
-              applicant_name: profile?.full_name || user.email || 'Okänd',
-              applicant_email: profile?.email || user.email || '',
+              applicant_name: formData.fullName,
+              applicant_email: formData.contactEmail,
               business_name: formData.businessName || 'Mitt företag'
             }
           });
@@ -205,12 +155,12 @@ const ChefApplication = () => {
 
         toast({
           title: "Ansökan skickad!",
-          description: "Vi granskar din ansökan och återkommer inom 2-3 arbetsdagar.",
+          description: "Vi granskar din ansökan och återkommer via email inom 2-3 arbetsdagar.",
           duration: 5000
         });
         
         setTimeout(() => {
-          navigate("/chef/application-pending");
+          navigate("/");
         }, 2000);
       } catch (err) {
         console.error(err);
@@ -236,11 +186,14 @@ const ChefApplication = () => {
   const isStepValid = () => {
     switch (currentStep) {
       case 1:
-        return formData.fullName && formData.email && formData.phone && formData.address;
+        return formData.fullName && 
+               formData.contactEmail && 
+               /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.contactEmail) &&
+               formData.phone && 
+               formData.address;
       case 2:
         return formData.experience && formData.specialties;
       case 3:
-        // Kräv checkbox och dokumentuppladdning
         return formData.hasMunicipalPermit && documentsUploaded.municipalPermit;
       case 4:
         return formData.agreesToTerms && formData.agreesToBackground;
@@ -373,13 +326,18 @@ const ChefApplication = () => {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="email">E-postadress *</Label>
+                      <Label htmlFor="contactEmail">
+                        Kontakt-email *
+                        <span className="text-xs text-muted-foreground block">
+                          (Hit skickas dina inloggningsuppgifter när ansökan godkänns)
+                        </span>
+                      </Label>
                       <Input
-                        id="email"
+                        id="contactEmail"
                         type="email"
                         placeholder="anna@exempel.se"
-                        value={formData.email}
-                        onChange={(e) => updateFormData('email', e.target.value)}
+                        value={formData.contactEmail}
+                        onChange={(e) => updateFormData('contactEmail', e.target.value)}
                       />
                     </div>
                   </div>

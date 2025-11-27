@@ -20,6 +20,7 @@ export type Database = {
           application_status: string | null
           business_name: string
           city: string | null
+          contact_email: string | null
           created_at: string
           experience: string | null
           full_name: string | null
@@ -32,13 +33,14 @@ export type Database = {
           rejection_reason: string | null
           specialties: string | null
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           address?: string | null
           application_status?: string | null
           business_name: string
           city?: string | null
+          contact_email?: string | null
           created_at?: string
           experience?: string | null
           full_name?: string | null
@@ -51,13 +53,14 @@ export type Database = {
           rejection_reason?: string | null
           specialties?: string | null
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           address?: string | null
           application_status?: string | null
           business_name?: string
           city?: string | null
+          contact_email?: string | null
           created_at?: string
           experience?: string | null
           full_name?: string | null
@@ -70,7 +73,7 @@ export type Database = {
           rejection_reason?: string | null
           specialties?: string | null
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
