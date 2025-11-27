@@ -53,6 +53,7 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
   const [rejectionReason, setRejectionReason] = useState('');
   const [showRejectionDialog, setShowRejectionDialog] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isApproving, setIsApproving] = useState<string | null>(null);
 
   // Applications will be loaded from Supabase
   const [applications, setApplications] = useState<ChefApplication[]>([]);
@@ -192,36 +193,58 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
 
   const handleStatusChange = async (applicationId: string, newStatus: 'approved' | 'rejected' | 'under_review') => {
     if (newStatus === 'rejected') {
-      // Öppna dialog för att ange anledning
       setSelectedApplication(applications.find(app => app.id === applicationId) || null);
       setShowRejectionDialog(true);
       return;
     }
 
+    if (newStatus === 'approved') {
+      try {
+        setIsApproving(applicationId);
+        
+        const { data, error } = await supabase.functions.invoke('approve-chef-create-account', {
+          body: { chefId: applicationId }
+        });
+
+        if (error) throw error;
+
+        await fetchApplications();
+
+        toast({
+          title: "Ansökan godkänd!",
+          description: `Inloggningsuppgifter har skickats till kockens email (${data?.email})`,
+        });
+
+        setSelectedApplication(null);
+      } catch (error: any) {
+        console.error('Error approving chef:', error);
+        toast({
+          title: "Fel",
+          description: error.message || "Kunde inte godkänna kocken",
+          variant: "destructive"
+        });
+      } finally {
+        setIsApproving(null);
+      }
+      return;
+    }
+
+    // För under_review status
     try {
       const { error } = await supabase
         .from('chefs')
         .update({ 
-          application_status: newStatus,
-          kitchen_approved: newStatus === 'approved'
+          application_status: newStatus
         })
         .eq('id', applicationId);
 
       if (error) throw error;
 
-      setApplications(prev => 
-        prev.map(app => 
-          app.id === applicationId 
-            ? { ...app, status: newStatus, notes: reviewNotes }
-            : app
-        )
-      );
+      await fetchApplications();
 
       toast({
-        title: newStatus === 'approved' ? "Ansökan godkänd!" : "Status uppdaterad",
-        description: newStatus === 'approved' 
-          ? "Ansökande har nu tillgång till kock-funktioner" 
-          : "Ansökan markerad för granskning"
+        title: "Status uppdaterad",
+        description: "Ansökan markerad för granskning"
       });
 
       setSelectedApplication(null);
