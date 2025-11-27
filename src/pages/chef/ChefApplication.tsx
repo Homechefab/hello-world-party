@@ -58,7 +58,6 @@ const ChefApplication = () => {
     experience: "",
     specialties: "",
     businessName: "",
-    motivation: "",
     hasKitchen: false,
     hasHygieneCertificate: false,
     hasBusinessLicense: false,
@@ -220,7 +219,7 @@ const ChefApplication = () => {
       case 1:
         return formData.fullName && formData.email && formData.phone && formData.address;
       case 2:
-        return formData.experience && formData.specialties && formData.motivation;
+        return formData.experience && formData.specialties;
       case 3:
         // Kräv checkboxar och dokumentuppladdning
         return formData.hasKitchen && formData.hasHygieneCertificate && documentsUploaded.municipalPermit;
@@ -435,16 +434,6 @@ const ChefApplication = () => {
                     />
                   </div>
 
-                  <div>
-                    <Label htmlFor="motivation">Varför vill du bli Homechef-kock? *</Label>
-                    <Textarea
-                      id="motivation"
-                      placeholder="Berätta om din motivation och vad du hoppas uppnå"
-                      rows={4}
-                      value={formData.motivation}
-                      onChange={(e) => updateFormData('motivation', e.target.value)}
-                    />
-                  </div>
                 </>
               )}
 
