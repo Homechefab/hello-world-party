@@ -28,6 +28,7 @@ import CustomerService from "./pages/CustomerService";
 import About from "./pages/About";
 import { ChefDashboard } from "./pages/chef/ChefDashboard";
 import { ChefOnboarding } from "./pages/chef/ChefOnboarding";
+import ChefWelcomeGuide from "./pages/chef/ChefWelcomeGuide";
 import ChefApplication from "./pages/chef/ChefApplication";
 import ApplicationPending from "./pages/chef/ApplicationPending";
 import ApplicationStatus from "./pages/chef/ApplicationStatus";
@@ -126,6 +127,7 @@ const App = () => {
             <Route path="/dashboard" element={<RoleBasedLayout><Dashboard /></RoleBasedLayout>} />
             <Route path="/chef" element={<RoleBasedLayout><ChefHome /></RoleBasedLayout>} />
             <Route path="/chef/onboarding" element={<RoleBasedLayout><ChefOnboarding /></RoleBasedLayout>} />
+            <Route path="/chef/welcome" element={<RoleBasedLayout><ChefWelcomeGuide /></RoleBasedLayout>} />
             
             <Route path="/chef/application-pending" element={<RoleBasedLayout><ApplicationPending /></RoleBasedLayout>} />
             <Route path="/chef/dashboard" element={<RoleBasedLayout><ChefDashboard /></RoleBasedLayout>} />
