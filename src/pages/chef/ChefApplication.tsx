@@ -58,9 +58,7 @@ const ChefApplication = () => {
     experience: "",
     specialties: "",
     businessName: "",
-    hasKitchen: false,
-    hasHygieneCertificate: false,
-    hasBusinessLicense: false,
+    hasMunicipalPermit: false,
     agreesToTerms: false,
     agreesToBackground: false
   });
@@ -221,8 +219,8 @@ const ChefApplication = () => {
       case 2:
         return formData.experience && formData.specialties;
       case 3:
-        // Kräv checkboxar och dokumentuppladdning
-        return formData.hasKitchen && formData.hasHygieneCertificate && documentsUploaded.municipalPermit;
+        // Kräv checkbox och dokumentuppladdning
+        return formData.hasMunicipalPermit && documentsUploaded.municipalPermit;
       case 4:
         return formData.agreesToTerms && formData.agreesToBackground;
       default:
@@ -441,38 +439,16 @@ const ChefApplication = () => {
               {currentStep === 3 && (
                 <>
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Krävd utrustning och certifieringar</h3>
+                    <h3 className="text-lg font-semibold">Bekräftelse</h3>
                     
                     <div className="flex items-center space-x-2">
                       <Checkbox 
-                        id="hasKitchen"
-                        checked={formData.hasKitchen}
-                        onCheckedChange={(checked) => updateFormData('hasKitchen', checked as boolean)}
+                        id="hasMunicipalPermit"
+                        checked={formData.hasMunicipalPermit}
+                        onCheckedChange={(checked) => updateFormData('hasMunicipalPermit', checked as boolean)}
                       />
-                      <Label htmlFor="hasKitchen" className="text-sm">
-                        Jag har tillgång till ett fullt utrustat kök för matlagning *
-                      </Label>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="hasHygieneCertificate"
-                        checked={formData.hasHygieneCertificate}
-                        onCheckedChange={(checked) => updateFormData('hasHygieneCertificate', checked as boolean)}
-                      />
-                      <Label htmlFor="hasHygieneCertificate" className="text-sm">
-                        Jag har eller åtar mig att skaffa livsmedelshygienbevis *
-                      </Label>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <Checkbox 
-                        id="hasBusinessLicense"
-                        checked={formData.hasBusinessLicense}
-                        onCheckedChange={(checked) => updateFormData('hasBusinessLicense', checked as boolean)}
-                      />
-                      <Label htmlFor="hasBusinessLicense" className="text-sm">
-                        Jag har eller planerar att registrera näringsverksamhet
+                      <Label htmlFor="hasMunicipalPermit" className="text-sm">
+                        Jag har tillstånd från kommunen *
                       </Label>
                     </div>
                   </div>
