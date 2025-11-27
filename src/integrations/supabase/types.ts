@@ -16,38 +16,59 @@ export type Database = {
     Tables: {
       chefs: {
         Row: {
+          address: string | null
           application_status: string | null
           business_name: string
+          city: string | null
           created_at: string
+          experience: string | null
+          full_name: string | null
           hygiene_certificate_url: string | null
           id: string
           kitchen_approved: boolean | null
           municipality_approval_date: string | null
+          phone: string | null
+          postal_code: string | null
           rejection_reason: string | null
+          specialties: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          address?: string | null
           application_status?: string | null
           business_name: string
+          city?: string | null
           created_at?: string
+          experience?: string | null
+          full_name?: string | null
           hygiene_certificate_url?: string | null
           id?: string
           kitchen_approved?: boolean | null
           municipality_approval_date?: string | null
+          phone?: string | null
+          postal_code?: string | null
           rejection_reason?: string | null
+          specialties?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          address?: string | null
           application_status?: string | null
           business_name?: string
+          city?: string | null
           created_at?: string
+          experience?: string | null
+          full_name?: string | null
           hygiene_certificate_url?: string | null
           id?: string
           kitchen_approved?: boolean | null
           municipality_approval_date?: string | null
+          phone?: string | null
+          postal_code?: string | null
           rejection_reason?: string | null
+          specialties?: string | null
           updated_at?: string
           user_id?: string
         }
