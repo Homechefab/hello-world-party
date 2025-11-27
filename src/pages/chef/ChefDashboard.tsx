@@ -156,6 +156,41 @@ export const ChefDashboard = () => {
         <p className="text-muted-foreground">Hantera din hemlagade mat verksamhet</p>
       </div>
 
+      {/* Welcome banner for new chefs */}
+      {stats.totalDishes === 0 && (
+        <Card className="mb-8 border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10">
+          <CardContent className="pt-6">
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center flex-shrink-0">
+                <ChefHat className="w-8 h-8 text-white" />
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <h3 className="text-xl font-bold mb-2">Välkommen som ny kock! 🎉</h3>
+                <p className="text-muted-foreground mb-4">
+                  Grattis till att du blivit godkänd! Låt oss hjälpa dig komma igång med en steg-för-steg guide.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
+                  <Button 
+                    onClick={() => window.location.href = '/chef/welcome'}
+                    className="gap-2"
+                  >
+                    <CheckCircle className="w-4 h-4" />
+                    Visa guide för nybörjare
+                  </Button>
+                  <Button 
+                    variant="outline"
+                    onClick={() => setActiveTab('menu')}
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Lägg upp första rätten
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid gap-6 md:grid-cols-4 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
