@@ -10,22 +10,11 @@ import {
   CheckCircle,
   Star
 } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-import { useRole } from "@/hooks/useRole";
-import { HyrUtDittKok } from "./HyrUtDittKok";
 import rentKitchenImage from "@/assets/service-rent-kitchen.jpg";
 import KitchenPartnerFAQ from "@/components/services/KitchenPartnerFAQ";
 
 const HyrUtDittKokInfo = () => {
-  const { user } = useAuth();
-  const { isKitchenPartner } = useRole();
-
-  // Om användaren är inloggad och är kökspartner, visa dashboarden
-  if (user && isKitchenPartner) {
-    return <HyrUtDittKok />;
-  }
-
-  // Annars visa informationssidan
+  // Informationssida för kökspartner-tjänsten
   const benefits = [
     {
       icon: DollarSign,
