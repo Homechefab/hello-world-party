@@ -47,6 +47,7 @@ import SalesStatistics from "./pages/chef/SalesStatistics";
 import Mentorship from "./pages/chef/Mentorship";
 import { KitchenPartnerDashboard } from "./pages/kitchen-partner/KitchenPartnerDashboard";
 import { KitchenPartnerOnboarding } from "./pages/kitchen-partner/KitchenPartnerOnboarding";
+import KitchenPartnerApplicationPending from "./pages/kitchen-partner/ApplicationPending";
 import KitchenPartnerHowItWorks from "./pages/kitchen-partner/HowItWorks";
 import PricingTerms from "./pages/kitchen-partner/PricingTerms";
 import PartnerSupport from "./pages/kitchen-partner/PartnerSupport";
@@ -144,6 +145,7 @@ const App = () => {
             <Route path="/chef/försäljningsstatistik" element={<PublicLayout><SalesStatistics /></PublicLayout>} />
             <Route path="/chef/mentorskap" element={<PublicLayout><Mentorship /></PublicLayout>} />
             <Route path="/kitchen-partner/dashboard" element={<RoleBasedLayout><KitchenPartnerDashboard /></RoleBasedLayout>} />
+            <Route path="/kitchen-partner/application-pending" element={<RoleBasedLayout><KitchenPartnerApplicationPending /></RoleBasedLayout>} />
             <Route path="/kitchen-partner/register" element={<PublicLayout><KitchenPartnerOnboarding /></PublicLayout>} />
             <Route path="/delivery-partner/onboarding" element={<PublicLayout><DeliveryPartnerOnboarding /></PublicLayout>} />
             <Route path="/admin/dashboard" element={<RoleBasedLayout><AdminDashboard /></RoleBasedLayout>} />
