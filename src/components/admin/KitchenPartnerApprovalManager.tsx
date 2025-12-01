@@ -46,16 +46,10 @@ export const KitchenPartnerApprovalManager = () => {
 
   const fetchApplications = async () => {
     try {
+      // Fetch kitchen partners
       const { data, error } = await supabase
         .from('kitchen_partners')
-        .select(`
-          *,
-          profiles:user_id (
-            full_name,
-            email,
-            phone
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -63,32 +57,50 @@ export const KitchenPartnerApprovalManager = () => {
         return;
       }
 
-      // Fetch documents for all kitchen partners
+      // Fetch profiles for all kitchen partners
       const userIds = data?.map(kp => kp.user_id).filter(Boolean) || [];
-      const { data: documents } = await supabase
-        .from('document_submissions')
-        .select('*')
-        .in('user_id', userIds)
-        .order('created_at', { ascending: false });
+      
+      if (userIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, full_name, email, phone')
+          .in('id', userIds);
 
-      // Group documents by user_id
-      const documentsMap = new Map<string, typeof documents>();
-      documents?.forEach(doc => {
-        if (doc.user_id) {
-          if (!documentsMap.has(doc.user_id)) {
-            documentsMap.set(doc.user_id, []);
+        // Create a map of profiles by id
+        const profilesMap = new Map();
+        profiles?.forEach(profile => {
+          profilesMap.set(profile.id, profile);
+        });
+
+        // Fetch documents for all kitchen partners
+        const { data: documents } = await supabase
+          .from('document_submissions')
+          .select('*')
+          .in('user_id', userIds)
+          .order('created_at', { ascending: false });
+
+        // Group documents by user_id
+        const documentsMap = new Map<string, typeof documents>();
+        documents?.forEach(doc => {
+          if (doc.user_id) {
+            if (!documentsMap.has(doc.user_id)) {
+              documentsMap.set(doc.user_id, []);
+            }
+            documentsMap.get(doc.user_id)?.push(doc);
           }
-          documentsMap.get(doc.user_id)?.push(doc);
-        }
-      });
+        });
 
-      // Attach documents to applications
-      const applicationsWithDocs = data?.map(kp => ({
-        ...kp,
-        documents: documentsMap.get(kp.user_id) || []
-      })) || [];
+        // Attach profiles and documents to applications
+        const applicationsWithData = data?.map(kp => ({
+          ...kp,
+          profiles: profilesMap.get(kp.user_id) || null,
+          documents: documentsMap.get(kp.user_id) || []
+        })) || [];
 
-      setApplications(applicationsWithDocs as unknown as KitchenPartner[]);
+        setApplications(applicationsWithData as unknown as KitchenPartner[]);
+      } else {
+        setApplications(data as unknown as KitchenPartner[] || []);
+      }
     } catch {
       toast.error('Något gick fel');
     } finally {
