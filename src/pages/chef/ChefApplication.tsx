@@ -79,6 +79,36 @@ const ChefApplication = () => {
           return;
         }
 
+        // Kolla om användaren redan har en ansökan
+        const { data: existingApplication } = await supabase
+          .from('chefs')
+          .select('id, application_status')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        // Om användaren har en aktiv eller godkänd ansökan, blockera ny ansökan
+        if (existingApplication && ['pending', 'under_review', 'approved'].includes(existingApplication.application_status || '')) {
+          toast({
+            title: "Ansökan finns redan",
+            description: `Du har redan en ${existingApplication.application_status === 'approved' ? 'godkänd' : 'pågående'} ansökan.`,
+            variant: "destructive"
+          });
+          return;
+        }
+
+        // Om användaren har en nekad ansökan, ta bort den först
+        if (existingApplication && existingApplication.application_status === 'rejected') {
+          await supabase
+            .from('chefs')
+            .delete()
+            .eq('id', existingApplication.id);
+          
+          toast({
+            title: "Tidigare ansökan borttagen",
+            description: "Din nekade ansökan har tagits bort. Du kan nu skicka in en ny.",
+          });
+        }
+
         // Skapa ny chef-ansökan
         const { data: newChef, error } = await supabase
           .from('chefs')
