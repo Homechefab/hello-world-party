@@ -145,6 +145,66 @@ export const KitchenPartnerOnboarding = () => {
         throw error;
       }
 
+      // Upload business license if provided
+      if (formData.businessLicense) {
+        try {
+          const fileExt = formData.businessLicense.name.split('.').pop();
+          const fileName = `${user.id}/${insertedData.id}/business-license-${Date.now()}.${fileExt}`;
+          
+          const { error: uploadError } = await supabase.storage
+            .from('documents')
+            .upload(fileName, formData.businessLicense);
+
+          if (uploadError) throw uploadError;
+
+          const { data: { publicUrl } } = supabase.storage
+            .from('documents')
+            .getPublicUrl(fileName);
+
+          // Save document metadata
+          await supabase.from('document_submissions').insert({
+            user_id: user.id,
+            document_type: 'business_license',
+            document_url: publicUrl,
+            municipality: formData.city,
+            status: 'pending'
+          });
+        } catch (uploadError) {
+          console.error('Failed to upload business license:', uploadError);
+        }
+      }
+
+      // Upload kitchen images if provided
+      if (formData.kitchenImages.length > 0) {
+        try {
+          for (const image of formData.kitchenImages) {
+            const fileExt = image.name.split('.').pop();
+            const fileName = `${user.id}/${insertedData.id}/kitchen-image-${Date.now()}.${fileExt}`;
+            
+            const { error: uploadError } = await supabase.storage
+              .from('documents')
+              .upload(fileName, image);
+
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage
+              .from('documents')
+              .getPublicUrl(fileName);
+
+            // Save document metadata
+            await supabase.from('document_submissions').insert({
+              user_id: user.id,
+              document_type: 'kitchen_image',
+              document_url: publicUrl,
+              municipality: formData.city,
+              status: 'pending'
+            });
+          }
+        } catch (uploadError) {
+          console.error('Failed to upload kitchen images:', uploadError);
+        }
+      }
+
       // Send notification to admin
       try {
         await supabase.functions.invoke('notify-admin-kitchen-partner', {
