@@ -4,6 +4,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
@@ -37,6 +40,15 @@ export const HyrUtDittKok = () => {
   const [kitchenPartner, setKitchenPartner] = useState<KitchenPartner | null>(null);
   const [availability, setAvailability] = useState<Record<string, boolean>>({});
   const [savingAvailability, setSavingAvailability] = useState(false);
+  const [savingSettings, setSavingSettings] = useState(false);
+  const [settingsForm, setSettingsForm] = useState({
+    business_name: '',
+    kitchen_description: '',
+    kitchen_size: '',
+    hourly_rate: '',
+    equipment_details: '',
+    municipality: ''
+  });
 
   const stats = {
     totalEarnings: 8450,
@@ -78,6 +90,16 @@ export const HyrUtDittKok = () => {
 
       if (error) throw error;
       setKitchenPartner(data);
+      
+      // Populate settings form
+      setSettingsForm({
+        business_name: data.business_name || '',
+        kitchen_description: data.kitchen_description || '',
+        kitchen_size: data.kitchen_size?.toString() || '',
+        hourly_rate: data.hourly_rate?.toString() || '',
+        equipment_details: data.equipment_details || '',
+        municipality: data.municipality || ''
+      });
     } catch (error) {
       console.error('Error loading kitchen partner data:', error);
       toast({
@@ -154,6 +176,57 @@ export const HyrUtDittKok = () => {
       });
     } finally {
       setSavingAvailability(false);
+    }
+  };
+
+  const handleSettingsChange = (field: string, value: string) => {
+    setSettingsForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const saveSettings = async () => {
+    if (!kitchenPartner) return;
+
+    setSavingSettings(true);
+    try {
+      const { error } = await supabase
+        .from('kitchen_partners')
+        .update({
+          business_name: settingsForm.business_name,
+          kitchen_description: settingsForm.kitchen_description,
+          kitchen_size: settingsForm.kitchen_size ? parseInt(settingsForm.kitchen_size) : null,
+          hourly_rate: settingsForm.hourly_rate ? parseFloat(settingsForm.hourly_rate) : null,
+          equipment_details: settingsForm.equipment_details,
+          municipality: settingsForm.municipality
+        })
+        .eq('id', kitchenPartner.id);
+
+      if (error) throw error;
+
+      // Update local state
+      setKitchenPartner({
+        ...kitchenPartner,
+        business_name: settingsForm.business_name,
+        kitchen_description: settingsForm.kitchen_description,
+        kitchen_size: settingsForm.kitchen_size ? parseInt(settingsForm.kitchen_size) : null,
+        hourly_rate: settingsForm.hourly_rate ? parseFloat(settingsForm.hourly_rate) : null
+      });
+
+      toast({
+        title: "Inställningar sparade",
+        description: "Dina köksinställningar har uppdaterats",
+      });
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      toast({
+        title: "Fel",
+        description: "Kunde inte spara inställningar",
+        variant: "destructive"
+      });
+    } finally {
+      setSavingSettings(false);
     }
   };
 
@@ -363,8 +436,90 @@ export const HyrUtDittKok = () => {
               <CardTitle>Köksinställningar</CardTitle>
               <CardDescription>Hantera ditt kök och priser</CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Inställningar kommer att visas här...</p>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="business_name">Företagsnamn *</Label>
+                  <Input
+                    id="business_name"
+                    value={settingsForm.business_name}
+                    onChange={(e) => handleSettingsChange('business_name', e.target.value)}
+                    placeholder="Restaurang Svea"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="municipality">Kommun</Label>
+                  <Input
+                    id="municipality"
+                    value={settingsForm.municipality}
+                    onChange={(e) => handleSettingsChange('municipality', e.target.value)}
+                    placeholder="Stockholm"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="kitchen_description">Köksbeskrivning</Label>
+                <Textarea
+                  id="kitchen_description"
+                  value={settingsForm.kitchen_description}
+                  onChange={(e) => handleSettingsChange('kitchen_description', e.target.value)}
+                  placeholder="Beskriv ditt kök och dess egenskaper..."
+                  rows={3}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="kitchen_size">Köksstorlek (kvm)</Label>
+                  <Input
+                    id="kitchen_size"
+                    type="number"
+                    value={settingsForm.kitchen_size}
+                    onChange={(e) => handleSettingsChange('kitchen_size', e.target.value)}
+                    placeholder="20"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="hourly_rate">Timpris (kr/timme)</Label>
+                  <Input
+                    id="hourly_rate"
+                    type="number"
+                    value={settingsForm.hourly_rate}
+                    onChange={(e) => handleSettingsChange('hourly_rate', e.target.value)}
+                    placeholder="100"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="equipment_details">Utrustningsdetaljer</Label>
+                <Textarea
+                  id="equipment_details"
+                  value={settingsForm.equipment_details}
+                  onChange={(e) => handleSettingsChange('equipment_details', e.target.value)}
+                  placeholder="Lista tillgänglig utrustning: ugnar, spisar, kylskåp, etc."
+                  rows={3}
+                />
+              </div>
+
+              <div className="flex justify-end">
+                <Button 
+                  onClick={saveSettings}
+                  disabled={savingSettings}
+                >
+                  {savingSettings ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Sparar...
+                    </>
+                  ) : (
+                    'Spara ändringar'
+                  )}
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
