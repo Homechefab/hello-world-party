@@ -1,281 +1,533 @@
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   Store, 
   TrendingUp, 
   Package,
   Star,
   Plus,
-  Eye,
   Edit,
-  BarChart3,
-  Calendar,
-  Truck
+  Trash2,
+  Loader2
 } from "lucide-react";
 
+interface Restaurant {
+  id: string;
+  business_name: string;
+  approved: boolean;
+  application_status: string;
+}
+
+interface Dish {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  image_url: string | null;
+  category: string | null;
+  available: boolean;
+  preparation_time: number | null;
+}
+
 const RestaurantDashboard = () => {
-  // Mock data för dashboard
-  const stats = [
-    {
-      title: "Totala beställningar",
-      value: "847",
-      change: "+12%",
-      icon: Package,
-      trend: "up"
-    },
-    {
-      title: "Omsättning denna månad",
-      value: "42,580 kr",
-      change: "+8%",
-      icon: TrendingUp,
-      trend: "up"
-    },
-    {
-      title: "Aktiva rätter",
-      value: "23",
-      change: "+3",
-      icon: Store,
-      trend: "up"
-    },
-    {
-      title: "Genomsnittligt betyg",
-      value: "4.7",
-      change: "+0.2",
-      icon: Star,
-      trend: "up"
-    }
-  ];
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(true);
+  const [restaurant, setRestaurant] = useState<Restaurant | null>(null);
+  const [dishes, setDishes] = useState<Dish[]>([]);
+  const [dishDialogOpen, setDishDialogOpen] = useState(false);
+  const [editingDish, setEditingDish] = useState<Dish | null>(null);
+  const [savingDish, setSavingDish] = useState(false);
+  const [dishForm, setDishForm] = useState({
+    name: '',
+    description: '',
+    price: '',
+    category: '',
+    preparation_time: ''
+  });
 
-  const recentOrders = [
-    {
-      id: "#12345",
-      customer: "Anna Andersson",
-      items: "Pasta Carbonara x2, Tiramisu x1",
-      amount: "380 kr",
-      status: "levererad",
-      time: "14:30"
-    },
-    {
-      id: "#12344",
-      customer: "Erik Nilsson",
-      items: "Pizza Margherita x1",
-      amount: "165 kr",
-      status: "tillagning",
-      time: "13:45"
-    },
-    {
-      id: "#12343",
-      customer: "Maria Johansson",
-      items: "Lasagne x1, Sallad x1",
-      amount: "245 kr",
-      status: "ny",
-      time: "13:20"
-    }
-  ];
+  useEffect(() => {
+    checkRestaurantStatus();
+  }, []);
 
-  const popularDishes = [
-    {
-      name: "Pasta Carbonara",
-      orders: 89,
-      rating: 4.8,
-      revenue: "8,900 kr"
-    },
-    {
-      name: "Pizza Margherita",
-      orders: 76,
-      rating: 4.6,
-      revenue: "7,200 kr"
-    },
-    {
-      name: "Lasagne",
-      orders: 45,
-      rating: 4.9,
-      revenue: "5,400 kr"
-    }
-  ];
+  const checkRestaurantStatus = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        navigate('/auth');
+        return;
+      }
 
-  const getStatusBadge = (status: string) => {
-    const styles = {
-      ny: "bg-blue-100 text-blue-800",
-      tillagning: "bg-yellow-100 text-yellow-800",
-      levererad: "bg-green-100 text-green-800"
-    };
-    return styles[status as keyof typeof styles] || "bg-gray-100 text-gray-800";
+      const { data: restaurantData, error } = await supabase
+        .from('restaurants')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (!restaurantData) {
+        navigate('/restaurant/apply');
+        return;
+      }
+
+      if (restaurantData.application_status === 'pending') {
+        toast({
+          title: "Ansökan väntar",
+          description: "Din ansökan granskas fortfarande",
+        });
+        navigate('/restaurant/partnership');
+        return;
+      }
+
+      if (!restaurantData.approved) {
+        toast({
+          title: "Inte godkänd",
+          description: "Din restaurang har inte godkänts än",
+          variant: "destructive"
+        });
+        navigate('/restaurant/partnership');
+        return;
+      }
+
+      setRestaurant(restaurantData);
+      loadDishes(restaurantData.id);
+    } catch (error) {
+      console.error('Error checking restaurant status:', error);
+      toast({
+        title: "Fel",
+        description: "Kunde inte ladda restaurangdata",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadDishes = async (restaurantId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('restaurant_dishes')
+        .select('*')
+        .eq('restaurant_id', restaurantId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setDishes(data || []);
+    } catch (error) {
+      console.error('Error loading dishes:', error);
+    }
+  };
+
+  const openDishDialog = (dish?: Dish) => {
+    if (dish) {
+      setEditingDish(dish);
+      setDishForm({
+        name: dish.name,
+        description: dish.description || '',
+        price: dish.price.toString(),
+        category: dish.category || '',
+        preparation_time: dish.preparation_time?.toString() || ''
+      });
+    } else {
+      setEditingDish(null);
+      setDishForm({
+        name: '',
+        description: '',
+        price: '',
+        category: '',
+        preparation_time: ''
+      });
+    }
+    setDishDialogOpen(true);
+  };
+
+  const saveDish = async () => {
+    if (!restaurant || !dishForm.name || !dishForm.price) {
+      toast({
+        title: "Fält saknas",
+        description: "Namn och pris måste fyllas i",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setSavingDish(true);
+    try {
+      const dishData = {
+        restaurant_id: restaurant.id,
+        name: dishForm.name,
+        description: dishForm.description,
+        price: parseFloat(dishForm.price),
+        category: dishForm.category,
+        preparation_time: dishForm.preparation_time ? parseInt(dishForm.preparation_time) : null,
+        available: true
+      };
+
+      if (editingDish) {
+        const { error } = await supabase
+          .from('restaurant_dishes')
+          .update(dishData)
+          .eq('id', editingDish.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "Uppdaterad!",
+          description: "Rätten har uppdaterats"
+        });
+      } else {
+        const { error } = await supabase
+          .from('restaurant_dishes')
+          .insert(dishData);
+
+        if (error) throw error;
+
+        toast({
+          title: "Skapad!",
+          description: "Rätten har lagts till"
+        });
+      }
+
+      setDishDialogOpen(false);
+      loadDishes(restaurant.id);
+    } catch (error) {
+      console.error('Error saving dish:', error);
+      toast({
+        title: "Fel",
+        description: "Kunde inte spara rätt",
+        variant: "destructive"
+      });
+    } finally {
+      setSavingDish(false);
+    }
+  };
+
+  const toggleDishAvailability = async (dishId: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('restaurant_dishes')
+        .update({ available: !currentStatus })
+        .eq('id', dishId);
+
+      if (error) throw error;
+
+      setDishes(prev => prev.map(d => 
+        d.id === dishId ? { ...d, available: !currentStatus } : d
+      ));
+
+      toast({
+        title: "Uppdaterad",
+        description: `Rätten är nu ${!currentStatus ? 'tillgänglig' : 'otillgänglig'}`
+      });
+    } catch (error) {
+      console.error('Error toggling dish:', error);
+      toast({
+        title: "Fel",
+        description: "Kunde inte uppdatera rätt",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const deleteDish = async (dishId: string) => {
+    if (!confirm('Är du säker på att du vill ta bort denna rätt?')) return;
+
+    try {
+      const { error } = await supabase
+        .from('restaurant_dishes')
+        .delete()
+        .eq('id', dishId);
+
+      if (error) throw error;
+
+      setDishes(prev => prev.filter(d => d.id !== dishId));
+      toast({
+        title: "Borttagen",
+        description: "Rätten har tagits bort"
+      });
+    } catch (error) {
+      console.error('Error deleting dish:', error);
+      toast({
+        title: "Fel",
+        description: "Kunde inte ta bort rätt",
+        variant: "destructive"
+      });
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!restaurant) {
+    return null;
+  }
+
+  const stats = {
+    totalDishes: dishes.length,
+    availableDishes: dishes.filter(d => d.available).length,
+    totalOrders: 0,
+    avgRating: 4.7
   };
 
   return (
-    <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Min restaurang</h1>
-            <p className="text-muted-foreground">Översikt över beställningar och försäljning</p>
-          </div>
-          <div className="flex gap-3">
-            <Button variant="outline">
-              <Eye className="w-4 h-4 mr-2" />
-              Visa profil
-            </Button>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              Lägg till rätt
-            </Button>
-          </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">{restaurant.business_name}</h1>
+          <p className="text-muted-foreground">Restaurangdashboard</p>
         </div>
+        <Button onClick={() => openDishDialog()}>
+          <Plus className="w-4 h-4 mr-2" />
+          Lägg till rätt
+        </Button>
+      </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {stats.map((stat, index) => (
-            <Card key={index}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  {stat.title}
-                </CardTitle>
-                <stat.icon className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-green-600">
-                  {stat.change} från förra månaden
-                </p>
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Totala rätter</CardTitle>
+            <Package className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalDishes}</div>
+            <p className="text-xs text-muted-foreground">Varav {stats.availableDishes} tillgängliga</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Beställningar</CardTitle>
+            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalOrders}</div>
+            <p className="text-xs text-muted-foreground">Denna månad</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Betyg</CardTitle>
+            <Star className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.avgRating}/5</div>
+            <p className="text-xs text-muted-foreground">Genomsnitt</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Status</CardTitle>
+            <Store className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <Badge className="bg-green-500">Godkänd</Badge>
+            <p className="text-xs text-muted-foreground mt-2">Kan sälja mat</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Menu Management */}
+      <Tabs defaultValue="dishes" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="dishes">Mina rätter</TabsTrigger>
+          <TabsTrigger value="orders">Beställningar</TabsTrigger>
+          <TabsTrigger value="settings">Inställningar</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="dishes" className="space-y-6">
+          {dishes.length === 0 ? (
+            <Card>
+              <CardContent className="pt-6 text-center">
+                <p className="text-muted-foreground mb-4">Du har inga rätter än</p>
+                <Button onClick={() => openDishDialog()}>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Lägg till din första rätt
+                </Button>
               </CardContent>
             </Card>
-          ))}
-        </div>
-
-        <div className="grid lg:grid-cols-3 gap-6 mb-8">
-          {/* Recent Orders */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Package className="w-5 h-5" />
-                  Senaste beställningarna
-                </CardTitle>
-                <CardDescription>
-                  Nya och pågående beställningar
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {recentOrders.map((order, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {dishes.map(dish => (
+                <Card key={dish.id}>
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <span className="font-medium">{order.id}</span>
-                          <Badge className={getStatusBadge(order.status)}>
-                            {order.status}
-                          </Badge>
-                          <span className="text-sm text-muted-foreground">{order.time}</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-1">{order.customer}</p>
-                        <p className="text-sm">{order.items}</p>
+                        <CardTitle className="text-lg">{dish.name}</CardTitle>
+                        <CardDescription className="line-clamp-2">{dish.description}</CardDescription>
                       </div>
-                      <div className="text-right">
-                        <p className="font-semibold">{order.amount}</p>
-                        <Button variant="outline" size="sm" className="mt-2">
+                      <Badge variant={dish.available ? "default" : "secondary"}>
+                        {dish.available ? 'Tillgänglig' : 'Ej tillgänglig'}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-2xl font-bold">{dish.price} kr</span>
+                        {dish.category && (
+                          <Badge variant="outline">{dish.category}</Badge>
+                        )}
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => openDishDialog(dish)}
+                          className="flex-1"
+                        >
                           <Edit className="w-4 h-4 mr-1" />
-                          Hantera
+                          Redigera
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => toggleDishAvailability(dish.id, dish.available)}
+                        >
+                          {dish.available ? 'Inaktivera' : 'Aktivera'}
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="destructive"
+                          onClick={() => deleteDish(dish.id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="orders">
+          <Card>
+            <CardHeader>
+              <CardTitle>Beställningar</CardTitle>
+              <CardDescription>Kommande beställningar visas här</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">Inga beställningar än...</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="settings">
+          <Card>
+            <CardHeader>
+              <CardTitle>Restauranginställningar</CardTitle>
+              <CardDescription>Hantera din restaurangprofil</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">Inställningar kommer här...</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* Dish Dialog */}
+      <Dialog open={dishDialogOpen} onOpenChange={setDishDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingDish ? 'Redigera rätt' : 'Lägg till rätt'}</DialogTitle>
+            <DialogDescription>
+              Fyll i information om rätten
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="dishName">Namn *</Label>
+              <Input
+                id="dishName"
+                value={dishForm.name}
+                onChange={(e) => setDishForm(prev => ({ ...prev, name: e.target.value }))}
+                placeholder="Pasta Carbonara"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="dishDescription">Beskrivning</Label>
+              <Textarea
+                id="dishDescription"
+                value={dishForm.description}
+                onChange={(e) => setDishForm(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Beskriv rätten..."
+                rows={3}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="dishPrice">Pris (kr) *</Label>
+                <Input
+                  id="dishPrice"
+                  type="number"
+                  value={dishForm.price}
+                  onChange={(e) => setDishForm(prev => ({ ...prev, price: e.target.value }))}
+                  placeholder="150"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="dishCategory">Kategori</Label>
+                <Input
+                  id="dishCategory"
+                  value={dishForm.category}
+                  onChange={(e) => setDishForm(prev => ({ ...prev, category: e.target.value }))}
+                  placeholder="Pasta"
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="prepTime">Tillagningstid (min)</Label>
+              <Input
+                id="prepTime"
+                type="number"
+                value={dishForm.preparation_time}
+                onChange={(e) => setDishForm(prev => ({ ...prev, preparation_time: e.target.value }))}
+                placeholder="30"
+              />
+            </div>
           </div>
 
-          {/* Popular Dishes */}
-          <div>
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Star className="w-5 h-5" />
-                  Populära rätter
-                </CardTitle>
-                <CardDescription>
-                  Era bästsäljare denna månad
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {popularDishes.map((dish, index) => (
-                    <div key={index} className="space-y-2">
-                      <div className="flex justify-between items-start">
-                        <h4 className="font-medium">{dish.name}</h4>
-                        <span className="text-sm font-semibold">{dish.revenue}</span>
-                      </div>
-                      <div className="flex justify-between text-sm text-muted-foreground">
-                        <span>{dish.orders} beställningar</span>
-                        <div className="flex items-center gap-1">
-                          <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                          <span>{dish.rating}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="grid md:grid-cols-3 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="w-5 h-5" />
-                Försäljningsrapport
-              </CardTitle>
-              <CardDescription>
-                Detaljerad försäljningsstatistik
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full">
-                Visa rapport
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Calendar className="w-5 h-5" />
-                Öppettider
-              </CardTitle>
-              <CardDescription>
-                När ni tar emot beställningar
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="outline" className="w-full">
-                Ändra tider
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Truck className="w-5 h-5" />
-                Leveransinställningar
-              </CardTitle>
-              <CardDescription>
-                Ställ in leveransområden och avgifter
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="outline" className="w-full">
-                Konfigurera
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDishDialogOpen(false)}>
+              Avbryt
+            </Button>
+            <Button onClick={saveDish} disabled={savingDish}>
+              {savingDish ? (
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Sparar...</>
+              ) : (
+                editingDish ? 'Uppdatera' : 'Lägg till'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

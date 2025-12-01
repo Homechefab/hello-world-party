@@ -15,7 +15,8 @@ import {
   Mail
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface RestaurantApplicationData {
   restaurantName: string;
@@ -39,6 +40,7 @@ interface RestaurantApplicationData {
 
 const RestaurantApplicationForm = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [formData, setFormData] = useState<RestaurantApplicationData>({
     restaurantName: "",
     contactPerson: "",
@@ -81,31 +83,111 @@ const RestaurantApplicationForm = () => {
     const missingFields = requiredFields.filter(field => !formData[field as keyof RestaurantApplicationData]);
     
     if (missingFields.length > 0) {
-      toast.error("Vänligen fyll i alla obligatoriska fält");
+      toast({
+        title: "Fält saknas",
+        description: "Vänligen fyll i alla obligatoriska fält",
+        variant: "destructive"
+      });
       return;
     }
 
     if (!formData.hasDeliveryLicense || !formData.hasInsurance || !formData.hasFoodSafetyCert) {
-      toast.error("Alla certifieringar och tillstånd måste vara på plats");
+      toast({
+        title: "Certifieringar saknas",
+        description: "Alla certifieringar och tillstånd måste vara på plats",
+        variant: "destructive"
+      });
       return;
     }
 
     if (!formData.acceptTerms) {
-      toast.error("Du måste acceptera villkoren för att fortsätta");
+      toast({
+        title: "Villkor",
+        description: "Du måste acceptera villkoren för att fortsätta",
+        variant: "destructive"
+      });
       return;
     }
 
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const { data: { user } } = await supabase.auth.getUser();
+        
+      if (!user) {
+        toast({
+          title: "Fel",
+          description: "Du måste vara inloggad för att skicka in ansökan.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Check if user already has an application
+      const { data: existingApplication } = await supabase
+        .from('restaurants')
+        .select('id, application_status')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      // If user has an active or approved application, block new application
+      if (existingApplication && ['pending', 'under_review', 'approved'].includes(existingApplication.application_status || '')) {
+        toast({
+          title: "Ansökan finns redan",
+          description: `Du har redan en ${existingApplication.application_status === 'approved' ? 'godkänd' : 'pågående'} ansökan.`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // If user has a rejected application, delete it first
+      if (existingApplication && existingApplication.application_status === 'rejected') {
+        await supabase
+          .from('restaurants')
+          .delete()
+          .eq('id', existingApplication.id);
+        
+        toast({
+          title: "Tidigare ansökan borttagen",
+          description: "Din nekade ansökan har tagits bort. Du kan nu skicka in en ny.",
+        });
+      }
+
+      // Create restaurant application
+      const { error } = await supabase
+        .from('restaurants')
+        .insert({
+          business_name: formData.restaurantName,
+          user_id: user.id,
+          full_name: formData.contactPerson,
+          contact_email: formData.email,
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          postal_code: formData.postalCode,
+          restaurant_description: formData.description,
+          cuisine_types: formData.specialties,
+          application_status: 'under_review',
+          approved: false
+        });
+
+      if (error) throw error;
       
-      toast.success("Din ansökan har skickats! Vi återkommer inom 2-3 arbetsdagar.");
-      navigate("/restaurant/partnership");
-    } catch (_error) {
-      console.error(_error);
-      toast.error("Något gick fel. Försök igen senare.");
+      toast({
+        title: "Ansökan skickad!",
+        description: "Vi återkommer inom 2-3 arbetsdagar.",
+      });
+      
+      setTimeout(() => {
+        navigate("/restaurant/partnership");
+      }, 2000);
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Fel",
+        description: "Något gick fel. Försök igen senare.",
+        variant: "destructive"
+      });
     } finally {
       setIsSubmitting(false);
     }

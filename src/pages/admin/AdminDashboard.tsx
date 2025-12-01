@@ -5,6 +5,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ChefApprovalManager } from '@/components/admin/ChefApprovalManager';
 import { KitchenPartnerApprovalManager } from '@/components/admin/KitchenPartnerApprovalManager';
+import { RestaurantApprovalManager } from '@/components/admin/RestaurantApprovalManager';
 import { LoginLogsViewer } from '@/components/admin/LoginLogsViewer';
 import { UserManagement } from '@/components/admin/UserManagement';
 import { CommissionReports } from '@/components/admin/CommissionReports';
@@ -53,6 +54,11 @@ export const AdminDashboard = () => {
         .select('*', { count: 'exact', head: true })
         .eq('approved', false);
 
+      const { count: pendingRestaurants } = await supabase
+        .from('restaurants')
+        .select('*', { count: 'exact', head: true })
+        .eq('approved', false);
+
       // Hämta godkända användare
       const { count: approvedChefs } = await supabase
         .from('chefs')
@@ -64,13 +70,18 @@ export const AdminDashboard = () => {
         .select('*', { count: 'exact', head: true })
         .eq('approved', true);
 
+      const { count: approvedRestaurants } = await supabase
+        .from('restaurants')
+        .select('*', { count: 'exact', head: true })
+        .eq('approved', true);
+
       setStats({
         totalUsers: userCount || 0,
-        pendingApprovals: (pendingChefs || 0) + (pendingPartners || 0),
-        activeComplaints: 0, // Detta kan vi implementera senare
-        completedOnboardings: (approvedChefs || 0) + (approvedPartners || 0),
-        totalRevenue: 0, // Implementera när vi har orders
-        activeOrders: 0 // Implementera när vi har orders
+        pendingApprovals: (pendingChefs || 0) + (pendingPartners || 0) + (pendingRestaurants || 0),
+        activeComplaints: 0,
+        completedOnboardings: (approvedChefs || 0) + (approvedPartners || 0) + (approvedRestaurants || 0),
+        totalRevenue: 0,
+        activeOrders: 0
       });
     } catch (error) {
       console.error('Fel vid hämtning av statistik:', error);
@@ -162,6 +173,10 @@ export const AdminDashboard = () => {
             <span className="hidden sm:inline">Kökspartner-ansökningar</span>
             <span className="sm:hidden">Kökspartners</span>
           </TabsTrigger>
+          <TabsTrigger value="restaurants" className="whitespace-nowrap">
+            <span className="hidden sm:inline">Restaurang-ansökningar</span>
+            <span className="sm:hidden">Restauranger</span>
+          </TabsTrigger>
           <TabsTrigger value="archive" className="whitespace-nowrap">Arkiv</TabsTrigger>
           <TabsTrigger value="commission" className="whitespace-nowrap">Provisionsunderlag</TabsTrigger>
           <TabsTrigger value="users" className="whitespace-nowrap">
@@ -182,6 +197,10 @@ export const AdminDashboard = () => {
 
         <TabsContent value="kitchen-partners">
           <KitchenPartnerApprovalManager />
+        </TabsContent>
+
+        <TabsContent value="restaurants">
+          <RestaurantApprovalManager />
         </TabsContent>
 
         <TabsContent value="archive">

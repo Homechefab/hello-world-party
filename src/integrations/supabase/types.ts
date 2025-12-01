@@ -658,6 +658,119 @@ export type Database = {
         }
         Relationships: []
       }
+      restaurant_dishes: {
+        Row: {
+          allergens: string[] | null
+          available: boolean | null
+          category: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          image_url: string | null
+          ingredients: string[] | null
+          name: string
+          preparation_time: number | null
+          price: number
+          restaurant_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          allergens?: string[] | null
+          available?: boolean | null
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          ingredients?: string[] | null
+          name: string
+          preparation_time?: number | null
+          price: number
+          restaurant_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          allergens?: string[] | null
+          available?: boolean | null
+          category?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          ingredients?: string[] | null
+          name?: string
+          preparation_time?: number | null
+          price?: number
+          restaurant_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "restaurant_dishes_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      restaurants: {
+        Row: {
+          address: string | null
+          application_status: string | null
+          approved: boolean | null
+          business_name: string
+          city: string | null
+          contact_email: string | null
+          created_at: string | null
+          cuisine_types: string | null
+          full_name: string | null
+          id: string
+          phone: string | null
+          postal_code: string | null
+          rejection_reason: string | null
+          restaurant_description: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          address?: string | null
+          application_status?: string | null
+          approved?: boolean | null
+          business_name: string
+          city?: string | null
+          contact_email?: string | null
+          created_at?: string | null
+          cuisine_types?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          postal_code?: string | null
+          rejection_reason?: string | null
+          restaurant_description?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          address?: string | null
+          application_status?: string | null
+          approved?: boolean | null
+          business_name?: string
+          city?: string | null
+          contact_email?: string | null
+          created_at?: string | null
+          cuisine_types?: string | null
+          full_name?: string | null
+          id?: string
+          phone?: string | null
+          postal_code?: string | null
+          rejection_reason?: string | null
+          restaurant_description?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           chef_id: string
