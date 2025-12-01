@@ -77,10 +77,12 @@ import LogoConcepts from "./pages/LogoConcepts";
 const queryClient = new QueryClient();
 
 const App = () => {
+  console.log('App.tsx: App component rendering');
   // enable left-edge right-swipe to go back on mobile webviews
   useEdgeSwipeBack();
   // auto-adjust fixed/absolute elements so they don't hide under notches / dynamic island
   useAutoSafeArea();
+  console.log('App.tsx: Hooks initialized, rendering routes');
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
