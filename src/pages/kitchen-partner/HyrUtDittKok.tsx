@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { Loader2 } from 'lucide-react';
 import { 
   DollarSign, 
   Clock, 
@@ -12,8 +15,28 @@ import {
   CheckCircle
 } from 'lucide-react';
 
+interface KitchenPartner {
+  id: string;
+  business_name: string;
+  kitchen_description: string | null;
+  kitchen_size: number | null;
+  hourly_rate: number | null;
+}
+
+interface Availability {
+  id: string;
+  date: string;
+  time_slot: string;
+  is_available: boolean;
+}
+
 export const HyrUtDittKok = () => {
+  const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [loading, setLoading] = useState(true);
+  const [kitchenPartner, setKitchenPartner] = useState<KitchenPartner | null>(null);
+  const [availability, setAvailability] = useState<Record<string, boolean>>({});
+  const [savingAvailability, setSavingAvailability] = useState(false);
 
   const stats = {
     totalEarnings: 8450,
@@ -31,6 +54,129 @@ export const HyrUtDittKok = () => {
   const timeSlots = [
     '08:00-12:00', '12:00-16:00', '16:00-20:00', '20:00-24:00'
   ];
+
+  useEffect(() => {
+    loadKitchenPartnerData();
+  }, []);
+
+  useEffect(() => {
+    if (selectedDate && kitchenPartner) {
+      loadAvailability();
+    }
+  }, [selectedDate, kitchenPartner]);
+
+  const loadKitchenPartnerData = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from('kitchen_partners')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error) throw error;
+      setKitchenPartner(data);
+    } catch (error) {
+      console.error('Error loading kitchen partner data:', error);
+      toast({
+        title: "Fel",
+        description: "Kunde inte ladda kökspartner data",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadAvailability = async () => {
+    if (!selectedDate || !kitchenPartner) return;
+
+    const dateStr = selectedDate.toISOString().split('T')[0];
+
+    try {
+      const { data, error } = await supabase
+        .from('kitchen_availability')
+        .select('*')
+        .eq('kitchen_partner_id', kitchenPartner.id)
+        .eq('date', dateStr);
+
+      if (error) throw error;
+
+      const availabilityMap: Record<string, boolean> = {};
+      data?.forEach((item: Availability) => {
+        availabilityMap[item.time_slot] = item.is_available;
+      });
+      setAvailability(availabilityMap);
+    } catch (error) {
+      console.error('Error loading availability:', error);
+    }
+  };
+
+  const toggleAvailability = async (timeSlot: string) => {
+    if (!selectedDate || !kitchenPartner) return;
+
+    setSavingAvailability(true);
+    const dateStr = selectedDate.toISOString().split('T')[0];
+    const currentStatus = availability[timeSlot] ?? false;
+    const newStatus = !currentStatus;
+
+    try {
+      const { error } = await supabase
+        .from('kitchen_availability')
+        .upsert({
+          kitchen_partner_id: kitchenPartner.id,
+          date: dateStr,
+          time_slot: timeSlot,
+          is_available: newStatus
+        }, {
+          onConflict: 'kitchen_partner_id,date,time_slot'
+        });
+
+      if (error) throw error;
+
+      setAvailability(prev => ({
+        ...prev,
+        [timeSlot]: newStatus
+      }));
+
+      toast({
+        title: "Uppdaterat",
+        description: `Tidslutet ${timeSlot} är nu ${newStatus ? 'tillgängligt' : 'otillgängligt'}`,
+      });
+    } catch (error) {
+      console.error('Error toggling availability:', error);
+      toast({
+        title: "Fel",
+        description: "Kunde inte uppdatera tillgänglighet",
+        variant: "destructive"
+      });
+    } finally {
+      setSavingAvailability(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!kitchenPartner) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Ingen kökspartner data hittades</CardTitle>
+            <CardDescription>Kontakta support för hjälp</CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -125,15 +271,20 @@ export const HyrUtDittKok = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h4 className="font-medium">Restaurang Svea</h4>
-                  <p className="text-sm text-muted-foreground">Professionellt kök, 20 kvm</p>
+                  <h4 className="font-medium">{kitchenPartner.business_name}</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {kitchenPartner.kitchen_description || 'Professionellt kök'}
+                    {kitchenPartner.kitchen_size && `, ${kitchenPartner.kitchen_size} kvm`}
+                  </p>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-500" />
                   <span className="text-sm">Godkänd av kommunen</span>
                 </div>
                 <div className="bg-secondary/30 p-3 rounded-lg">
-                  <p className="text-lg font-semibold">100 kr/timme</p>
+                  <p className="text-lg font-semibold">
+                    {kitchenPartner.hourly_rate || 100} kr/timme
+                  </p>
                   <p className="text-sm text-muted-foreground">Timpris för uthyrning</p>
                 </div>
               </CardContent>
@@ -179,14 +330,26 @@ export const HyrUtDittKok = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {timeSlots.map((slot) => (
-                    <div key={slot} className="flex items-center justify-between p-3 rounded-lg border border-border">
-                      <span>{slot}</span>
-                      <Button variant="outline" size="sm">
-                        Tillgänglig
-                      </Button>
-                    </div>
-                  ))}
+                  {timeSlots.map((slot) => {
+                    const isAvailable = availability[slot] ?? false;
+                    return (
+                      <div key={slot} className="flex items-center justify-between p-3 rounded-lg border border-border">
+                        <span>{slot}</span>
+                        <Button 
+                          variant={isAvailable ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => toggleAvailability(slot)}
+                          disabled={savingAvailability}
+                        >
+                          {savingAvailability ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            isAvailable ? 'Tillgänglig' : 'Ej tillgänglig'
+                          )}
+                        </Button>
+                      </div>
+                    );
+                  })}
                 </div>
               </CardContent>
             </Card>
