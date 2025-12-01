@@ -49,33 +49,56 @@ const handler = async (req: Request): Promise<Response> => {
     
     console.log("Generated email:", homechefEmail);
 
-    // Generate random password
-    const password = generatePassword();
+    // Check if user already exists
+    const { data: existingUsers } = await supabase.auth.admin.listUsers();
+    const existingUser = existingUsers?.users.find(u => u.email === homechefEmail);
+    
+    let userId: string;
+    let password = generatePassword();
     console.log("Password generated");
 
-    // Create auth user
-    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-      email: homechefEmail,
-      password: password,
-      email_confirm: true,
-      user_metadata: {
-        full_name: chef.full_name,
-        role: "chef",
-      },
-    });
+    if (existingUser) {
+      // User already exists, use existing user_id
+      console.log("User already exists, using existing ID:", existingUser.id);
+      userId = existingUser.id;
+      
+      // Update password for existing user
+      const { error: updatePasswordError } = await supabase.auth.admin.updateUserById(
+        existingUser.id,
+        { password: password }
+      );
+      
+      if (updatePasswordError) {
+        console.error("Password update error:", updatePasswordError);
+      } else {
+        console.log("Password updated for existing user");
+      }
+    } else {
+      // Create new auth user
+      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+        email: homechefEmail,
+        password: password,
+        email_confirm: true,
+        user_metadata: {
+          full_name: chef.full_name,
+          role: "chef",
+        },
+      });
 
-    if (authError) {
-      console.error("Auth user creation error:", authError);
-      throw new Error(`Kunde inte skapa användare: ${authError.message}`);
+      if (authError) {
+        console.error("Auth user creation error:", authError);
+        throw new Error(`Kunde inte skapa användare: ${authError.message}`);
+      }
+
+      console.log("Auth user created:", authData.user.id);
+      userId = authData.user.id;
     }
-
-    console.log("Auth user created:", authData.user.id);
 
     // Update chef record with user_id
     const { error: updateError } = await supabase
       .from("chefs")
       .update({
-        user_id: authData.user.id,
+        user_id: userId,
         application_status: "approved",
         kitchen_approved: true,
         municipality_approval_date: new Date().toISOString(),
@@ -89,16 +112,18 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Chef record updated");
 
-    // Create profile
+    // Create or update profile
     const { error: profileError } = await supabase
       .from("profiles")
-      .insert({
-        id: authData.user.id,
+      .upsert({
+        id: userId,
         email: homechefEmail,
         full_name: chef.full_name,
         role: "chef",
         phone: chef.phone,
         address: chef.address,
+      }, {
+        onConflict: 'id'
       });
 
     if (profileError) {
@@ -106,12 +131,14 @@ const handler = async (req: Request): Promise<Response> => {
       // Continue even if profile creation fails
     }
 
-    // Add chef role
+    // Add chef role (use upsert to avoid duplicate key errors)
     const { error: roleError } = await supabase
       .from("user_roles")
-      .insert({
-        user_id: authData.user.id,
+      .upsert({
+        user_id: userId,
         role: "chef",
+      }, {
+        onConflict: 'user_id,role'
       });
 
     if (roleError) {
