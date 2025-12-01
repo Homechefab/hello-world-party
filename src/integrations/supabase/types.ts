@@ -288,6 +288,44 @@ export type Database = {
         }
         Relationships: []
       }
+      kitchen_availability: {
+        Row: {
+          created_at: string | null
+          date: string
+          id: string
+          is_available: boolean | null
+          kitchen_partner_id: string
+          time_slot: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          date: string
+          id?: string
+          is_available?: boolean | null
+          kitchen_partner_id: string
+          time_slot: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          id?: string
+          is_available?: boolean | null
+          kitchen_partner_id?: string
+          time_slot?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kitchen_availability_kitchen_partner_id_fkey"
+            columns: ["kitchen_partner_id"]
+            isOneToOne: false
+            referencedRelation: "kitchen_partners"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       kitchen_partners: {
         Row: {
           address: string
