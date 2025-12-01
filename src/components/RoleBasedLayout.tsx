@@ -62,7 +62,6 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
     const targets: Record<string, { base: string; target: string }> = {
       admin: { base: '/admin', target: '/admin/dashboard' },
       chef: { base: '/chef', target: '/chef/dashboard' },
-      kitchen_partner: { base: '/kitchen-partner', target: '/kitchen-partner/dashboard' },
       restaurant: { base: '/restaurant', target: '/restaurant/dashboard' },
       customer: { base: '/', target: '/' },
     };
@@ -72,6 +71,13 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
       if (protectedBases.some((b) => location.pathname.startsWith(b))) {
         navigate('/');
       }
+      return;
+    }
+
+    // Special handling for kitchen_partner - check approval status first
+    if (role === 'kitchen_partner' && !location.pathname.startsWith('/kitchen-partner')) {
+      // Let KitchenPartnerDashboard handle the redirect based on approval status
+      navigate('/kitchen-partner/dashboard');
       return;
     }
 
