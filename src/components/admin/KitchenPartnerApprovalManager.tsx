@@ -298,11 +298,24 @@ export const KitchenPartnerApprovalManager = () => {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    onClick={() => {
-                                      const link = document.createElement('a');
-                                      link.href = doc.document_url;
-                                      link.download = `document-${index + 1}`;
-                                      link.click();
+                                    onClick={async () => {
+                                      try {
+                                        const response = await fetch(doc.document_url);
+                                        const blob = await response.blob();
+                                        const url = window.URL.createObjectURL(blob);
+                                        const link = document.createElement('a');
+                                        link.href = url;
+                                        const fileExt = doc.document_url.split('.').pop()?.split('?')[0] || 'pdf';
+                                        link.download = `${doc.document_type}-${new Date(doc.created_at).toLocaleDateString('sv-SE')}.${fileExt}`;
+                                        document.body.appendChild(link);
+                                        link.click();
+                                        document.body.removeChild(link);
+                                        window.URL.revokeObjectURL(url);
+                                        toast.success('Dokument nedladdat');
+                                      } catch (error) {
+                                        console.error('Download error:', error);
+                                        toast.error('Kunde inte ladda ner dokument');
+                                      }
                                     }}
                                   >
                                     <Download className="w-4 h-4 mr-1" />
