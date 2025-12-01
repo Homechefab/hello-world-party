@@ -56,6 +56,7 @@ import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import RestaurantPartnership from "./pages/restaurant/RestaurantPartnership";
 import RestaurantDashboard from "./pages/restaurant/RestaurantDashboard";
 import RestaurantApplicationForm from "./pages/restaurant/RestaurantApplicationForm";
+import RestaurantApplication from "./pages/restaurant/RestaurantApplication";
 import NotFound from "./pages/NotFound";
 import NotificationSignup from "./pages/NotificationSignup";
 import Auth from "./pages/Auth";
@@ -112,6 +113,7 @@ const App = () => {
             <Route path="/kitchen-partner/support" element={<PublicLayout><PartnerSupport /></PublicLayout>} />
             <Route path="/restaurant" element={<PublicLayout><RestaurantPartnership /></PublicLayout>} />
             <Route path="/restaurant/partnership" element={<PublicLayout><RestaurantPartnership /></PublicLayout>} />
+            <Route path="/restaurant/application" element={<PublicLayout><RestaurantApplication /></PublicLayout>} />
             <Route path="/auth" element={<PublicLayout><Auth /></PublicLayout>} />
             <Route path="/notification-signup" element={<PublicLayout><NotificationSignup /></PublicLayout>} />
             <Route path="/chef/application" element={<PublicLayout><ChefApplication /></PublicLayout>} />
