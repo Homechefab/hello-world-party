@@ -149,6 +149,9 @@ export const KitchenPartnerOnboarding = () => {
         title: "Ansökan skickad!",
         description: "Vi kommer att granska din ansökan och återkomma inom 2-3 arbetsdagar"
       });
+
+      // Redirect to pending page
+      window.location.href = '/kitchen-partner/application-pending';
     } catch (err) {
       console.error(err);
       toast({
