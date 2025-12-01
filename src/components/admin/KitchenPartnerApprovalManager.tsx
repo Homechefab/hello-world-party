@@ -49,7 +49,12 @@ export const KitchenPartnerApprovalManager = () => {
       const { data, error } = await supabase
         .from('kitchen_partners')
         .select(`
-          *
+          *,
+          profiles:user_id (
+            full_name,
+            email,
+            phone
+          )
         `)
         .order('created_at', { ascending: false });
 
