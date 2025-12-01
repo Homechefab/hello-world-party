@@ -128,7 +128,7 @@ export const KitchenPartnerOnboarding = () => {
         return;
       }
 
-      const { error } = await supabase.from('kitchen_partners').insert({
+      const { data: insertedData, error } = await supabase.from('kitchen_partners').insert({
         business_name: formData.businessName,
         address: `${formData.address}, ${formData.city}`,
         kitchen_size: parseInt(formData.kitchenSize) || 0,
@@ -139,10 +139,30 @@ export const KitchenPartnerOnboarding = () => {
         approved: false,
         application_status: 'pending',
         user_id: user.id
-      });
+      }).select().single();
 
       if (error) {
         throw error;
+      }
+
+      // Send notification to admin
+      try {
+        await supabase.functions.invoke('notify-admin-kitchen-partner', {
+          body: {
+            businessName: formData.businessName,
+            contactPerson: formData.contactPerson,
+            email: formData.email,
+            phone: formData.phone,
+            address: `${formData.address}, ${formData.city}`,
+            municipality: formData.city,
+            hourlyRate: parseFloat(formData.hourlyRate) || 0,
+            applicationId: insertedData?.id || 'unknown'
+          }
+        });
+        console.log('Admin notification sent successfully');
+      } catch (notificationError) {
+        console.error('Failed to send admin notification:', notificationError);
+        // Don't fail the whole process if notification fails
       }
 
       toast({
