@@ -64,15 +64,27 @@ const ChefApplication = () => {
   });
 
   const handleNext = async () => {
-    // När man går från steg 2 till 3, skapa chef-ansökan så att chefId finns för dokumentuppladdning
+    // När man går från steg 2 till 3, skapa chef-ansökan
     if (currentStep === 2) {
       try {
-        // Skapa ny chef-ansökan utan user_id (kommer att sättas vid godkännande)
+        // Hämta current user
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+          toast({
+            title: "Fel",
+            description: "Du måste vara inloggad för att skicka in ansökan.",
+            variant: "destructive"
+          });
+          return;
+        }
+
+        // Skapa ny chef-ansökan
         const { data: newChef, error } = await supabase
           .from('chefs')
           .insert({
             business_name: formData.businessName || 'Mitt kök',
-            user_id: null,
+            user_id: user.id,
             kitchen_approved: false,
             application_status: 'pending',
             full_name: formData.fullName,
