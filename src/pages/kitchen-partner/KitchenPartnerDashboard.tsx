@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import HyrUtDittKok from './HyrUtDittKok';
+import { HyrUtDittKok } from './HyrUtDittKok';
 import { Loader2 } from 'lucide-react';
 
 export const KitchenPartnerDashboard = () => {
