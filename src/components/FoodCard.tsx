@@ -1,8 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, Clock, MapPin, Heart } from "lucide-react";
+import { Star, Clock, MapPin, Heart, ShoppingCart } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface FoodCardProps {
+  id?: string;
+  dishId?: string;
   title: string;
   description: string;
   price: number;
@@ -18,6 +22,8 @@ interface FoodCardProps {
 }
 
 const FoodCard = ({ 
+  id,
+  dishId,
   title, 
   description, 
   price, 
@@ -31,6 +37,25 @@ const FoodCard = ({
   isFavorite = false,
   onOrderClick
 }: FoodCardProps) => {
+  const { addItem } = useCart();
+  const { toast } = useToast();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    addItem({
+      id: id || `dish-${title.replace(/\s/g, '-').toLowerCase()}`,
+      dishId: dishId || id || `dish-${title.replace(/\s/g, '-').toLowerCase()}`,
+      name: title,
+      price,
+      chefId: seller,
+      chefName: seller,
+      image
+    });
+    toast({
+      title: "Tillagd i varukorgen",
+      description: `${title} har lagts till i din varukorg`,
+    });
+  };
   return (
     <div className="bg-card rounded-xl shadow-card hover:shadow-warm transition-all duration-300 hover:scale-105 overflow-hidden group">
       <div className="relative">
@@ -88,9 +113,14 @@ const FoodCard = ({
         
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground">av {seller}</span>
-          <Button variant="food" size="sm" onClick={onOrderClick}>
-            Beställ
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={handleAddToCart}>
+              <ShoppingCart className="w-4 h-4" />
+            </Button>
+            <Button variant="food" size="sm" onClick={onOrderClick}>
+              Beställ
+            </Button>
+          </div>
         </div>
       </div>
     </div>

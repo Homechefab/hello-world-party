@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Star, Clock, MapPin, Minus, Plus, ArrowLeft } from "lucide-react";
+import { Star, Clock, MapPin, Minus, Plus, ArrowLeft, ShoppingCart } from "lucide-react";
 import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import ReviewSection from "@/components/ReviewSection";
@@ -14,6 +14,7 @@ import { KlarnaPayment } from "@/components/KlarnaPayment";
 import { VideoDisplay } from "@/components/VideoDisplay";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import { useCart } from "@/contexts/CartContext";
 
 // Mock data för en specifik rätt
 const dishData = {
@@ -59,10 +60,29 @@ const dishData = {
 const DishPage = () => {
   const { id: _id } = useParams();
   const { toast } = useToast();
+  const { addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [selectedTime, setSelectedTime] = useState("");
   const [specialRequests, setSpecialRequests] = useState("");
   const [showPayment, setShowPayment] = useState(false);
+
+  const handleAddToCart = () => {
+    for (let i = 0; i < quantity; i++) {
+      addItem({
+        id: `${dishData.id}-${Date.now()}-${i}`,
+        dishId: dishData.id,
+        name: dishData.title,
+        price: dishData.price,
+        chefId: dishData.cookName,
+        chefName: dishData.cookName,
+        image: dishData.image
+      });
+    }
+    toast({
+      title: "Tillagd i varukorgen",
+      description: `${quantity}x ${dishData.title} har lagts till i din varukorg`,
+    });
+  };
 
   const handleQuantityChange = (change: number) => {
     const newQuantity = quantity + change;
@@ -251,6 +271,16 @@ const DishPage = () => {
                     <span>Totalt ({quantity} portioner)</span>
                     <span className="text-xl font-bold">{dishData.price * quantity} kr</span>
                   </div>
+                  
+                  <Button 
+                    className="w-full" 
+                    variant="outline" 
+                    size="lg"
+                    onClick={handleAddToCart}
+                  >
+                    <ShoppingCart className="w-4 h-4 mr-2" />
+                    Lägg i varukorg
+                  </Button>
                   
                   <Dialog open={showPayment} onOpenChange={setShowPayment}>
                     <DialogTrigger asChild>
