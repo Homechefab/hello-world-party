@@ -95,9 +95,13 @@ const handler = async (req: Request): Promise<Response> => {
     const dashboardTab = type === 'chef' ? 'chefs' : 'kitchen-partners';
     const dashboardUrl = `https://rkucenozpmaixfphpiub.supabase.co?tab=${dashboardTab}`;
 
+    // NOTE: In test mode, Resend only allows sending to the verified email
+    // Change this to the actual admin email when domain is verified
+    const adminEmail = "enklarestudier@gmail.com"; // TODO: Change to farhan_javanmiri@hotmail.com after domain verification
+    
     const emailResponse = await resend.emails.send({
       from: "HomeChef <onboarding@resend.dev>",
-      to: ["farhan_javanmiri@hotmail.com"],
+      to: [adminEmail],
       subject: `Ny ${typeLabel}-ansökan från ${applicant_name}`,
       html: `
         <!DOCTYPE html>
