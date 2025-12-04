@@ -41,18 +41,77 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Chef found:", chef.full_name);
 
-    // Generate @homechef.se email
+    // Check if chef already has a user_id (already approved before)
+    if (chef.user_id) {
+      console.log("Chef already has user_id, updating status only");
+      
+      // Just update status
+      const { error: updateError } = await supabase
+        .from("chefs")
+        .update({
+          application_status: "approved",
+          kitchen_approved: true,
+          municipality_approval_date: new Date().toISOString(),
+        })
+        .eq("id", chefId);
+
+      if (updateError) {
+        console.error("Chef update error:", updateError);
+        throw new Error("Kunde inte uppdatera kock-profil");
+      }
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          message: "Kock redan godkänd tidigare, status uppdaterad",
+        }),
+        {
+          status: 200,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Generate @homechef.se email with unique suffix if needed
     const nameParts = chef.full_name?.toLowerCase().split(" ") || [];
     const firstName = nameParts[0] || "chef";
     const lastName = nameParts[nameParts.length - 1] || "unknown";
-    const homechefEmail = `${firstName}.${lastName}@homechef.se`.replace(/[^a-z.@]/g, "");
+    let baseEmail = `${firstName}.${lastName}`.replace(/[^a-z.]/g, "");
+    
+    // Check if user already exists and find unique email
+    const { data: existingUsers } = await supabase.auth.admin.listUsers();
+    let homechefEmail = `${baseEmail}@homechef.se`;
+    let counter = 1;
+    
+    // Check if email is already taken by another user linked to a different chef
+    while (true) {
+      const existingUser = existingUsers?.users.find(u => u.email === homechefEmail);
+      if (!existingUser) {
+        // Email is free, use it
+        break;
+      }
+      
+      // Check if this user is already linked to another chef
+      const { data: linkedChef } = await supabase
+        .from("chefs")
+        .select("id")
+        .eq("user_id", existingUser.id)
+        .maybeSingle();
+      
+      if (linkedChef && linkedChef.id !== chefId) {
+        // User is linked to another chef, generate unique email
+        counter++;
+        homechefEmail = `${baseEmail}${counter}@homechef.se`;
+        console.log("Email taken, trying:", homechefEmail);
+      } else {
+        // User exists but not linked to any chef, or linked to this chef - can reuse
+        break;
+      }
+    }
     
     console.log("Generated email:", homechefEmail);
 
-    // Check if user already exists
-    const { data: existingUsers } = await supabase.auth.admin.listUsers();
     const existingUser = existingUsers?.users.find(u => u.email === homechefEmail);
-    
     let userId: string;
     let password = generatePassword();
     console.log("Password generated");
