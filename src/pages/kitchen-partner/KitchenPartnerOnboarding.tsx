@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -6,9 +6,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Building, CheckCircle } from 'lucide-react';
+import { Building, CheckCircle, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
 
 interface KitchenData {
   businessName: string;
@@ -31,7 +32,9 @@ interface KitchenData {
 
 export const KitchenPartnerOnboarding = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState<KitchenData>({
     businessName: '',
     contactPerson: '',
@@ -50,6 +53,46 @@ export const KitchenPartnerOnboarding = () => {
     businessLicense: null,
     kitchenImages: []
   });
+
+  // Check for existing application on mount
+  useEffect(() => {
+    const checkExistingApplication = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          setIsLoading(false);
+          return;
+        }
+
+        const { data: existingApplication } = await supabase
+          .from('kitchen_partners')
+          .select('application_status, approved')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (existingApplication) {
+          if (existingApplication.approved || existingApplication.application_status === 'approved') {
+            toast({
+              title: "Redan godkänd",
+              description: "Du har redan en godkänd kökspartner-ansökan",
+            });
+            navigate('/kitchen-partner/dashboard');
+            return;
+          } else if (existingApplication.application_status === 'pending') {
+            navigate('/kitchen-partner/application-pending');
+            return;
+          }
+          // If rejected, allow resubmission - we'll delete the old application first
+        }
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error checking existing application:', error);
+        setIsLoading(false);
+      }
+    };
+
+    checkExistingApplication();
+  }, [navigate, toast]);
 
   const facilityOptions = [
     'Professionell spis',
@@ -127,6 +170,13 @@ export const KitchenPartnerOnboarding = () => {
         });
         return;
       }
+
+      // Delete any rejected application before creating new one
+      await supabase
+        .from('kitchen_partners')
+        .delete()
+        .eq('user_id', user.id)
+        .eq('application_status', 'rejected');
 
       const { data: insertedData, error } = await supabase.from('kitchen_partners').insert({
         business_name: formData.businessName,
@@ -253,6 +303,14 @@ export const KitchenPartnerOnboarding = () => {
       setCurrentStep(currentStep - 1);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background py-8">
