@@ -12,11 +12,14 @@ import {
   ArrowLeft,
   CheckCircle,
   Phone,
-  Mail
+  Mail,
+  Upload,
+  FileText
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { DocumentUpload } from "@/components/DocumentUpload";
 
 interface RestaurantApplicationData {
   restaurantName: string;
@@ -41,6 +44,9 @@ interface RestaurantApplicationData {
 const RestaurantApplicationForm = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [currentStep, setCurrentStep] = useState(1);
+  const [restaurantId, setRestaurantId] = useState<string | null>(null);
+  const [documentsUploaded, setDocumentsUploaded] = useState(false);
   const [formData, setFormData] = useState<RestaurantApplicationData>({
     restaurantName: "",
     contactPerson: "",
@@ -154,7 +160,7 @@ const RestaurantApplicationForm = () => {
       }
 
       // Create restaurant application
-      const { error } = await supabase
+      const { data: newRestaurant, error } = await supabase
         .from('restaurants')
         .insert({
           business_name: formData.restaurantName,
@@ -167,12 +173,50 @@ const RestaurantApplicationForm = () => {
           postal_code: formData.postalCode,
           restaurant_description: formData.description,
           cuisine_types: formData.specialties,
-          application_status: 'under_review',
+          application_status: 'pending',
           approved: false
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
       
+      // Save restaurant ID and move to document upload step
+      setRestaurantId(newRestaurant.id);
+      setCurrentStep(2);
+      
+      toast({
+        title: "Uppgifter sparade!",
+        description: "Ladda nu upp dina dokument för att slutföra ansökan.",
+      });
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Fel",
+        description: "Något gick fel. Försök igen senare.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleDocumentUploaded = () => {
+    setDocumentsUploaded(true);
+  };
+
+  const handleFinalSubmit = async () => {
+    if (!restaurantId) return;
+    
+    try {
+      // Update application status to under_review
+      const { error } = await supabase
+        .from('restaurants')
+        .update({ application_status: 'under_review' })
+        .eq('id', restaurantId);
+
+      if (error) throw error;
+
       toast({
         title: "Ansökan skickad!",
         description: "Vi återkommer inom 2-3 arbetsdagar.",
@@ -188,8 +232,6 @@ const RestaurantApplicationForm = () => {
         description: "Något gick fel. Försök igen senare.",
         variant: "destructive"
       });
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -228,12 +270,32 @@ const RestaurantApplicationForm = () => {
           </div>
         </div>
 
+        {/* Step Indicator */}
+        <div className="flex items-center justify-center mb-8">
+          <div className="flex items-center">
+            <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
+              currentStep >= 1 ? 'bg-primary border-primary text-white' : 'bg-white border-border'
+            }`}>
+              {currentStep > 1 ? <CheckCircle className="w-5 h-5" /> : '1'}
+            </div>
+            <span className="ml-2 mr-4 text-sm font-medium">Uppgifter</span>
+            <div className={`w-12 h-px ${currentStep > 1 ? 'bg-primary' : 'bg-border'}`} />
+            <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ml-4 ${
+              currentStep >= 2 ? 'bg-primary border-primary text-white' : 'bg-white border-border'
+            }`}>
+              {currentStep > 2 ? <CheckCircle className="w-5 h-5" /> : '2'}
+            </div>
+            <span className="ml-2 text-sm font-medium">Dokument</span>
+          </div>
+        </div>
+
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Application Form */}
+          {/* Application Form - Step 1 */}
+          {currentStep === 1 && (
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>Ansökningsformulär</CardTitle>
+                <CardTitle>Steg 1: Restauranguppgifter</CardTitle>
                 <CardDescription>
                   Fält med * måste fyllas i
                 </CardDescription>
@@ -484,12 +546,68 @@ const RestaurantApplicationForm = () => {
                     disabled={isSubmitting}
                     size="lg"
                   >
-                    {isSubmitting ? "Skickar ansökan..." : "Skicka ansökan"}
+                    {isSubmitting ? "Sparar..." : "Nästa: Ladda upp dokument"}
                   </Button>
                 </form>
               </CardContent>
             </Card>
           </div>
+          )}
+
+          {/* Document Upload - Step 2 */}
+          {currentStep === 2 && (
+          <div className="lg:col-span-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Upload className="w-5 h-5" />
+                  Steg 2: Ladda upp dokument
+                </CardTitle>
+                <CardDescription>
+                  Ladda upp era tillstånd och certifikat för granskning
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <DocumentUpload 
+                  restaurantId={restaurantId || undefined}
+                  documentType="restaurant_license"
+                  title="Ladda upp restaurangtillstånd"
+                  description="Ladda upp ert restaurangtillstånd och relaterade certifikat."
+                  onSuccess={handleDocumentUploaded}
+                />
+                
+                {documentsUploaded && (
+                  <div className="p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                    <span className="text-green-800">Dokument uppladdat!</span>
+                  </div>
+                )}
+
+                <div className="flex gap-4 pt-4">
+                  <Button 
+                    variant="outline"
+                    onClick={() => setCurrentStep(1)}
+                    className="flex-1"
+                  >
+                    Tillbaka
+                  </Button>
+                  <Button 
+                    onClick={handleFinalSubmit}
+                    disabled={!documentsUploaded}
+                    className="flex-1"
+                    size="lg"
+                  >
+                    Skicka ansökan
+                  </Button>
+                </div>
+
+                <p className="text-sm text-muted-foreground">
+                  Du kan ladda upp fler dokument om du behöver. Klicka "Skicka ansökan" när du är klar.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+          )}
 
           {/* Sidebar */}
           <div className="space-y-6">
