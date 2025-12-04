@@ -144,17 +144,11 @@ export const KitchenPartnerOnboarding = () => {
         .maybeSingle();
 
       if (existingApplication) {
-        if (existingApplication.approved || existingApplication.application_status === 'approved') {
+        // Block if approved, pending, or under review
+        if (existingApplication.approved || ['pending', 'under_review', 'approved'].includes(existingApplication.application_status || '')) {
           toast({
-            title: "Ansökan avvisad",
-            description: "Du har redan en godkänd kökspartner-ansökan. Gå till din dashboard för att hantera ditt kök.",
-            variant: "destructive"
-          });
-          return;
-        } else if (existingApplication.application_status === 'pending') {
-          toast({
-            title: "Ansökan avvisad",
-            description: "Du har redan en väntande ansökan. Vänta på att den granskas innan du skickar en ny.",
+            title: "Ansökan finns redan",
+            description: `Du har redan en ${existingApplication.application_status === 'approved' || existingApplication.approved ? 'godkänd' : 'pågående'} ansökan.`,
             variant: "destructive"
           });
           return;
