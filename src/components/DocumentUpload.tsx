@@ -11,9 +11,20 @@ import { Upload, FileText, XCircle } from "lucide-react";
 interface DocumentUploadProps {
   onSuccess?: () => void;
   chefId?: string;
+  restaurantId?: string;
+  documentType?: string;
+  title?: string;
+  description?: string;
 }
 
-export const DocumentUpload = ({ onSuccess, chefId }: DocumentUploadProps) => {
+export const DocumentUpload = ({ 
+  onSuccess, 
+  chefId, 
+  restaurantId,
+  documentType = 'municipal_permit',
+  title = 'Ladda upp ditt kommunbeslut',
+  description = 'Ladda upp ditt godkännandebeslut från kommunen för manuell granskning av vårt team.'
+}: DocumentUploadProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -91,7 +102,7 @@ export const DocumentUpload = ({ onSuccess, chefId }: DocumentUploadProps) => {
       // Create document submission record
       const submissionData: any = {
         user_id: user.id,
-        document_type: 'municipal_permit',
+        document_type: documentType,
         document_url: urlData.publicUrl,
         municipality: municipality.trim(),
         permit_number: permitNumber.trim() || null,
@@ -101,6 +112,11 @@ export const DocumentUpload = ({ onSuccess, chefId }: DocumentUploadProps) => {
       // Link to chef application if chefId is provided
       if (chefId) {
         submissionData.chef_id = chefId;
+      }
+
+      // Link to restaurant application if restaurantId is provided
+      if (restaurantId) {
+        submissionData.restaurant_id = restaurantId;
       }
 
       const { error: dbError } = await supabase
@@ -144,11 +160,11 @@ export const DocumentUpload = ({ onSuccess, chefId }: DocumentUploadProps) => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FileText className="h-5 w-5" />
-          Ladda upp ditt kommunbeslut
+          {title}
         </CardTitle>
         <CardDescription>
-          Ladda upp ditt godkännandebeslut från kommunen för manuell granskning av vårt team.
-          Accepterade format: PDF, JPG, PNG (max 10MB)
+          {description}
+          {' '}Accepterade format: PDF, JPG, PNG (max 10MB)
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">

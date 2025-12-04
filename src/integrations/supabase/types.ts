@@ -229,6 +229,7 @@ export type Database = {
           municipality: string | null
           permit_number: string | null
           rejection_reason: string | null
+          restaurant_id: string | null
           status: string
           updated_at: string
           user_id: string
@@ -244,6 +245,7 @@ export type Database = {
           municipality?: string | null
           permit_number?: string | null
           rejection_reason?: string | null
+          restaurant_id?: string | null
           status?: string
           updated_at?: string
           user_id: string
@@ -259,6 +261,7 @@ export type Database = {
           municipality?: string | null
           permit_number?: string | null
           rejection_reason?: string | null
+          restaurant_id?: string | null
           status?: string
           updated_at?: string
           user_id?: string
@@ -269,6 +272,13 @@ export type Database = {
             columns: ["chef_id"]
             isOneToOne: false
             referencedRelation: "chefs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "document_submissions_restaurant_id_fkey"
+            columns: ["restaurant_id"]
+            isOneToOne: false
+            referencedRelation: "restaurants"
             referencedColumns: ["id"]
           },
         ]
