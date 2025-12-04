@@ -3,12 +3,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { CheckCircle, XCircle, Clock, Loader2 } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Loader2, Eye, Download, FileText, User, Building } from 'lucide-react';
+
+interface RestaurantDocument {
+  id: string;
+  document_type: string;
+  document_url: string;
+  municipality: string | null;
+  created_at: string;
+}
 
 interface Restaurant {
   id: string;
@@ -25,6 +33,7 @@ interface Restaurant {
   approved: boolean;
   rejection_reason: string | null;
   created_at: string;
+  documents?: RestaurantDocument[];
 }
 
 export const RestaurantApprovalManager = () => {
@@ -48,7 +57,33 @@ export const RestaurantApprovalManager = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setApplications(data || []);
+      
+      // Fetch documents for all restaurants
+      const restaurantIds = data?.map(r => r.id) || [];
+      const { data: documents } = await supabase
+        .from('document_submissions')
+        .select('*')
+        .in('restaurant_id', restaurantIds)
+        .order('created_at', { ascending: false });
+      
+      // Group documents by restaurant_id
+      const documentsMap = new Map<string, RestaurantDocument[]>();
+      documents?.forEach(doc => {
+        if (doc.restaurant_id) {
+          if (!documentsMap.has(doc.restaurant_id)) {
+            documentsMap.set(doc.restaurant_id, []);
+          }
+          documentsMap.get(doc.restaurant_id)?.push(doc);
+        }
+      });
+      
+      // Attach documents to restaurants
+      const restaurantsWithDocs = (data || []).map(restaurant => ({
+        ...restaurant,
+        documents: documentsMap.get(restaurant.id) || []
+      }));
+      
+      setApplications(restaurantsWithDocs);
     } catch (error) {
       console.error('Error fetching applications:', error);
       toast({
@@ -148,6 +183,8 @@ export const RestaurantApprovalManager = () => {
     }
   };
 
+  const [selectedForView, setSelectedForView] = useState<Restaurant | null>(null);
+
   const ApplicationCard = ({ application }: { application: Restaurant }) => (
     <Card>
       <CardHeader>
@@ -164,39 +201,218 @@ export const RestaurantApprovalManager = () => {
           <p><span className="font-medium">Email:</span> {application.contact_email}</p>
           <p><span className="font-medium">Telefon:</span> {application.phone}</p>
           <p><span className="font-medium">Adress:</span> {application.address}, {application.city}</p>
-          <p><span className="font-medium">Beskrivning:</span> {application.restaurant_description}</p>
-          <p><span className="font-medium">Mattyper:</span> {application.cuisine_types}</p>
+          <p><span className="font-medium">Dokument:</span> {application.documents?.length || 0} st</p>
           {application.rejection_reason && (
             <p className="text-destructive"><span className="font-medium">Avslagsorsak:</span> {application.rejection_reason}</p>
           )}
         </div>
 
-        {application.application_status !== 'approved' && !application.approved && (
-          <div className="flex gap-2">
-            <Button
-              onClick={() => approveApplication(application.id)}
-              disabled={actionLoading === application.id}
-              className="flex-1"
-            >
-              {actionLoading === application.id ? (
-                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Godkänner...</>
-              ) : (
-                <><CheckCircle className="w-4 h-4 mr-2" /> Godkänn</>
-              )}
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => {
-                setSelectedApplication(application.id);
-                setShowRejectDialog(true);
-              }}
-              disabled={actionLoading === application.id}
-              className="flex-1"
-            >
-              <XCircle className="w-4 h-4 mr-2" /> Neka
-            </Button>
-          </div>
-        )}
+        <div className="flex gap-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setSelectedForView(application)}
+              >
+                <Eye className="w-4 h-4 mr-2" />
+                Granska
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <Building className="w-5 h-5" />
+                  Granska ansökan - {application.business_name}
+                </DialogTitle>
+                <DialogDescription>
+                  Kolla all info och dokument innan godkännande
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="space-y-6">
+                {/* Restaurant Info */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg">Restauranguppgifter</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label className="text-sm font-medium">Restaurangnamn</Label>
+                        <p className="text-sm">{application.business_name}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium">Kontaktperson</Label>
+                        <p className="text-sm">{application.full_name}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium">E-post</Label>
+                        <p className="text-sm">{application.contact_email}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium">Telefon</Label>
+                        <p className="text-sm">{application.phone}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium">Adress</Label>
+                        <p className="text-sm">{application.address}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium">Stad</Label>
+                        <p className="text-sm">{application.city}</p>
+                      </div>
+                      <div>
+                        <Label className="text-sm font-medium">Postnummer</Label>
+                        <p className="text-sm">{application.postal_code}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Description */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg">Beskrivning & Mattyper</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label className="text-sm font-medium">Beskrivning</Label>
+                      <p className="text-sm whitespace-pre-wrap">{application.restaurant_description || 'Ej angivet'}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium">Mattyper</Label>
+                      <p className="text-sm whitespace-pre-wrap">{application.cuisine_types || 'Ej angivet'}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Documents */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <FileText className="w-5 h-5" />
+                      Dokument
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {application.documents && application.documents.length > 0 ? (
+                      application.documents.map((doc, index) => (
+                        <div key={doc.id} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex-1">
+                            <p className="font-medium">Dokument #{index + 1}</p>
+                            <p className="text-sm text-muted-foreground">
+                              Typ: {doc.document_type}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              Uppladdad: {new Date(doc.created_at).toLocaleDateString('sv-SE')}
+                            </p>
+                          </div>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={async () => {
+                              try {
+                                const response = await fetch(doc.document_url);
+                                const blob = await response.blob();
+                                const url = window.URL.createObjectURL(blob);
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = doc.document_url.split('/').pop() || 'document.pdf';
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                                window.URL.revokeObjectURL(url);
+                              } catch (error) {
+                                toast({
+                                  title: "Kunde inte ladda ner dokument",
+                                  description: error instanceof Error ? error.message : "Ett fel uppstod",
+                                  variant: "destructive"
+                                });
+                              }
+                            }}
+                          >
+                            <Download className="w-4 h-4 mr-2" />
+                            Ladda ner
+                          </Button>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-sm text-muted-foreground">Inga dokument uppladdade än</p>
+                    )}
+                  </CardContent>
+                </Card>
+
+                {/* Rejection reason if rejected */}
+                {application.rejection_reason && (
+                  <Card className="border-red-200 bg-red-50">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-lg text-red-800">Anledning till avslag</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-red-700">{application.rejection_reason}</p>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Action Buttons */}
+                {application.application_status !== 'approved' && !application.approved && (
+                  <div className="flex gap-3 pt-4">
+                    <Button
+                      onClick={() => approveApplication(application.id)}
+                      disabled={actionLoading === application.id}
+                      className="flex-1"
+                    >
+                      {actionLoading === application.id ? (
+                        <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Godkänner...</>
+                      ) : (
+                        <><CheckCircle className="w-4 h-4 mr-2" /> Godkänn</>
+                      )}
+                    </Button>
+                    <Button
+                      variant="destructive"
+                      onClick={() => {
+                        setSelectedApplication(application.id);
+                        setShowRejectDialog(true);
+                      }}
+                      disabled={actionLoading === application.id}
+                      className="flex-1"
+                    >
+                      <XCircle className="w-4 h-4 mr-2" /> Neka
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          {application.application_status !== 'approved' && !application.approved && (
+            <>
+              <Button
+                onClick={() => approveApplication(application.id)}
+                disabled={actionLoading === application.id}
+                size="sm"
+              >
+                {actionLoading === application.id ? (
+                  <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Godkänner...</>
+                ) : (
+                  <><CheckCircle className="w-4 h-4 mr-2" /> Godkänn</>
+                )}
+              </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => {
+                  setSelectedApplication(application.id);
+                  setShowRejectDialog(true);
+                }}
+                disabled={actionLoading === application.id}
+              >
+                <XCircle className="w-4 h-4 mr-2" /> Neka
+              </Button>
+            </>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
