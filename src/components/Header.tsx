@@ -7,7 +7,7 @@ import type { UserRole } from "@/types/user";
 import { Cart } from "@/components/Cart";
 import UserMenu from "@/components/UserMenu";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
-import homechefLogo from "@/assets/homechef-logo-modern.png";
+
 import { toast } from "sonner";
 import {
   Sheet,
@@ -90,13 +90,11 @@ const Header = () => {
           paddingBottom: '1.25rem'
         }}
       >
-        {/* Logo - Larger size */}
-        <Link to="/" className="flex items-center gap-2">
-          <img 
-            src={homechefLogo} 
-            alt="Homechef" 
-            className="h-16 w-auto md:h-20 lg:h-24 object-contain"
-          />
+        {/* Logo - Simple text */}
+        <Link to="/" className="flex items-center">
+          <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary tracking-tight">
+            Homechef
+          </span>
         </Link>
         
   {/* Desktop Search - hidden on mobile */}
