@@ -67,7 +67,6 @@ import Preferences from "./pages/settings/Preferences";
 import Profile from "./pages/Profile";
 import MyOrders from "./pages/MyOrders";
 import MyPoints from "./pages/MyPoints";
-import PaymentDemo from "./pages/PaymentDemo";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCanceled from "./pages/PaymentCanceled";
 import Privacy from "./pages/Privacy";
@@ -118,7 +117,7 @@ const App = () => {
             <Route path="/notification-signup" element={<PublicLayout><NotificationSignup /></PublicLayout>} />
             <Route path="/chef/application" element={<PublicLayout><ChefApplication /></PublicLayout>} />
             <Route path="/chef/application-status" element={<RoleBasedLayout><ApplicationStatus /></RoleBasedLayout>} />
-            <Route path="/payment-demo" element={<PublicLayout><PaymentDemo /></PublicLayout>} />
+            
             <Route path="/payment-success" element={<PublicLayout><PaymentSuccess /></PublicLayout>} />
             <Route path="/payment-canceled" element={<PublicLayout><PaymentCanceled /></PublicLayout>} />
             <Route path="/privacy" element={<PublicLayout><Privacy /></PublicLayout>} />
