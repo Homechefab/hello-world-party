@@ -115,9 +115,6 @@ const PaymentSuccess = () => {
                 <Link to="/">
                   <Button variant="outline">Till startsidan</Button>
                 </Link>
-                <Link to="/payment-demo">
-                  <Button variant="ghost">Testa en betalning till</Button>
-                </Link>
               </div>
 
               {result?.line_items?.length ? (

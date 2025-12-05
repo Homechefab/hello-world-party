@@ -16,11 +16,8 @@ const PaymentCanceled = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex gap-3">
-          <Link to="/payment-demo">
-            <Button>Återvänd till betalningsdemo</Button>
-          </Link>
           <Link to="/">
-            <Button variant="outline">Till startsidan</Button>
+            <Button>Till startsidan</Button>
           </Link>
         </CardContent>
       </Card>
