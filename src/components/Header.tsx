@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ComponentType, SVGProps, FormEvent } from "react";
-import { ChefHat, Search, Menu, Home, UtensilsCrossed, Info, Phone, Users, CreditCard } from "lucide-react";
+import { ChefHat, Search, Menu, Home, UtensilsCrossed, Info, Phone, Users } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRole } from "@/hooks/useRole";
 import type { UserRole } from "@/types/user";
@@ -70,7 +70,6 @@ const Header = () => {
     { title: "Hem", href: "/", icon: Home },
     { title: "Kategorier", href: "#kategorier", icon: UtensilsCrossed },
     { title: "Logokoncept", href: "/logo-concepts", icon: ChefHat },
-    { title: "Betalningsdemo", href: "/payment-demo", icon: CreditCard },
     { title: "Om oss", href: "/about", icon: Info },
     { title: "Kontakt", href: "#kontakt", icon: Phone },
   ];
@@ -138,12 +137,6 @@ const Header = () => {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Link to="/payment-demo">
-            <Button variant="outline" size="sm" className="gap-2">
-              <CreditCard className="w-4 h-4" />
-              Betalningsdemo
-            </Button>
-          </Link>
 
           {role === 'admin' && <AdminNotifications />}
           
