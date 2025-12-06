@@ -20,33 +20,27 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
-          platform: string | null
-          social_url: string | null
           title: string
           updated_at: string
-          video_url: string | null
+          video_url: string
         }
         Insert: {
           chef_id: string
           created_at?: string
           description?: string | null
           id?: string
-          platform?: string | null
-          social_url?: string | null
           title: string
           updated_at?: string
-          video_url?: string | null
+          video_url: string
         }
         Update: {
           chef_id?: string
           created_at?: string
           description?: string | null
           id?: string
-          platform?: string | null
-          social_url?: string | null
           title?: string
           updated_at?: string
-          video_url?: string | null
+          video_url?: string
         }
         Relationships: [
           {
