@@ -262,7 +262,7 @@ export const ChefDashboard = () => {
           <TabsTrigger value="sales">Försäljning</TabsTrigger>
           <TabsTrigger value="hygiene">Egenkontroller</TabsTrigger>
           <TabsTrigger value="videos">Videos</TabsTrigger>
-          <TabsTrigger value="social">Sociala</TabsTrigger>
+          <TabsTrigger value="social">Sociala medier</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
