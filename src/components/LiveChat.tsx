@@ -22,10 +22,10 @@ const LiveChat = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: 'Hej! Välkommen till Homechef. Hur kan jag hjälpa dig idag?',
+      text: 'Hej! Jag heter Emma och jobbar på Homechef. Hur kan jag hjälpa dig idag?',
       sender: 'support',
       timestamp: new Date(),
-      senderName: 'AI Assistent'
+      senderName: 'Emma'
     }
   ]);
   const [newMessage, setNewMessage] = useState('');
@@ -137,7 +137,7 @@ const LiveChat = () => {
         text: aiResponse,
         sender: 'support',
         timestamp: new Date(),
-        senderName: 'AI Assistent'
+        senderName: 'Emma'
       };
       setMessages(prev => [...prev, supportMessage]);
       toast.success('Meddelande skickat!');
