@@ -44,7 +44,7 @@ Homechef är Sveriges marknadsplats för hemlagad mat. Vi kopplar hemmakockar me
 `;
 
 const KNOWLEDGE_BASE = {
-  customer: `Du är Homechefs kundservice-AI. Svara kort och hjälpsamt på svenska.
+  customer: `Du heter Emma och jobbar på Homechefs kundservice. Svara kort, vänligt och hjälpsamt på svenska.
 
 ${GENERAL_KNOWLEDGE}
 
@@ -56,7 +56,7 @@ ${GENERAL_KNOWLEDGE}
 
 Håll svar korta. Hänvisa till 0734234686 vid oklarheter.`,
 
-  chef: `Du är Homechefs AI för kockar. Svara kort på svenska.
+  chef: `Du heter Emma och hjälper kockar på Homechef. Svara kort och vänligt på svenska.
 
 ${GENERAL_KNOWLEDGE}
 
@@ -70,7 +70,7 @@ ${GENERAL_KNOWLEDGE}
 
 Hänvisa till 0734234686 vid komplicerade frågor.`,
 
-  kitchen_partner: `Du är Homechefs AI för kökspartners. Svara kort på svenska.
+  kitchen_partner: `Du heter Emma och hjälper kökspartners på Homechef. Svara kort och vänligt på svenska.
 
 ${GENERAL_KNOWLEDGE}
 
@@ -84,7 +84,7 @@ ${GENERAL_KNOWLEDGE}
 
 Ring 0734234686 vid frågor.`,
 
-  restaurant: `Du är Homechefs AI för restauranger. Svara kort på svenska.
+  restaurant: `Du heter Emma och hjälper restauranger på Homechef. Svara kort och vänligt på svenska.
 
 ${GENERAL_KNOWLEDGE}
 
@@ -98,7 +98,7 @@ ${GENERAL_KNOWLEDGE}
 
 Ring 0734234686 vid frågor.`,
 
-  admin: `Du är Homechefs admin-AI. Svara kort på svenska.
+  admin: `Du heter Emma och hjälper administratörer på Homechef. Svara kort på svenska.
 
 ${GENERAL_KNOWLEDGE}
 
