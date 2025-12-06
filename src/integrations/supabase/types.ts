@@ -23,15 +23,19 @@ export type Database = {
           contact_email: string | null
           created_at: string
           experience: string | null
+          facebook_url: string | null
           full_name: string | null
           hygiene_certificate_url: string | null
           id: string
+          instagram_url: string | null
           kitchen_approved: boolean | null
           municipality_approval_date: string | null
           phone: string | null
           postal_code: string | null
           rejection_reason: string | null
+          snapchat_url: string | null
           specialties: string | null
+          tiktok_url: string | null
           updated_at: string
           user_id: string | null
         }
@@ -43,15 +47,19 @@ export type Database = {
           contact_email?: string | null
           created_at?: string
           experience?: string | null
+          facebook_url?: string | null
           full_name?: string | null
           hygiene_certificate_url?: string | null
           id?: string
+          instagram_url?: string | null
           kitchen_approved?: boolean | null
           municipality_approval_date?: string | null
           phone?: string | null
           postal_code?: string | null
           rejection_reason?: string | null
+          snapchat_url?: string | null
           specialties?: string | null
+          tiktok_url?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -63,15 +71,19 @@ export type Database = {
           contact_email?: string | null
           created_at?: string
           experience?: string | null
+          facebook_url?: string | null
           full_name?: string | null
           hygiene_certificate_url?: string | null
           id?: string
+          instagram_url?: string | null
           kitchen_approved?: boolean | null
           municipality_approval_date?: string | null
           phone?: string | null
           postal_code?: string | null
           rejection_reason?: string | null
+          snapchat_url?: string | null
           specialties?: string | null
+          tiktok_url?: string | null
           updated_at?: string
           user_id?: string | null
         }
