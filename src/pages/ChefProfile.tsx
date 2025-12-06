@@ -7,6 +7,8 @@ import { Star, Clock, MapPin, ChefHat } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import ShareButtons from "@/components/ShareButtons";
+import SEOHead from "@/components/SEOHead";
 
 interface Chef {
   id: string;
@@ -140,34 +142,55 @@ const ChefProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Chef Header */}
-      <section className="bg-gradient-hero py-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto text-center">
-            <ChefHat className="w-16 h-16 text-white mx-auto mb-4" />
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              {chef.business_name || chef.full_name}
-            </h1>
-            {chef.address && (
-              <div className="flex items-center justify-center text-white/90 mb-6">
-                <MapPin className="w-5 h-5 mr-2" />
-                <span>{chef.address}</span>
+    <>
+      <SEOHead
+        title={chef.business_name || chef.full_name}
+        description={`Beställ hemlagad mat från ${chef.business_name || chef.full_name}. Upptäck autentiska maträtter lagade med kärlek.`}
+        keywords={`${chef.business_name}, hemlagad mat, ${chef.address || "Stockholm"}`}
+        localBusinessData={{
+          name: chef.business_name || chef.full_name,
+          description: `Hemkock på Homechef`,
+          address: chef.address,
+          rating: 4.8,
+          reviewCount: 42,
+        }}
+      />
+      
+      <div className="min-h-screen bg-background">
+        {/* Chef Header */}
+        <section className="bg-gradient-hero py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto text-center relative">
+              <div className="absolute top-0 right-0">
+                <ShareButtons 
+                  title={chef.business_name || chef.full_name}
+                  description={`Beställ hemlagad mat från ${chef.business_name || chef.full_name} på Homechef`}
+                  className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                />
               </div>
-            )}
-            <div className="flex items-center justify-center gap-4 text-white/90">
-              <div className="flex items-center">
-                <Star className="w-5 h-5 fill-yellow-400 text-yellow-400 mr-1" />
-                <span>4.8 (42 recensioner)</span>
-              </div>
-              <div className="flex items-center">
-                <Clock className="w-5 h-5 mr-1" />
-                <span>30-45 min tillagning</span>
+              <ChefHat className="w-16 h-16 text-white mx-auto mb-4" />
+              <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                {chef.business_name || chef.full_name}
+              </h1>
+              {chef.address && (
+                <div className="flex items-center justify-center text-white/90 mb-6">
+                  <MapPin className="w-5 h-5 mr-2" />
+                  <span>{chef.address}</span>
+                </div>
+              )}
+              <div className="flex items-center justify-center gap-4 text-white/90">
+                <div className="flex items-center">
+                  <Star className="w-5 h-5 fill-yellow-400 text-yellow-400 mr-1" />
+                  <span>4.8 (42 recensioner)</span>
+                </div>
+                <div className="flex items-center">
+                  <Clock className="w-5 h-5 mr-1" />
+                  <span>30-45 min tillagning</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
       {/* Dishes Section */}
       <section className="py-12">
@@ -250,8 +273,9 @@ const ChefProfile = () => {
             </div>
           )}
         </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </>
   );
 };
 

@@ -107,8 +107,10 @@ const Footer = () => {
 
         <div className="border-t border-border pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-muted-foreground text-xs">
           <p>&copy; 2025 Homechef. Alla rättigheter förbehållna.</p>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap justify-center gap-4">
             <Link to="/about" className="hover:text-primary transition-colors">Om oss</Link>
+            <Link to="/press" className="hover:text-primary transition-colors">Press</Link>
+            <Link to="/referral" className="hover:text-primary transition-colors">Bjud in vänner</Link>
             <Link to="/privacy-policy" className="hover:text-primary transition-colors">Sekretesspolicy</Link>
             <Link to="/terms-of-service" className="hover:text-primary transition-colors">Villkor</Link>
           </div>
