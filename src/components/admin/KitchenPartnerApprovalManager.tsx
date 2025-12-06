@@ -110,31 +110,38 @@ export const KitchenPartnerApprovalManager = () => {
 
   const approveApplication = async (applicationId: string) => {
     try {
+      console.log('Approving kitchen partner:', applicationId);
+      
       const { error } = await supabase.rpc('approve_kitchen_partner', {
         partner_id: applicationId
       });
 
       if (error) {
-        toast.error('Fel vid godkännande av ansökan');
+        console.error('Error approving kitchen partner:', error);
+        toast.error(`Fel vid godkännande: ${error.message}`);
         return;
       }
 
       toast.success('Ansökan godkänd!');
       fetchApplications();
-    } catch {
-      toast.error('Något gick fel');
+    } catch (err) {
+      console.error('Unexpected error approving kitchen partner:', err);
+      toast.error('Något gick fel vid godkännande');
     }
   };
 
   const rejectApplication = async (applicationId: string, reason: string) => {
     try {
+      console.log('Rejecting kitchen partner:', applicationId, 'Reason:', reason);
+      
       const { error } = await supabase.rpc('reject_kitchen_partner', {
         partner_id: applicationId,
         reason: reason
       });
 
       if (error) {
-        toast.error('Fel vid avslag av ansökan');
+        console.error('Error rejecting kitchen partner:', error);
+        toast.error(`Fel vid avslag: ${error.message}`);
         return;
       }
 
@@ -142,8 +149,9 @@ export const KitchenPartnerApprovalManager = () => {
       setRejectionReason('');
       setSelectedApplicationId(null);
       fetchApplications();
-    } catch {
-      toast.error('Något gick fel');
+    } catch (err) {
+      console.error('Unexpected error rejecting kitchen partner:', err);
+      toast.error('Något gick fel vid avslag');
     }
   };
 
@@ -363,7 +371,6 @@ export const KitchenPartnerApprovalManager = () => {
                           <Button 
                             onClick={() => {
                               approveApplication(application.id);
-                              setSelectedApplication(null);
                             }}
                             className="bg-green-600 hover:bg-green-700 flex-1"
                           >
@@ -376,7 +383,6 @@ export const KitchenPartnerApprovalManager = () => {
                               <Button 
                                 variant="destructive"
                                 className="flex-1"
-                                onClick={() => setSelectedApplicationId(application.id)}
                               >
                                 <XCircle className="w-4 h-4 mr-2" />
                                 Neka ansökan
@@ -397,15 +403,13 @@ export const KitchenPartnerApprovalManager = () => {
                               <AlertDialogFooter>
                                 <AlertDialogCancel onClick={() => {
                                   setRejectionReason('');
-                                  setSelectedApplicationId(null);
                                 }}>
                                   Avbryt
                                 </AlertDialogCancel>
                                 <AlertDialogAction 
                                   onClick={() => {
-                                    if (selectedApplicationId && rejectionReason.trim()) {
-                                      rejectApplication(selectedApplicationId, rejectionReason);
-                                      setSelectedApplication(null);
+                                    if (rejectionReason.trim()) {
+                                      rejectApplication(application.id, rejectionReason);
                                     }
                                   }}
                                   disabled={!rejectionReason.trim()}
