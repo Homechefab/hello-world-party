@@ -56,6 +56,14 @@ interface ChefVideo {
   title: string;
   description: string;
   url?: string;
+  createdAt: string;
+}
+
+interface ChefVideo {
+  id: string;
+  title: string;
+  description: string;
+  url?: string;
   socialUrl?: string;
   platform?: 'tiktok' | 'instagram' | 'youtube';
   createdAt: string;
@@ -144,8 +152,6 @@ const ChefProfile = () => {
           title: v.title,
           description: v.description || '',
           url: v.video_url,
-          socialUrl: v.social_url,
-          platform: v.platform as 'tiktok' | 'instagram' | 'youtube' | undefined,
           createdAt: v.created_at
         }));
         setVideos(formattedVideos);
