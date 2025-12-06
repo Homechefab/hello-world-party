@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Save, Pencil } from "lucide-react";
+import { ChefRatingDisplay } from "./ChefRatingDisplay";
 
 export function ChefBioEditor() {
   const { user } = useAuth();
@@ -136,6 +137,8 @@ export function ChefBioEditor() {
           )}
         </p>
       )}
+      
+      <ChefRatingDisplay />
     </div>
   );
 }
