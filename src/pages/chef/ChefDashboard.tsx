@@ -11,6 +11,7 @@ import MenuManager from '@/components/chef/MenuManager';
 import IncomeReports from '@/components/chef/IncomeReports';
 import BusinessSetup from '@/components/chef/BusinessSetup';
 import { SocialMediaLinks } from '@/components/chef/SocialMediaLinks';
+import { ProfileImageUpload } from '@/components/chef/ProfileImageUpload';
 import { 
   CheckCircle, 
   AlertCircle, 
@@ -431,6 +432,7 @@ export const ChefDashboard = () => {
         </TabsContent>
 
         <TabsContent value="business" className="space-y-6">
+          <ProfileImageUpload />
           <BusinessSetup />
         </TabsContent>
 
