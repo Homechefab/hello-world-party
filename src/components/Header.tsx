@@ -91,7 +91,7 @@ const Header = () => {
         }}
       >
         {/* Logo - Simple text */}
-        <Link to="/" className="flex items-center">
+        <Link to="/" className="flex items-center ml-4 md:ml-8">
           <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary tracking-tight">
             Homechef
           </span>
