@@ -78,3 +78,6 @@ verify_jwt = false
 
 [functions.notify-admin-kitchen-partner]
 verify_jwt = false
+
+[functions.reset-chef-password]
+verify_jwt = false
