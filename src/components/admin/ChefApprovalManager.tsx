@@ -14,6 +14,7 @@ import {
   Download, 
   Eye,
   User,
+  KeyRound,
   FileText,
   AlertCircle,
   Building
@@ -54,6 +55,7 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
   const [showRejectionDialog, setShowRejectionDialog] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isApproving, setIsApproving] = useState<string | null>(null);
+  const [isResettingPassword, setIsResettingPassword] = useState<string | null>(null);
 
   // Applications will be loaded from Supabase
   const [applications, setApplications] = useState<ChefApplication[]>([]);
@@ -545,6 +547,48 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
                           </CardHeader>
                           <CardContent>
                             <p className="text-sm text-red-700">{application.rejectionReason}</p>
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {/* Password Reset for approved chefs */}
+                      {application.status === 'approved' && (
+                        <Card className="border-blue-200 bg-blue-50">
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-lg text-blue-800">Kontohantering</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <Button
+                              onClick={async () => {
+                                setIsResettingPassword(application.id);
+                                try {
+                                  const { data, error } = await supabase.functions.invoke('reset-chef-password', {
+                                    body: { chefId: application.id }
+                                  });
+
+                                  if (error) throw error;
+
+                                  toast({
+                                    title: "Lösenord återställt!",
+                                    description: `Nytt lösenord för ${data.email}: ${data.password}`,
+                                    duration: 60000, // Show for 60 seconds
+                                  });
+                                } catch (error: any) {
+                                  toast({
+                                    title: "Fel vid återställning",
+                                    description: error.message,
+                                    variant: "destructive"
+                                  });
+                                } finally {
+                                  setIsResettingPassword(null);
+                                }
+                              }}
+                              variant="outline"
+                              disabled={isResettingPassword === application.id}
+                            >
+                              <KeyRound className="w-4 h-4 mr-2" />
+                              {isResettingPassword === application.id ? 'Återställer...' : 'Återställ lösenord'}
+                            </Button>
                           </CardContent>
                         </Card>
                       )}
