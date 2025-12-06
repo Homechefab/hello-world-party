@@ -15,6 +15,8 @@ import { VideoDisplay } from "@/components/VideoDisplay";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/contexts/CartContext";
+import ShareButtons from "@/components/ShareButtons";
+import SEOHead from "@/components/SEOHead";
 
 // Mock data för en specifik rätt
 const dishData = {
@@ -105,14 +107,38 @@ const DishPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
+    <>
+      <SEOHead
+        title={dishData.title}
+        description={dishData.description}
+        keywords={`${dishData.title}, hemlagad mat, ${dishData.tags.join(", ")}`}
+        image={dishData.image}
+        productData={{
+          name: dishData.title,
+          description: dishData.description,
+          price: dishData.price,
+          currency: "SEK",
+          image: dishData.image,
+          rating: dishData.rating,
+          reviewCount: dishData.reviews,
+          availability: dishData.available > 0 ? "InStock" : "OutOfStock",
+        }}
+      />
       
-      <div className="container mx-auto px-4 py-8">
-        <Link to="/" className="inline-flex items-center gap-2 text-primary hover:underline mb-6">
-          <ArrowLeft className="w-4 h-4" />
-          Tillbaka till startsidan
-        </Link>
+      <div className="min-h-screen bg-background">
+        <Header />
+        
+        <div className="container mx-auto px-4 py-8">
+          <div className="flex items-center justify-between mb-6">
+            <Link to="/" className="inline-flex items-center gap-2 text-primary hover:underline">
+              <ArrowLeft className="w-4 h-4" />
+              Tillbaka till startsidan
+            </Link>
+            <ShareButtons 
+              title={dishData.title}
+              description={`${dishData.description} - ${dishData.price} kr`}
+            />
+          </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Vänster kolumn - Bild och beskrivning */}
@@ -363,8 +389,9 @@ const DishPage = () => {
             reviews={[]}
           />
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
