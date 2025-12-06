@@ -31,9 +31,12 @@ Homechef är Sveriges marknadsplats för hemlagad mat. Vi kopplar hemmakockar me
 - Kan ej logga in → "Glömt lösenord" eller kontakta support
 - Radera konto → E-posta support@homechef.se
 
-**KRAV KOCKAR:** Livsmedelstillstånd, godkänt kök, försäkring, F-skatt.
-**KRAV KÖKSPARTNERS:** Godkänt kök, försäkring, professionell utrustning.
-**KRAV RESTAURANGER:** Restaurangtillstånd, HACCP, försäkring.
+**KRAV KOCKAR:** 
+- KRAV: Godkännande från kommunen (livsmedelstillstånd)
+- REKOMMENDERAT: Försäkring och F-skatt (bra att ha men ej krav)
+
+**KRAV KÖKSPARTNERS:** Godkänt kök från kommunen. Försäkring rekommenderas.
+**KRAV RESTAURANGER:** Restaurangtillstånd från kommunen. HACCP och försäkring rekommenderas.
 
 **VIKTIGA LÄNKAR:**
 - /chef/application - Bli kock
@@ -62,7 +65,8 @@ ${GENERAL_KNOWLEDGE}
 
 **KOCKTIPS:**
 - Bli kock: /chef/application, godkännande 2-3 dagar
-- Krav: Livsmedelstillstånd, godkänt kök, F-skatt, försäkring
+- KRAV: Godkännande från kommunen (livsmedelstillstånd)
+- REKOMMENDERAT: Försäkring och F-skatt (bra att ha men ej krav)
 - Provision: 20% på försäljning
 - Utbetalning: Veckovis
 - Lägg till rätter: Kock-panelen → Menyer
