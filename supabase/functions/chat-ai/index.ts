@@ -22,17 +22,36 @@ Homechef är Sveriges första marknadsplats för hemlagad mat, grundat i Båstad
 - Telefon: 0734234686 (Vardagar 09:00-18:00, Helger 10:00-16:00)
 - E-post: support@homechef.se (privatpersoner), partner@homechef.se (säljare/partners)
 - Adress: Båstad, Sverige
+- Webbplats: www.homechef.se
+- Sociala medier: @homechef.se på Instagram och Facebook
+
+**ÖPPETTIDER FÖR KUNDSERVICE:**
+- Måndag-Fredag: 09:00-18:00
+- Lördag-Söndag: 10:00-16:00
+- Helgdagar: Stängt (men chatten fungerar alltid!)
+- Svarstid e-post: Inom 24 timmar på vardagar
 
 **BETALNING:**
 - Vi accepterar: Kort (Visa, Mastercard), Klarna
 - Alla betalningar är säkra via Stripe
 - Priser inkluderar moms (12% för mat)
+- Kvitton skickas automatiskt via e-post
+- Faktura via Klarna: Betala inom 14 dagar
 
 **LEVERANS & UPPHÄMTNING:**
 - Leverans tillgänglig där kocken erbjuder det
 - Upphämtning (Pick-Up) hos kocken
 - Leveranstider anges vid beställning
 - Mat som inte hämtas inom 30 min kan kasseras utan återbetalning
+- Leveransavgift: Varierar beroende på kock och avstånd (visas vid beställning)
+- Leveranstid: Vanligtvis 30-60 minuter
+- Spårning: Viss spårning tillgänglig via kockens uppdateringar
+
+**LEVERANSOMRÅDEN:**
+- Tillgänglighet beror på var kocken befinner sig
+- Varje kock anger sitt leveransområde
+- Vissa kockar erbjuder endast upphämtning
+- Använd sökfiltret för att hitta kockar som levererar till dig
 
 **AVBOKNINGSREGLER:**
 - Matbeställningar: Gratis avbokning 24h före leverans
@@ -45,6 +64,7 @@ Homechef är Sveriges första marknadsplats för hemlagad mat, grundat i Båstad
 - 1 poäng per 10 kr spenderat
 - Var 5:e beställning ger 10% rabatt
 - Poäng förfaller efter 12 månaders inaktivitet
+- Se dina poäng på /my-points
 
 **SERVICEAVGIFTER:**
 - Hemmakockar: 20% provision
@@ -52,10 +72,37 @@ Homechef är Sveriges första marknadsplats för hemlagad mat, grundat i Båstad
 - Kökspartners: 15% provision
 - Utbetalning sker veckovis
 
-**REKLAMATION:**
+**REKLAMATION & KLAGOMÅL:**
 - Kontakta kundservice inom 2 månader från upptäckt fel
 - Dokumentera problem med bilder
 - Beslut inom 5 arbetsdagar
+- Återbetalning sker inom 10 arbetsdagar till samma betalningsmetod
+
+**VANLIGA PROBLEM & LÖSNINGAR:**
+
+**Problem: Min beställning kom aldrig**
+Lösning: Kontakta kocken direkt via appen eller ring kundservice på 0734234686. Vi utreder och ordnar återbetalning om maten inte levererades.
+
+**Problem: Maten var kall/fel/dålig kvalitet**
+Lösning: Ta bilder och kontakta oss inom 24 timmar. Vi erbjuder ersättning eller återbetalning beroende på situation.
+
+**Problem: Jag har allergisk reaktion**
+Lösning: Sök medicinsk vård först! Kontakta sedan oss så utreder vi. Kockar ska alltid ange allergener.
+
+**Problem: Kocken svarar inte**
+Lösning: Prova igen efter 15 minuter. Om ingen respons, ring kundservice så hjälper vi till.
+
+**Problem: Fel pris/dubbeldebiterats**
+Lösning: Kontakta support@homechef.se med kvitto/beställningsnummer. Vi korrigerar inom 3-5 arbetsdagar.
+
+**Problem: Kan inte logga in**
+Lösning: Använd "Glömt lösenord" eller rensa cookies. Kontakta support om det inte fungerar.
+
+**Problem: Appen/sajten fungerar inte**
+Lösning: Uppdatera webbläsaren, rensa cache, eller prova annan webbläsare. Tekniska problem? E-posta teknik@homechef.se
+
+**Problem: Vill ta bort mitt konto**
+Lösning: E-posta support@homechef.se med "Radera konto" i ämnesraden. Vi bekräftar inom 30 dagar enligt GDPR.
 
 **KRAV FÖR HEMMAKOCKAR:**
 1. Godkänt kök enligt Livsmedelsverket
@@ -88,12 +135,29 @@ Homechef är Sveriges första marknadsplats för hemlagad mat, grundat i Båstad
 - /terms - Allmänna villkor
 - /privacy-policy - Sekretesspolicy
 - /customer-service - Kundservice
+- /my-orders - Mina beställningar
+- /my-points - Mina poäng och rabatter
+- /profile - Min profil
+- /bjud-in-vanner - Bjud in vänner (referralprogram)
+
+**SÄKERHET & TRYGGHET:**
+- Alla kockar genomgår bakgrundskontroll
+- Köken inspekteras innan godkännande
+- Betalningar är krypterade och säkra
+- Vi följer PCI-DSS för kortbetalningar
+- GDPR-kompatibel hantering av personuppgifter
+
+**HÅLLBARHET:**
+- Vi uppmuntrar lokala råvaror
+- Minskar matsvinn genom matlådor
+- Många kockar erbjuder vegetariska/veganska alternativ
 
 **JURIDISKT:**
 - Företag: Homechef AB
 - Adress: Båstad, Sverige
 - Tvister avgörs av ARN eller Stockholms tingsrätt
 - Vi följer svensk lag och GDPR
+- Personuppgiftsombud: privacy@homechef.se
 `;
 
 const KNOWLEDGE_BASE = {
