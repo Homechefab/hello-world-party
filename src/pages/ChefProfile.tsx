@@ -30,6 +30,7 @@ interface Chef {
   user_id: string;
   full_name: string;
   address: string;
+  profile_image_url?: string | null;
   tiktok_url?: string | null;
   facebook_url?: string | null;
   instagram_url?: string | null;
@@ -69,6 +70,7 @@ const ChefProfile = () => {
             id,
             business_name,
             user_id,
+            profile_image_url,
             tiktok_url,
             facebook_url,
             instagram_url,
@@ -99,6 +101,7 @@ const ChefProfile = () => {
           user_id: chefData.user_id,
           full_name: profileData?.full_name || 'Okänd kock',
           address: profileData?.address || '',
+          profile_image_url: chefData.profile_image_url,
           tiktok_url: chefData.tiktok_url,
           facebook_url: chefData.facebook_url,
           instagram_url: chefData.instagram_url,
@@ -194,7 +197,20 @@ const ChefProfile = () => {
                   className="bg-white/20 hover:bg-white/30 text-white border-white/30"
                 />
               </div>
-              <ChefHat className="w-16 h-16 text-white mx-auto mb-4" />
+              
+              {/* Profile Image */}
+              {chef.profile_image_url ? (
+                <div className="w-32 h-32 mx-auto mb-4 rounded-full border-4 border-white/30 overflow-hidden">
+                  <img 
+                    src={chef.profile_image_url} 
+                    alt={chef.business_name || chef.full_name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ) : (
+                <ChefHat className="w-16 h-16 text-white mx-auto mb-4" />
+              )}
+              
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
                 {chef.business_name || chef.full_name}
               </h1>
