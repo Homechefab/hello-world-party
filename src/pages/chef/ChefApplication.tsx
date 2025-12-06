@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DocumentUpload } from "@/components/DocumentUpload";
+import { useRole } from "@/hooks/useRole";
 
 
 
@@ -41,6 +42,16 @@ const steps = [
 const ChefApplication = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { role, loading: roleLoading } = useRole();
+
+  // Redirect approved chefs to dashboard
+  useEffect(() => {
+    if (!roleLoading && role === 'chef') {
+      navigate('/chef/dashboard');
+    }
+  }, [role, roleLoading, navigate]);
+
+  const [currentStep, setCurrentStep] = useState(1);
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [chefId, setChefId] = useState<string | null>(null);
