@@ -111,8 +111,8 @@ const ChefApplication = () => {
         const { data: newChef, error } = await supabase
           .from('chefs')
           .insert({
+            user_id: null, // Explicit null - kontot skapas vid godkännande
             business_name: formData.businessName || 'Mitt kök',
-            // user_id sätts INTE här - det skapas vid godkännande
             kitchen_approved: false,
             application_status: 'pending',
             full_name: formData.fullName,
