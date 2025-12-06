@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -63,55 +64,61 @@ export const ChefDashboard = () => {
 
   const loadChefData = useCallback(async () => {
     try {
-      // Since we're using mock users, let's create some mock data for the dashboard
-      // In a real app, we would query with the actual user's chef_id from Supabase
-      
-      // Mock dishes data
-      const mockDishes = [
-        {
-          id: '1',
-          name: 'Köttbullar med potatismos',
-          description: 'Klassiska svenska köttbullar med krämig potatismos och lingonsylt',
-          price: 145,
-          available: true,
-          category: 'Huvudrätter',
-          preparation_time: 30,
-          image_url: null
-        },
-        {
-          id: '2', 
-          name: 'Vegetarisk lasagne',
-          description: 'Ljuvlig lasagne med grönsaker och färsk basilika',
-          price: 135,
-          available: false,
-          category: 'Vegetariskt',
-          preparation_time: 45,
-          image_url: null
-        }
-      ];
+      // Get the current user's session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        setLoading(false);
+        return;
+      }
 
-      // Mock orders data
-      const mockOrders = [
-        {
-          id: '1',
-          status: 'pending',
-          total_amount: 145,
-          customer_name: 'Erik Kund',
-          created_at: new Date().toISOString(),
-          dishes: { name: 'Köttbullar med potatismos', price: 145 }
-        },
-        {
-          id: '2',
-          status: 'completed', 
-          total_amount: 270,
-          customer_name: 'Maria Kund',
-          created_at: new Date(Date.now() - 86400000).toISOString(), // Yesterday
-          dishes: { name: 'Vegetarisk lasagne', price: 135 }
-        }
-      ];
+      // Get chef_id for current user
+      const { data: chefData, error: chefError } = await supabase
+        .from('chefs')
+        .select('id')
+        .eq('user_id', session.user.id)
+        .maybeSingle();
 
-      setDishes(mockDishes);
-      setOrders(mockOrders);
+      if (chefError || !chefData) {
+        console.log('No chef profile found for user');
+        setLoading(false);
+        return;
+      }
+
+      // Fetch real dishes for this chef
+      const { data: dishesData, error: dishesError } = await supabase
+        .from('dishes')
+        .select('*')
+        .eq('chef_id', chefData.id)
+        .order('created_at', { ascending: false });
+
+      if (dishesError) {
+        console.error('Error loading dishes:', dishesError);
+      } else {
+        setDishes(dishesData || []);
+      }
+
+      // Fetch real orders for this chef
+      const { data: ordersData, error: ordersError } = await supabase
+        .from('orders')
+        .select('*, order_items(dish_id, quantity, dishes(name, price))')
+        .eq('chef_id', chefData.id)
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      if (ordersError) {
+        console.error('Error loading orders:', ordersError);
+      } else {
+        // Transform orders to match expected format
+        const transformedOrders = (ordersData || []).map(order => ({
+          id: order.id,
+          status: order.status,
+          total_amount: order.total_amount,
+          customer_name: 'Kund', // We don't have customer name in orders table
+          created_at: order.created_at,
+          dishes: order.order_items?.[0]?.dishes || { name: 'Okänd rätt', price: 0 }
+        }));
+        setOrders(transformedOrders);
+      }
 
     } catch (error) {
       console.error('Error loading chef data:', error);
