@@ -118,6 +118,7 @@ const App = () => {
             <Route path="/auth" element={<PublicLayout><Auth /></PublicLayout>} />
             <Route path="/notification-signup" element={<PublicLayout><NotificationSignup /></PublicLayout>} />
             <Route path="/chef/application" element={<PublicLayout><ChefApplication /></PublicLayout>} />
+            <Route path="/chef/safety-rules" element={<PublicLayout><KitchenRequirements /></PublicLayout>} />
             <Route path="/chef/application-status" element={<RoleBasedLayout><ApplicationStatus /></RoleBasedLayout>} />
             
             <Route path="/payment-success" element={<PublicLayout><PaymentSuccess /></PublicLayout>} />
