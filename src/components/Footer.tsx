@@ -1,6 +1,5 @@
 import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
-import homechefLogo from "@/assets/homechef-logo-modern.png";
 
 const Footer = () => {
   return (
@@ -10,11 +9,9 @@ const Footer = () => {
           {/* Brand */}
           <div className="space-y-3">
             <Link to="/" className="flex items-center">
-              <img 
-                src={homechefLogo} 
-                alt="Homechef" 
-                className="h-20 w-auto object-contain"
-              />
+              <span className="text-2xl font-bold text-primary tracking-tight">
+                Homechef
+              </span>
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Sveriges första marknadsplats för hemlagad mat.
@@ -109,7 +106,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-border pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-muted-foreground text-xs">
-          <p>&copy; 2024 Homechef. Alla rättigheter förbehållna.</p>
+          <p>&copy; 2025 Homechef. Alla rättigheter förbehållna.</p>
           <div className="flex gap-4">
             <Link to="/about" className="hover:text-primary transition-colors">Om oss</Link>
             <Link to="/privacy-policy" className="hover:text-primary transition-colors">Sekretesspolicy</Link>
