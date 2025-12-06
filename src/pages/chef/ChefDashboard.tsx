@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
+import { ChefProfileAvatar } from '@/components/chef/ChefProfileAvatar';
 import { Badge } from '@/components/ui/badge';
 import { HygieneQuestionnaire } from '@/components/HygieneQuestionnaire';
 import { VideoUpload } from '@/components/VideoUpload';
@@ -170,9 +171,7 @@ export const ChefDashboard = () => {
         <Card className="mb-8 border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10">
           <CardContent className="pt-6">
             <div className="flex flex-col md:flex-row items-center gap-6">
-              <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center flex-shrink-0">
-                <ChefHat className="w-8 h-8 text-white" />
-              </div>
+              <ChefProfileAvatar size="md" className="flex-shrink-0" />
               <div className="flex-1 text-center md:text-left">
                 <h3 className="text-xl font-bold mb-2">Välkommen som ny kock! 🎉</h3>
                 <p className="text-muted-foreground mb-4">
