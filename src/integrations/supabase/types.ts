@@ -32,6 +32,7 @@ export type Database = {
           municipality_approval_date: string | null
           phone: string | null
           postal_code: string | null
+          profile_image_url: string | null
           rejection_reason: string | null
           snapchat_url: string | null
           specialties: string | null
@@ -56,6 +57,7 @@ export type Database = {
           municipality_approval_date?: string | null
           phone?: string | null
           postal_code?: string | null
+          profile_image_url?: string | null
           rejection_reason?: string | null
           snapchat_url?: string | null
           specialties?: string | null
@@ -80,6 +82,7 @@ export type Database = {
           municipality_approval_date?: string | null
           phone?: string | null
           postal_code?: string | null
+          profile_image_url?: string | null
           rejection_reason?: string | null
           snapchat_url?: string | null
           specialties?: string | null
