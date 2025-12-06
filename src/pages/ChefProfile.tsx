@@ -9,6 +9,7 @@ import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import ShareButtons from "@/components/ShareButtons";
 import SEOHead from "@/components/SEOHead";
+import { VideoDisplay } from "@/components/VideoDisplay";
 
 // Custom TikTok icon
 const TikTokIcon = ({ className }: { className?: string }) => (
@@ -50,10 +51,21 @@ interface Dish {
   available: boolean | null;
 }
 
+interface ChefVideo {
+  id: string;
+  title: string;
+  description: string;
+  url?: string;
+  socialUrl?: string;
+  platform?: 'tiktok' | 'instagram' | 'youtube';
+  createdAt: string;
+}
+
 const ChefProfile = () => {
   const { chefId } = useParams<{ chefId: string }>();
   const [chef, setChef] = useState<Chef | null>(null);
   const [dishes, setDishes] = useState<Dish[]>([]);
+  const [videos, setVideos] = useState<ChefVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
   const { toast } = useToast();
@@ -116,8 +128,27 @@ const ChefProfile = () => {
           .eq('available', true);
 
         if (dishesError) throw dishesError;
-
         setDishes(dishesData || []);
+
+        // Fetch chef's videos
+        const { data: videosData, error: videosError } = await supabase
+          .from('chef_videos')
+          .select('*')
+          .eq('chef_id', chefId)
+          .order('created_at', { ascending: false });
+
+        if (videosError) throw videosError;
+        
+        const formattedVideos: ChefVideo[] = (videosData || []).map((v: any) => ({
+          id: v.id,
+          title: v.title,
+          description: v.description || '',
+          url: v.video_url,
+          socialUrl: v.social_url,
+          platform: v.platform as 'tiktok' | 'instagram' | 'youtube' | undefined,
+          createdAt: v.created_at
+        }));
+        setVideos(formattedVideos);
       } catch (error) {
         console.error('Error fetching chef data:', error);
       } finally {
@@ -284,8 +315,17 @@ const ChefProfile = () => {
           </div>
         </section>
 
-      {/* Dishes Section */}
-      <section className="py-12">
+        {/* Videos Section */}
+        {videos.length > 0 && (
+          <section className="py-12 bg-secondary/30">
+            <div className="container mx-auto px-4">
+              <VideoDisplay videos={videos} showAll className="mb-0" />
+            </div>
+          </section>
+        )}
+
+        {/* Dishes Section */}
+        <section className="py-12">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8">Maträtter från {chef.business_name || chef.full_name}</h2>
           
