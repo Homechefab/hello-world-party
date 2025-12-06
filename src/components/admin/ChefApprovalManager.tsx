@@ -210,10 +210,19 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
 
         await fetchApplications();
 
-        toast({
-          title: "Ansökan godkänd!",
-          description: `Inloggningsuppgifter har skickats till kockens email (${data?.email})`,
-        });
+        // Show credentials if email failed
+        if (data?.emailSent) {
+          toast({
+            title: "Ansökan godkänd!",
+            description: `Inloggningsuppgifter har skickats till kockens email (${data?.email})`,
+          });
+        } else {
+          toast({
+            title: "Ansökan godkänd!",
+            description: `OBS: Mejlet kunde inte skickas. Inloggningsuppgifter: ${data?.email} / ${data?.password}`,
+            duration: 30000, // Show for 30 seconds so admin can copy
+          });
+        }
 
         setSelectedApplication(null);
       } catch (error: any) {
