@@ -36,6 +36,7 @@ const Terms = () => {
                 <li>Matupplevelser</li>
                 <li>Reklamation och ångerrätt</li>
                 <li>Kundrecensioner</li>
+                <li>Kundanmälningar</li>
                 <li>Homechefs rättigheter</li>
                 <li>Homechefs rätt att agera mot användare</li>
                 <li>Övrigt</li>
@@ -560,146 +561,278 @@ const Terms = () => {
                 <li>Relaterade till den faktiska beställningen</li>
               </ul>
               <p className="text-muted-foreground mt-3">
-                Homechef förbehåller sig rätten att ta bort olämpliga recensioner.
+                Vi utför kontroller av recensioner och för det fall en lämnad recension enligt vårt eget 
+                gottfinnande bedöms vara olaglig, i strid med dessa Villkor eller annars inte i 
+                överensstämmelse med våra värderingar, har vi rätt att ta bort recensionen från Plattformen.
+              </p>
+              <p className="text-muted-foreground mt-2">
+                Om Kund ofta lämnar recensioner som har uppenbart olagligt innehåll har vi rätt att 
+                tillfälligt stänga av Kunden från Plattformen efter att en förhandsvarning utfärdats.
               </p>
             </section>
 
-            {/* 18. HOMECHEFS RÄTTIGHETER */}
+            {/* 18. KUNDANMÄLNINGAR */}
             <section className="space-y-4 mt-8">
-              <h2 className="text-2xl font-semibold">18. Homechefs rättigheter</h2>
-              
-              <div>
-                <h3 className="text-lg font-medium mb-2">18.1 Immateriella rättigheter</h3>
-                <p className="text-muted-foreground">
-                  Allt innehåll på Plattformen, inklusive men inte begränsat till text, bilder, logotyper, 
-                  grafik, design och programkod, är skyddat av upphovsrätt och andra immateriella rättigheter 
-                  som tillhör Homechef AB eller våra licensgivare. Kopiering, distribution eller annan 
-                  användning utan skriftligt tillstånd är förbjuden.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium mb-2">18.2 Respekt för egendom</h3>
-                <p className="text-muted-foreground">
-                  Du får inte använda automatiserade verktyg för att skrapa data från Plattformen eller på 
-                  annat sätt försöka få obehörig åtkomst till systemet.
-                </p>
-              </div>
-            </section>
-
-            {/* 19. HOMECHEFS RÄTT ATT AGERA MOT ANVÄNDARE */}
-            <section className="space-y-4 mt-8">
-              <h2 className="text-2xl font-semibold">19. Homechefs rätt att agera mot användare</h2>
-              
-              <div>
-                <h3 className="text-lg font-medium mb-2">19.1 Tillfällig eller omedelbar avstängning</h3>
-                <p className="text-muted-foreground mb-2">
-                  Homechef förbehåller sig rätten att omedelbart stänga av eller avsluta Ditt konto om:
-                </p>
-                <ul className="list-disc list-inside text-muted-foreground ml-4 space-y-1">
-                  <li>Du bryter mot dessa Villkor</li>
-                  <li>Du upprepade gånger får negativa omdömen (Säljare)</li>
-                  <li>Du inte uppfyller kraven för livsmedelssäkerhet (Säljare)</li>
-                  <li>Du bedriver bedräglig verksamhet</li>
-                  <li>Du agerar våldsamt, hotfullt eller kränkande</li>
-                  <li>Du skadar Homechefs varumärke eller rykte</li>
-                  <li>Du kringgår Plattformen för direkta transaktioner</li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium mb-2">19.2 Klagomålshantering</h3>
-                <p className="text-muted-foreground">
-                  Om Du vill överklaga ett beslut om avstängning eller annan åtgärd, kontakta vår kundservice. 
-                  Vi behandlar alla klagomål och meddelar beslut inom 10 arbetsdagar.
-                </p>
-              </div>
-            </section>
-
-            {/* 20. ÖVRIGT */}
-            <section className="space-y-4 mt-8">
-              <h2 className="text-2xl font-semibold">20. Övrigt</h2>
-              
-              <div>
-                <h3 className="text-lg font-medium mb-2">20.1 Plattformens tillgänglighet</h3>
-                <p className="text-muted-foreground">
-                  Homechef strävar efter att Plattformen ska vara tillgänglig dygnet runt, men garanterar 
-                  inte oavbruten tillgång. Planerat underhåll kan påverka tillgängligheten.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium mb-2">20.2 Force majeure</h3>
-                <p className="text-muted-foreground">
-                  Homechef ansvarar inte för förseningar eller brister i Tjänsten som orsakas av 
-                  omständigheter utanför vår kontroll, såsom naturkatastrofer, krig, strejk, pandemi, 
-                  myndighetsåtgärder, elavbrott eller andra oförutsedda händelser.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium mb-2">20.3 Ändringar av villkoren</h3>
-                <p className="text-muted-foreground">
-                  Homechef har rätt att när som helst uppdatera eller ändra Villkoren. Vid betydande 
-                  ändringar underrättar vi Dig via e-post minst 30 dagar innan de träder i kraft. 
-                  Fortsatt användning av Tjänsten efter att ändringar trätt i kraft innebär att Du 
-                  accepterar de nya villkoren.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-medium mb-2">20.4 Ansvarsbegränsning</h3>
-                <p className="text-muted-foreground mb-2">
-                  Homechef fungerar som en förmedlingsplattform och ansvarar inte för:
-                </p>
-                <ul className="list-disc list-inside text-muted-foreground ml-4 space-y-1">
-                  <li>Kvaliteten, säkerheten eller smaken på mat från Säljare</li>
-                  <li>Förseningar eller uteblivna leveranser orsakade av Säljare eller tredje part</li>
-                  <li>Allergiska reaktioner eller matförgiftning</li>
-                  <li>Tvister mellan Säljare och Kunder som inte kan lösas via kundservice</li>
-                  <li>Indirekta skador, följdskador eller utebliven vinst</li>
-                </ul>
-                <p className="text-muted-foreground mt-2">
-                  Homechefs maximala ansvar är begränsat till det belopp Kunden har betalat för aktuell beställning.
-                </p>
-              </div>
-            </section>
-
-            {/* 21. TILLÄMPLIG LAG OCH TVISTLÖSNING */}
-            <section className="space-y-4 mt-8">
-              <h2 className="text-2xl font-semibold">21. Tillämplig lag och tvistlösning</h2>
+              <h2 className="text-2xl font-semibold">18. Kundanmälningar</h2>
               <p className="text-muted-foreground mb-3">
-                Dessa Villkor regleras av svensk lag. Tvister ska i första hand lösas genom förhandling. 
-                Om parterna inte kan enas ska tvisten avgöras av:
+                Kund har alltid rätt att anmäla information eller innehåll på Plattformen som de anser 
+                utgör olagligt innehåll till vår kundservice.
+              </p>
+              <p className="text-muted-foreground mb-2">
+                Notera att för det fall Du ofta lämnar in anmälningar eller klagomål som är uppenbart 
+                ogrundade, har vi rätt att tillfälligt avbryta behandlingen av Dina anmälningar eller 
+                klagomål. Tillfälligt avbrott kommer genomföras i fall där:
               </p>
               <ul className="list-disc list-inside text-muted-foreground ml-4 space-y-1">
-                <li>Allmänna reklamationsnämnden (ARN) för konsumenttvister</li>
-                <li>Svensk allmän domstol med Stockholms tingsrätt som första instans</li>
+                <li>Du redan har skickat in en anmälan om samma innehåll tidigare och att anmälan redan granskats av oss</li>
+                <li>Din anmälan är uppenbart ogrundad och/eller påhittad och/eller Du uppenbart inte agerar med goda avsikter</li>
+                <li>Din anmälan saknar grundläggande argument och/eller stödjande fakta</li>
               </ul>
-              <p className="text-muted-foreground mt-3">
-                Du kan även använda EU:s plattform för tvistlösning online: 
-                <a href="https://ec.europa.eu/consumers/odr" className="text-primary hover:underline ml-1">
+            </section>
+
+            {/* 19. HOMECHEFS RÄTTIGHETER */}
+            <section className="space-y-4 mt-8">
+              <h2 className="text-2xl font-semibold">19. Homechefs rättigheter</h2>
+              
+              <div>
+                <h3 className="text-lg font-medium mb-2">19.1 Respekt för Plattformen</h3>
+                <p className="text-muted-foreground">
+                  Produkter som säljs via Plattformen är avsedda för enskilt bruk och otillåten kommersiell 
+                  användning av Produkter eller Plattformen är strikt förbjuden. Du åtar Dig att inte sälja 
+                  vidare eller överlåta någon rättighet eller skyldighet i relation till Homechef.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-medium mb-2">19.2 Immateriella rättigheter</h3>
+                <p className="text-muted-foreground">
+                  Alla upphovsrätter, varumärken, varunamn, logotyper och andra immateriella rättigheter 
+                  som innehas eller används av oss samt de som är inkluderade i Plattformen eller Homechefs 
+                  marknadsföringsmaterial är vår egen, annan licensgivares, eller Säljarens egendom och 
+                  får inte återskapas, distribueras, säljas, användas, publiceras, överföras, modifieras, 
+                  kopieras eller användas (helt eller delvis) utan vårt skriftliga samtycke.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-medium mb-2">19.3 Respekt för egendom</h3>
+                <p className="text-muted-foreground">
+                  Du får inte, oavsett ändamål, manipulera, försöka få obehörig åtkomst till, ändra, hacka 
+                  eller på annat sätt justera vår egendom, såsom vårt material, vår mjukvara, hårdvara, 
+                  källkoder eller information.
+                </p>
+              </div>
+            </section>
+
+            {/* 20. HOMECHEFS RÄTT ATT AGERA MOT ANVÄNDARE */}
+            <section className="space-y-4 mt-8">
+              <h2 className="text-2xl font-semibold">20. Homechefs rätt att agera mot användare</h2>
+              
+              <div>
+                <h3 className="text-lg font-medium mb-2">20.1 Tillfällig eller omedelbar avstängning</h3>
+                <p className="text-muted-foreground mb-3">
+                  För det fall Du ofta tillhandahåller innehåll på Plattformen som vi bedömer som uppenbart 
+                  olagligt (t.ex. om innehållet är uppenbart kränkande, trakasserande, främjar hatpropaganda 
+                  eller på annat sätt uppenbart bryter mot dessa Villkor) förbehåller vi oss rätten att 
+                  under en rimlig tidsperiod och efter att ha utfärdat en förhandsvarning, tillfälligt 
+                  stänga av Dig från Plattformen.
+                </p>
+                <p className="text-muted-foreground mb-3">
+                  Vi kommer alltid tillhandahålla Dig med en tydlig och specifik motivering till vårt 
+                  beslut och den tillfälliga avstängningen kommer, i första hand, endast pågå upp till 
+                  som mest 15 dagar. Om Ditt beteende bedöms allvarligt kan vi dock besluta att avsluta 
+                  Ditt konto med omedelbar verkan, men Du får alltid ett e-postmeddelande därom.
+                </p>
+                <p className="text-muted-foreground mb-2">
+                  Vi förbehåller oss rätten att stänga av konton med omedelbar verkan om Du:
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground ml-4 space-y-1">
+                  <li>Bryter mot dessa Villkor</li>
+                  <li>Missbrukar våra tjänster</li>
+                  <li>Orsakar skada eller besvär för oss, våra Säljare eller våra övriga Kunder</li>
+                  <li>Lägger upprepade falska beställningar eller reklamationer</li>
+                  <li>Inte uppfyller livsmedelssäkerhetskraven (Säljare)</li>
+                  <li>Upprepade gånger får negativa omdömen (Säljare)</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-medium mb-2">20.2 Internt system för hantering av klagomål</h3>
+                <p className="text-muted-foreground mb-3">
+                  Om Du tar emot ett beslut från oss om avlägsnande av innehåll, tillfällig avstängning 
+                  eller avslutat konto, kan Du klaga på beslutet. Information om hur och var överklagande 
+                  ska lämnas kommer att tillhandahållas med beslutet.
+                </p>
+                <p className="text-muted-foreground">
+                  Notera att överklagandet måste lämnas in av Dig inom sex (6) månader från dagen Du 
+                  mottar beslutet. Vi behandlar alla klagomål och meddelar beslut inom 10 arbetsdagar.
+                </p>
+              </div>
+            </section>
+
+            {/* 21. ÖVRIGT */}
+            <section className="space-y-4 mt-8">
+              <h2 className="text-2xl font-semibold">21. Övrigt</h2>
+              
+              <div>
+                <h3 className="text-lg font-medium mb-2">21.1 Plattformens tillgänglighet</h3>
+                <p className="text-muted-foreground mb-3">
+                  Vi strävar hela tiden efter att Du ska ha en så bra kundupplevelse som möjligt men vi 
+                  kan inte garantera att tillgången till Plattformen sker på ett sätt som är säkert, 
+                  lägligt, oavbrutet, fritt från fel, tekniska svårigheter, defekter eller virus.
+                </p>
+                <p className="text-muted-foreground">
+                  Tillfälliga störningar kan följaktligen förekomma på Plattformen som en följd av 
+                  planerade eller reguljära systemunderhåll, stilleståndstid beroende på internet eller 
+                  elektronisk kommunikation, force majeure eller andra faktorer utom vår kontroll.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-medium mb-2">21.2 Tredje parts länkar och webbsidor</h3>
+                <p className="text-muted-foreground">
+                  Plattformen kan innehålla länkar till tredje parts webbsidor, applikationer eller 
+                  annonser och genom att klicka på dessa länkar är Du medveten om att det görs på egen 
+                  risk. Homechef varken kontrollerar eller godkänner tredje parts webbsidor och är 
+                  därför inte ansvariga för innehållet på dessa länkade sidor.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-medium mb-2">21.3 Tillsyn</h3>
+                <p className="text-muted-foreground">
+                  Homechefs verksamhet är registrerad hos Miljö- och hälsoskyddsnämnden. Denna registrering 
+                  innebär att verksamheten granskas regelbundet av lokal tillsynsmyndighet. Homechef 
+                  accepterar bara Säljare som är registrerade livsmedelsverksamheter för att hantera 
+                  eller förbereda Produkter i form av måltider eller livsmedel.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-medium mb-2">21.4 Force majeure</h3>
+                <p className="text-muted-foreground">
+                  Homechef förbehåller sig rätten att avbryta genomförandet av en beställning vid 
+                  force majeure-liknande händelser såsom epidemi eller pandemi, naturkatastrofer, krig, 
+                  terroristattacker, politiska oroligheter, strejk, lockout, blockad, eldsvåda, 
+                  olyckshändelse eller annan omständighet utanför Homechefs rimliga kontroll.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-medium mb-2">21.5 Homechefs ytterligare rättigheter</h3>
+                <p className="text-muted-foreground mb-2">
+                  Utöver vad som redan följer av dessa Villkor förbehåller sig Homechef rätten att:
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground ml-4 space-y-1">
+                  <li>Överlåta sina rättigheter och skyldigheter enligt Villkoren till tredje part</li>
+                  <li>Kräva kompensation för eventuella skador som Homechef lider till följd av Ditt 
+                      eventuella missbruk av Plattformen eller övriga brott mot dessa Villkor</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-medium mb-2">21.6 Ansvarsbegränsning</h3>
+                <p className="text-muted-foreground mb-2">
+                  Följande begränsningar gäller avseende Homechefs ansvar gentemot Dig:
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground ml-4 space-y-1">
+                  <li>Homechef ansvarar inte för att Produkterna lämpar sig för det specifika syfte Du 
+                      avser använda dem till, annat än vad som anges i Villkoren eller produktinformationen</li>
+                  <li>Homechef ansvarar inte för några direkta eller indirekta skador orsakade av Din 
+                      egen användning av Plattformen (gäller ej uppsåt eller grov oaktsamhet)</li>
+                  <li>Homechefs maximala ansvar är begränsat till det belopp Du har betalat för 
+                      aktuell beställning</li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-medium mb-2">21.7 Ändringar av Villkoren</h3>
+                <p className="text-muted-foreground">
+                  Homechef har rätt att när som helst uppdatera eller ändra Villkoren. De Villkor som är 
+                  tillämpliga på Din beställning är den version som finns tillgänglig på Plattformen vid 
+                  beställningstillfället. Vid betydande ändringar av Villkoren åtar vi oss att underrätta 
+                  Dig därom minst 30 dagar innan de träder i kraft.
+                </p>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-medium mb-2">21.8 Relationen till appbutiksleverantörer</h3>
+                <p className="text-muted-foreground mb-2">
+                  Notera att dessa Villkor endast ingås mellan Dig och oss och inte med appbutiksleverantörer 
+                  (t.ex. Apple Inc. eller Google Inc.). Vad gäller användande av vår mobilapp:
+                </p>
+                <ul className="list-disc list-inside text-muted-foreground ml-4 space-y-1">
+                  <li>Du åtar Dig att använda mobilappen i enlighet med gällande villkor från aktuell appbutiksleverantör</li>
+                  <li>Vi, och inte appbutiksleverantören, är ensamt ansvariga för vår mobilapp och dess innehåll</li>
+                  <li>Appbutiksleverantören har ingen skyldighet eller ansvar gentemot Dig avseende mobilappen</li>
+                  <li>Vi ansvarar för och hanterar ensamt samtliga eventuella krav rörande mobilappen</li>
+                </ul>
+              </div>
+            </section>
+
+            {/* 22. TILLÄMPLIG LAG OCH TVISTLÖSNING */}
+            <section className="space-y-4 mt-8">
+              <h2 className="text-2xl font-semibold">22. Tillämplig lag och tvistlösning</h2>
+              <p className="text-muted-foreground mb-3">
+                Villkoren är upprättade, och ska tolkas, i enlighet med svensk lag.
+              </p>
+              <p className="text-muted-foreground mb-3">
+                Tvist mellan Dig och Homechef ska i första hand försöka lösas genom överenskommelse. 
+                För det fall vi och Du inte enas ska tvisten, för det fall Du köpt Produkter via 
+                Plattformen i egenskap av privatperson/konsument, avgöras av Allmänna Reklamationsnämnden 
+                (ARN). Homechef följer ARN:s rekommendationer. I annat fall ska tvisten slutligt avgöras 
+                av allmän domstol med Stockholms tingsrätt som första instans.
+              </p>
+              <p className="text-muted-foreground">
+                Som privatperson/konsument bosatt inom EU har Du också rätt att använda Dig av 
+                EU-kommissionens ODR-plattform (European Online Dispute Resolutions) rörande tvistlösning 
+                via internet:{' '}
+                <a href="https://ec.europa.eu/consumers/odr" className="text-primary hover:underline">
                   ec.europa.eu/consumers/odr
                 </a>
               </p>
             </section>
 
-            {/* 22. KONTAKTUPPGIFTER */}
+            {/* 23. KONTAKTUPPGIFTER */}
             <section className="space-y-4 mt-8">
-              <h2 className="text-2xl font-semibold">22. Kontaktuppgifter</h2>
+              <h2 className="text-2xl font-semibold">23. Kontaktuppgifter</h2>
               <p className="text-muted-foreground mb-3">
-                Om Du har frågor om dessa Villkor eller vill komma i kontakt med oss:
+                Om Du har några frågor om Plattformen, Produkter eller beställningar eller om Du upplever 
+                några problem med Ditt konto, är Du välkommen att kontakta vår kundservice:
               </p>
               <div className="bg-muted/50 p-4 rounded-lg">
-                <p className="font-semibold">Homechef AB</p>
+                <p className="font-semibold text-lg">Homechef AB</p>
                 <p className="text-muted-foreground">Org.nr: XXX-XXXXXX</p>
-                <p className="text-muted-foreground">E-post: support@homechef.se</p>
-                <p className="text-muted-foreground">Telefon: 08-XXX XX XX</p>
-                <p className="text-muted-foreground">Adress: Stockholm, Sverige</p>
+                <p className="text-muted-foreground mt-2">
+                  <strong>E-post:</strong> support@homechef.se (privatpersoner)
+                </p>
+                <p className="text-muted-foreground">
+                  <strong>E-post:</strong> partner@homechef.se (Säljare och partners)
+                </p>
+                <p className="text-muted-foreground">
+                  <strong>Telefon:</strong> 08-XXX XX XX
+                </p>
+                <p className="text-muted-foreground">
+                  <strong>Adress:</strong> Stockholm, Sverige
+                </p>
               </div>
               <p className="text-muted-foreground mt-4">
+                Du hittar också svar på många vanliga frågor under fliken "Hjälpcenter" på Plattformen. 
                 Vår kundservice är tillgänglig vardagar 09:00-18:00 och helger 10:00-16:00.
               </p>
+            </section>
+
+            {/* Fotnoter */}
+            <section className="space-y-4 mt-8 border-t pt-6">
+              <h2 className="text-xl font-semibold">Fotnoter</h2>
+              <ol className="list-decimal list-inside text-sm text-muted-foreground space-y-2 ml-4">
+                <li>Istället för "konto" så används ibland begreppet "profil" i dessa Villkor och på 
+                    Plattformen, men de två begreppen har samma betydelse.</li>
+                <li>Om ångerfristens sista dag infaller under en lördag, söndag eller en helgdag 
+                    förlängs ångerfristen så att den även gäller nästkommande vardag.</li>
+                <li>Säljare som registrerar sig på Plattformen accepterar att Homechef tar ut serviceavgift 
+                    enligt gällande prislistor (20% för Hemmakockar, 18% för Restauranger, 15% för Kökspartners).</li>
+              </ol>
             </section>
           </CardContent>
         </Card>
