@@ -166,6 +166,14 @@ export const ChefDashboard = () => {
         <p className="text-muted-foreground">Hantera din hemlagade mat verksamhet</p>
       </div>
 
+      {/* Chef profile section */}
+      <div className="flex items-center gap-4 mb-8">
+        <ChefProfileAvatar size="lg" />
+        <div>
+          <p className="text-sm text-muted-foreground">Klicka på bilden för att ladda upp din profilbild</p>
+        </div>
+      </div>
+
       {/* Welcome banner for new chefs */}
       {stats.totalDishes === 0 && (
         <Card className="mb-8 border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10">
