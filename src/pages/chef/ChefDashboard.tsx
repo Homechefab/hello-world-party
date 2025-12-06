@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { ChefProfileAvatar } from '@/components/chef/ChefProfileAvatar';
+import { ChefBioEditor } from '@/components/chef/ChefBioEditor';
 import { Badge } from '@/components/ui/badge';
 import { HygieneQuestionnaire } from '@/components/HygieneQuestionnaire';
 import { VideoUpload } from '@/components/VideoUpload';
@@ -167,11 +168,12 @@ export const ChefDashboard = () => {
       </div>
 
       {/* Chef profile section */}
-      <div className="flex items-center gap-4 mb-8">
-        <ChefProfileAvatar size="lg" />
-        <div>
-          <p className="text-sm text-muted-foreground">Klicka på bilden för att ladda upp din profilbild</p>
+      <div className="flex items-start gap-6 mb-8 p-4 bg-muted/30 rounded-lg">
+        <div className="flex flex-col items-center gap-2">
+          <ChefProfileAvatar size="lg" />
+          <p className="text-xs text-muted-foreground text-center">Klicka för att<br/>ladda upp bild</p>
         </div>
+        <ChefBioEditor />
       </div>
 
       {/* Welcome banner for new chefs */}
