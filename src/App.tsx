@@ -73,6 +73,8 @@ import Privacy from "./pages/Privacy";
 import DataDeletion from "./pages/DataDeletion";
 import Terms from "./pages/Terms";
 import LogoConcepts from "./pages/LogoConcepts";
+import Press from "./pages/Press";
+import Referral from "./pages/Referral";
 
 const queryClient = new QueryClient();
 
@@ -126,6 +128,9 @@ const App = () => {
             <Route path="/terms" element={<PublicLayout><Terms /></PublicLayout>} />
             <Route path="/terms-of-service" element={<PublicLayout><Terms /></PublicLayout>} />
             <Route path="/data-deletion" element={<PublicLayout><DataDeletion /></PublicLayout>} />
+            <Route path="/press" element={<PublicLayout><Press /></PublicLayout>} />
+            <Route path="/referral" element={<PublicLayout><Referral /></PublicLayout>} />
+            <Route path="/bjud-in-vanner" element={<PublicLayout><Referral /></PublicLayout>} />
 
             {/* Protected routes */}
             <Route path="/dashboard" element={<RoleBasedLayout><Dashboard /></RoleBasedLayout>} />
