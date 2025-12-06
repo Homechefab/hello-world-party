@@ -67,36 +67,34 @@ const ChefApplication = () => {
     // När man går från steg 2 till 3, skapa chef-ansökan
     if (currentStep === 2) {
       try {
-        // Hämta current user
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (!user) {
+        // Validera att kontakt-email är ifylld
+        if (!formData.contactEmail) {
           toast({
             title: "Fel",
-            description: "Du måste vara inloggad för att skicka in ansökan.",
+            description: "Du måste ange en kontakt-email.",
             variant: "destructive"
           });
           return;
         }
 
-        // Kolla om användaren redan har en ansökan
+        // Kolla om det redan finns en ansökan med samma contact_email
         const { data: existingApplication } = await supabase
           .from('chefs')
           .select('id, application_status')
-          .eq('user_id', user.id)
+          .eq('contact_email', formData.contactEmail)
           .maybeSingle();
 
-        // Om användaren har en aktiv eller godkänd ansökan, blockera ny ansökan
+        // Om det finns en aktiv eller godkänd ansökan, blockera ny ansökan
         if (existingApplication && ['pending', 'under_review', 'approved'].includes(existingApplication.application_status || '')) {
           toast({
             title: "Ansökan finns redan",
-            description: `Du har redan en ${existingApplication.application_status === 'approved' ? 'godkänd' : 'pågående'} ansökan.`,
+            description: `Det finns redan en ${existingApplication.application_status === 'approved' ? 'godkänd' : 'pågående'} ansökan för denna email.`,
             variant: "destructive"
           });
           return;
         }
 
-        // Om användaren har en nekad ansökan, ta bort den först
+        // Om det finns en nekad ansökan, ta bort den först
         if (existingApplication && existingApplication.application_status === 'rejected') {
           await supabase
             .from('chefs')
@@ -109,12 +107,12 @@ const ChefApplication = () => {
           });
         }
 
-        // Skapa ny chef-ansökan
+        // Skapa ny chef-ansökan UTAN user_id - kontot skapas vid godkännande
         const { data: newChef, error } = await supabase
           .from('chefs')
           .insert({
             business_name: formData.businessName || 'Mitt kök',
-            user_id: user.id,
+            // user_id sätts INTE här - det skapas vid godkännande
             kitchen_approved: false,
             application_status: 'pending',
             full_name: formData.fullName,
