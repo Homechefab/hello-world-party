@@ -46,12 +46,13 @@ const ChefApplication = () => {
 
   // Redirect approved chefs to dashboard
   useEffect(() => {
+    console.log('ChefApplication: role check', { role, roleLoading });
     if (!roleLoading && role === 'chef') {
-      navigate('/chef/dashboard');
+      console.log('ChefApplication: Redirecting to chef dashboard');
+      navigate('/chef/dashboard', { replace: true });
     }
   }, [role, roleLoading, navigate]);
 
-  const [currentStep, setCurrentStep] = useState(1);
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [chefId, setChefId] = useState<string | null>(null);
