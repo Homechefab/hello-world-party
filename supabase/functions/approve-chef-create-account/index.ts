@@ -177,28 +177,37 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Profile and role created");
 
-    // Send welcome email
-    const emailHtml = generateWelcomeEmail(chef.full_name, homechefEmail, password);
-    
-    const { error: emailError } = await resend.emails.send({
-      from: "Homechef <onboarding@resend.dev>",
-      to: [chef.contact_email],
-      subject: "Välkommen till Homechef! Dina inloggningsuppgifter",
-      html: emailHtml,
-    });
+    // Try to send welcome email (but don't fail if it doesn't work)
+    let emailSent = false;
+    try {
+      const emailHtml = generateWelcomeEmail(chef.full_name, homechefEmail, password);
+      
+      const { error: emailError } = await resend.emails.send({
+        from: "Homechef <onboarding@resend.dev>",
+        to: [chef.contact_email],
+        subject: "Välkommen till Homechef! Dina inloggningsuppgifter",
+        html: emailHtml,
+      });
 
-    if (emailError) {
-      console.error("Email sending error:", emailError);
-      throw new Error("Kunde inte skicka välkomstmejl");
+      if (emailError) {
+        console.error("Email sending error (non-fatal):", emailError);
+      } else {
+        emailSent = true;
+        console.log("Welcome email sent to:", chef.contact_email);
+      }
+    } catch (emailErr) {
+      console.error("Email sending exception (non-fatal):", emailErr);
     }
-
-    console.log("Welcome email sent to:", chef.contact_email);
 
     return new Response(
       JSON.stringify({
         success: true,
         email: homechefEmail,
-        message: "Kock godkänd och välkomstmejl skickat",
+        password: password, // Return password so admin can see it if email failed
+        emailSent: emailSent,
+        message: emailSent 
+          ? "Kock godkänd och välkomstmejl skickat" 
+          : "Kock godkänd! OBS: Mejlet kunde inte skickas. Inloggningsuppgifter: " + homechefEmail + " / " + password,
       }),
       {
         status: 200,
