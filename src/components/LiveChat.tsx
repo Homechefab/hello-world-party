@@ -6,6 +6,43 @@ import { MessageCircle, X, Send, User, Bot, Clock, Minimize2 } from "lucide-reac
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { Link } from "react-router-dom";
+
+// Function to parse message text and convert links to clickable elements
+const parseMessageWithLinks = (text: string) => {
+  // Match paths like /chef/application or full URLs
+  const linkRegex = /(\/[a-zA-Z0-9\-\/]+|https?:\/\/[^\s]+)/g;
+  const parts = text.split(linkRegex);
+  
+  return parts.map((part, index) => {
+    if (part.match(/^\/[a-zA-Z0-9\-\/]+$/)) {
+      // Internal link
+      return (
+        <Link 
+          key={index} 
+          to={part} 
+          className="underline font-medium hover:opacity-80"
+        >
+          {part}
+        </Link>
+      );
+    } else if (part.match(/^https?:\/\//)) {
+      // External link
+      return (
+        <a 
+          key={index} 
+          href={part} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="underline font-medium hover:opacity-80"
+        >
+          {part}
+        </a>
+      );
+    }
+    return part;
+  });
+};
 
 interface Message {
   id: string;
@@ -245,7 +282,7 @@ const LiveChat = () => {
                         <span className="text-xs opacity-75">{message.senderName}</span>
                         <span className="text-xs opacity-75">{formatTime(message.timestamp)}</span>
                       </div>
-                      <p className="text-sm">{message.text}</p>
+                      <p className="text-sm">{parseMessageWithLinks(message.text)}</p>
                     </div>
                   </div>
                 ))}
