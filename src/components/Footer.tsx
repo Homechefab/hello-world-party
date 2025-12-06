@@ -33,8 +33,8 @@ const Footer = () => {
           <div className="space-y-3">
             <h4 className="font-semibold text-foreground text-sm">För köpare</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/" className="hover:text-primary transition-colors">Sök runt</Link></li>
-              <li><Link to="/" className="hover:text-primary transition-colors">Populära kockar</Link></li>
+              <li><Link to="/search" className="hover:text-primary transition-colors">Sök runt</Link></li>
+              <li><Link to="/chef-search" className="hover:text-primary transition-colors">Populära kockar</Link></li>
               <li><Link to="/how-it-works" className="hover:text-primary transition-colors">Så fungerar det</Link></li>
               <li><Link to="/secure-payments" className="hover:text-primary transition-colors">Säkra betalningar</Link></li>
               <li><Link to="/customer-service" className="hover:text-primary transition-colors">Kundservice</Link></li>
