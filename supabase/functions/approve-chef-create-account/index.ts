@@ -41,11 +41,11 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Chef found:", chef.full_name);
 
-    // Check if chef already has a user_id (already approved before)
+    // Check if chef already has a user_id (user applied while logged in)
     if (chef.user_id) {
-      console.log("Chef already has user_id, updating status only");
+      console.log("Chef already has user_id, updating status and assigning role");
       
-      // Just update status
+      // Update chef status
       const { error: updateError } = await supabase
         .from("chefs")
         .update({
@@ -60,10 +60,53 @@ const handler = async (req: Request): Promise<Response> => {
         throw new Error("Kunde inte uppdatera kock-profil");
       }
 
+      // Update profile role
+      const { error: profileError } = await supabase
+        .from("profiles")
+        .update({
+          role: "chef",
+        })
+        .eq("id", chef.user_id);
+
+      if (profileError) {
+        console.error("Profile update error:", profileError);
+      }
+
+      // Add chef role to user_roles table
+      const { error: roleError } = await supabase
+        .from("user_roles")
+        .upsert({
+          user_id: chef.user_id,
+          role: "chef",
+        }, {
+          onConflict: 'user_id,role'
+        });
+
+      if (roleError) {
+        console.error("Role assignment error:", roleError);
+      }
+
+      console.log("Chef role assigned to user:", chef.user_id);
+
+      // Send notification email to their contact email
+      const emailHtml = generateApprovalNotificationEmail(chef.full_name);
+      
+      try {
+        await resend.emails.send({
+          from: "Homechef <onboarding@resend.dev>",
+          to: [chef.contact_email],
+          subject: "Din kockansökan har godkänts! 🎉",
+          html: emailHtml,
+        });
+        console.log("Approval notification sent to:", chef.contact_email);
+      } catch (emailErr) {
+        console.error("Email sending error:", emailErr);
+      }
+
       return new Response(
         JSON.stringify({
           success: true,
-          message: "Kock redan godkänd tidigare, status uppdaterad",
+          message: "Kock godkänd och roll tilldelad",
         }),
         {
           status: 200,
@@ -377,6 +420,88 @@ function generateWelcomeEmail(fullName: string, email: string, password: string)
             din dashboard
           </a>
         </p>
+        
+        <p>Om du har några frågor eller behöver hjälp, tveka inte att kontakta oss.</p>
+        
+        <p>Lycka till med din kokkärriär på Homechef!</p>
+        
+        <p>Med vänliga hälsningar,<br><strong>Homechef-teamet</strong></p>
+      </div>
+      
+      <div class="footer">
+        <p>Detta är ett automatiskt genererat mejl. Svara inte på detta meddelande.</p>
+        <p>© ${new Date().getFullYear()} Homechef. Alla rättigheter förbehållna.</p>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+function generateApprovalNotificationEmail(fullName: string): string {
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+          line-height: 1.6;
+          color: #333;
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+        .header {
+          background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+          color: white;
+          padding: 30px;
+          border-radius: 10px 10px 0 0;
+          text-align: center;
+        }
+        .content {
+          background: #ffffff;
+          padding: 30px;
+          border: 1px solid #e0e0e0;
+          border-top: none;
+        }
+        .button {
+          display: inline-block;
+          background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+          color: white;
+          padding: 12px 30px;
+          text-decoration: none;
+          border-radius: 5px;
+          margin: 20px 0;
+          font-weight: bold;
+        }
+        .footer {
+          background: #f5f5f5;
+          padding: 20px;
+          text-align: center;
+          border-radius: 0 0 10px 10px;
+          color: #666;
+          font-size: 14px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="header">
+        <h1>🎉 Grattis!</h1>
+      </div>
+      
+      <div class="content">
+        <h2>Hej ${fullName}!</h2>
+        
+        <p>Din ansökan om att bli kock hos Homechef har godkänts! Vi är glada att ha dig med oss.</p>
+        
+        <p>Du kan nu logga in med ditt befintliga konto och börja lägga upp rätter, hantera beställningar och mycket mer.</p>
+        
+        <center>
+          <a href="https://211e56d1-e9f5-433c-89dc-4ce2d7998096.lovableproject.com/chef/welcome" class="button">
+            Kom igång med guiden
+          </a>
+        </center>
         
         <p>Om du har några frågor eller behöver hjälp, tveka inte att kontakta oss.</p>
         
