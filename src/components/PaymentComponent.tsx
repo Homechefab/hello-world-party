@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import PaymentSelector from "./PaymentSelector";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
 interface PaymentComponentProps {
@@ -9,11 +8,14 @@ interface PaymentComponentProps {
   pickupTime: string;
   pickupAddress: string;
   specialRequests: string;
+  priceId?: string;
+  orderId?: string;
+  onPaymentSuccess?: () => void;
 }
 
 /**
  * @lovable
- * @description A component for handling payment processing with a clean and simple interface
+ * @description A component for handling payment processing with multiple payment methods
  * @example
  * ```tsx
  * <PaymentComponent 
@@ -32,44 +34,57 @@ const PaymentComponent = ({
   quantity, 
   pickupTime, 
   pickupAddress, 
-  specialRequests 
+  specialRequests,
+  priceId = "",
+  orderId,
+  onPaymentSuccess
 }: PaymentComponentProps) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handlePayment = async () => {
-    setIsSubmitting(true);
-    try {
-      // Payment processing logic will go here
-      console.log("Processing payment...", {
-        dishTitle,
-        dishPrice,
-        quantity,
-        pickupTime,
-        pickupAddress,
-        specialRequests,
-        totalAmount: dishPrice * quantity
-      });
-    } catch (error) {
-      console.error("Payment failed:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="w-full">
       <CardHeader>
-        <CardTitle>Complete Payment</CardTitle>
-        <CardDescription>Securely process your payment</CardDescription>
+        <CardTitle>Betalning</CardTitle>
+        <CardDescription>Välj betalningsmetod och slutför din beställning</CardDescription>
       </CardHeader>
-      <CardContent>
-        <Button 
-          onClick={handlePayment}
-          disabled={isSubmitting}
-          className="w-full"
-        >
-          {isSubmitting ? "Processing..." : "Pay Now"}
-        </Button>
+      <CardContent className="space-y-4">
+        <div className="bg-muted p-4 rounded-lg space-y-2 text-sm">
+          <div className="flex justify-between">
+            <span>Maträtt:</span>
+            <span className="font-medium">{dishTitle}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Antal:</span>
+            <span className="font-medium">{quantity}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Hämtningstid:</span>
+            <span className="font-medium">{pickupTime}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Adress:</span>
+            <span className="font-medium">{pickupAddress}</span>
+          </div>
+          {specialRequests && (
+            <div className="flex justify-between">
+              <span>Önskemål:</span>
+              <span className="font-medium">{specialRequests}</span>
+            </div>
+          )}
+          <div className="h-px bg-border my-2" />
+          <div className="flex justify-between font-semibold text-base">
+            <span>Totalt:</span>
+            <span>{dishPrice * quantity} kr</span>
+          </div>
+        </div>
+        
+        <PaymentSelector
+          priceId={priceId}
+          dishName={dishTitle}
+          price={dishPrice}
+          quantity={quantity}
+          description={`Hämtning: ${pickupTime} - ${pickupAddress}`}
+          orderId={orderId}
+          onPaymentSuccess={onPaymentSuccess}
+        />
       </CardContent>
     </Card>
   );
