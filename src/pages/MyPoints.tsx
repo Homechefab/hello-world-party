@@ -10,18 +10,18 @@ import { toast } from "sonner";
 
 interface UserPoints {
   id: string;
-  total_points: number;
-  current_points: number;
-  points_used: number;
-  total_purchases: number;
-  next_discount_at: number;
+  total_points: number | null;
+  current_points: number | null;
+  points_used: number | null;
+  total_purchases: number | null;
+  next_discount_at: number | null;
 }
 
 interface PointsTransaction {
   id: string;
   transaction_type: string;
   points_amount: number;
-  description: string;
+  description: string | null;
   created_at: string;
 }
 
@@ -37,7 +37,7 @@ const MyPoints = () => {
       const { data, error } = await supabase
         .from('user_points')
         .select('*')
-        .eq('user_id', user?.id)
+        .eq('user_id', user?.id || '')
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') throw error;
@@ -45,22 +45,24 @@ const MyPoints = () => {
       if (data) {
         setUserPoints(data);
       } else {
-        // Create initial points record
-        const { data: newRecord, error: insertError } = await supabase
-          .from('user_points')
-          .insert({
-            user_id: user?.id,
-            total_points: 0,
-            current_points: 0,
-            points_used: 0,
-            total_purchases: 0,
-            next_discount_at: 5
-          })
-          .select()
-          .maybeSingle();
+        // Create initial points record if doesn't exist
+        if (!data && user?.id) {
+          const { data: newRecord, error: insertError } = await supabase
+            .from('user_points')
+            .insert([{
+              user_id: user.id,
+              total_points: 0,
+              current_points: 0,
+              points_used: 0,
+              total_purchases: 0,
+              next_discount_at: 5
+            }])
+            .select()
+            .maybeSingle();
 
-        if (insertError) throw insertError;
-        setUserPoints(newRecord);
+          if (insertError) throw insertError;
+          setUserPoints(newRecord);
+        }
       }
     } catch (error) {
       console.error('Error fetching user points:', error);
@@ -73,7 +75,7 @@ const MyPoints = () => {
       const { data, error } = await supabase
         .from('points_transactions')
         .select('*')
-        .eq('user_id', user?.id)
+        .eq('user_id', user?.id || '')
         .order('created_at', { ascending: false })
         .limit(20);
 
@@ -108,14 +110,14 @@ const MyPoints = () => {
 
   const getProgressToNextDiscount = () => {
     if (!userPoints) return 0;
-    const purchasesToNext = userPoints.next_discount_at - userPoints.total_purchases;
+    const purchasesToNext = (userPoints.next_discount_at || 5) - (userPoints.total_purchases || 0);
     const progress = Math.max(0, 100 - (purchasesToNext / 5) * 100);
     return progress;
   };
 
   const getPurchasesToNextDiscount = () => {
     if (!userPoints) return 5;
-    return Math.max(0, userPoints.next_discount_at - userPoints.total_purchases);
+    return Math.max(0, (userPoints.next_discount_at || 5) - (userPoints.total_purchases || 0));
   };
 
   const getTransactionIcon = (type: string) => {
@@ -302,7 +304,7 @@ const MyPoints = () => {
                       <div className="flex items-center gap-3">
                         {getTransactionIcon(transaction.transaction_type)}
                         <div>
-                          <p className="font-medium text-sm">{transaction.description}</p>
+                          <p className="font-medium text-sm">{transaction.description || 'Transaktion'}</p>
                           <p className="text-xs text-muted-foreground">
                             {new Date(transaction.created_at).toLocaleDateString('sv-SE', {
                               year: 'numeric',
