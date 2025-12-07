@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import RoleBasedServices from "@/components/services/RoleBasedServices";
 import { useRole } from "@/hooks/useRole";
 import SEOHead from "@/components/SEOHead";
-
+import PhoneAssistant from "@/components/PhoneAssistant";
 
 const Index = () => {
   const { role } = useRole();
@@ -32,6 +32,7 @@ const Index = () => {
         )}
         <Features />
         <Footer />
+        <PhoneAssistant />
       </div>
     </>
   );
