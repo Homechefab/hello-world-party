@@ -882,6 +882,68 @@ export type Database = {
           },
         ]
       }
+      swish_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          date_paid: string | null
+          error_code: string | null
+          error_message: string | null
+          id: string
+          instruction_id: string
+          message: string | null
+          order_id: string | null
+          payee_alias: string
+          payer_alias: string
+          payment_reference: string | null
+          payment_request_token: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          date_paid?: string | null
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          instruction_id: string
+          message?: string | null
+          order_id?: string | null
+          payee_alias: string
+          payer_alias: string
+          payment_reference?: string | null
+          payment_request_token?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          date_paid?: string | null
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          instruction_id?: string
+          message?: string | null
+          order_id?: string | null
+          payee_alias?: string
+          payer_alias?: string
+          payment_reference?: string | null
+          payment_request_token?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "swish_payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_points: {
         Row: {
           created_at: string
