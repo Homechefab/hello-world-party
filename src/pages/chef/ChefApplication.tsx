@@ -589,7 +589,7 @@ const ChefApplication = () => {
                           <span className="font-medium">Namn:</span> {formData.fullName}
                         </div>
                         <div>
-                          <span className="font-medium">E-post:</span> {formData.email}
+                          <span className="font-medium">E-post:</span> {formData.contactEmail}
                         </div>
                         <div>
                           <span className="font-medium">Plats:</span> {formData.city}

@@ -39,9 +39,7 @@ export const OrderManagement = () => {
     try {
       const { data, error } = await supabase
         .from('orders')
-        .select(`
-          *
-        `)
+        .select(`*`)
         .eq('chef_id', 'chef1') // Using mock user ID
         .order('created_at', { ascending: false });
 
@@ -57,14 +55,7 @@ export const OrderManagement = () => {
         customer_name: 'Demo Kund',
         customer_phone: '08-123 456 78',
         pickup_instructions: order.special_instructions,
-        dishes: order.order_items?.map((item: unknown) => {
-          const typedItem = item as { dishes?: { name?: string; price?: number }; quantity: number };
-          return {
-            title: typedItem.dishes?.name || 'Okänd rätt',
-            quantity: typedItem.quantity,
-            price: typedItem.dishes?.price || 0
-          };
-        }) || []
+        dishes: [] as { title: string; quantity: number; price: number }[]
       })) || [];
 
       setOrders(transformedOrders);
