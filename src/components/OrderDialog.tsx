@@ -5,9 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Minus, Plus, ShoppingBag } from "lucide-react";
-import { StripeCheckout } from "./StripeCheckout";
+import PaymentSelector from "./PaymentSelector";
 import { useToast } from "@/hooks/use-toast";
-
 interface OrderDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -49,11 +48,11 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId }: OrderDialogPro
   if (showCheckout) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Betalning</DialogTitle>
             <DialogDescription>
-              Slutför din beställning med säker betalning via Stripe
+              Välj betalningsmetod och slutför din beställning
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
@@ -62,13 +61,15 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId }: OrderDialogPro
               {specialInstructions && (
                 <p><strong>Specialinstruktioner:</strong> {specialInstructions}</p>
               )}
+              <p><strong>Totalt:</strong> {totalPrice} kr</p>
             </div>
-            <StripeCheckout
+            <PaymentSelector
               priceId={stripePriceId}
               dishName={dish.title}
               price={dish.price}
               quantity={quantity}
               description={`Beställning från ${dish.seller}`}
+              onPaymentSuccess={() => onOpenChange(false)}
             />
             <Button 
               variant="outline" 
