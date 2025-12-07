@@ -9,8 +9,7 @@ import { Star, Clock, MapPin, Minus, Plus, ArrowLeft, ShoppingCart } from "lucid
 import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import ReviewSection from "@/components/ReviewSection";
-import PaymentComponent from "@/components/PaymentComponent";
-import { KlarnaPayment } from "@/components/KlarnaPayment";
+import PaymentSelector from "@/components/PaymentSelector";
 import { VideoDisplay } from "@/components/VideoDisplay";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
@@ -327,40 +326,20 @@ const DishPage = () => {
                         </DialogDescription>
                       </DialogHeader>
                       
-                      <div className="space-y-6">
-                        <KlarnaPayment
-                          dishTitle={dishData.title}
-                          dishPrice={dishData.price}
-                          quantity={quantity}
-                          onPaymentSuccess={() => {
-                            setShowPayment(false);
-                            toast({
-                              title: "Beställning genomförd!",
-                              description: "Du kommer att få en bekräftelse via e-post"
-                            });
-                          }}
-                        />
-                        
-                        <div className="relative">
-                          <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t" />
-                          </div>
-                          <div className="relative flex justify-center text-xs uppercase">
-                            <span className="bg-background px-2 text-muted-foreground">
-                              Eller
-                            </span>
-                          </div>
-                        </div>
-                        
-                        <PaymentComponent
-                          dishTitle={dishData.title}
-                          dishPrice={dishData.price}
-                          quantity={quantity}
-                          pickupTime={selectedTime}
-                          pickupAddress={dishData.cookAddress}
-                          specialRequests={specialRequests}
-                        />
-                      </div>
+                      <PaymentSelector
+                        priceId=""
+                        dishName={dishData.title}
+                        price={dishData.price}
+                        quantity={quantity}
+                        description={`Hämtning: ${selectedTime} - ${dishData.cookAddress}`}
+                        onPaymentSuccess={() => {
+                          setShowPayment(false);
+                          toast({
+                            title: "Beställning genomförd!",
+                            description: "Du kommer att få en bekräftelse via e-post"
+                          });
+                        }}
+                      />
                     </DialogContent>
                   </Dialog>
                 </div>
