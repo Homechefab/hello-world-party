@@ -52,7 +52,7 @@ export function SocialMediaLinks() {
       const { data, error } = await supabase
         .from("chefs")
         .select("tiktok_url, facebook_url, instagram_url, snapchat_url, kitchen_approved")
-        .eq("user_id", user?.id)
+        .eq("user_id", user?.id || '')
         .single();
 
       if (error) throw error;
@@ -74,7 +74,7 @@ export function SocialMediaLinks() {
   };
 
   const handleSave = async () => {
-    if (!user) return;
+    if (!user?.id) return;
 
     setSaving(true);
     try {

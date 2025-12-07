@@ -26,7 +26,7 @@ export function ProfileImageUpload() {
       const { data, error } = await supabase
         .from("chefs")
         .select("profile_image_url, kitchen_approved")
-        .eq("user_id", user?.id)
+        .eq("user_id", user?.id || '')
         .single();
 
       if (error) throw error;
@@ -44,7 +44,7 @@ export function ProfileImageUpload() {
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || !user) return;
+    if (!file || !user?.id) return;
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
@@ -87,7 +87,7 @@ export function ProfileImageUpload() {
       const { error: updateError } = await supabase
         .from("chefs")
         .update({ profile_image_url: urlWithCacheBuster })
-        .eq("user_id", user.id);
+        .eq("user_id", user.id || '');
 
       if (updateError) throw updateError;
 
@@ -105,7 +105,7 @@ export function ProfileImageUpload() {
   };
 
   const handleRemoveImage = async () => {
-    if (!user || !imageUrl) return;
+    if (!user?.id || !imageUrl) return;
 
     setUploading(true);
 
@@ -118,7 +118,7 @@ export function ProfileImageUpload() {
       const { error } = await supabase
         .from("chefs")
         .update({ profile_image_url: null })
-        .eq("user_id", user.id);
+        .eq("user_id", user.id || '');
 
       if (error) throw error;
 

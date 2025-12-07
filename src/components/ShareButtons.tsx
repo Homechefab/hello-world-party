@@ -30,7 +30,6 @@ const ShareButtons = ({
   const shareUrl = url || window.location.href;
   const encodedUrl = encodeURIComponent(shareUrl);
   const encodedTitle = encodeURIComponent(title);
-  const encodedDescription = encodeURIComponent(description);
 
   const shareLinks = {
     whatsapp: `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`,
@@ -136,7 +135,7 @@ const ShareButtons = ({
           )}
           {copied ? "Kopierad!" : "Kopiera länk"}
         </DropdownMenuItem>
-        {navigator.share && (
+        {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
           <DropdownMenuItem onClick={handleNativeShare}>
             <Share2 className="h-4 w-4 mr-2" />
             Fler alternativ...
