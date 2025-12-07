@@ -17,6 +17,10 @@ const PhoneAssistant = () => {
   const wsRef = useRef<WebSocket | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
+  const processorRef = useRef<ScriptProcessorNode | null>(null);
+  const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
+  const audioQueueRef = useRef<ArrayBuffer[]>([]);
+  const isPlayingRef = useRef(false);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -29,10 +33,21 @@ const PhoneAssistant = () => {
     try {
       setStatus('connecting');
       setTranscript([]);
+      audioQueueRef.current = [];
+      isPlayingRef.current = false;
 
       // Request microphone permission first
       try {
-        mediaStreamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaStreamRef.current = await navigator.mediaDevices.getUserMedia({ 
+          audio: {
+            sampleRate: 16000,
+            channelCount: 1,
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          } 
+        });
+        console.log('Microphone access granted');
       } catch (micError) {
         console.error('Microphone access denied:', micError);
         toast.error('Mikrofonåtkomst nekades. Tillåt mikrofon för att använda röstassistenten.');
@@ -41,6 +56,7 @@ const PhoneAssistant = () => {
       }
 
       // Get signed URL from our edge function
+      console.log('Fetching signed URL...');
       const { data, error } = await supabase.functions.invoke('phone-ai-token', {
         body: {}
       });
@@ -52,14 +68,14 @@ const PhoneAssistant = () => {
 
       if (!data?.signedUrl) {
         console.error('No signed URL returned:', data);
-        toast.error(data?.message || 'Röstassistenten är inte konfigurerad ännu. Lägg till ELEVENLABS_AGENT_ID.');
+        toast.error(data?.message || 'Röstassistenten är inte konfigurerad ännu.');
         setStatus('idle');
         return;
       }
 
-      console.log('Starting conversation with signed URL');
+      console.log('Got signed URL, connecting to ElevenLabs...');
 
-      // Initialize audio context
+      // Initialize audio context for playback
       audioContextRef.current = new AudioContext({ sampleRate: 16000 });
 
       // Connect via WebSocket
@@ -72,31 +88,97 @@ const PhoneAssistant = () => {
         setTranscript(prev => [...prev, '🟢 Ansluten! Börja prata med Emma.']);
         toast.success('Ansluten till röstassistenten Emma');
         
-        // Start sending audio
+        // Start sending audio after connection
         startAudioCapture();
       };
 
-      ws.onmessage = (event) => {
+      ws.onmessage = async (event) => {
         try {
-          const message = JSON.parse(event.data);
-          console.log('Message received:', message.type);
-
-          if (message.type === 'audio') {
+          // Check if it's binary audio data
+          if (event.data instanceof Blob) {
+            console.log('Received audio blob, size:', event.data.size);
             setIsSpeaking(true);
-            playAudio(message.audio);
-          } else if (message.type === 'agent_response') {
-            setTranscript(prev => [...prev, `Emma: ${message.text}`]);
-          } else if (message.type === 'user_transcript') {
-            setTranscript(prev => [...prev, `Du: ${message.text}`]);
-          } else if (message.type === 'audio_done') {
-            setIsSpeaking(false);
+            const arrayBuffer = await event.data.arrayBuffer();
+            queueAudioPlayback(arrayBuffer);
+            return;
+          }
+
+          // Parse JSON messages
+          const message = JSON.parse(event.data);
+          console.log('Message received:', message.type || message);
+
+          // Handle different ElevenLabs message types
+          switch (message.type) {
+            case 'conversation_initiation_metadata':
+              console.log('Conversation initialized:', message);
+              break;
+              
+            case 'audio':
+              // Base64 encoded audio
+              if (message.audio_event?.audio_base_64) {
+                setIsSpeaking(true);
+                const base64 = message.audio_event.audio_base_64;
+                const binaryString = atob(base64);
+                const bytes = new Uint8Array(binaryString.length);
+                for (let i = 0; i < binaryString.length; i++) {
+                  bytes[i] = binaryString.charCodeAt(i);
+                }
+                queueAudioPlayback(bytes.buffer);
+              }
+              break;
+              
+            case 'agent_response':
+              if (message.agent_response_event?.agent_response) {
+                setTranscript(prev => [...prev, `Emma: ${message.agent_response_event.agent_response}`]);
+              } else if (message.text) {
+                setTranscript(prev => [...prev, `Emma: ${message.text}`]);
+              }
+              break;
+              
+            case 'user_transcript':
+              if (message.user_transcription_event?.user_transcript) {
+                setTranscript(prev => [...prev, `Du: ${message.user_transcription_event.user_transcript}`]);
+              } else if (message.text) {
+                setTranscript(prev => [...prev, `Du: ${message.text}`]);
+              }
+              break;
+
+            case 'interruption':
+              console.log('User interrupted');
+              // Clear audio queue on interruption
+              audioQueueRef.current = [];
+              setIsSpeaking(false);
+              break;
+
+            case 'ping':
+              // Respond to ping with pong
+              if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ type: 'pong', event_id: message.ping_event?.event_id }));
+              }
+              break;
+
+            case 'agent_response_correction':
+              // Handle corrected response
+              if (message.agent_response_correction_event?.corrected_response) {
+                setTranscript(prev => {
+                  const newTranscript = [...prev];
+                  // Update last Emma message
+                  for (let i = newTranscript.length - 1; i >= 0; i--) {
+                    if (newTranscript[i].startsWith('Emma:')) {
+                      newTranscript[i] = `Emma: ${message.agent_response_correction_event.corrected_response}`;
+                      break;
+                    }
+                  }
+                  return newTranscript;
+                });
+              }
+              break;
+              
+            default:
+              console.log('Unhandled message type:', message.type, message);
           }
         } catch (e) {
-          // Binary audio data
-          if (event.data instanceof Blob) {
-            setIsSpeaking(true);
-            playAudioBlob(event.data);
-          }
+          console.error('Error parsing message:', e, event.data);
         }
       };
 
@@ -106,9 +188,10 @@ const PhoneAssistant = () => {
         setStatus('error');
       };
 
-      ws.onclose = () => {
-        console.log('WebSocket closed');
+      ws.onclose = (event) => {
+        console.log('WebSocket closed:', event.code, event.reason);
         setStatus('idle');
+        setIsSpeaking(false);
         setTranscript(prev => [...prev, '🔴 Samtalet avslutat.']);
       };
 
@@ -119,26 +202,81 @@ const PhoneAssistant = () => {
     }
   }, []);
 
+  const queueAudioPlayback = useCallback((audioData: ArrayBuffer) => {
+    audioQueueRef.current.push(audioData);
+    if (!isPlayingRef.current) {
+      playNextAudio();
+    }
+  }, []);
+
+  const playNextAudio = useCallback(async () => {
+    if (audioQueueRef.current.length === 0 || !audioContextRef.current) {
+      isPlayingRef.current = false;
+      setIsSpeaking(false);
+      return;
+    }
+
+    isPlayingRef.current = true;
+    const audioData = audioQueueRef.current.shift()!;
+
+    try {
+      // ElevenLabs sends PCM 16-bit audio at 16kHz
+      const int16Data = new Int16Array(audioData);
+      const float32Data = new Float32Array(int16Data.length);
+      
+      for (let i = 0; i < int16Data.length; i++) {
+        float32Data[i] = int16Data[i] / 32768.0;
+      }
+
+      const audioBuffer = audioContextRef.current.createBuffer(1, float32Data.length, 16000);
+      audioBuffer.getChannelData(0).set(float32Data);
+
+      const source = audioContextRef.current.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(audioContextRef.current.destination);
+      
+      source.onended = () => {
+        playNextAudio();
+      };
+      
+      source.start();
+    } catch (error) {
+      console.error('Error playing audio:', error);
+      playNextAudio(); // Continue with next audio even if this one fails
+    }
+  }, []);
+
   const startAudioCapture = useCallback(() => {
-    if (!mediaStreamRef.current || !wsRef.current || !audioContextRef.current) return;
+    if (!mediaStreamRef.current || !wsRef.current || !audioContextRef.current) {
+      console.error('Missing refs for audio capture');
+      return;
+    }
 
-    const source = audioContextRef.current.createMediaStreamSource(mediaStreamRef.current);
-    const processor = audioContextRef.current.createScriptProcessor(4096, 1, 1);
+    console.log('Starting audio capture...');
+    
+    // Create audio context for capture at 16kHz
+    const captureContext = new AudioContext({ sampleRate: 16000 });
+    
+    sourceRef.current = captureContext.createMediaStreamSource(mediaStreamRef.current);
+    processorRef.current = captureContext.createScriptProcessor(4096, 1, 1);
 
-    processor.onaudioprocess = (e) => {
+    processorRef.current.onaudioprocess = (e) => {
       if (wsRef.current?.readyState === WebSocket.OPEN && !isMuted) {
         const inputData = e.inputBuffer.getChannelData(0);
         const pcmData = convertFloat32ToInt16(inputData);
-        const base64Audio = btoa(String.fromCharCode(...new Uint8Array(pcmData.buffer)));
+        const base64Audio = arrayBufferToBase64(pcmData.buffer);
         
+        // Send audio in ElevenLabs format
         wsRef.current.send(JSON.stringify({
           user_audio_chunk: base64Audio
         }));
       }
     };
 
-    source.connect(processor);
-    processor.connect(audioContextRef.current.destination);
+    sourceRef.current.connect(processorRef.current);
+    processorRef.current.connect(captureContext.destination);
+    
+    console.log('Audio capture started');
   }, [isMuted]);
 
   const convertFloat32ToInt16 = (float32Array: Float32Array): Int16Array => {
@@ -150,54 +288,30 @@ const PhoneAssistant = () => {
     return int16Array;
   };
 
-  const playAudio = useCallback((base64Audio: string) => {
-    if (!audioContextRef.current) return;
+  const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
+    const bytes = new Uint8Array(buffer);
+    let binary = '';
+    const chunkSize = 0x8000;
     
-    try {
-      const binaryString = atob(base64Audio);
-      const bytes = new Uint8Array(binaryString.length);
-      for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-      }
-      
-      // Convert to audio buffer and play
-      const int16Data = new Int16Array(bytes.buffer);
-      const float32Data = new Float32Array(int16Data.length);
-      for (let i = 0; i < int16Data.length; i++) {
-        float32Data[i] = int16Data[i] / 0x8000;
-      }
-
-      const audioBuffer = audioContextRef.current.createBuffer(1, float32Data.length, 16000);
-      audioBuffer.getChannelData(0).set(float32Data);
-
-      const source = audioContextRef.current.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(audioContextRef.current.destination);
-      source.onended = () => setIsSpeaking(false);
-      source.start();
-    } catch (error) {
-      console.error('Error playing audio:', error);
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      const chunk = bytes.subarray(i, Math.min(i + chunkSize, bytes.length));
+      binary += String.fromCharCode.apply(null, Array.from(chunk));
     }
-  }, []);
-
-  const playAudioBlob = useCallback(async (blob: Blob) => {
-    if (!audioContextRef.current) return;
     
-    try {
-      const arrayBuffer = await blob.arrayBuffer();
-      const audioBuffer = await audioContextRef.current.decodeAudioData(arrayBuffer);
-      
-      const source = audioContextRef.current.createBufferSource();
-      source.buffer = audioBuffer;
-      source.connect(audioContextRef.current.destination);
-      source.onended = () => setIsSpeaking(false);
-      source.start();
-    } catch (error) {
-      console.error('Error playing audio blob:', error);
-    }
-  }, []);
+    return btoa(binary);
+  };
 
   const endConversation = useCallback(() => {
+    console.log('Ending conversation...');
+    
+    if (processorRef.current) {
+      processorRef.current.disconnect();
+      processorRef.current = null;
+    }
+    if (sourceRef.current) {
+      sourceRef.current.disconnect();
+      sourceRef.current = null;
+    }
     if (wsRef.current) {
       wsRef.current.close();
       wsRef.current = null;
@@ -210,6 +324,9 @@ const PhoneAssistant = () => {
       audioContextRef.current.close();
       audioContextRef.current = null;
     }
+    
+    audioQueueRef.current = [];
+    isPlayingRef.current = false;
     setStatus('idle');
     setIsSpeaking(false);
   }, []);
