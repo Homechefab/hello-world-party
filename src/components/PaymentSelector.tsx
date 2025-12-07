@@ -2,10 +2,11 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { CreditCard, Smartphone, Wallet } from "lucide-react";
+import { CreditCard, Wallet } from "lucide-react";
 import { StripeCheckout } from "./StripeCheckout";
 import SwishPayment from "./SwishPayment";
 import { KlarnaPayment } from "./KlarnaPayment";
+import swishLogo from "@/assets/swish-logo.png";
 
 type PaymentMethod = "stripe" | "swish" | "klarna";
 
@@ -70,7 +71,7 @@ const PaymentSelector = ({
             <CardContent className="flex items-center gap-3 p-4">
               <RadioGroupItem value="swish" id="swish" />
               <div className="flex items-center gap-2">
-                <Smartphone className="h-5 w-5 text-muted-foreground" />
+                <img src={swishLogo} alt="Swish" className="h-5 w-auto" />
                 <Label htmlFor="swish" className="cursor-pointer font-medium">
                   Swish
                 </Label>
