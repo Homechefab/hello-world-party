@@ -17,7 +17,7 @@ export const PublicLayout = ({ children }: PublicLayoutProps) => {
         {children}
       </main>
       
-      {/* Live Chat Widget */}
+      {/* Live Chat Widget with Voice Assistant */}
       <LiveChat />
     </div>
   );
