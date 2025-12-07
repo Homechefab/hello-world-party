@@ -9,6 +9,7 @@ import { RestaurantApprovalManager } from '@/components/admin/RestaurantApproval
 import { LoginLogsViewer } from '@/components/admin/LoginLogsViewer';
 import { UserManagement } from '@/components/admin/UserManagement';
 import { CommissionReports } from '@/components/admin/CommissionReports';
+import { PaymentOverview } from '@/components/admin/PaymentOverview';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Users, 
@@ -16,7 +17,8 @@ import {
   CheckCircle, 
   Clock,
   DollarSign,
-  TrendingUp
+  TrendingUp,
+  CreditCard
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
@@ -179,6 +181,11 @@ export const AdminDashboard = () => {
           </TabsTrigger>
           <TabsTrigger value="archive" className="whitespace-nowrap">Arkiv</TabsTrigger>
           <TabsTrigger value="commission" className="whitespace-nowrap">Provisionsunderlag</TabsTrigger>
+          <TabsTrigger value="payments" className="whitespace-nowrap">
+            <CreditCard className="h-4 w-4 mr-1 hidden sm:inline" />
+            <span className="hidden sm:inline">Betalningar</span>
+            <span className="sm:hidden">Betal.</span>
+          </TabsTrigger>
           <TabsTrigger value="users" className="whitespace-nowrap">
             <span className="hidden sm:inline">Användarhantering</span>
             <span className="sm:hidden">Användare</span>
@@ -217,6 +224,10 @@ export const AdminDashboard = () => {
 
         <TabsContent value="commission">
           <CommissionReports />
+        </TabsContent>
+
+        <TabsContent value="payments">
+          <PaymentOverview />
         </TabsContent>
 
         <TabsContent value="users">
