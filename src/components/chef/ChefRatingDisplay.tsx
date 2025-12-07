@@ -21,7 +21,7 @@ export function ChefRatingDisplay() {
       const { data: chefData, error: chefError } = await supabase
         .from("chefs")
         .select("id")
-        .eq("user_id", user?.id)
+        .eq("user_id", user?.id || '')
         .single();
 
       if (chefError || !chefData) {

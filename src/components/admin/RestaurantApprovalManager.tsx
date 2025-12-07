@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { CheckCircle, XCircle, Clock, Loader2, Eye, Download, FileText, User, Building } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, Loader2, Eye, Download, FileText, Building } from 'lucide-react';
 
 interface RestaurantDocument {
   id: string;
@@ -21,18 +21,18 @@ interface RestaurantDocument {
 interface Restaurant {
   id: string;
   business_name: string;
-  full_name: string;
-  contact_email: string;
-  phone: string;
-  address: string;
-  city: string;
-  postal_code: string;
-  restaurant_description: string;
-  cuisine_types: string;
-  application_status: string;
-  approved: boolean;
+  full_name: string | null;
+  contact_email: string | null;
+  phone: string | null;
+  address: string | null;
+  city: string | null;
+  postal_code: string | null;
+  restaurant_description: string | null;
+  cuisine_types: string | null;
+  application_status: string | null;
+  approved: boolean | null;
   rejection_reason: string | null;
-  created_at: string;
+  created_at: string | null;
   documents?: RestaurantDocument[];
 }
 
@@ -183,7 +183,7 @@ export const RestaurantApprovalManager = () => {
     }
   };
 
-  const [selectedForView, setSelectedForView] = useState<Restaurant | null>(null);
+  const [_selectedForView, setSelectedForView] = useState<Restaurant | null>(null);
 
   const ApplicationCard = ({ application }: { application: Restaurant }) => (
     <Card>

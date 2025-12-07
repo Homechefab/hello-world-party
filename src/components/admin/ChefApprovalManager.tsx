@@ -53,8 +53,8 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
   const [reviewNotes, setReviewNotes] = useState('');
   const [rejectionReason, setRejectionReason] = useState('');
   const [showRejectionDialog, setShowRejectionDialog] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [isApproving, setIsApproving] = useState<string | null>(null);
+  const [_loading, setLoading] = useState(true);
+  const [_isApproving, setIsApproving] = useState<string | null>(null);
   const [isResettingPassword, setIsResettingPassword] = useState<string | null>(null);
 
   // Applications will be loaded from Supabase
@@ -84,7 +84,7 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
       }
 
       // Hämta profiler separat för alla chef user_ids
-      const userIds = chefs?.map(chef => chef.user_id).filter(Boolean) || [];
+      const userIds = (chefs?.map(chef => chef.user_id).filter((id): id is string => id !== null)) || [];
       const { data: profiles } = await supabase
         .from('profiles')
         .select('id, full_name, email, phone, address')
@@ -112,8 +112,8 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
       });
 
       // Transform data to match ChefApplication interface
-      const transformedData = (chefs || []).map((chef) => {
-        const profile = profileMap.get(chef.user_id);
+      const transformedData: ChefApplication[] = (chefs || []).map((chef) => {
+        const profile = profileMap.get(chef.user_id || '');
         const chefDocuments = documentsMap.get(chef.id) || [];
         
         // Hitta senaste dokumentet för att få municipality
@@ -135,16 +135,16 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
             ? 'rejected' as const
             : 'pending' as const,
           appliedDate: new Date(chef.created_at).toLocaleDateString('sv-SE'),
-          rejectionReason: chef.rejection_reason,
+          rejectionReason: chef.rejection_reason ?? undefined,
           documents: {
             selfControlPlan: chefDocuments.length > 0 ? chefDocuments : undefined,
             businessLicense: undefined
           },
-          address: chef.address,
-          city: chef.city,
-          postalCode: chef.postal_code,
-          experience: chef.experience,
-          specialties: chef.specialties
+          address: chef.address ?? undefined,
+          city: chef.city ?? undefined,
+          postalCode: chef.postal_code ?? undefined,
+          experience: chef.experience ?? undefined,
+          specialties: chef.specialties ?? undefined
         };
       });
 

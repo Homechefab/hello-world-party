@@ -41,7 +41,7 @@ const MyOrders = () => {
       const { data, error } = await supabase
         .from('orders')
         .select('*')
-        .eq('customer_id', user?.id)
+        .eq('customer_id', user?.id || '')
         .order('created_at', { ascending: false });
 
       if (error) throw error;

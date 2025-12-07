@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Gift, Users, Copy, Check, Share2, MessageCircle, Facebook, Star } from "lucide-react";
+import { Gift, Users, Copy, Check, MessageCircle, Facebook, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import SEOHead from "@/components/SEOHead";
@@ -21,7 +21,7 @@ const Referral = () => {
 
   useEffect(() => {
     // Generate or fetch referral code based on user
-    if (user) {
+    if (user?.id) {
       // Generate a simple referral code based on user ID
       const code = `HC${user.id.substring(0, 6).toUpperCase()}`;
       setReferralCode(code);

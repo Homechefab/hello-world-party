@@ -26,7 +26,7 @@ export function ChefBioEditor() {
       const { data, error } = await supabase
         .from("chefs")
         .select("bio")
-        .eq("user_id", user?.id)
+        .eq("user_id", user?.id || '')
         .single();
 
       if (error) throw error;
@@ -41,7 +41,7 @@ export function ChefBioEditor() {
   };
 
   const handleSave = async () => {
-    if (!user) return;
+    if (!user?.id) return;
 
     setSaving(true);
     try {
