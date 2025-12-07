@@ -1,66 +1,42 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Phone, PhoneOff, Volume2, Mic, MicOff, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { useConversation } from '@11labs/react';
 
 type ConversationStatus = 'idle' | 'connecting' | 'connected' | 'error';
 
 const PhoneAssistant = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState<ConversationStatus>('idle');
+  const [status, setStatus] = useState<ConversationStatus>('idle');
   const [isMuted, setIsMuted] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const [transcript, setTranscript] = useState<string[]>([]);
-
-  const conversation = useConversation({
-    onConnect: () => {
-      console.log('Connected to ElevenLabs');
-      setConnectionStatus('connected');
-      setTranscript(prev => [...prev, '🟢 Ansluten! Börja prata med Emma.']);
-      toast.success('Ansluten till röstassistenten Emma');
-    },
-    onDisconnect: () => {
-      console.log('Disconnected from ElevenLabs');
-      setConnectionStatus('idle');
-      setTranscript(prev => [...prev, '🔴 Samtalet avslutat.']);
-    },
-    onMessage: (message) => {
-      console.log('Message received:', message);
-      if (message.message) {
-        const prefix = message.source === 'user' ? 'Du' : 'Emma';
-        setTranscript(prev => [...prev, `${prefix}: ${message.message}`]);
-      }
-    },
-    onError: (error) => {
-      console.error('Conversation error:', error);
-      toast.error('Ett fel uppstod i samtalet');
-      setConnectionStatus('error');
-    },
-  });
+  
+  const wsRef = useRef<WebSocket | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      if (conversation.status === 'connected') {
-        conversation.endSession();
-      }
+      endConversation();
     };
-  }, [conversation]);
+  }, []);
 
   const startConversation = useCallback(async () => {
     try {
-      setConnectionStatus('connecting');
+      setStatus('connecting');
       setTranscript([]);
 
       // Request microphone permission first
       try {
-        await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaStreamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true });
       } catch (micError) {
         console.error('Microphone access denied:', micError);
         toast.error('Mikrofonåtkomst nekades. Tillåt mikrofon för att använda röstassistenten.');
-        setConnectionStatus('idle');
+        setStatus('idle');
         return;
       }
 
@@ -77,35 +53,170 @@ const PhoneAssistant = () => {
       if (!data?.signedUrl) {
         console.error('No signed URL returned:', data);
         toast.error(data?.message || 'Röstassistenten är inte konfigurerad ännu. Lägg till ELEVENLABS_AGENT_ID.');
-        setConnectionStatus('idle');
+        setStatus('idle');
         return;
       }
 
       console.log('Starting conversation with signed URL');
 
-      // Start the conversation using the hook
-      await conversation.startSession({ signedUrl: data.signedUrl });
-      
+      // Initialize audio context
+      audioContextRef.current = new AudioContext({ sampleRate: 16000 });
+
+      // Connect via WebSocket
+      const ws = new WebSocket(data.signedUrl);
+      wsRef.current = ws;
+
+      ws.onopen = () => {
+        console.log('WebSocket connected to ElevenLabs');
+        setStatus('connected');
+        setTranscript(prev => [...prev, '🟢 Ansluten! Börja prata med Emma.']);
+        toast.success('Ansluten till röstassistenten Emma');
+        
+        // Start sending audio
+        startAudioCapture();
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const message = JSON.parse(event.data);
+          console.log('Message received:', message.type);
+
+          if (message.type === 'audio') {
+            setIsSpeaking(true);
+            playAudio(message.audio);
+          } else if (message.type === 'agent_response') {
+            setTranscript(prev => [...prev, `Emma: ${message.text}`]);
+          } else if (message.type === 'user_transcript') {
+            setTranscript(prev => [...prev, `Du: ${message.text}`]);
+          } else if (message.type === 'audio_done') {
+            setIsSpeaking(false);
+          }
+        } catch (e) {
+          // Binary audio data
+          if (event.data instanceof Blob) {
+            setIsSpeaking(true);
+            playAudioBlob(event.data);
+          }
+        }
+      };
+
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
+        toast.error('Anslutningsfel');
+        setStatus('error');
+      };
+
+      ws.onclose = () => {
+        console.log('WebSocket closed');
+        setStatus('idle');
+        setTranscript(prev => [...prev, '🔴 Samtalet avslutat.']);
+      };
+
     } catch (error) {
       console.error('Error starting conversation:', error);
       toast.error('Kunde inte starta röstsamtal. Försök igen.');
-      setConnectionStatus('idle');
+      setStatus('idle');
     }
-  }, [conversation]);
+  }, []);
 
-  const endConversation = useCallback(async () => {
+  const startAudioCapture = useCallback(() => {
+    if (!mediaStreamRef.current || !wsRef.current || !audioContextRef.current) return;
+
+    const source = audioContextRef.current.createMediaStreamSource(mediaStreamRef.current);
+    const processor = audioContextRef.current.createScriptProcessor(4096, 1, 1);
+
+    processor.onaudioprocess = (e) => {
+      if (wsRef.current?.readyState === WebSocket.OPEN && !isMuted) {
+        const inputData = e.inputBuffer.getChannelData(0);
+        const pcmData = convertFloat32ToInt16(inputData);
+        const base64Audio = btoa(String.fromCharCode(...new Uint8Array(pcmData.buffer)));
+        
+        wsRef.current.send(JSON.stringify({
+          user_audio_chunk: base64Audio
+        }));
+      }
+    };
+
+    source.connect(processor);
+    processor.connect(audioContextRef.current.destination);
+  }, [isMuted]);
+
+  const convertFloat32ToInt16 = (float32Array: Float32Array): Int16Array => {
+    const int16Array = new Int16Array(float32Array.length);
+    for (let i = 0; i < float32Array.length; i++) {
+      const s = Math.max(-1, Math.min(1, float32Array[i]));
+      int16Array[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+    }
+    return int16Array;
+  };
+
+  const playAudio = useCallback((base64Audio: string) => {
+    if (!audioContextRef.current) return;
+    
     try {
-      await conversation.endSession();
-      setConnectionStatus('idle');
-    } catch (error) {
-      console.error('Error ending conversation:', error);
-    }
-  }, [conversation]);
+      const binaryString = atob(base64Audio);
+      const bytes = new Uint8Array(binaryString.length);
+      for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+      }
+      
+      // Convert to audio buffer and play
+      const int16Data = new Int16Array(bytes.buffer);
+      const float32Data = new Float32Array(int16Data.length);
+      for (let i = 0; i < int16Data.length; i++) {
+        float32Data[i] = int16Data[i] / 0x8000;
+      }
 
-  const toggleMute = useCallback(async () => {
-    const newMutedState = !isMuted;
-    setIsMuted(newMutedState);
-    toast.info(newMutedState ? 'Mikrofon avstängd' : 'Mikrofon på');
+      const audioBuffer = audioContextRef.current.createBuffer(1, float32Data.length, 16000);
+      audioBuffer.getChannelData(0).set(float32Data);
+
+      const source = audioContextRef.current.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(audioContextRef.current.destination);
+      source.onended = () => setIsSpeaking(false);
+      source.start();
+    } catch (error) {
+      console.error('Error playing audio:', error);
+    }
+  }, []);
+
+  const playAudioBlob = useCallback(async (blob: Blob) => {
+    if (!audioContextRef.current) return;
+    
+    try {
+      const arrayBuffer = await blob.arrayBuffer();
+      const audioBuffer = await audioContextRef.current.decodeAudioData(arrayBuffer);
+      
+      const source = audioContextRef.current.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(audioContextRef.current.destination);
+      source.onended = () => setIsSpeaking(false);
+      source.start();
+    } catch (error) {
+      console.error('Error playing audio blob:', error);
+    }
+  }, []);
+
+  const endConversation = useCallback(() => {
+    if (wsRef.current) {
+      wsRef.current.close();
+      wsRef.current = null;
+    }
+    if (mediaStreamRef.current) {
+      mediaStreamRef.current.getTracks().forEach(track => track.stop());
+      mediaStreamRef.current = null;
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+    setStatus('idle');
+    setIsSpeaking(false);
+  }, []);
+
+  const toggleMute = useCallback(() => {
+    setIsMuted(prev => !prev);
+    toast.info(isMuted ? 'Mikrofon på' : 'Mikrofon avstängd');
   }, [isMuted]);
 
   if (!isOpen) {
@@ -125,9 +236,6 @@ const PhoneAssistant = () => {
       </div>
     );
   }
-
-  const isSpeaking = conversation.isSpeaking;
-  const status = connectionStatus;
 
   return (
     <div className="fixed bottom-6 left-6 z-50">

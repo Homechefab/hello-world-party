@@ -17,7 +17,6 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@11labs/react": "^0.2.0",
     "@capacitor/android": "^7.4.2",
     "@capacitor/core": "^7.4.4",
     "@capacitor/ios": "^7.4.2",
