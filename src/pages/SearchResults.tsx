@@ -136,9 +136,7 @@ const SearchResults = () => {
         if (dishError) throw dishError;
 
         // Get profiles for all users (chefs and dish chefs)
-        const allUserIds = [
-          ...(chefsData?.map(chef => chef.user_id) || [])
-        ];
+        const allUserIds = (chefsData?.map(chef => chef.user_id).filter((id): id is string => id !== null) || []);
         const uniqueUserIds = [...new Set(allUserIds)];
         
         const { data: profilesData, error: profilesError } = await supabase

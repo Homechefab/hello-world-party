@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Building, CheckCircle, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
+
 
 interface KitchenData {
   businessName: string;
@@ -32,7 +32,6 @@ interface KitchenData {
 
 export const KitchenPartnerOnboarding = () => {
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [formData, setFormData] = useState<KitchenData>({

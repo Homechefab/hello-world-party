@@ -106,21 +106,27 @@ const ChefProfile = () => {
           throw new Error('Chef not found');
         }
 
-        // Fetch profile info separately
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
-          .select('full_name, address')
-          .eq('id', chefData.user_id)
-          .maybeSingle();
+        // Fetch profile info separately if user_id exists
+        let profileFullName = 'Okänd kock';
+        let profileAddress = '';
+        if (chefData.user_id) {
+          const { data: fetchedProfile, error: profileError } = await supabase
+            .from('profiles')
+            .select('full_name, address')
+            .eq('id', chefData.user_id)
+            .maybeSingle();
 
-        if (profileError) throw profileError;
+          if (profileError) throw profileError;
+          profileFullName = fetchedProfile?.full_name || 'Okänd kock';
+          profileAddress = fetchedProfile?.address || '';
+        }
 
         setChef({
           id: chefData.id,
           business_name: chefData.business_name,
-          user_id: chefData.user_id,
-          full_name: profileData?.full_name || 'Okänd kock',
-          address: profileData?.address || '',
+          user_id: chefData.user_id || '',
+          full_name: profileFullName,
+          address: profileAddress,
           profile_image_url: chefData.profile_image_url,
           tiktok_url: chefData.tiktok_url,
           facebook_url: chefData.facebook_url,
