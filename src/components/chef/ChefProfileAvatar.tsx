@@ -39,7 +39,7 @@ export function ChefProfileAvatar({ size = "md", className = "" }: ChefProfileAv
       const { data, error } = await supabase
         .from("chefs")
         .select("profile_image_url")
-        .eq("user_id", user?.id)
+        .eq("user_id", user?.id || '')
         .single();
 
       if (error) throw error;
@@ -51,7 +51,7 @@ export function ChefProfileAvatar({ size = "md", className = "" }: ChefProfileAv
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || !user) return;
+    if (!file || !user?.id) return;
 
     if (!file.type.startsWith("image/")) {
       toast.error("Endast bilder är tillåtna");
@@ -86,7 +86,7 @@ export function ChefProfileAvatar({ size = "md", className = "" }: ChefProfileAv
       const { error: updateError } = await supabase
         .from("chefs")
         .update({ profile_image_url: urlWithCacheBuster })
-        .eq("user_id", user.id);
+        .eq("user_id", user.id || '');
 
       if (updateError) throw updateError;
 

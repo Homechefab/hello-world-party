@@ -22,7 +22,7 @@ const PreviewWrapper = ({ children, mockRole }: PreviewWrapperProps) => {
       email: 'test@example.com',
       full_name: 'Test User',
       role: mockRole,
-      roles: mockRole ? [mockRole] as unknown as string[] : [],
+      roles: mockRole ? [mockRole] : [],
       created_at: new Date().toISOString(),
     } : null,
     role: mockRole,

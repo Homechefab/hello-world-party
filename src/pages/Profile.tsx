@@ -43,21 +43,6 @@ const Profile = () => {
     avgRating: 0
   });
 
-  useEffect(() => {
-    const loadData = async () => {
-      if (user?.id) {
-        await fetchProfile();
-        await fetchUserStats();
-        await fetchRecentActivity();
-      } else {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-     
-  }, [fetchProfile, fetchRecentActivity, fetchUserStats, user?.id]);
-
   const fetchProfile = useCallback(async () => {
     try {
       if (!user?.id) return;
@@ -183,9 +168,9 @@ const Profile = () => {
       if (reviewsError) throw reviewsError;
 
       // Combine and format activity
-      const activities = [
+      const activities: Activity[] = [
         ...(recentOrders || []).map(order => ({
-          type: 'order',
+          type: 'order' as const,
           id: order.id,
           title: `Beställning #${order.id.slice(0, 8)}`,
           description: 'Beställning',
@@ -193,7 +178,7 @@ const Profile = () => {
           date: order.created_at
         })),
         ...(recentReviews || []).map(review => ({
-          type: 'review',
+          type: 'review' as const,
           id: review.id,
           title: 'Recension lämnad',
           description: `${review.rating} stjärnor`,
@@ -208,6 +193,23 @@ const Profile = () => {
       setRecentActivity([]);
     }
   }, [user?.id]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      if (user?.id) {
+        await fetchProfile();
+        await fetchUserStats();
+        await fetchRecentActivity();
+      } else {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+     
+  }, [fetchProfile, fetchRecentActivity, fetchUserStats, user?.id]);
+
+
 
   const handleSave = async () => {
     setSaving(true);
@@ -387,7 +389,7 @@ const Profile = () => {
                           <>
                             <div className="flex">
                               {[...Array(5)].map((_, i) => (
-                                <Star key={i} className={`w-3 h-3 ${i < activity.rating ? 'text-yellow-500 fill-current' : 'text-gray-300'}`} />
+                                <Star key={i} className={`w-3 h-3 ${i < (activity.rating || 0) ? 'text-yellow-500 fill-current' : 'text-gray-300'}`} />
                               ))}
                             </div>
                             <p className="text-xs text-muted-foreground">

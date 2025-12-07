@@ -38,7 +38,7 @@ export const KitchenPartnerApprovalManager = () => {
   const [applications, setApplications] = useState<KitchenPartner[]>([]);
   const [loading, setLoading] = useState(true);
   const [rejectionReason, setRejectionReason] = useState('');
-  const [selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
+  const [_selectedApplicationId, setSelectedApplicationId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchApplications();
@@ -181,7 +181,7 @@ export const KitchenPartnerApprovalManager = () => {
   }
 
   const ApplicationCard = ({ application }: { application: KitchenPartner }) => {
-    const [selectedApplication, setSelectedApplication] = useState<KitchenPartner | null>(null);
+    const [_selectedApplication, setSelectedApplication] = useState<KitchenPartner | null>(null);
 
     return (
       <>
