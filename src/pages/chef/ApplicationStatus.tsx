@@ -33,10 +33,12 @@ export default function ApplicationStatus() {
 
   const fetchApplication = async () => {
     try {
+      if (!user?.id) return;
+      
       const { data, error } = await supabase
         .from("chefs")
         .select("*")
-        .eq("user_id", user?.id)
+        .eq("user_id", user.id)
         .single();
 
       if (error) {
@@ -46,8 +48,16 @@ export default function ApplicationStatus() {
         } else {
           throw error;
         }
-      } else {
-        setApplication(data);
+      } else if (data) {
+        // Map to ChefApplication interface
+        setApplication({
+          id: data.id,
+          business_name: data.business_name,
+          application_status: (data.application_status as ApplicationStatus) || 'pending',
+          rejection_reason: data.rejection_reason,
+          created_at: data.created_at,
+          updated_at: data.updated_at
+        });
       }
     } catch (error) {
       console.error("Error fetching application:", error);
