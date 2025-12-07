@@ -84,3 +84,9 @@ verify_jwt = false
 
 [functions.phone-ai-token]
 verify_jwt = false
+
+[functions.swish-payment]
+verify_jwt = false
+
+[functions.swish-callback]
+verify_jwt = false
