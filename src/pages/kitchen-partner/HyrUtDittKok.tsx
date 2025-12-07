@@ -26,12 +26,7 @@ interface KitchenPartner {
   hourly_rate: number | null;
 }
 
-interface Availability {
-  id: string;
-  date: string;
-  time_slot: string;
-  is_available: boolean;
-}
+
 
 export const HyrUtDittKok = () => {
   const { toast } = useToast();
@@ -127,8 +122,8 @@ export const HyrUtDittKok = () => {
       if (error) throw error;
 
       const availabilityMap: Record<string, boolean> = {};
-      data?.forEach((item: Availability) => {
-        availabilityMap[item.time_slot] = item.is_available;
+      data?.forEach((item) => {
+        availabilityMap[item.time_slot] = item.is_available ?? false;
       });
       setAvailability(availabilityMap);
     } catch (error) {

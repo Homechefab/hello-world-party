@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { 
@@ -24,8 +24,8 @@ import {
 interface Restaurant {
   id: string;
   business_name: string;
-  approved: boolean;
-  application_status: string;
+  approved: boolean | null;
+  application_status: string | null;
 }
 
 interface Dish {
@@ -35,7 +35,7 @@ interface Dish {
   price: number;
   image_url: string | null;
   category: string | null;
-  available: boolean;
+  available: boolean | null;
   preparation_time: number | null;
 }
 
@@ -101,7 +101,11 @@ const RestaurantDashboard = () => {
         return;
       }
 
-      setRestaurant(restaurantData);
+      setRestaurant({
+        ...restaurantData,
+        approved: restaurantData.approved ?? false,
+        application_status: restaurantData.application_status ?? 'pending'
+      });
       loadDishes(restaurantData.id);
     } catch (error) {
       console.error('Error checking restaurant status:', error);
@@ -124,7 +128,12 @@ const RestaurantDashboard = () => {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setDishes(data || []);
+      // Transform to match Dish interface with default values
+      const transformedDishes = (data || []).map(d => ({
+        ...d,
+        available: d.available ?? true
+      }));
+      setDishes(transformedDishes);
     } catch (error) {
       console.error('Error loading dishes:', error);
     }
@@ -402,7 +411,7 @@ const RestaurantDashboard = () => {
                         <Button 
                           size="sm" 
                           variant="outline"
-                          onClick={() => toggleDishAvailability(dish.id, dish.available)}
+                          onClick={() => toggleDishAvailability(dish.id, dish.available ?? false)}
                         >
                           {dish.available ? 'Inaktivera' : 'Aktivera'}
                         </Button>

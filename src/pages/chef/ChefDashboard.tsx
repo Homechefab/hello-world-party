@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { ChefProfileAvatar } from '@/components/chef/ChefProfileAvatar';
@@ -12,17 +12,13 @@ import { VideoUpload } from '@/components/VideoUpload';
 import { OrderManagement } from '@/components/chef/OrderManagement';
 import MenuManager from '@/components/chef/MenuManager';
 import IncomeReports from '@/components/chef/IncomeReports';
-import BusinessSetup from '@/components/chef/BusinessSetup';
 import { SocialMediaLinks } from '@/components/chef/SocialMediaLinks';
-import { ProfileImageUpload } from '@/components/chef/ProfileImageUpload';
 import { 
   CheckCircle, 
   AlertCircle, 
   DollarSign, 
-  ChefHat,
   TrendingUp,
   Package,
-  Edit,
   Plus
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -96,7 +92,18 @@ export const ChefDashboard = () => {
       if (dishesError) {
         console.error('Error loading dishes:', dishesError);
       } else {
-        setDishes(dishesData || []);
+        // Transform to match Dish type with default values for nullable fields
+        const transformedDishes = (dishesData || []).map(d => ({
+          id: d.id,
+          name: d.name,
+          description: d.description || '',
+          price: d.price,
+          available: d.available ?? true,
+          category: d.category || '',
+          preparation_time: d.preparation_time || 0,
+          image_url: d.image_url
+        }));
+        setDishes(transformedDishes);
       }
 
       // Fetch real orders for this chef
@@ -138,27 +145,8 @@ export const ChefDashboard = () => {
     loadChefData();
   }, [loadChefData]);
 
-  const toggleDishStatus = async (dishId: string, isActive: boolean) => {
-    try {
-      // For mock data, just update the local state
-      setDishes(dishes.map(dish => 
-        dish.id === dishId ? { ...dish, available: !isActive } : dish
-      ));
 
-      toast({
-        title: isActive ? "Rätt pausad" : "Rätt aktiverad",
-        description: isActive ? "Rätten är nu inaktiv och syns inte för kunder" : "Rätten är nu aktiv och synlig för kunder"
-      });
 
-    } catch (error) {
-      console.error('Error toggling dish status:', error);
-      toast({
-        title: "Fel uppstod",
-        description: "Kunde inte uppdatera rätten",
-        variant: "destructive"
-      });
-    }
-  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -285,7 +273,7 @@ export const ChefDashboard = () => {
                       <div key={order.id} className="flex items-center justify-between p-4 border border-border rounded-lg">
                         <div>
                           <p className="font-medium">Beställning #{order.id?.slice(-6)}</p>
-                          <p className="text-sm text-muted-foreground">{order.dishes?.name || 'Okänd rätt'}</p>
+                          <p className="text-sm text-muted-foreground">{Array.isArray(order.dishes) ? order.dishes[0]?.name || 'Okänd rätt' : order.dishes?.name || 'Okänd rätt'}</p>
                         </div>
                         <Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>
                           {order.status === 'completed' ? 'Klar' : 'Pågående'}

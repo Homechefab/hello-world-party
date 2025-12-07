@@ -193,7 +193,7 @@ export const RestaurantApprovalManager = () => {
             <CardTitle>{application.business_name}</CardTitle>
             <CardDescription>{application.full_name}</CardDescription>
           </div>
-          {getStatusBadge(application.application_status, application.approved)}
+          {getStatusBadge(application.application_status || 'pending', application.approved || false)}
         </div>
       </CardHeader>
       <CardContent>
@@ -425,7 +425,7 @@ export const RestaurantApprovalManager = () => {
     );
   }
 
-  const pendingApplications = applications.filter(a => ['pending', 'under_review'].includes(a.application_status));
+  const pendingApplications = applications.filter(a => ['pending', 'under_review'].includes(a.application_status || ''));
   const approvedApplications = applications.filter(a => a.approved);
   const rejectedApplications = applications.filter(a => a.application_status === 'rejected');
 

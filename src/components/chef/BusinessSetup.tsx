@@ -109,65 +109,6 @@ const BusinessSetup = () => {
     }
   ];
 
-  const _taxInfo = [
-    {
-      category: 'Inkomstskatt',
-      rate: '~30-35%',
-      description: 'På nettovinst efter avdrag',
-      details: 'Kommunalskatt + statlig inkomstskatt beroende på inkomst'
-    },
-    {
-      category: 'Egenavgifter',
-      rate: '28.97%',
-      description: 'Pensionsavgifter och socialavgifter',
-      details: 'Betalas på överskottet från näringsverksamhet'
-    },
-    {
-      category: 'Moms',
-      rate: '25% / 12% / 6%',
-      description: 'På försäljning över 30 000 kr/år',
-      details: 'Livsmedelsmoms är generellt 25%, vissa undantag finns'
-    }
-  ];
-
-  const _deductions = [
-    {
-      category: 'Ingredienser & råvaror',
-      percentage: '100%',
-      description: 'Alla inköp av mat och ingredienser',
-      examples: ['Kött, fisk, grönsaker', 'Kryddor och tillbehör', 'Förpackningsmaterial']
-    },
-    {
-      category: 'Köksredskap & utrustning',
-      percentage: '100%',
-      description: 'Verktyg och utrustning för matlagning',
-      examples: ['Knivar och redskap', 'Kastruller och pannor', 'Köksmaskin', 'Kylskåp för verksamhet']
-    },
-    {
-      category: 'Hemmakontor',
-      percentage: '50%',
-      description: 'Andel av hemkostnader som används för företag',
-      examples: ['El och värme (beräknad andel)', 'Internet och telefon', 'Städning av arbetsutrymme']
-    },
-    {
-      category: 'Transport & resor',
-      percentage: '100%',
-      description: 'Affärsresor och transporter',
-      examples: ['Resa till leverantörer', 'Transport av mat', 'Utbildningar och mässor']
-    },
-    {
-      category: 'Marknadsföring',
-      percentage: '100%',
-      description: 'Kostnader för att marknadsföra verksamheten',
-      examples: ['Annonser online', 'Visitkort och broschyrer', 'Hemsida och sociala medier']
-    },
-    {
-      category: 'Utbildning & certifiering',
-      percentage: '100%',
-      description: 'Kompetensutveckling inom området',
-      examples: ['Hygienkurser', 'Matlagningskurser', 'Företagarutbildning']
-    }
-  ];
 
   const insuranceTypes = [
     {
