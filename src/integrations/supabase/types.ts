@@ -443,6 +443,62 @@ export type Database = {
         }
         Relationships: []
       }
+      klarna_payments: {
+        Row: {
+          amount: number
+          checkout_url: string | null
+          created_at: string
+          currency: string
+          customer_email: string | null
+          error_message: string | null
+          html_snippet: string | null
+          id: string
+          klarna_order_id: string | null
+          order_id: string | null
+          payment_method: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          checkout_url?: string | null
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          error_message?: string | null
+          html_snippet?: string | null
+          id?: string
+          klarna_order_id?: string | null
+          order_id?: string | null
+          payment_method?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          checkout_url?: string | null
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          error_message?: string | null
+          html_snippet?: string | null
+          id?: string
+          klarna_order_id?: string | null
+          order_id?: string | null
+          payment_method?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "klarna_payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       login_logs: {
         Row: {
           created_at: string
