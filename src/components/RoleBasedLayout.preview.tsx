@@ -40,6 +40,7 @@ const PreviewWrapper = ({
     isCustomer: mockRole === 'customer',
     loading: false,
     usingMockData: false,
+    isApproved: true,
     logout: () => Promise.resolve(),
     switchRole: () => {},
   };
