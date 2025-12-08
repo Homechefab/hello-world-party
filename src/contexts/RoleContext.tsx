@@ -16,6 +16,8 @@ export interface RoleContextType {
   isRestaurant: boolean;
   isAdmin: boolean;
   usingMockData: boolean;
+  // Approval status for role-specific access
+  isApproved: boolean;
   logout: () => Promise<void>;
   switchRole: (newRole: UserRole) => void;
 }
@@ -28,6 +30,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
   const [roles, setRoles] = useState<UserRole[]>([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<UserProfile | null>(null);
+  const [isApproved, setIsApproved] = useState(false);
 
   useEffect(() => {
     async function fetchUserRole() {
@@ -71,16 +74,45 @@ export function RoleProvider({ children }: { children: ReactNode }) {
         const priority: UserRole[] = ['admin', 'chef', 'kitchen_partner', 'restaurant', 'customer'];
         const primary = priority.find(r => combinedRoles.includes(r)) ?? 'customer';
 
-        // If user has chef role, fetch chef-specific data
-        let chefApproved: boolean | undefined;
-        if (combinedRoles.includes('chef')) {
+        // Check approval status based on primary role
+        let approved = false;
+        
+        // If user has chef role, check chef approval
+        if (primary === 'chef') {
           const { data: chefData } = await supabase
             .from('chefs')
             .select('kitchen_approved')
             .eq('user_id', authUser.id)
             .maybeSingle();
-          chefApproved = chefData?.kitchen_approved ?? undefined;
+          approved = chefData?.kitchen_approved ?? false;
         }
+        
+        // If user has kitchen_partner role, check kitchen partner approval
+        if (primary === 'kitchen_partner') {
+          const { data: partnerData } = await supabase
+            .from('kitchen_partners')
+            .select('approved')
+            .eq('user_id', authUser.id)
+            .maybeSingle();
+          approved = partnerData?.approved ?? false;
+        }
+        
+        // If user has restaurant role, check restaurant approval
+        if (primary === 'restaurant') {
+          const { data: restaurantData } = await supabase
+            .from('restaurants')
+            .select('approved')
+            .eq('user_id', authUser.id)
+            .maybeSingle();
+          approved = restaurantData?.approved ?? false;
+        }
+        
+        // Admin and customer roles are always "approved"
+        if (primary === 'admin' || primary === 'customer') {
+          approved = true;
+        }
+        
+        setIsApproved(approved);
 
         if (profile) {
           const userProfile: UserProfile = {
@@ -91,7 +123,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
             roles: combinedRoles,
             phone: profile.phone || undefined,
             address: profile.address || undefined,
-            municipality_approved: chefApproved,
+            municipality_approved: approved,
             onboarding_completed: profile.onboarding_completed || undefined,
             created_at: profile.created_at
           };
@@ -140,6 +172,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
       setRole(null);
       setRoles([]);
       setUser(null);
+      setIsApproved(false);
     } catch (error) {
       console.error('Error signing out:', error);
     }
@@ -168,6 +201,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
     isRestaurant: role === 'restaurant',
     isAdmin: role === 'admin',
     usingMockData: false,
+    isApproved,
     logout,
     switchRole
   };
