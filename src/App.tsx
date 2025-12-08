@@ -57,6 +57,7 @@ import RestaurantPartnership from "./pages/restaurant/RestaurantPartnership";
 import RestaurantDashboard from "./pages/restaurant/RestaurantDashboard";
 import RestaurantApplicationForm from "./pages/restaurant/RestaurantApplicationForm";
 import RestaurantApplication from "./pages/restaurant/RestaurantApplication";
+import RestaurantApplicationPending from "./pages/restaurant/ApplicationPending";
 import NotFound from "./pages/NotFound";
 import NotificationSignup from "./pages/NotificationSignup";
 import Auth from "./pages/Auth";
@@ -159,6 +160,7 @@ const App = () => {
             <Route path="/delivery-partner/onboarding" element={<PublicLayout><DeliveryPartnerOnboarding /></PublicLayout>} />
             <Route path="/admin/dashboard" element={<RoleBasedLayout><AdminDashboard /></RoleBasedLayout>} />
             <Route path="/restaurant/dashboard" element={<RoleBasedLayout><RestaurantDashboard /></RoleBasedLayout>} />
+            <Route path="/restaurant/application-pending" element={<RoleBasedLayout><RestaurantApplicationPending /></RoleBasedLayout>} />
             <Route path="/restaurant/apply" element={<PublicLayout><RestaurantApplicationForm /></PublicLayout>} />
             <Route path="/profile" element={<RoleBasedLayout><Profile /></RoleBasedLayout>} />
             <Route path="/my-orders" element={<RoleBasedLayout><MyOrders /></RoleBasedLayout>} />

@@ -12,7 +12,7 @@ interface RoleBasedLayoutProps {
 
 export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
   useAutoSafeArea();
-  const { role, loading } = useRole();
+  const { role, loading, isApproved } = useRole();
   const { user: authUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,16 +62,21 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
     });
   }, [authUser, role, loading, location.pathname, navigate]);
 
-  // Redirect to the correct dashboard when role changes to avoid race conditions
+  // Redirect to the correct dashboard or pending page based on approval status
   React.useEffect(() => {
     if (loading) return;
 
-    const targets: Record<string, { base: string; target: string }> = {
-      admin: { base: '/admin', target: '/admin/dashboard' },
-      chef: { base: '/chef', target: '/chef/dashboard' },
-      restaurant: { base: '/restaurant', target: '/restaurant/dashboard' },
-      customer: { base: '/', target: '/' },
-    };
+    // Define pending pages that don't require approval
+    const pendingPages = [
+      '/chef/application-pending',
+      '/kitchen-partner/application-pending',
+      '/restaurant/application-pending'
+    ];
+    
+    // Don't redirect if already on a pending page
+    if (pendingPages.some(page => location.pathname === page)) {
+      return;
+    }
 
     if (!role) {
       const protectedBases = ['/chef', '/admin', '/kitchen-partner', '/restaurant'];
@@ -81,18 +86,35 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
       return;
     }
 
-    // Special handling for kitchen_partner - check approval status first
-    if (role === 'kitchen_partner' && !location.pathname.startsWith('/kitchen-partner')) {
-      // Let KitchenPartnerDashboard handle the redirect based on approval status
-      navigate('/kitchen-partner/dashboard');
+    // Check approval for role-specific dashboards
+    const dashboardPaths: Record<string, { dashboard: string; pending: string }> = {
+      chef: { dashboard: '/chef/dashboard', pending: '/chef/application-pending' },
+      kitchen_partner: { dashboard: '/kitchen-partner/dashboard', pending: '/kitchen-partner/application-pending' },
+      restaurant: { dashboard: '/restaurant/dashboard', pending: '/restaurant/application-pending' }
+    };
+
+    const roleConfig = dashboardPaths[role];
+    
+    // If user is trying to access a dashboard but is not approved, redirect to pending
+    if (roleConfig && location.pathname.startsWith(roleConfig.dashboard) && !isApproved) {
+      navigate(roleConfig.pending);
       return;
     }
+
+    // Redirect to appropriate area based on role
+    const targets: Record<string, { base: string; target: string }> = {
+      admin: { base: '/admin', target: '/admin/dashboard' },
+      chef: { base: '/chef', target: isApproved ? '/chef/dashboard' : '/chef/application-pending' },
+      kitchen_partner: { base: '/kitchen-partner', target: isApproved ? '/kitchen-partner/dashboard' : '/kitchen-partner/application-pending' },
+      restaurant: { base: '/restaurant', target: isApproved ? '/restaurant/dashboard' : '/restaurant/application-pending' },
+      customer: { base: '/', target: '/' },
+    };
 
     const config = targets[role];
     if (config && !location.pathname.startsWith(config.base)) {
       navigate(config.target);
     }
-  }, [role, loading, location.pathname, navigate]);
+  }, [role, loading, location.pathname, navigate, isApproved]);
 
   if (loading) {
     return (
