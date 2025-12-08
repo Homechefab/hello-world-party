@@ -471,15 +471,15 @@ const LiveChat = () => {
 
   if (!isOpen) {
     return (
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50">
         <Button
           onClick={() => setIsOpen(true)}
           size="lg"
-          className="rounded-full w-16 h-16 bg-gradient-primary hover:bg-gradient-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
+          className="rounded-full w-14 h-14 md:w-16 md:h-16 bg-gradient-primary hover:bg-gradient-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
         >
-          <MessageCircle className="w-8 h-8" />
+          <MessageCircle className="w-6 h-6 md:w-8 md:h-8" />
         </Button>
-        <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full flex items-center justify-center">
+        <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 w-5 h-5 md:w-6 md:h-6 bg-red-500 rounded-full flex items-center justify-center">
           <span className="text-white text-xs font-bold">1</span>
         </div>
       </div>
@@ -487,8 +487,8 @@ const LiveChat = () => {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
-      <Card className={`w-96 shadow-2xl transition-all duration-300 ${isMinimized ? 'h-16' : 'h-[500px]'}`}>
+    <div className="fixed bottom-0 right-0 md:bottom-6 md:right-6 z-50 w-full md:w-auto">
+      <Card className={`w-full md:w-96 shadow-2xl transition-all duration-300 rounded-none md:rounded-lg ${isMinimized ? 'h-16' : 'h-[100dvh] md:h-[500px]'}`}>
         <CardHeader className="pb-3 bg-gradient-primary text-white rounded-t-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
