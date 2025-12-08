@@ -21,10 +21,17 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
   React.useEffect(() => {
     if (loading || !location.pathname) return;
 
-    // Require authentication for protected routes
-    const requiresAuth = ['/profile', '/settings', '/my-orders', '/my-points'].some(
-      path => location.pathname.startsWith(path)
-    );
+    // Require authentication for protected routes (including role-specific dashboards)
+    const requiresAuth = [
+      '/profile', 
+      '/settings', 
+      '/my-orders', 
+      '/my-points',
+      '/chef/dashboard',
+      '/admin/dashboard',
+      '/kitchen-partner/dashboard',
+      '/restaurant/dashboard'
+    ].some(path => location.pathname.startsWith(path));
 
     if (requiresAuth && !authUser) {
       navigate('/auth');
