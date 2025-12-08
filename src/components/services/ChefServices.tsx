@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChefHat, Users, Calendar, Utensils, CheckCircle, Shield, Building2, Package } from "lucide-react";
-import { useRole } from "@/hooks/useRole";
+
 import sellFoodImage from "@/assets/service-sell-food.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
@@ -83,15 +83,6 @@ const otherChefServices = [
 ];
 
 const ChefServices = () => {
-  const { isChef } = useRole();
-
-  // For approved chefs, main services lead to dashboard
-  const getServiceHref = (defaultHref: string) => {
-    if (isChef) {
-      return "/chef/dashboard";
-    }
-    return defaultHref;
-  };
 
   return (
     <section className="py-12 bg-background">
@@ -112,7 +103,7 @@ const ChefServices = () => {
             return (
               <Link
                 key={service.title}
-                to={getServiceHref(service.href)}
+                to={service.href}
                 className="group block"
               >
                 <Card className="hover:shadow-card transition-all duration-300 hover:-translate-y-2 overflow-hidden">
