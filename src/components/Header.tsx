@@ -49,12 +49,13 @@ const Header = () => {
     switchRole(newRole);
     toast.success(`Bytte till ${roleLabels[newRole]}`);
 
+    // Navigate to public service pages (not dashboards) when switching roles
     const targetByRole: Record<UserRole, string> = {
       customer: '/',
-      admin: '/admin/dashboard',
-      chef: '/',
-      kitchen_partner: '/kitchen-partner/dashboard',
-      restaurant: '/',
+      admin: '/admin/dashboard', // Admin dashboard is always accessible for admins
+      chef: '/chef', // Public chef services page
+      kitchen_partner: '/kitchen-partner/hyr-ut-ditt-kok', // Public kitchen partner info page
+      restaurant: '/restaurant/partnership', // Public restaurant partnership page
     };
 
     navigate(targetByRole[newRole] || '/');
