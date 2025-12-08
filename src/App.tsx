@@ -134,34 +134,45 @@ const App = () => {
             <Route path="/referral" element={<PublicLayout><Referral /></PublicLayout>} />
             <Route path="/bjud-in-vanner" element={<PublicLayout><Referral /></PublicLayout>} />
 
-            {/* Protected routes */}
+            {/* Protected routes - require authentication */}
             <Route path="/dashboard" element={<RoleBasedLayout><Dashboard /></RoleBasedLayout>} />
-            <Route path="/chef" element={<RoleBasedLayout><ChefHome /></RoleBasedLayout>} />
-            <Route path="/chef/onboarding" element={<RoleBasedLayout><ChefOnboarding /></RoleBasedLayout>} />
-            <Route path="/chef/welcome" element={<RoleBasedLayout><ChefWelcomeGuide /></RoleBasedLayout>} />
             
-            <Route path="/chef/application-pending" element={<RoleBasedLayout><ApplicationPending /></RoleBasedLayout>} />
-            <Route path="/chef/dashboard" element={<RoleBasedLayout><ChefDashboard /></RoleBasedLayout>} />
-            <Route path="/chef/private-services" element={<RoleBasedLayout><PrivateChefServices /></RoleBasedLayout>} />
-            <Route path="/chef/catering" element={<RoleBasedLayout><CateringServices /></RoleBasedLayout>} />
-            <Route path="/chef/meal-boxes" element={<RoleBasedLayout><MealBoxes /></RoleBasedLayout>} />
-            <Route path="/chef/experiences" element={<RoleBasedLayout><ChefExperiences /></RoleBasedLayout>} />
-            <Route path="/chef/kitchen-requirements" element={<RoleBasedLayout><KitchenRequirements /></RoleBasedLayout>} />
-            <Route path="/chef/municipality-requirements" element={<RoleBasedLayout><MunicipalityRequirements /></RoleBasedLayout>} />
-            <Route path="/chef/kitchen-assessment" element={<RoleBasedLayout><KitchenAssessment /></RoleBasedLayout>} />
-            <Route path="/chef/business-registration" element={<RoleBasedLayout><BusinessRegistration /></RoleBasedLayout>} />
+            {/* Chef public info pages - anyone can view */}
+            <Route path="/chef" element={<PublicLayout><ChefHome /></PublicLayout>} />
+            <Route path="/chef/onboarding" element={<PublicLayout><ChefOnboarding /></PublicLayout>} />
+            <Route path="/chef/welcome" element={<PublicLayout><ChefWelcomeGuide /></PublicLayout>} />
+            <Route path="/chef/private-services" element={<PublicLayout><PrivateChefServices /></PublicLayout>} />
+            <Route path="/chef/catering" element={<PublicLayout><CateringServices /></PublicLayout>} />
+            <Route path="/chef/meal-boxes" element={<PublicLayout><MealBoxes /></PublicLayout>} />
+            <Route path="/chef/experiences" element={<PublicLayout><ChefExperiences /></PublicLayout>} />
+            <Route path="/chef/kitchen-requirements" element={<PublicLayout><KitchenRequirements /></PublicLayout>} />
+            <Route path="/chef/municipality-requirements" element={<PublicLayout><MunicipalityRequirements /></PublicLayout>} />
+            <Route path="/chef/kitchen-assessment" element={<PublicLayout><KitchenAssessment /></PublicLayout>} />
+            <Route path="/chef/business-registration" element={<PublicLayout><BusinessRegistration /></PublicLayout>} />
             <Route path="/chef/kockforum" element={<PublicLayout><ChefForum /></PublicLayout>} />
             <Route path="/chef/månadens-kock" element={<PublicLayout><ChefOfTheMonth /></PublicLayout>} />
             <Route path="/chef/försäljningsstatistik" element={<PublicLayout><SalesStatistics /></PublicLayout>} />
             <Route path="/chef/mentorskap" element={<PublicLayout><Mentorship /></PublicLayout>} />
-            <Route path="/kitchen-partner/dashboard" element={<RoleBasedLayout><KitchenPartnerDashboard /></RoleBasedLayout>} />
-            <Route path="/kitchen-partner/application-pending" element={<RoleBasedLayout><KitchenPartnerApplicationPending /></RoleBasedLayout>} />
+            
+            {/* Chef protected routes - require approved chef role */}
+            <Route path="/chef/application-pending" element={<PublicLayout><ApplicationPending /></PublicLayout>} />
+            <Route path="/chef/dashboard" element={<RoleBasedLayout><ChefDashboard /></RoleBasedLayout>} />
+            
+            {/* Kitchen partner public info - anyone can view */}
             <Route path="/kitchen-partner/register" element={<PublicLayout><KitchenPartnerOnboarding /></PublicLayout>} />
+            
+            {/* Kitchen partner protected routes */}
+            <Route path="/kitchen-partner/application-pending" element={<PublicLayout><KitchenPartnerApplicationPending /></PublicLayout>} />
+            <Route path="/kitchen-partner/dashboard" element={<RoleBasedLayout><KitchenPartnerDashboard /></RoleBasedLayout>} />
+            
+            {/* Restaurant protected routes */}
+            <Route path="/restaurant/application-pending" element={<PublicLayout><RestaurantApplicationPending /></PublicLayout>} />
+            <Route path="/restaurant/dashboard" element={<RoleBasedLayout><RestaurantDashboard /></RoleBasedLayout>} />
+            <Route path="/restaurant/apply" element={<PublicLayout><RestaurantApplicationForm /></PublicLayout>} />
+            
+            {/* Other protected routes */}
             <Route path="/delivery-partner/onboarding" element={<PublicLayout><DeliveryPartnerOnboarding /></PublicLayout>} />
             <Route path="/admin/dashboard" element={<RoleBasedLayout><AdminDashboard /></RoleBasedLayout>} />
-            <Route path="/restaurant/dashboard" element={<RoleBasedLayout><RestaurantDashboard /></RoleBasedLayout>} />
-            <Route path="/restaurant/application-pending" element={<RoleBasedLayout><RestaurantApplicationPending /></RoleBasedLayout>} />
-            <Route path="/restaurant/apply" element={<PublicLayout><RestaurantApplicationForm /></PublicLayout>} />
             <Route path="/profile" element={<RoleBasedLayout><Profile /></RoleBasedLayout>} />
             <Route path="/my-orders" element={<RoleBasedLayout><MyOrders /></RoleBasedLayout>} />
             <Route path="/my-points" element={<RoleBasedLayout><MyPoints /></RoleBasedLayout>} />
