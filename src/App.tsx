@@ -110,6 +110,7 @@ const App = () => {
             <Route path="/chef/:chefId" element={<PublicLayout><ChefProfile /></PublicLayout>} />
             <Route path="/search-chefs" element={<PublicLayout><ChefSearch /></PublicLayout>} />
             <Route path="/hyr-ut-ditt-kok" element={<PublicLayout><HyrUtDittKokInfo /></PublicLayout>} />
+            <Route path="/kitchen-partner/hyr-ut-ditt-kok" element={<PublicLayout><HyrUtDittKokInfo /></PublicLayout>} />
             <Route path="/kitchen-partner/how-it-works" element={<PublicLayout><KitchenPartnerHowItWorks /></PublicLayout>} />
             <Route path="/kitchen-partner/pricing-terms" element={<PublicLayout><PricingTerms /></PublicLayout>} />
             <Route path="/kitchen-partner/support" element={<PublicLayout><PartnerSupport /></PublicLayout>} />
