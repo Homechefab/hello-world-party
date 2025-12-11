@@ -74,16 +74,34 @@ export const DocumentUpload = ({
       setUploading(true);
       setProgress(20);
 
-      // Get current user
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError || !user) {
-        throw new Error("Du måste vara inloggad för att ladda upp dokument");
+      // Get current user (optional for chef/restaurant applications)
+      const { data: { user } } = await supabase.auth.getUser();
+
+      // For anonymous uploads (chef/restaurant applications), use the provided ID
+      // For authenticated users, use their user ID
+      let folderPath: string;
+      let userId: string;
+
+      if (chefId) {
+        // Anonymous chef application upload
+        folderPath = `chef-applications/${chefId}`;
+        userId = chefId; // Use chefId as pseudo-user for document_submissions
+      } else if (restaurantId) {
+        // Anonymous restaurant application upload
+        folderPath = `restaurant-applications/${restaurantId}`;
+        userId = restaurantId; // Use restaurantId as pseudo-user for document_submissions
+      } else if (user) {
+        // Authenticated user upload
+        folderPath = user.id;
+        userId = user.id;
+      } else {
+        throw new Error("Du måste vara inloggad eller ha en giltig ansökan för att ladda upp dokument");
       }
 
       setProgress(40);
 
       // Upload file to Supabase Storage
-      const fileName = `${user.id}/${Date.now()}_${file.name}`;
+      const fileName = `${folderPath}/${Date.now()}_${file.name}`;
       const { error: uploadError } = await supabase.storage
         .from('documents')
         .upload(fileName, file);
@@ -101,7 +119,7 @@ export const DocumentUpload = ({
 
       // Create document submission record
       const submissionData: any = {
-        user_id: user.id,
+        user_id: userId,
         document_type: documentType,
         document_url: urlData.publicUrl,
         municipality: municipality.trim(),
