@@ -42,16 +42,18 @@ const steps = [
 const ChefApplication = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { role, loading: roleLoading } = useRole();
+  const { role, isChef, isApproved, loading: roleLoading } = useRole();
 
-  // Redirect approved chefs to dashboard
+  // Only redirect approved chefs who are actively viewing as chef
+  // This allows customers and unauthenticated users to access the application
   useEffect(() => {
-    console.log('ChefApplication: role check', { role, roleLoading });
-    if (!roleLoading && role === 'chef') {
-      console.log('ChefApplication: Redirecting to chef dashboard');
+    console.log('ChefApplication: role check', { role, isChef, isApproved, roleLoading });
+    // Only redirect if user is in chef mode AND is an approved chef
+    if (!roleLoading && isChef && isApproved) {
+      console.log('ChefApplication: Redirecting approved chef to dashboard');
       navigate('/chef/dashboard', { replace: true });
     }
-  }, [role, roleLoading, navigate]);
+  }, [role, isChef, isApproved, roleLoading, navigate]);
 
   const [currentStep, setCurrentStep] = useState(1);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
