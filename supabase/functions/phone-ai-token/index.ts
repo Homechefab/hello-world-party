@@ -41,6 +41,9 @@ serve(async (req) => {
     }
 
     // Request a signed URL from ElevenLabs for the conversational agent
+    // Note: The agent's pronunciation settings must be configured in ElevenLabs dashboard
+    // Set the agent's first message to use English pronunciation for "Homechef" 
+    // while keeping everything else in Swedish
     const response = await fetch(
       `https://api.elevenlabs.io/v1/convai/conversation/get_signed_url?agent_id=${targetAgentId}`,
       {
