@@ -80,7 +80,7 @@ verify_jwt = false
 verify_jwt = false
 
 [functions.reset-chef-password]
-verify_jwt = false
+verify_jwt = true
 
 [functions.phone-ai-token]
 verify_jwt = false
