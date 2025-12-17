@@ -19,6 +19,48 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // 1. Verify authentication
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      console.error("No authorization header provided");
+      return new Response(
+        JSON.stringify({ error: "Authentication required" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // 2. Create client with anon key to verify user
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
+
+    if (authError || !user) {
+      console.error("Invalid authentication:", authError);
+      return new Response(
+        JSON.stringify({ error: "Invalid authentication" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // 3. Verify admin role using has_role function
+    const { data: isAdmin, error: roleError } = await supabaseClient
+      .rpc("has_role", { _user_id: user.id, _role: "admin" });
+
+    if (roleError || !isAdmin) {
+      console.error("Admin role check failed:", roleError, "isAdmin:", isAdmin);
+      return new Response(
+        JSON.stringify({ error: "Admin privileges required" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    console.log("Admin verified:", user.email);
+
+    // 4. Now proceed with service role operations
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     
