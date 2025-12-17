@@ -24,10 +24,16 @@ serve(async (req) => {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Create Supabase client
+    // Create Supabase client with anon key for user auth
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
+
+    // Create Supabase client with service role for price validation
+    const supabaseService = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
     // Try to get authenticated user (optional for checkout)
@@ -57,22 +63,62 @@ serve(async (req) => {
       }
     }
 
-    // Prepare line items - either from cart items or single item
+    // Prepare line items with SERVER-SIDE PRICE VALIDATION
     let lineItems;
+    let validatedTotalAmount = 0;
+
     if (items && Array.isArray(items) && items.length > 0) {
-      // Cart checkout with multiple items
-      lineItems = items.map((item: any) => ({
-        price_data: {
-          currency: 'sek',
-          product_data: {
-            name: item.name,
+      // Cart checkout with multiple items - VALIDATE EACH PRICE
+      const validatedItems = [];
+      
+      for (const item of items) {
+        if (!item.dishId) {
+          console.error("Missing dishId in cart item:", item);
+          throw new Error("Missing dishId in cart item - price validation required");
+        }
+        
+        // Fetch actual price from database
+        const { data: dish, error: dishError } = await supabaseService
+          .from("dishes")
+          .select("price, name, id, available")
+          .eq("id", item.dishId)
+          .single();
+        
+        if (dishError || !dish) {
+          console.error("Invalid dish:", item.dishId, dishError);
+          throw new Error(`Invalid dish: ${item.dishId}`);
+        }
+
+        if (!dish.available) {
+          console.error("Dish not available:", item.dishId);
+          throw new Error(`Dish not available: ${dish.name}`);
+        }
+        
+        // Use SERVER price, not client price (price is in SEK, convert to öre)
+        const serverPriceInOre = Math.round(dish.price * 100);
+        const itemTotal = serverPriceInOre * (item.quantity || 1);
+        validatedTotalAmount += itemTotal;
+        
+        console.log(`Validated dish ${dish.name}: server price ${serverPriceInOre} öre, quantity ${item.quantity}`);
+        
+        validatedItems.push({
+          price_data: {
+            currency: 'sek',
+            product_data: {
+              name: dish.name,
+            },
+            unit_amount: serverPriceInOre, // VALIDATED SERVER PRICE
           },
-          unit_amount: item.price, // Already in öre from frontend
-        },
-        quantity: item.quantity,
-      }));
+          quantity: item.quantity || 1,
+        });
+      }
+      
+      lineItems = validatedItems;
+      console.log(`Total validated amount: ${validatedTotalAmount} öre`);
+      
     } else if (priceId) {
-      // Single item checkout (fallback for direct StripeCheckout component usage)
+      // Single item checkout with Stripe price ID (fallback for direct StripeCheckout component usage)
+      // This uses pre-configured Stripe prices which are already server-controlled
       lineItems = [
         {
           price: priceId,
@@ -94,7 +140,7 @@ serve(async (req) => {
       metadata: {
         dish_name: dishName || 'Multiple items',
         platform_fee_percentage: "20", // 20% provision för Homechef
-        total_amount: totalAmount || '',
+        total_amount: validatedTotalAmount > 0 ? String(validatedTotalAmount) : (totalAmount || ''),
       },
       payment_intent_data: {
         metadata: {
