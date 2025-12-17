@@ -93,3 +93,6 @@ verify_jwt = false
 
 [functions.swish-callback]
 verify_jwt = false
+
+[functions.approve-restaurant-create-account]
+verify_jwt = true
