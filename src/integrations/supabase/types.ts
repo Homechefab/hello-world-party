@@ -50,6 +50,13 @@ export type Database = {
             referencedRelation: "chefs"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "chef_videos_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
+            referencedRelation: "public_chef_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       chefs: {
@@ -271,6 +278,13 @@ export type Database = {
             referencedRelation: "chefs"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "dishes_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
+            referencedRelation: "public_chef_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       document_submissions: {
@@ -331,6 +345,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "document_submissions_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
+            referencedRelation: "public_chef_profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "document_submissions_restaurant_id_fkey"
             columns: ["restaurant_id"]
             isOneToOne: false
@@ -338,21 +359,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      Farhan: {
-        Row: {
-          created_at: string
-          id: number
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-        }
-        Update: {
-          created_at?: string
-          id?: number
-        }
-        Relationships: []
       }
       kitchen_availability: {
         Row: {
@@ -617,6 +623,13 @@ export type Database = {
             columns: ["chef_id"]
             isOneToOne: false
             referencedRelation: "chefs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
+            referencedRelation: "public_chef_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -930,6 +943,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "reviews_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
+            referencedRelation: "public_chef_profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "reviews_order_id_fkey"
             columns: ["order_id"]
             isOneToOne: false
@@ -1092,7 +1112,51 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_chef_profiles: {
+        Row: {
+          bio: string | null
+          business_name: string | null
+          city: string | null
+          created_at: string | null
+          facebook_url: string | null
+          full_name: string | null
+          id: string | null
+          instagram_url: string | null
+          profile_image_url: string | null
+          snapchat_url: string | null
+          specialties: string | null
+          tiktok_url: string | null
+        }
+        Insert: {
+          bio?: string | null
+          business_name?: string | null
+          city?: string | null
+          created_at?: string | null
+          facebook_url?: string | null
+          full_name?: string | null
+          id?: string | null
+          instagram_url?: string | null
+          profile_image_url?: string | null
+          snapchat_url?: string | null
+          specialties?: string | null
+          tiktok_url?: string | null
+        }
+        Update: {
+          bio?: string | null
+          business_name?: string | null
+          city?: string | null
+          created_at?: string | null
+          facebook_url?: string | null
+          full_name?: string | null
+          id?: string | null
+          instagram_url?: string | null
+          profile_image_url?: string | null
+          snapchat_url?: string | null
+          specialties?: string | null
+          tiktok_url?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       apply_loyalty_discount: {
