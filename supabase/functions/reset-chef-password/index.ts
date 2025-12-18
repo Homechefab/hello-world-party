@@ -1,6 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { Resend } from "https://esm.sh/resend@2.0.0";
 
+const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -126,12 +128,51 @@ serve(async (req) => {
 
     console.log("Password updated successfully");
 
+    // Send password reset email to chef's contact email
+    let emailSent = false;
+    try {
+      const { error: emailError } = await resend.emails.send({
+        from: "Homechef <onboarding@resend.dev>",
+        to: [chef.contact_email],
+        subject: "Ditt lösenord har återställts - Homechef",
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h1 style="color: #F97316;">Lösenordet har återställts</h1>
+            <p>Hej ${chef.full_name || chef.business_name}!</p>
+            <p>Ditt lösenord har återställts av en administratör.</p>
+            
+            <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <h2 style="margin-top: 0;">Dina nya inloggningsuppgifter:</h2>
+              <p><strong>Email:</strong> ${chefUser.email}</p>
+              <p><strong>Nytt lösenord:</strong> ${newPassword}</p>
+            </div>
+
+            <p><strong>Viktigt:</strong> Ändra ditt lösenord direkt efter inloggning!</p>
+            
+            <p>Med vänliga hälsningar,<br>Homechef-teamet</p>
+          </div>
+        `,
+      });
+
+      if (!emailError) {
+        emailSent = true;
+        console.log("Password reset email sent to:", chef.contact_email);
+      } else {
+        console.error("Email sending error:", emailError);
+      }
+    } catch (emailErr) {
+      console.error("Email sending exception:", emailErr);
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
         email: chefUser.email,
-        password: newPassword,
-        chefName: chef.full_name || chef.business_name
+        chefName: chef.full_name || chef.business_name,
+        emailSent: emailSent,
+        message: emailSent 
+          ? "Lösenordet har återställts och skickats till kockens e-post."
+          : "Lösenordet har återställts men mejlet kunde inte skickas. Kontakta kocken direkt."
       }),
       {
         status: 200,
