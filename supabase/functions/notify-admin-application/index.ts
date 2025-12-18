@@ -5,6 +5,7 @@ import { Resend } from "npm:resend@2.0.0";
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -28,9 +29,60 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Authentication check
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) {
+      console.error("No authorization header provided");
+      return new Response(
+        JSON.stringify({ error: 'Authentication required' }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Create Supabase client with user's token
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: {
+        headers: { Authorization: authHeader },
+      },
+    });
+
+    // Verify the user
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(token);
+
+    if (authError || !user) {
+      console.error("Auth error:", authError);
+      return new Response(
+        JSON.stringify({ error: 'Invalid authentication' }),
+        { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    console.log("Authenticated user:", user.id);
+
     const { type, application_id, applicant_name, applicant_email, business_name, rejection_reason }: NotificationRequest = await req.json();
 
-    console.log(`Sending notification for ${type} application:`, application_id);
+    // For admin notifications and rejection emails, verify admin role
+    const { data: isAdmin, error: roleError } = await supabaseClient
+      .rpc('has_role', { _user_id: user.id, _role: 'admin' });
+
+    if (roleError) {
+      console.error("Role check error:", roleError);
+      return new Response(
+        JSON.stringify({ error: 'Failed to verify permissions' }),
+        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    if (!isAdmin) {
+      console.error("User is not admin:", user.id);
+      return new Response(
+        JSON.stringify({ error: 'Admin privileges required' }),
+        { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    console.log(`Admin verified. Sending notification for ${type} application:`, application_id);
 
     // Handle rejection notification
     if (type === 'chef_rejection') {
