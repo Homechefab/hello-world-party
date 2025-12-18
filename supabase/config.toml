@@ -96,3 +96,6 @@ verify_jwt = false
 
 [functions.approve-restaurant-create-account]
 verify_jwt = true
+
+[functions.notify-admin-application]
+verify_jwt = true
