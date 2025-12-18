@@ -245,11 +245,10 @@ const handler = async (req: Request): Promise<Response> => {
       JSON.stringify({
         success: true,
         email: homechefEmail,
-        password: password, // Return password so admin can see it if email failed
         emailSent: emailSent,
         message: emailSent 
           ? "Kock godkänd och välkomstmejl skickat" 
-          : "Kock godkänd! OBS: Mejlet kunde inte skickas. Inloggningsuppgifter: " + homechefEmail + " / " + password,
+          : "Kock godkänd! OBS: Mejlet kunde inte skickas. Kontakta kocken direkt för att återställa lösenordet.",
       }),
       {
         status: 200,
