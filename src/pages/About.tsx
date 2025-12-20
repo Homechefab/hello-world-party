@@ -241,7 +241,7 @@ const About = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-2 text-muted-foreground">
-                <p>Info@homechef.com</p>
+                <p>info@homechef.nu</p>
                 <p>0734234686</p>
                 <p>Båstad, Sverige</p>
               </div>
