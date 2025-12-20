@@ -192,10 +192,10 @@ const TermsOfService = () => {
             <h2 className="text-2xl font-semibold text-foreground mb-4">15. Kontaktinformation</h2>
             <ul className="list-none space-y-2">
               <li><strong>Företag:</strong> Homechef AB</li>
-              <li><strong>Organisationsnummer:</strong> 559123-4567</li>
-              <li><strong>E-post:</strong> info@homechef.se</li>
-              <li><strong>Telefon:</strong> 08-123 456 78</li>
-              <li><strong>Adress:</strong> Storgatan 1, 111 22 Stockholm</li>
+              <li><strong>Organisationsnummer:</strong> 559547-7026</li>
+              <li><strong>E-post:</strong> info@homechef.nu</li>
+              <li><strong>Telefon:</strong> 0734234686</li>
+              <li><strong>Adress:</strong> Kiselvägen 15a, 269 41 Östra Karup</li>
             </ul>
           </section>
 
