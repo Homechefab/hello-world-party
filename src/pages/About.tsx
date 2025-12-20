@@ -244,6 +244,7 @@ const About = () => {
                 <p>info@homechef.nu</p>
                 <p>0734234686</p>
                 <p>Båstad, Sverige</p>
+                <p className="pt-2 text-sm">Org.nr: 559547-7026</p>
               </div>
             </CardContent>
           </Card>
