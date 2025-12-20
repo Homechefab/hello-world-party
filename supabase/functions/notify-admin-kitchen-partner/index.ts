@@ -43,7 +43,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Send email to admin
     const emailResponse = await resend.emails.send({
       from: "Homechef <onboarding@resend.dev>",
-      to: ["admin@homechef.se"], // Change this to actual admin email
+      to: ["info@homechef.nu"],
       subject: `Ny Kökspartner-ansökan: ${businessName}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
