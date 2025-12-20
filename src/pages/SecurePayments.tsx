@@ -206,7 +206,7 @@ const SecurePayments = () => {
                   <div className="space-y-4">
                     <div>
                       <p className="font-medium text-foreground">Kundservice</p>
-                      <p className="text-muted-foreground">Info@homechef.com</p>
+                      <p className="text-muted-foreground">info@homechef.nu</p>
                       <p className="text-muted-foreground">0734234686</p>
                     </div>
                     <div>

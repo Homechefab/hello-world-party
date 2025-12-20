@@ -18,7 +18,7 @@ const CustomerService = () => {
       icon: Mail,
       title: "E-post",
       description: "Skicka din fråga så svarar vi snabbt",
-      contact: "Info@homechef.com",
+      contact: "info@homechef.nu",
       availability: "24/7",
       response: "Inom 2 timmar"
     },
