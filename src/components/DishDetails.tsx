@@ -1,12 +1,10 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Clock, MapPin, User } from "lucide-react";
 import { Link } from "react-router-dom";
-import meatballsImage from "@/assets/meatballs.jpg";
-import pastaImage from "@/assets/pasta.jpg";
-import soupImage from "@/assets/soup.jpg";
-import applePieImage from "@/assets/apple-pie.jpg";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Dish {
   id: string;
@@ -22,69 +20,17 @@ interface Dish {
   available: number;
 }
 
-const mockDishes: Dish[] = [
-  {
-    id: "1",
-    title: "Mormors köttbullar",
-    description: "Traditionella svenska köttbullar med gräddsås, lingonsylt och pressgurka. Receptet har gått i arv i tre generationer.",
-    price: 89,
-    image: meatballsImage,
-    rating: 4.8,
-    cookName: "Anna Lindström",
-    cookLocation: "Södermalm, Stockholm",
-    prepTime: "30 min",
-    tags: ["Svenskt", "Klassiskt"],
-    available: 5
-  },
-  {
-    id: "2", 
-    title: "Hemlagad carbonara",
-    description: "Klassisk italiensk carbonara med äkta guanciale, pecorino romano och färska ägg. Enkel men perfekt.",
-    price: 95,
-    image: pastaImage,
-    rating: 4.9,
-    cookName: "Marco Rossi",
-    cookLocation: "Östermalm, Stockholm",
-    prepTime: "20 min",
-    tags: ["Italienskt"],
-    available: 3
-  },
-  {
-    id: "3",
-    title: "Krämig tomatsoppa",
-    description: "Hemkokt tomatsoppa med färska basilika och grädde. Serveras med hemgjort surdegsbröd.",
-    price: 65,
-    image: soupImage, 
-    rating: 4.7,
-    cookName: "Lisa Andersson",
-    cookLocation: "Vasastan, Stockholm",
-    prepTime: "15 min",
-    tags: ["Vegetariskt", "Soppa"],
-    available: 8
-  },
-  {
-    id: "4",
-    title: "Äppelpaj farmors stil",
-    description: "Traditionell äppelpaj med kanel och smördeg. Serveras varm med vaniljsås eller glass.",
-    price: 75,
-    image: applePieImage,
-    rating: 4.6,
-    cookName: "Margareta Holm", 
-    cookLocation: "Gamla Stan, Stockholm",
-    prepTime: "10 min",
-    tags: ["Dessert", "Vegetariskt"],
-    available: 6
-  }
-];
-
 const DishDetailCard = ({ dish }: { dish: Dish }) => {
   return (
     <Card className="group overflow-hidden hover:shadow-warm transition-all duration-300 hover:scale-105 border-border">
       <div className="relative overflow-hidden">
         <img 
-          src={dish.image} 
+          src={dish.image || '/placeholder.svg'} 
           alt={dish.title}
           className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
+          onError={(e) => {
+            e.currentTarget.src = '/placeholder.svg';
+          }}
         />
         <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded-full">
           <div className="flex items-center gap-1">
@@ -146,6 +92,108 @@ const DishDetailCard = ({ dish }: { dish: Dish }) => {
 };
 
 const DishDetails = () => {
+  const [dishes, setDishes] = useState<Dish[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDishes = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('dishes')
+          .select(`
+            id,
+            name,
+            description,
+            price,
+            image_url,
+            category,
+            preparation_time,
+            available,
+            chefs (
+              business_name,
+              full_name,
+              city
+            )
+          `)
+          .eq('available', true)
+          .order('created_at', { ascending: false })
+          .limit(8);
+
+        if (error) throw error;
+
+        const transformedDishes: Dish[] = (data || []).map(dish => ({
+          id: dish.id,
+          title: dish.name,
+          description: dish.description || '',
+          price: dish.price,
+          image: dish.image_url || '/placeholder.svg',
+          rating: 4.5, // Default rating until reviews are aggregated
+          cookName: dish.chefs?.business_name || dish.chefs?.full_name || 'Okänd kock',
+          cookLocation: dish.chefs?.city || 'Stockholm',
+          prepTime: `${dish.preparation_time || 30} min`,
+          tags: dish.category ? [dish.category] : [],
+          available: dish.available ? 1 : 0
+        }));
+
+        setDishes(transformedDishes);
+      } catch (error) {
+        console.error('Error fetching dishes:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDishes();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+              Populära rätter just nu
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Upptäck vad våra hemmakockar lagar idag. Alla rätter är färska och tillagade med kärlek.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <Card key={i} className="animate-pulse">
+                <div className="h-48 bg-secondary rounded-t-lg"></div>
+                <CardContent className="p-4">
+                  <div className="h-6 bg-secondary rounded mb-2"></div>
+                  <div className="h-4 bg-secondary rounded w-3/4"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (dishes.length === 0) {
+    return (
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+              Populära rätter just nu
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Upptäck vad våra hemmakockar lagar idag. Alla rätter är färska och tillagade med kärlek.
+            </p>
+          </div>
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">Inga rätter tillgängliga just nu. Kom tillbaka snart!</p>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="py-16 bg-background">
       <div className="container mx-auto px-4">
@@ -159,7 +207,7 @@ const DishDetails = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {mockDishes.map((dish) => (
+          {dishes.map((dish) => (
             <DishDetailCard key={dish.id} dish={dish} />
           ))}
         </div>

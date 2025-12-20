@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { Gift, Star, TrendingUp, ShoppingBag, Calendar, Award, Zap } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useRole } from "@/hooks/useRole";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 interface UserPoints {
   id: string;
@@ -27,17 +27,18 @@ interface PointsTransaction {
 
 const MyPoints = () => {
   const { user } = useAuth();
-  const { usingMockData } = useRole();
   const [userPoints, setUserPoints] = useState<UserPoints | null>(null);
   const [transactions, setTransactions] = useState<PointsTransaction[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchUserPoints = useCallback(async () => {
+    if (!user?.id) return;
+
     try {
       const { data, error } = await supabase
         .from('user_points')
         .select('*')
-        .eq('user_id', user?.id || '')
+        .eq('user_id', user.id)
         .maybeSingle();
 
       if (error && error.code !== 'PGRST116') throw error;
@@ -46,23 +47,21 @@ const MyPoints = () => {
         setUserPoints(data);
       } else {
         // Create initial points record if doesn't exist
-        if (!data && user?.id) {
-          const { data: newRecord, error: insertError } = await supabase
-            .from('user_points')
-            .insert([{
-              user_id: user.id,
-              total_points: 0,
-              current_points: 0,
-              points_used: 0,
-              total_purchases: 0,
-              next_discount_at: 5
-            }])
-            .select()
-            .maybeSingle();
+        const { data: newRecord, error: insertError } = await supabase
+          .from('user_points')
+          .insert([{
+            user_id: user.id,
+            total_points: 0,
+            current_points: 0,
+            points_used: 0,
+            total_purchases: 0,
+            next_discount_at: 5
+          }])
+          .select()
+          .maybeSingle();
 
-          if (insertError) throw insertError;
-          setUserPoints(newRecord);
-        }
+        if (insertError) throw insertError;
+        setUserPoints(newRecord);
       }
     } catch (error) {
       console.error('Error fetching user points:', error);
@@ -71,11 +70,13 @@ const MyPoints = () => {
   }, [user]);
 
   const fetchTransactions = useCallback(async () => {
+    if (!user?.id) return;
+
     try {
       const { data, error } = await supabase
         .from('points_transactions')
         .select('*')
-        .eq('user_id', user?.id || '')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(20);
 
@@ -90,23 +91,13 @@ const MyPoints = () => {
   }, [user]);
 
   useEffect(() => {
-    if (usingMockData) {
-      // Use mock data for testing
-      setUserPoints({
-        id: '1',
-        total_points: 245,
-        current_points: 245,
-        points_used: 0,
-        total_purchases: 12,
-        next_discount_at: 15
-      });
-      setTransactions(mockTransactions);
-      setLoading(false);
-    } else if (user) {
+    if (user) {
       fetchUserPoints();
       fetchTransactions();
+    } else {
+      setLoading(false);
     }
-  }, [fetchTransactions, fetchUserPoints, user, usingMockData]);
+  }, [fetchTransactions, fetchUserPoints, user]);
 
   const getProgressToNextDiscount = () => {
     if (!userPoints) return 0;
@@ -341,31 +332,31 @@ const MyPoints = () => {
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <Button variant="outline" className="h-auto flex-col py-4" asChild>
-                  <a href="/">
+                  <Link to="/">
                     <ShoppingBag className="w-5 h-5 mb-2" />
                     <span className="text-sm">Handla mat</span>
-                  </a>
+                  </Link>
                 </Button>
                 
                 <Button variant="outline" className="h-auto flex-col py-4" asChild>
-                  <a href="/my-orders">
+                  <Link to="/my-orders">
                     <Calendar className="w-5 h-5 mb-2" />
                     <span className="text-sm">Mina köp</span>
-                  </a>
+                  </Link>
                 </Button>
                 
                 <Button variant="outline" className="h-auto flex-col py-4" asChild>
-                  <a href="/settings/preferences">
+                  <Link to="/settings/preferences">
                     <Star className="w-5 h-5 mb-2" />
                     <span className="text-sm">Preferenser</span>
-                  </a>
+                  </Link>
                 </Button>
                 
                 <Button variant="outline" className="h-auto flex-col py-4" asChild>
-                  <a href="/settings">
+                  <Link to="/settings">
                     <Gift className="w-5 h-5 mb-2" />
                     <span className="text-sm">Inställningar</span>
-                  </a>
+                  </Link>
                 </Button>
               </div>
             </CardContent>
@@ -375,44 +366,5 @@ const MyPoints = () => {
     </div>
   );
 };
-
-// Mock data for testing
-const mockTransactions: PointsTransaction[] = [
-  {
-    id: '1',
-    transaction_type: 'earned',
-    points_amount: 24,
-    description: 'Poäng från köp: 245 kr',
-    created_at: '2025-01-03T16:00:00Z'
-  },
-  {
-    id: '2',
-    transaction_type: 'discount_applied',
-    points_amount: 0,
-    description: '10% lojalitetsrabatt tillämpad: -19.5 kr',
-    created_at: '2025-01-01T12:00:00Z'
-  },
-  {
-    id: '3',
-    transaction_type: 'earned',
-    points_amount: 19,
-    description: 'Poäng från köp: 195 kr',
-    created_at: '2024-12-28T14:30:00Z'
-  },
-  {
-    id: '4',
-    transaction_type: 'earned',
-    points_amount: 12,
-    description: 'Poäng från köp: 125 kr',
-    created_at: '2024-12-25T11:15:00Z'
-  },
-  {
-    id: '5',
-    transaction_type: 'earned',
-    points_amount: 8,
-    description: 'Poäng från köp: 85 kr',
-    created_at: '2024-12-20T16:45:00Z'
-  }
-];
 
 export default MyPoints;
