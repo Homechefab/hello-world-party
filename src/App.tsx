@@ -151,8 +151,8 @@ const App = () => {
             <Route path="/chef/kitchen-assessment" element={<PublicLayout><KitchenAssessment /></PublicLayout>} />
             <Route path="/chef/business-registration" element={<PublicLayout><BusinessRegistration /></PublicLayout>} />
             <Route path="/chef/kockforum" element={<PublicLayout><ChefForum /></PublicLayout>} />
-            <Route path="/chef/månadens-kock" element={<PublicLayout><ChefOfTheMonth /></PublicLayout>} />
-            <Route path="/chef/försäljningsstatistik" element={<PublicLayout><SalesStatistics /></PublicLayout>} />
+            <Route path="/chef/manadens-kock" element={<PublicLayout><ChefOfTheMonth /></PublicLayout>} />
+            <Route path="/chef/forsaljningsstatistik" element={<PublicLayout><SalesStatistics /></PublicLayout>} />
             <Route path="/chef/mentorskap" element={<PublicLayout><Mentorship /></PublicLayout>} />
             
             {/* Chef protected routes - require approved chef role */}
