@@ -147,9 +147,8 @@ const handler = async (req: Request): Promise<Response> => {
     const dashboardTab = type === 'chef' ? 'chefs' : 'kitchen-partners';
     const dashboardUrl = `https://rkucenozpmaixfphpiub.supabase.co?tab=${dashboardTab}`;
 
-    // NOTE: In test mode, Resend only allows sending to the verified email
-    // Change this to the actual admin email when domain is verified
-    const adminEmail = "enklarestudier@gmail.com"; // TODO: Change to farhan_javanmiri@hotmail.com after domain verification
+    // Admin email for all application notifications
+    const adminEmail = "info@homechef.nu";
     
     const emailResponse = await resend.emails.send({
       from: "HomeChef <onboarding@resend.dev>",
