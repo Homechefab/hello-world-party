@@ -154,7 +154,7 @@ const PartnerSupport = () => {
                 </div>
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5" />
-                  <span>partner@homechef.com</span>
+                  <span>info@homechef.nu</span>
                 </div>
               </div>
               <Button asChild variant="secondary" className="w-full">
