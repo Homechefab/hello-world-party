@@ -153,8 +153,8 @@ const HowItWorks = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground">
-                  Alla kockar går igenom en noggrann verifieringsprocess inklusive hygienuttbildning och 
-                  godkännande från kommunen. Vi följer alla livsmedelssäkerhetsregler.
+                  Alla kockar går igenom en noggrann verifieringsprocess. Det ställs krav på att kockar 
+                  har kunskap om hygien och godkännande från kommunen. Vi följer alla livsmedelssäkerhetsregler.
                 </p>
               </CardContent>
             </Card>
