@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 interface Order {
   id: string;
@@ -30,17 +31,44 @@ interface Order {
 }
 
 export const OrderManagement = () => {
+  const { user } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('active');
   const { toast } = useToast();
 
   const loadOrders = useCallback(async () => {
+    if (!user?.id) {
+      setLoading(false);
+      return;
+    }
+
     try {
+      // First get the chef record for this user
+      const { data: chefData, error: chefError } = await supabase
+        .from('chefs')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (chefError || !chefData) {
+        console.error('Chef not found:', chefError);
+        setLoading(false);
+        return;
+      }
+
+      // Then fetch orders for this chef
       const { data, error } = await supabase
         .from('orders')
-        .select(`*`)
-        .eq('chef_id', 'chef1') // Using mock user ID
+        .select(`
+          *,
+          order_items (
+            quantity,
+            unit_price,
+            dishes (name)
+          )
+        `)
+        .eq('chef_id', chefData.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -52,10 +80,14 @@ export const OrderManagement = () => {
         created_at: order.created_at,
         pickup_time: order.delivery_time,
         total_amount: order.total_amount,
-        customer_name: 'Demo Kund',
-        customer_phone: '08-123 456 78',
+        customer_name: 'Kund', // Customer name not stored in orders table
+        customer_phone: '', // Phone not stored in orders table
         pickup_instructions: order.special_instructions,
-        dishes: [] as { title: string; quantity: number; price: number }[]
+        dishes: (order.order_items || []).map((item: { dishes?: { name?: string } | null; quantity: number; unit_price: number }) => ({
+          title: item.dishes?.name || 'Okänd rätt',
+          quantity: item.quantity,
+          price: item.unit_price
+        }))
       })) || [];
 
       setOrders(transformedOrders);
@@ -69,7 +101,7 @@ export const OrderManagement = () => {
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, [toast, user]);
 
   useEffect(() => {
     loadOrders();
@@ -221,10 +253,12 @@ export const OrderManagement = () => {
                             <span className="font-medium">Namn:</span>
                             {order.customer_name}
                           </p>
-                          <p className="flex items-center gap-2">
-                            <Phone className="w-4 h-4" />
-                            {order.customer_phone}
-                          </p>
+                          {order.customer_phone && (
+                            <p className="flex items-center gap-2">
+                              <Phone className="w-4 h-4" />
+                              {order.customer_phone}
+                            </p>
+                          )}
                           <p className="flex items-center gap-2">
                             <Calendar className="w-4 h-4" />
                             Upphämtning: {order.pickup_time ? formatTime(order.pickup_time) : 'Ej angiven'}
