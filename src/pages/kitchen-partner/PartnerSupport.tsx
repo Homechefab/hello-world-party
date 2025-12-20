@@ -16,7 +16,7 @@ const PartnerSupport = () => {
       icon: <Mail className="w-8 h-8 text-primary" />,
       title: "E-postsupport",
       description: "Skicka detaljerade frågor och få svar inom 24 timmar",
-      contact: "partner@homechef.com",
+      contact: "info@homechef.nu",
       hours: "Svar inom 24 timmar"
     },
     {

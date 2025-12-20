@@ -85,7 +85,7 @@ const Footer = () => {
               <h4 className="font-semibold text-foreground text-sm">Kontakt</h4>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Mail className="w-4 h-4 text-primary flex-shrink-0" />
-                <span>Info@homechef.com</span>
+                <span>info@homechef.nu</span>
               </div>
             </div>
             <div className="space-y-2">
