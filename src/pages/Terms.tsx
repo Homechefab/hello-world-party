@@ -54,7 +54,7 @@ const Terms = () => {
                 <p className="text-muted-foreground mb-3">
                   Dessa allmänna villkor ("Villkoren") gäller mellan dig som privatperson/konsument eller som 
                   hemmakock, restaurangpartner eller kökspartner ("Du", "Dig", "Användare") och Homechef AB, 
-                  org. nr XXX-XXXXXX, Båstad, Sverige ("Homechef", "vi", "oss"), när Du använder homechef.se 
+                  org. nr 559547-7026, Kiselvägen 15a, 269 41 Östra Karup ("Homechef", "vi", "oss"), när Du använder homechef.se 
                   och Homechefs mobilapp (tillsammans "Plattformen").
                 </p>
                 <p className="text-muted-foreground mb-3">
@@ -810,10 +810,10 @@ const Terms = () => {
                   <strong>E-post:</strong> partner@homechef.se (Säljare och partners)
                 </p>
                 <p className="text-muted-foreground">
-                  <strong>Telefon:</strong> 08-XXX XX XX
+                  <strong>Telefon:</strong> 0734234686
                 </p>
                 <p className="text-muted-foreground">
-                  <strong>Adress:</strong> Båstad, Sverige
+                  <strong>Adress:</strong> Kiselvägen 15a, 269 41 Östra Karup
                 </p>
               </div>
               <p className="text-muted-foreground mt-4">

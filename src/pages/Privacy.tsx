@@ -27,10 +27,10 @@ const Privacy = () => {
               </p>
               <div className="bg-secondary/20 p-4 rounded-lg text-muted-foreground">
                 <p><strong>Homechef AB</strong></p>
-                <p>Organisationsnummer: [Organisationsnummer]</p>
-                <p>Adress: [Företagets adress], Stockholm, Sverige</p>
-                <p>E-post: privacy@homechef.se</p>
-                <p>Telefon: [Telefonnummer]</p>
+                <p>Organisationsnummer: 559547-7026</p>
+                <p>Adress: Kiselvägen 15a, 269 41 Östra Karup</p>
+                <p>E-post: info@homechef.nu</p>
+                <p>Telefon: 0734234686</p>
               </div>
             </section>
 
@@ -363,9 +363,9 @@ const Privacy = () => {
               <div className="bg-secondary/20 p-4 rounded-lg">
                 <p className="text-muted-foreground mb-2"><strong>Personuppgiftsansvarig:</strong></p>
                 <p className="text-muted-foreground">Homechef AB</p>
-                <p className="text-muted-foreground">E-post: privacy@homechef.se</p>
-                <p className="text-muted-foreground">Telefon: [Telefonnummer]</p>
-                <p className="text-muted-foreground">Adress: [Företagets adress], Stockholm, Sverige</p>
+                <p className="text-muted-foreground">E-post: info@homechef.nu</p>
+                <p className="text-muted-foreground">Telefon: 0734234686</p>
+                <p className="text-muted-foreground">Adress: Kiselvägen 15a, 269 41 Östra Karup</p>
               </div>
             </section>
 

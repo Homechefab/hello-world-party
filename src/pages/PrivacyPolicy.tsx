@@ -110,9 +110,9 @@ const PrivacyPolicy = () => {
               Vid frågor om denna sekretesspolicy eller din personliga information, kontakta oss på:
             </p>
             <ul className="list-none space-y-2 mt-3">
-              <li><strong>E-post:</strong> privacy@homechef.se</li>
-              <li><strong>Telefon:</strong> 08-123 456 78</li>
-              <li><strong>Adress:</strong> Homechef AB, Storgatan 1, 111 22 Stockholm</li>
+              <li><strong>E-post:</strong> info@homechef.nu</li>
+              <li><strong>Telefon:</strong> 0734234686</li>
+              <li><strong>Adress:</strong> Homechef AB, Kiselvägen 15a, 269 41 Östra Karup</li>
             </ul>
           </section>
 
