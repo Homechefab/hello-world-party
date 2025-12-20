@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,8 @@ import { CheckCircle, Upload, DollarSign, Clock, MapPin, AlertCircle } from "luc
 import Header from "@/components/Header";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const steps = [
   {
@@ -43,9 +45,12 @@ const categories = [
 
 const SellPage = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [chefId, setChefId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     title: "",
     category: "",
@@ -60,6 +65,37 @@ const SellPage = () => {
     pickupAddress: "",
     pickupInstructions: ""
   });
+
+  // Fetch chef ID for the logged-in user
+  useEffect(() => {
+    const fetchChefId = async () => {
+      if (!user?.id) return;
+
+      const { data, error } = await supabase
+        .from('chefs')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error fetching chef:', error);
+        return;
+      }
+
+      if (data) {
+        setChefId(data.id);
+      } else {
+        toast({
+          title: "Inte registrerad som kock",
+          description: "Du måste registrera dig som kock för att kunna sälja mat.",
+          variant: "destructive"
+        });
+        navigate('/chef/application');
+      }
+    };
+
+    fetchChefId();
+  }, [user, toast, navigate]);
 
   const handleImageUpload = async (files: FileList) => {
     const imageUrls: string[] = [];
@@ -106,18 +142,27 @@ const SellPage = () => {
   };
 
   const saveDishToDatabase = async () => {
+    if (!chefId) {
+      toast({
+        title: "Fel",
+        description: "Du måste vara registrerad som kock för att skapa annonser.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
       setIsSubmitting(true);
 
       // Convert to proper database format
       const formattedDishes = [{
-        chef_id: 'chef1', // Using mock user ID
+        chef_id: chefId,
         name: formData.title,
         description: formData.description,
         price: parseFloat(formData.price),
         category: formData.category,
-        ingredients: formData.ingredients.split(',').map((i: string) => i.trim()),
-        allergens: formData.allergens.split(',').map((a: string) => a.trim()),
+        ingredients: formData.ingredients.split(',').map((i: string) => i.trim()).filter(Boolean),
+        allergens: formData.allergens.split(',').map((a: string) => a.trim()).filter(Boolean),
         preparation_time: parseInt(formData.prepTime) || 30,
         available: true,
         image_url: uploadedImages[0] || null
@@ -197,6 +242,28 @@ const SellPage = () => {
         return false;
     }
   };
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <Card className="max-w-md mx-auto">
+            <CardContent className="p-6 text-center">
+              <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <h2 className="text-xl font-semibold mb-2">Logga in för att sälja</h2>
+              <p className="text-muted-foreground mb-4">
+                Du måste vara inloggad för att kunna sälja mat.
+              </p>
+              <Button onClick={() => navigate('/auth')}>
+                Logga in
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -476,59 +543,66 @@ const SellPage = () => {
                     )}
                   </div>
 
-                  <div className="bg-secondary/50 rounded-lg p-6">
-                    <h3 className="font-semibold mb-4">Tips för bra matbilder:</h3>
-                    <ul className="space-y-2 text-sm text-muted-foreground">
-                      <li>• Använd naturligt ljus när det är möjligt</li>
-                      <li>• Ta bilder från olika vinklar - ovanifrån och från sidan</li>
-                      <li>• Visa portionsstorlek med en tallrik eller bestick</li>
-                      <li>• Ta en bild av ingredienserna eller tillagningsprocessen</li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h3 className="font-semibold mb-4">Förhandsvisning av din annons:</h3>
-                    <Card className="border-2 border-primary/20">
-                      <CardContent className="p-4">
-                        <div className="flex justify-between items-start mb-2">
-                          <h4 className="font-semibold">{formData.title || "Namn på rätten"}</h4>
-                          <Badge variant="secondary">{formData.category || "Kategori"}</Badge>
+                  <div className="p-6 bg-secondary/30 rounded-lg">
+                    <h3 className="font-medium mb-3">Sammanfattning</h3>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-muted-foreground">Rätt:</span>
+                        <p className="font-medium">{formData.title || '-'}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Kategori:</span>
+                        <p className="font-medium">{formData.category || '-'}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Pris:</span>
+                        <p className="font-medium">{formData.price ? `${formData.price} kr` : '-'}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Portioner:</span>
+                        <p className="font-medium">{formData.portions || '-'}</p>
+                      </div>
+                    </div>
+                    {formData.allergens && (
+                      <div className="mt-3">
+                        <span className="text-muted-foreground text-sm">Allergener:</span>
+                        <div className="flex gap-1 mt-1 flex-wrap">
+                          {formData.allergens.split(',').map((allergen, i) => (
+                            <Badge key={i} variant="outline" className="text-orange-600">
+                              {allergen.trim()}
+                            </Badge>
+                          ))}
                         </div>
-                        <p className="text-sm text-muted-foreground mb-3">
-                          {formData.description || "Beskrivning av rätten..."}
-                        </p>
-                        <div className="flex justify-between items-center">
-                          <span className="text-lg font-bold text-primary">
-                            {formData.price || "0"} kr
-                          </span>
-                          <span className="text-sm text-muted-foreground">
-                            {formData.portions || "0"} portioner kvar
-                          </span>
-                        </div>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    )}
                   </div>
                 </>
               )}
 
-              <div className="flex justify-between pt-6">
-                <Button 
-                  variant="outline" 
+              <div className="flex justify-between pt-4 border-t">
+                <Button
+                  variant="outline"
                   onClick={handleBack}
                   disabled={currentStep === 1}
                 >
                   Tillbaka
                 </Button>
-                <Button 
+                <Button
                   variant="food"
                   onClick={handleNext}
-                  disabled={!isStepValid() || (currentStep === 3 && isSubmitting)}
+                  disabled={!isStepValid() || isSubmitting}
                 >
-                  {currentStep === 3 ? (isSubmitting ? 'Publicerar...' : 'Publicera annons') : 'Nästa'}
+                  {isSubmitting ? 'Sparar...' : currentStep === 3 ? 'Publicera annons' : 'Nästa steg'}
                 </Button>
               </div>
             </CardContent>
           </Card>
+
+          <div className="mt-8 text-center text-sm text-muted-foreground">
+            <p>
+              Behöver du hjälp? <a href="/seller-guide" className="text-primary hover:underline">Läs vår säljguide</a>
+            </p>
+          </div>
         </div>
       </div>
     </div>

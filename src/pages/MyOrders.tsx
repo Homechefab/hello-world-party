@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { ShoppingBag, Clock, CheckCircle, XCircle, Star, MapPin, Calendar, Package, Truck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { useRole } from "@/hooks/useRole";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 interface Order {
   id: string;
@@ -29,38 +29,72 @@ interface Order {
 
 const MyOrders = () => {
   const { user } = useAuth();
-  const { usingMockData } = useRole();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   const fetchOrders = useCallback(async () => {
+    if (!user?.id) {
+      setLoading(false);
+      return;
+    }
+
     try {
-      // Fetch real orders from Supabase
-      const { data, error } = await supabase
+      // Fetch orders with chef info
+      const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
-        .select('*')
-        .eq('customer_id', user?.id || '')
+        .select(`
+          *,
+          chefs (
+            business_name,
+            full_name
+          )
+        `)
+        .eq('customer_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      
-      // Transform data to match our interface
-      const transformedOrders = (data || []).map(order => ({
-        id: order.id,
-        chef_name: 'Okänd kock',
-        dish_name: 'Okänd rätt',
-        dish_image: '/placeholder.svg',
-        total_amount: order.total_amount,
-        status: order.status,
-        delivery_address: order.delivery_address,
-        delivery_time: order.delivery_time,
-        created_at: order.created_at,
-        items: []
-      }));
+      if (ordersError) throw ordersError;
 
-      setOrders(transformedOrders);
+      // Fetch order items for each order
+      const ordersWithItems = await Promise.all(
+        (ordersData || []).map(async (order) => {
+          const { data: items } = await supabase
+            .from('order_items')
+            .select(`
+              quantity,
+              unit_price,
+              dishes (
+                name,
+                image_url
+              )
+            `)
+            .eq('order_id', order.id);
+
+          const transformedItems = (items || []).map(item => ({
+            dish_name: item.dishes?.name || 'Okänd rätt',
+            quantity: item.quantity,
+            unit_price: item.unit_price
+          }));
+
+          const firstItem = items?.[0];
+
+          return {
+            id: order.id,
+            chef_name: order.chefs?.business_name || order.chefs?.full_name || 'Okänd kock',
+            dish_name: firstItem?.dishes?.name || 'Beställning',
+            dish_image: firstItem?.dishes?.image_url || '/placeholder.svg',
+            total_amount: order.total_amount,
+            status: order.status,
+            delivery_address: order.delivery_address,
+            delivery_time: order.delivery_time,
+            created_at: order.created_at,
+            items: transformedItems
+          };
+        })
+      );
+
+      setOrders(ordersWithItems);
     } catch (error) {
       console.error('Error fetching orders:', error);
       toast.error('Kunde inte hämta beställningar');
@@ -70,14 +104,12 @@ const MyOrders = () => {
   }, [user]);
 
   useEffect(() => {
-    if (usingMockData) {
-      // Use mock data for testing
-      setOrders(mockOrders);
-      setLoading(false);
-    } else if (user) {
+    if (user) {
       fetchOrders();
+    } else {
+      setLoading(false);
     }
-  }, [fetchOrders, user, usingMockData]);
+  }, [fetchOrders, user]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -188,7 +220,7 @@ const MyOrders = () => {
               </p>
               {orders.length === 0 && (
                 <Button asChild>
-                  <a href="/">Börja handla</a>
+                  <Link to="/">Börja handla</Link>
                 </Button>
               )}
             </CardContent>
@@ -288,65 +320,5 @@ const MyOrders = () => {
     </div>
   );
 };
-
-// Mock data for testing
-const mockOrders: Order[] = [
-  {
-    id: '1',
-    chef_name: 'Chef Maria',
-    dish_name: 'Pasta Carbonara',
-    dish_image: '/lovable-uploads/pasta.jpg',
-    total_amount: 245,
-    status: 'delivered',
-    delivery_address: 'Storgatan 15, 111 29 Stockholm',
-    delivery_time: '2025-01-03T18:30:00Z',
-    created_at: '2025-01-03T16:00:00Z',
-    items: [
-      { dish_name: 'Pasta Carbonara', quantity: 1, unit_price: 245 }
-    ]
-  },
-  {
-    id: '2',
-    chef_name: 'Chef Erik',
-    dish_name: 'Köttbullar med potatismos',
-    dish_image: '/lovable-uploads/meatballs.jpg',
-    total_amount: 195,
-    status: 'preparing',
-    delivery_address: 'Vasagatan 8, 111 20 Stockholm',
-    delivery_time: null,
-    created_at: '2025-01-05T12:30:00Z',
-    items: [
-      { dish_name: 'Köttbullar med potatismos', quantity: 1, unit_price: 195 }
-    ]
-  },
-  {
-    id: '3',
-    chef_name: 'Chef Anna',
-    dish_name: 'Tomatsoppa',
-    dish_image: '/lovable-uploads/soup.jpg',
-    total_amount: 125,
-    status: 'ready',
-    delivery_address: 'Kungsgatan 42, 111 35 Stockholm',
-    delivery_time: null,
-    created_at: '2025-01-05T14:15:00Z',
-    items: [
-      { dish_name: 'Tomatsoppa', quantity: 1, unit_price: 125 }
-    ]
-  },
-  {
-    id: '4',
-    chef_name: 'Chef Lisa',
-    dish_name: 'Äppelpaj',
-    dish_image: '/lovable-uploads/apple-pie.jpg',
-    total_amount: 85,
-    status: 'confirmed',
-    delivery_address: 'Drottninggatan 67, 111 21 Stockholm',
-    delivery_time: '2025-01-06T15:00:00Z',
-    created_at: '2025-01-05T10:45:00Z',
-    items: [
-      { dish_name: 'Äppelpaj', quantity: 1, unit_price: 85 }
-    ]
-  }
-];
 
 export default MyOrders;
