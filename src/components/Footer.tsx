@@ -99,7 +99,7 @@ const Footer = () => {
               <h4 className="font-semibold text-foreground text-sm invisible">-</h4>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
-                <span>Båstad</span>
+                <span>Kiselvägen 15a, 269 41 Östra Karup</span>
               </div>
             </div>
           </div>
