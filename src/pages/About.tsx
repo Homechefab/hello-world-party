@@ -243,7 +243,7 @@ const About = () => {
               <div className="space-y-2 text-muted-foreground">
                 <p>info@homechef.nu</p>
                 <p>0734234686</p>
-                <p>Båstad, Sverige</p>
+                <p>Kiselvägen 15a, 269 41 Östra Karup</p>
                 <p className="pt-2 text-sm">Org.nr: 559547-7026</p>
               </div>
             </CardContent>
