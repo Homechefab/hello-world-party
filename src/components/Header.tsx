@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { ComponentType, SVGProps, FormEvent } from "react";
-import { ChefHat, Search, Menu, Home, UtensilsCrossed, Info, Phone, Users } from "lucide-react";
+import { Search, Menu, Home, UtensilsCrossed, Info, Phone, Users } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRole } from "@/hooks/useRole";
 import type { UserRole } from "@/types/user";
@@ -70,7 +70,6 @@ const Header = () => {
   }> = [
     { title: "Hem", href: "/", icon: Home },
     { title: "Kategorier", href: "#kategorier", icon: UtensilsCrossed },
-    { title: "Logokoncept", href: "/logo-concepts", icon: ChefHat },
     { title: "Om oss", href: "/about", icon: Info },
     { title: "Kontakt", href: "#kontakt", icon: Phone },
   ];
