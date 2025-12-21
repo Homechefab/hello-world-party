@@ -79,7 +79,7 @@ const Footer = () => {
         </div>
 
         {/* Kontakt sektion */}
-        <div className="border-t border-border pt-6 mb-6">
+        <div id="kontakt" className="border-t border-border pt-6 mb-6 scroll-mt-20">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
               <h4 className="font-semibold text-foreground text-sm">Kontakt</h4>
