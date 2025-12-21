@@ -48,7 +48,6 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
   const [customerEmail, setCustomerEmail] = useState('');
   const [showCheckout, setShowCheckout] = useState(false);
   const [klarnaHtml, setKlarnaHtml] = useState('');
-  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
   const { toast } = useToast();
 
 
@@ -71,7 +70,7 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
 
   const handleKlarnaPayment = async () => {
     setIsLoading(true);
-    
+
     try {
       // Build request body – prefer dishId (secure) over legacy amount/orderLines
       const requestBody = dishId
@@ -82,34 +81,31 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
         body: requestBody,
       });
 
-      if (error) {
-        throw new Error(error.message);
-      }
+      if (error) throw new Error(error.message);
 
+      // Prefer full-page checkout to avoid embedded iframe issues (BankID/QR)
       if (data?.checkout_url) {
-        setCheckoutUrl(data.checkout_url);
+        window.location.assign(data.checkout_url);
+        return;
       }
 
       if (data?.html_snippet) {
         setKlarnaHtml(data.html_snippet);
         setShowCheckout(true);
         toast({
-          title: "Klarna Checkout laddad",
-          description: "Om BankID visar QR på dator: scanna med BankID på mobilen. På mobil: öppna BankID när du får valet."
+          title: 'Klarna Checkout laddad',
+          description: 'Tips: välj BankID. På dator skannar du QR med BankID-appen på mobilen.',
         });
-      } else if (data?.checkout_url) {
-        // Öppna Klarna i helskärm så BankID/deeplinks fungerar bättre
-        window.location.assign(data.checkout_url);
-      } else {
-        throw new Error("Klarna svarade utan checkout_url/html_snippet");
+        return;
       }
 
+      throw new Error('Klarna svarade utan checkout_url/html_snippet');
     } catch (error) {
       console.error('Klarna payment error:', error);
       toast({
-        title: "Betalningsfel",
-        description: error instanceof Error ? error.message : "Något gick fel med betalningen",
-        variant: "destructive"
+        title: 'Betalningsfel',
+        description: error instanceof Error ? error.message : 'Något gick fel med betalningen',
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
@@ -133,16 +129,6 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
             dangerouslySetInnerHTML={{ __html: klarnaHtml }}
             className="klarna-checkout-container"
           />
-
-          {checkoutUrl && (
-            <Button
-              onClick={() => window.location.assign(checkoutUrl)}
-              className="mt-4 w-full"
-            >
-              Öppna i helskärm (BankID)
-            </Button>
-          )}
-
           <Button 
             variant="outline" 
             onClick={() => setShowCheckout(false)}
