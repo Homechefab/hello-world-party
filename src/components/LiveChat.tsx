@@ -85,6 +85,8 @@ const LiveChat = () => {
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
   const audioQueueRef = useRef<ArrayBuffer[]>([]);
   const isPlayingRef = useRef(false);
+  const pingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const lastActivityRef = useRef<number>(Date.now());
 
   // Fetch user role
   useEffect(() => {
@@ -248,14 +250,30 @@ const LiveChat = () => {
       const ws = new WebSocket(data.signedUrl);
       wsRef.current = ws;
 
+      // Set up keep-alive ping every 15 seconds
+      pingIntervalRef.current = setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN) {
+          lastActivityRef.current = Date.now();
+          // Send a keep-alive ping to prevent timeout
+          try {
+            ws.send(JSON.stringify({ type: 'ping' }));
+          } catch (e) {
+            console.log('Ping failed, connection may be closing');
+          }
+        }
+      }, 15000);
+
       ws.onopen = () => {
         setVoiceStatus('connected');
         setVoiceTranscript(['🟢 Ansluten! Börja prata med Emma.']);
         toast.success('Ansluten till röstassistenten Emma');
+        lastActivityRef.current = Date.now();
         startAudioCapture();
       };
 
       ws.onmessage = async (event) => {
+        lastActivityRef.current = Date.now();
+        
         try {
           if (event.data instanceof Blob) {
             setIsSpeaking(true);
@@ -265,9 +283,11 @@ const LiveChat = () => {
           }
 
           const message = JSON.parse(event.data);
+          console.log('WebSocket message:', message.type);
 
           switch (message.type) {
             case 'conversation_initiation_metadata':
+              console.log('Conversation initiated');
               break;
               
             case 'audio':
@@ -309,6 +329,10 @@ const LiveChat = () => {
                 ws.send(JSON.stringify({ type: 'pong', event_id: message.ping_event?.event_id }));
               }
               break;
+              
+            case 'pong':
+              // Keep-alive response received
+              break;
 
             case 'agent_response_correction':
               if (message.agent_response_correction_event?.corrected_response) {
@@ -324,26 +348,53 @@ const LiveChat = () => {
                 });
               }
               break;
+              
+            case 'error':
+              console.error('ElevenLabs error:', message);
+              toast.error('Ett fel uppstod i samtalet');
+              break;
           }
         } catch (e) {
           console.error('Error parsing message:', e);
         }
       };
 
-      ws.onerror = () => {
+      ws.onerror = (error) => {
+        console.error('WebSocket error:', error);
         toast.error('Anslutningsfel');
         setVoiceStatus('error');
+        clearPingInterval();
       };
 
-      ws.onclose = () => {
+      ws.onclose = (event) => {
+        console.log('WebSocket closed:', event.code, event.reason);
+        clearPingInterval();
         setVoiceStatus('idle');
         setIsSpeaking(false);
-        setVoiceTranscript(prev => [...prev, '🔴 Samtalet avslutat.']);
+        
+        // Provide more specific feedback based on close code
+        if (event.code === 1000) {
+          setVoiceTranscript(prev => [...prev, '🔴 Samtalet avslutat.']);
+        } else if (event.code === 1006) {
+          setVoiceTranscript(prev => [...prev, '🔴 Anslutningen bröts. Prova att starta ett nytt samtal.']);
+          toast.error('Anslutningen bröts oväntat');
+        } else {
+          setVoiceTranscript(prev => [...prev, '🔴 Samtalet avslutat.']);
+        }
       };
 
     } catch (error) {
+      console.error('Error starting voice conversation:', error);
       toast.error('Kunde inte starta röstsamtal. Försök igen.');
       setVoiceStatus('idle');
+      clearPingInterval();
+    }
+  }, []);
+  
+  const clearPingInterval = useCallback(() => {
+    if (pingIntervalRef.current) {
+      clearInterval(pingIntervalRef.current);
+      pingIntervalRef.current = null;
     }
   }, []);
 
@@ -426,6 +477,8 @@ const LiveChat = () => {
   }, [isMuted]);
 
   const endVoiceConversation = useCallback(() => {
+    clearPingInterval();
+    
     if (processorRef.current) {
       processorRef.current.disconnect();
       processorRef.current = null;
@@ -435,7 +488,7 @@ const LiveChat = () => {
       sourceRef.current = null;
     }
     if (wsRef.current) {
-      wsRef.current.close();
+      wsRef.current.close(1000, 'User ended conversation');
       wsRef.current = null;
     }
     if (mediaStreamRef.current) {
@@ -451,7 +504,7 @@ const LiveChat = () => {
     isPlayingRef.current = false;
     setVoiceStatus('idle');
     setIsSpeaking(false);
-  }, []);
+  }, [clearPingInterval]);
 
   const toggleMute = useCallback(() => {
     setIsMuted(prev => !prev);
