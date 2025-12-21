@@ -174,6 +174,26 @@ const LiveChat = () => {
     }
   };
 
+  // Handle manage subscription click
+  const [isOpeningPortal, setIsOpeningPortal] = useState(false);
+  
+  const handleManageSubscription = async () => {
+    setIsOpeningPortal(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('customer-portal');
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch {
+      toast.error('Kunde inte öppna prenumerationshantering. Försök igen.');
+    } finally {
+      setIsOpeningPortal(false);
+    }
+  };
+
   // Cleanup voice on unmount
   useEffect(() => {
     return () => {
@@ -887,8 +907,28 @@ const LiveChat = () => {
                       )}
                     </div>
 
+                    {/* Manage subscription button */}
+                    {hasVoiceSubscription && voiceStatus === 'idle' && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleManageSubscription}
+                        disabled={isOpeningPortal}
+                        className="mt-2 text-xs text-muted-foreground hover:text-foreground"
+                      >
+                        {isOpeningPortal ? (
+                          <>
+                            <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                            Laddar...
+                          </>
+                        ) : (
+                          'Hantera prenumeration'
+                        )}
+                      </Button>
+                    )}
+
                     {/* Info text */}
-                    <p className="text-xs text-center text-muted-foreground mt-4">
+                    <p className="text-xs text-center text-muted-foreground mt-2">
                       {hasVoiceSubscription 
                         ? 'Prata med Emma, vår AI-assistent. Hon kan svara på frågor om Homechef.'
                         : 'Prenumerera för att prata med Emma, vår AI-assistent.'}
