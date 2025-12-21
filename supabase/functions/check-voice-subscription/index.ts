@@ -76,7 +76,10 @@ serve(async (req) => {
         const productId = item.price.product;
         if (productId === VOICE_ASSISTANT_PRODUCT_ID) {
           hasVoiceAccess = true;
-          subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
+          // Safely handle subscription end date
+          if (subscription.current_period_end && typeof subscription.current_period_end === 'number') {
+            subscriptionEnd = new Date(subscription.current_period_end * 1000).toISOString();
+          }
           logStep("Voice subscription found", { subscriptionId: subscription.id, endDate: subscriptionEnd });
           break;
         }
