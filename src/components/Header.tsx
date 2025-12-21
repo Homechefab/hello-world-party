@@ -69,7 +69,7 @@ const Header = () => {
     icon: ComponentType<SVGProps<SVGSVGElement>>;
   }> = [
     { title: "Hem", href: "/", icon: Home },
-    { title: "Kategorier", href: "#kategorier", icon: UtensilsCrossed },
+    { title: "Kategorier", href: "/#kategorier", icon: UtensilsCrossed },
     { title: "Om oss", href: "/about", icon: Info },
     { title: "Kontakt", href: "#kontakt", icon: Phone },
   ];
@@ -230,7 +230,19 @@ const Header = () => {
                       key={item.title}
                       to={item.href}
                       className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-secondary/80 transition-colors"
-                      onClick={() => setMenuOpen(false)}
+                      onClick={() => {
+                        setMenuOpen(false);
+                        // Handle anchor scroll after navigation
+                        if (item.href.includes('#')) {
+                          const hash = item.href.split('#')[1];
+                          setTimeout(() => {
+                            const element = document.getElementById(hash);
+                            if (element) {
+                              element.scrollIntoView({ behavior: 'smooth' });
+                            }
+                          }, 100);
+                        }
+                      }}
                     >
                       <item.icon className="w-5 h-5 text-muted-foreground" />
                       <span className="text-base font-medium">{item.title}</span>
