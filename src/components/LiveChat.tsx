@@ -77,6 +77,11 @@ const LiveChat = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voiceTranscript, setVoiceTranscript] = useState<string[]>([]);
+  
+  // Voice subscription state
+  const [hasVoiceSubscription, setHasVoiceSubscription] = useState<boolean | null>(null);
+  const [isCheckingSubscription, setIsCheckingSubscription] = useState(false);
+  const [isCreatingCheckout, setIsCreatingCheckout] = useState(false);
 
   const wsRef = useRef<WebSocket | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -108,13 +113,66 @@ const LiveChat = () => {
         } else {
           setUserRole(data.role || 'customer');
         }
-      } catch (error) {
+      } catch {
         setUserRole('customer');
       }
     };
 
     fetchUserRole();
   }, [user]);
+
+  // Check voice subscription when user changes or chat mode switches to voice
+  useEffect(() => {
+    const checkVoiceSubscription = async () => {
+      if (!user?.id) {
+        setHasVoiceSubscription(false);
+        return;
+      }
+
+      setIsCheckingSubscription(true);
+      try {
+        const { data, error } = await supabase.functions.invoke('check-voice-subscription');
+        
+        if (error) {
+          console.error('Error checking voice subscription:', error);
+          setHasVoiceSubscription(false);
+        } else {
+          setHasVoiceSubscription(data?.hasVoiceAccess || false);
+        }
+      } catch {
+        setHasVoiceSubscription(false);
+      } finally {
+        setIsCheckingSubscription(false);
+      }
+    };
+
+    if (chatMode === 'voice') {
+      checkVoiceSubscription();
+    }
+  }, [user, chatMode]);
+
+  // Handle subscription button click
+  const handleSubscribe = async () => {
+    if (!user) {
+      toast.error('Du måste vara inloggad för att prenumerera');
+      return;
+    }
+
+    setIsCreatingCheckout(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-voice-subscription');
+      
+      if (error) throw error;
+      
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch {
+      toast.error('Kunde inte starta betalning. Försök igen.');
+    } finally {
+      setIsCreatingCheckout(false);
+    }
+  };
 
   // Cleanup voice on unmount
   useEffect(() => {
@@ -745,8 +803,43 @@ const LiveChat = () => {
                     )}
 
                     {/* Voice Controls */}
-                    <div className="flex justify-center gap-4 mt-auto">
-                      {voiceStatus === 'idle' && (
+                    <div className="flex flex-col justify-center gap-4 mt-auto">
+                      {/* Show subscription prompt if user doesn't have access */}
+                      {isCheckingSubscription && (
+                        <div className="text-center py-4">
+                          <Loader2 className="w-6 h-6 animate-spin mx-auto text-muted-foreground" />
+                          <p className="text-sm text-muted-foreground mt-2">Kontrollerar prenumeration...</p>
+                        </div>
+                      )}
+
+                      {!isCheckingSubscription && hasVoiceSubscription === false && (
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-center">
+                          <p className="text-sm font-medium text-amber-800 mb-2">
+                            Röstassistenten kräver Premium
+                          </p>
+                          <p className="text-xs text-amber-700 mb-3">
+                            Prenumerera för 50 kr/mån för obegränsad tillgång till Emma.
+                          </p>
+                          <Button
+                            onClick={handleSubscribe}
+                            disabled={isCreatingCheckout || !user}
+                            className="w-full bg-amber-600 hover:bg-amber-700"
+                          >
+                            {isCreatingCheckout ? (
+                              <>
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                Laddar...
+                              </>
+                            ) : !user ? (
+                              'Logga in för att prenumerera'
+                            ) : (
+                              'Prenumerera – 50 kr/mån'
+                            )}
+                          </Button>
+                        </div>
+                      )}
+
+                      {!isCheckingSubscription && hasVoiceSubscription && voiceStatus === 'idle' && (
                         <Button
                           onClick={startVoiceConversation}
                           className="w-full bg-green-600 hover:bg-green-700"
@@ -764,7 +857,7 @@ const LiveChat = () => {
                       )}
 
                       {voiceStatus === 'connected' && (
-                        <>
+                        <div className="flex justify-center gap-4">
                           <Button
                             variant="outline"
                             size="lg"
@@ -781,7 +874,7 @@ const LiveChat = () => {
                           >
                             <PhoneOff className="w-6 h-6" />
                           </Button>
-                        </>
+                        </div>
                       )}
 
                       {voiceStatus === 'error' && (
@@ -796,7 +889,9 @@ const LiveChat = () => {
 
                     {/* Info text */}
                     <p className="text-xs text-center text-muted-foreground mt-4">
-                      Prata med Emma, vår AI-assistent. Hon kan svara på frågor om Homechef.
+                      {hasVoiceSubscription 
+                        ? 'Prata med Emma, vår AI-assistent. Hon kan svara på frågor om Homechef.'
+                        : 'Prenumerera för att prata med Emma, vår AI-assistent.'}
                     </p>
                   </div>
                 </>
