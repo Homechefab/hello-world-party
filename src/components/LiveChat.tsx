@@ -371,7 +371,22 @@ const LiveChat = () => {
         clearPingInterval();
         setVoiceStatus('idle');
         setIsSpeaking(false);
-        
+
+        const reason = (event.reason || '').toLowerCase();
+        const isQuotaError =
+          event.code === 1002 ||
+          reason.includes('quota') ||
+          reason.includes('exceeds your quota');
+
+        if (isQuotaError) {
+          setVoiceTranscript(prev => [
+            ...prev,
+            '🔴 Röstsamtalet stoppades: ElevenLabs-kvoten (credits) är slut. Fyll på/uppgradera ElevenLabs för att fortsätta.'
+          ]);
+          toast.error('Röstassistenten stoppades: ElevenLabs-kvoten är slut');
+          return;
+        }
+
         // Provide more specific feedback based on close code
         if (event.code === 1000) {
           setVoiceTranscript(prev => [...prev, '🔴 Samtalet avslutat.']);
