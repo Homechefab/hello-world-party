@@ -226,26 +226,37 @@ const Header = () => {
                 {/* Navigation Menu */}
                 <nav className="space-y-1">
                   {menuItems.map((item) => (
-                    <Link
+                    <button
                       key={item.title}
-                      to={item.href}
-                      className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-secondary/80 transition-colors"
+                      className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-secondary/80 transition-colors w-full text-left"
                       onClick={() => {
                         setMenuOpen(false);
-                        if (item.href.includes('#')) {
-                          const hash = item.href.split('#')[1];
+                        
+                        // Handle navigation
+                        if (item.href === "/") {
+                          navigate("/");
+                          setTimeout(() => {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }, 100);
+                        } else if (item.href.includes('#')) {
+                          const [path, hash] = item.href.split('#');
+                          if (path && path !== "/") {
+                            navigate(path);
+                          }
                           setTimeout(() => {
                             const element = document.getElementById(hash);
                             if (element) {
                               element.scrollIntoView({ behavior: 'smooth' });
                             }
-                          }, 100);
+                          }, 150);
+                        } else {
+                          navigate(item.href);
                         }
                       }}
                     >
                       <item.icon className="w-5 h-5 text-muted-foreground" />
                       <span className="text-base font-medium">{item.title}</span>
-                    </Link>
+                    </button>
                   ))}
                 </nav>
 
