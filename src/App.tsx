@@ -73,7 +73,6 @@ import PaymentCanceled from "./pages/PaymentCanceled";
 import Privacy from "./pages/Privacy";
 import DataDeletion from "./pages/DataDeletion";
 import Terms from "./pages/Terms";
-import LogoConcepts from "./pages/LogoConcepts";
 import Press from "./pages/Press";
 import Referral from "./pages/Referral";
 
@@ -127,7 +126,6 @@ const App = () => {
             <Route path="/payment-canceled" element={<PublicLayout><PaymentCanceled /></PublicLayout>} />
             <Route path="/privacy" element={<PublicLayout><Privacy /></PublicLayout>} />
             <Route path="/privacy-policy" element={<PublicLayout><Privacy /></PublicLayout>} />
-            <Route path="/logo-concepts" element={<PublicLayout><LogoConcepts /></PublicLayout>} />
             <Route path="/terms" element={<PublicLayout><Terms /></PublicLayout>} />
             <Route path="/terms-of-service" element={<PublicLayout><Terms /></PublicLayout>} />
             <Route path="/data-deletion" element={<PublicLayout><DataDeletion /></PublicLayout>} />
