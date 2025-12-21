@@ -840,22 +840,29 @@ const LiveChat = () => {
                           <p className="text-xs text-amber-700 mb-3">
                             Prenumerera för 50 kr/mån för obegränsad tillgång till Emma.
                           </p>
-                          <Button
-                            onClick={handleSubscribe}
-                            disabled={isCreatingCheckout || !user}
-                            className="w-full bg-amber-600 hover:bg-amber-700"
-                          >
-                            {isCreatingCheckout ? (
-                              <>
-                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                Laddar...
-                              </>
-                            ) : !user ? (
-                              'Logga in för att prenumerera'
-                            ) : (
-                              'Prenumerera – 50 kr/mån'
-                            )}
-                          </Button>
+                          {!user ? (
+                            <Button
+                              asChild
+                              className="w-full bg-amber-600 hover:bg-amber-700"
+                            >
+                              <Link to="/auth">Logga in för att prenumerera</Link>
+                            </Button>
+                          ) : (
+                            <Button
+                              onClick={handleSubscribe}
+                              disabled={isCreatingCheckout}
+                              className="w-full bg-amber-600 hover:bg-amber-700"
+                            >
+                              {isCreatingCheckout ? (
+                                <>
+                                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                  Laddar...
+                                </>
+                              ) : (
+                                'Prenumerera – 50 kr/mån'
+                              )}
+                            </Button>
+                          )}
                         </div>
                       )}
 
