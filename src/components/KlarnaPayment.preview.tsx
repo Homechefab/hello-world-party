@@ -10,7 +10,6 @@ export const Default = () => (
     dishTitle="Hemlagad Lasagne"
     dishPrice={149}
     quantity={2}
-    onPaymentSuccess={() => console.log('Payment successful!')}
   />
 );
 
@@ -27,6 +26,5 @@ export const HigherPrice = () => (
     dishTitle="Lyxig Oxfilé"
     dishPrice={299}
     quantity={2}
-    onPaymentSuccess={() => console.log('Payment successful!')}
   />
 );
