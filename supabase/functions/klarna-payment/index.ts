@@ -23,10 +23,17 @@ serve(async (req) => {
     // Get environment variables
     const klarnaApiKey = Deno.env.get("KLARNA_API_KEY");
     const klarnaRegion = Deno.env.get("KLARNA_REGION") || "eu";
+    const merchantBaseUrl = Deno.env.get("KLARNA_MERCHANT_BASE_URL");
     
     if (!klarnaApiKey) {
       throw new Error("KLARNA_API_KEY is not set in Supabase secrets");
     }
+
+    if (!merchantBaseUrl) {
+      throw new Error("KLARNA_MERCHANT_BASE_URL is not set in Supabase secrets");
+    }
+
+    logStep("Using merchant base URL", { merchantBaseUrl });
 
     // Create Supabase clients
     const supabaseClient = createClient(
@@ -169,10 +176,10 @@ serve(async (req) => {
       order_tax_amount: resolvedTaxAmountInOre,
       order_lines: resolvedOrderLines,
       merchant_urls: {
-        terms: `${req.headers.get("origin")}/terms`,
-        checkout: `${req.headers.get("origin")}/checkout`,
-        confirmation: `${req.headers.get("origin")}/payment-success?order_id={checkout.order.id}`,
-        push: `${req.headers.get("origin")}/api/klarna/push?order_id={checkout.order.id}`,
+        terms: `${merchantBaseUrl}/terms`,
+        checkout: `${merchantBaseUrl}/checkout`,
+        confirmation: `${merchantBaseUrl}/payment-success?order_id={checkout.order.id}`,
+        push: `${merchantBaseUrl}/api/klarna/push?order_id={checkout.order.id}`,
       },
       shipping_countries: ["SE"],
       billing_countries: ["SE"],
