@@ -3,6 +3,7 @@ import PopularChefs from "@/components/Categories";
 import FoodGrid from "@/components/FoodGrid";
 import Features from "@/components/Features";
 import Footer from "@/components/Footer";
+import FAQ from "@/components/FAQ";
 import RoleBasedServices from "@/components/services/RoleBasedServices";
 import { useRole } from "@/hooks/useRole";
 import SEOHead from "@/components/SEOHead";
@@ -31,6 +32,7 @@ const Index = () => {
           </>
         )}
         <Features />
+        <FAQ />
         <Footer />
         <LiveChat />
       </div>
