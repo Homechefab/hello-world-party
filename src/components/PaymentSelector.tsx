@@ -125,7 +125,6 @@ const PaymentSelector = ({
             dishTitle={dishName}
             dishPrice={price}
             quantity={quantity}
-            onPaymentSuccess={onPaymentSuccess}
           />
         )}
       </div>
