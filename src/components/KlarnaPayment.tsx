@@ -22,7 +22,6 @@ interface KlarnaPaymentProps {
   dishTitle: string;
   dishPrice: number;
   quantity: number;
-  onPaymentSuccess?: () => void;
 }
 
 /**
@@ -34,7 +33,6 @@ interface KlarnaPaymentProps {
  *   dishTitle="Hemlagad Lasagne"
  *   dishPrice={149}
  *   quantity={2}
- *   onPaymentSuccess={() => console.log('Payment successful!')}
  * />
  * ```
  */
@@ -42,12 +40,12 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
   dishTitle = "Exempelrätt",
   dishPrice = 149,
   quantity = 1,
-  onPaymentSuccess
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [customerEmail, setCustomerEmail] = useState('');
   const [showCheckout, setShowCheckout] = useState(false);
   const [klarnaHtml, setKlarnaHtml] = useState('');
+  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
   const { toast } = useToast();
 
 
@@ -85,18 +83,22 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
         throw new Error(error.message);
       }
 
-      if (data.html_snippet) {
+      if (data?.checkout_url) {
+        setCheckoutUrl(data.checkout_url);
+      }
+
+      if (data?.html_snippet) {
         setKlarnaHtml(data.html_snippet);
         setShowCheckout(true);
         toast({
           title: "Klarna Checkout laddad",
-          description: "Välj ditt betalningssätt nedan"
+          description: "Om BankID visar QR på dator: scanna med BankID på mobilen. På mobil: öppna BankID när du får valet."
         });
-        onPaymentSuccess?.();
-      } else if (data.checkout_url) {
-        // Öppna Klarna checkout i ny flik
-        window.open(data.checkout_url, '_blank');
-        onPaymentSuccess?.();
+      } else if (data?.checkout_url) {
+        // Öppna Klarna i helskärm så BankID/deeplinks fungerar bättre
+        window.location.assign(data.checkout_url);
+      } else {
+        throw new Error("Klarna svarade utan checkout_url/html_snippet");
       }
 
     } catch (error) {
@@ -128,10 +130,20 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
             dangerouslySetInnerHTML={{ __html: klarnaHtml }}
             className="klarna-checkout-container"
           />
+
+          {checkoutUrl && (
+            <Button
+              onClick={() => window.location.assign(checkoutUrl)}
+              className="mt-4 w-full"
+            >
+              Öppna i helskärm (BankID)
+            </Button>
+          )}
+
           <Button 
             variant="outline" 
             onClick={() => setShowCheckout(false)}
-            className="mt-4"
+            className="mt-4 w-full"
           >
             Tillbaka
           </Button>
