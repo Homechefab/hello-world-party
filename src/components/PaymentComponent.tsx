@@ -2,6 +2,7 @@ import PaymentSelector from "./PaymentSelector";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 
 interface PaymentComponentProps {
+  dishId?: string;
   dishTitle: string;
   dishPrice: number;
   quantity: number;
@@ -19,6 +20,7 @@ interface PaymentComponentProps {
  * @example
  * ```tsx
  * <PaymentComponent 
+ *   dishId="uuid-here"
  *   dishTitle="Köttbullar"
  *   dishPrice={89}
  *   quantity={2}
@@ -29,6 +31,7 @@ interface PaymentComponentProps {
  * ```
  */
 const PaymentComponent = ({ 
+  dishId,
   dishTitle, 
   dishPrice, 
   quantity, 
@@ -78,6 +81,7 @@ const PaymentComponent = ({
         
         <PaymentSelector
           priceId={priceId}
+          dishId={dishId}
           dishName={dishTitle}
           price={dishPrice}
           quantity={quantity}
