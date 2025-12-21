@@ -61,17 +61,29 @@ serve(async (req) => {
 
     console.log("Creating Swish payment request:", JSON.stringify(paymentRequest));
 
-    // Make request to Swish API with client certificate
-    const response = await fetch(swishApiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(paymentRequest),
-      // Note: In production, you'd need to configure TLS with client certificates
-      // Deno's fetch doesn't natively support client certs, so you may need a workaround
-      // or use a proxy service that handles the cert authentication
-    });
+    // Create HTTP client with mTLS (client certificate authentication)
+    // Swish requires mutual TLS for API authentication
+    let response: Response;
+    
+    try {
+      // Use Deno's createHttpClient for mTLS support
+      const httpClient = Deno.createHttpClient({
+        cert: certificate,
+        key: privateKey,
+      });
+
+      response = await fetch(swishApiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(paymentRequest),
+        client: httpClient,
+      });
+    } catch (tlsError) {
+      console.error("TLS/mTLS error:", tlsError);
+      throw new Error(`Swish certificate authentication failed: ${tlsError.message}`);
+    }
 
     if (!response.ok) {
       const errorText = await response.text();
