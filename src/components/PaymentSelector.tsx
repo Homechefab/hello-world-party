@@ -12,6 +12,7 @@ type PaymentMethod = "stripe" | "swish" | "klarna";
 
 interface PaymentSelectorProps {
   priceId: string;
+  dishId?: string;
   dishName: string;
   price: number;
   quantity: number;
@@ -22,6 +23,7 @@ interface PaymentSelectorProps {
 
 const PaymentSelector = ({
   priceId,
+  dishId,
   dishName,
   price,
   quantity,
@@ -122,6 +124,7 @@ const PaymentSelector = ({
 
         {selectedMethod === "klarna" && (
           <KlarnaPayment
+            dishId={dishId}
             dishTitle={dishName}
             dishPrice={price}
             quantity={quantity}

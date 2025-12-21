@@ -19,6 +19,7 @@ interface OrderLine {
 }
 
 interface KlarnaPaymentProps {
+  dishId?: string;
   dishTitle: string;
   dishPrice: number;
   quantity: number;
@@ -30,6 +31,7 @@ interface KlarnaPaymentProps {
  * @example
  * ```tsx
  * <KlarnaPayment 
+ *   dishId="uuid-here"
  *   dishTitle="Hemlagad Lasagne"
  *   dishPrice={149}
  *   quantity={2}
@@ -37,6 +39,7 @@ interface KlarnaPaymentProps {
  * ```
  */
 export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
+  dishId,
   dishTitle = "Exempelrätt",
   dishPrice = 149,
   quantity = 1,
@@ -70,13 +73,13 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
     setIsLoading(true);
     
     try {
+      // Build request body – prefer dishId (secure) over legacy amount/orderLines
+      const requestBody = dishId
+        ? { dishId, quantity, userEmail: customerEmail }
+        : { amount: totalAmount, currency: 'SEK', orderLines, userEmail: customerEmail };
+
       const { data, error } = await supabase.functions.invoke('klarna-payment', {
-        body: {
-          amount: totalAmount,
-          currency: 'SEK',
-          orderLines: orderLines,
-          userEmail: customerEmail
-        }
+        body: requestBody,
       });
 
       if (error) {

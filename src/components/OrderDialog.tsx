@@ -11,6 +11,7 @@ interface OrderDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   dish: {
+    id?: string;
     title: string;
     description: string;
     price: number;
@@ -65,6 +66,7 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId }: OrderDialogPro
             </div>
             <PaymentSelector
               priceId={stripePriceId}
+              dishId={dish.id}
               dishName={dish.title}
               price={dish.price}
               quantity={quantity}

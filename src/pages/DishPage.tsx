@@ -328,6 +328,7 @@ const DishPage = () => {
                       
                       <PaymentSelector
                         priceId=""
+                        dishId={dishData.id}
                         dishName={dishData.title}
                         price={dishData.price}
                         quantity={quantity}
