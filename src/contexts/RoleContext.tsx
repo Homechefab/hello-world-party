@@ -35,8 +35,9 @@ export function RoleProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     async function fetchUserRole() {
       if (!authUser?.id) {
-        setRole(null);
-        setRoles([]);
+        // Default to customer role for non-authenticated users
+        setRole('customer');
+        setRoles(['customer']);
         setUser(null);
         setLoading(false);
         return;
