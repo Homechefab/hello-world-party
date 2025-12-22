@@ -230,28 +230,42 @@ const Header = () => {
                       key={item.title}
                       className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-secondary/80 transition-colors w-full text-left"
                       onClick={() => {
+                        // Close menu first
                         setMenuOpen(false);
                         
-                        // Handle navigation
-                        if (item.href === "/") {
-                          navigate("/");
-                          setTimeout(() => {
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
-                          }, 100);
-                        } else if (item.href.includes('#')) {
-                          const [path, hash] = item.href.split('#');
-                          if (path && path !== "/") {
-                            navigate(path);
-                          }
-                          setTimeout(() => {
-                            const element = document.getElementById(hash);
-                            if (element) {
-                              element.scrollIntoView({ behavior: 'smooth' });
+                        // Wait for sheet animation to complete before navigating
+                        setTimeout(() => {
+                          // Handle navigation
+                          if (item.href === "/") {
+                            navigate("/");
+                            setTimeout(() => {
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                            }, 100);
+                          } else if (item.href.includes('#')) {
+                            const [path, hash] = item.href.split('#');
+                            const targetPath = path || "/";
+                            
+                            // Always navigate to the correct page first
+                            if (window.location.pathname !== targetPath) {
+                              navigate(targetPath);
+                              // Wait for page to load then scroll
+                              setTimeout(() => {
+                                const element = document.getElementById(hash);
+                                if (element) {
+                                  element.scrollIntoView({ behavior: 'smooth' });
+                                }
+                              }, 300);
+                            } else {
+                              // Already on the page, just scroll
+                              const element = document.getElementById(hash);
+                              if (element) {
+                                element.scrollIntoView({ behavior: 'smooth' });
+                              }
                             }
-                          }, 150);
-                        } else {
-                          navigate(item.href);
-                        }
+                          } else {
+                            navigate(item.href);
+                          }
+                        }, 300);
                       }}
                     >
                       <item.icon className="w-5 h-5 text-muted-foreground" />
