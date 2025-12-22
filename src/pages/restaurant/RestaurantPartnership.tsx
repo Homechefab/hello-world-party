@@ -142,7 +142,7 @@ const RestaurantPartnership = () => {
           
           <div className="grid md:grid-cols-2 gap-8">
             {services.map((service, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow" id={service.id || ""}>
+              <Card key={index} className="hover:shadow-lg transition-shadow scroll-mt-24" id={service.id || ""}>
                 <CardHeader>
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center">

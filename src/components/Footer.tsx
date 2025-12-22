@@ -70,10 +70,10 @@ const Footer = () => {
             <h4 className="font-semibold text-foreground text-sm">För restauranger</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link to="/restaurant" className="hover:text-primary transition-colors">Bli restaurangpartner</Link></li>
-              <li><Link to="/restaurant/partnership" className="hover:text-primary transition-colors">Hemkörning</Link></li>
-              <li><Link to="/restaurant/partnership" className="hover:text-primary transition-colors">Marknadsföring</Link></li>
-              <li><Link to="/restaurant/partnership" className="hover:text-primary transition-colors">Support</Link></li>
-              <li><Link to="/restaurant/partnership" className="hover:text-primary transition-colors">Betalningar</Link></li>
+              <li><Link to="/restaurant/partnership#hemkörning" className="hover:text-primary transition-colors">Hemkörning</Link></li>
+              <li><Link to="/restaurant/partnership#marknadsföring" className="hover:text-primary transition-colors">Marknadsföring</Link></li>
+              <li><Link to="/restaurant/partnership#support" className="hover:text-primary transition-colors">Support</Link></li>
+              <li><Link to="/restaurant/partnership#betalningar" className="hover:text-primary transition-colors">Betalningar</Link></li>
             </ul>
           </div>
         </div>
