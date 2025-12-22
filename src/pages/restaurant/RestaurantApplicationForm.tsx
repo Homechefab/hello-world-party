@@ -216,6 +216,26 @@ const RestaurantApplicationForm = () => {
 
       if (error) throw error;
 
+      // Send email notification to admin
+      try {
+        await supabase.functions.invoke('send-application-notification', {
+          body: {
+            type: 'restaurant',
+            application_id: restaurantId,
+            applicant_name: formData.contactPerson,
+            applicant_email: formData.email,
+            business_name: formData.restaurantName,
+            phone: formData.phone,
+            address: formData.address,
+            city: formData.city
+          }
+        });
+        console.log('Admin notification sent successfully');
+      } catch (notifyError) {
+        console.error('Failed to send admin notification:', notifyError);
+        // Fortsätt även om notifieringen misslyckas
+      }
+
       toast({
         title: "Ansökan skickad!",
         description: "Vi återkommer inom 2-3 arbetsdagar.",

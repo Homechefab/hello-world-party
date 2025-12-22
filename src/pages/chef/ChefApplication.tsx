@@ -193,15 +193,17 @@ const ChefApplication = () => {
 
         // Skicka notifiering till admin via edge function
         try {
-          await supabase.functions.invoke('notify-admin-application', {
+          await supabase.functions.invoke('send-application-notification', {
             body: {
               type: 'chef',
               application_id: chefId,
               applicant_name: formData.fullName,
               applicant_email: formData.contactEmail,
-              business_name: formData.businessName || 'Mitt företag'
+              business_name: formData.businessName || 'Mitt företag',
+              phone: formData.phone
             }
           });
+          console.log('Admin notification sent successfully');
         } catch (notifyError) {
           console.error('Failed to send admin notification:', notifyError);
           // Fortsätt även om notifieringen misslyckas
