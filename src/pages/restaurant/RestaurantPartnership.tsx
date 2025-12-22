@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,6 +20,20 @@ import { Link } from "react-router-dom";
 import RestaurantFAQ from "@/components/services/RestaurantFAQ";
 
 const RestaurantPartnership = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash) {
+      const elementId = decodeURIComponent(location.hash.substring(1));
+      setTimeout(() => {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  }, [location.hash]);
+
   const benefits = [
     {
       icon: Users,
