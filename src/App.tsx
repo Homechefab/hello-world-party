@@ -75,6 +75,7 @@ import DataDeletion from "./pages/DataDeletion";
 import Terms from "./pages/Terms";
 import Press from "./pages/Press";
 import Referral from "./pages/Referral";
+import BusinessServicesPage from "./pages/business/BusinessServices";
 
 const queryClient = new QueryClient();
 
@@ -132,6 +133,7 @@ const App = () => {
             <Route path="/press" element={<PublicLayout><Press /></PublicLayout>} />
             <Route path="/referral" element={<PublicLayout><Referral /></PublicLayout>} />
             <Route path="/bjud-in-vanner" element={<PublicLayout><Referral /></PublicLayout>} />
+            <Route path="/business" element={<PublicLayout><BusinessServicesPage /></PublicLayout>} />
 
             {/* Protected routes - require authentication */}
             <Route path="/dashboard" element={<RoleBasedLayout><Dashboard /></RoleBasedLayout>} />
