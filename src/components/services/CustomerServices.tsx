@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, Calendar, Users, Utensils, Package } from "lucide-react";
+import { ShoppingBag, Calendar, Users, Utensils, Package, Building2 } from "lucide-react";
 import pickupImage from "@/assets/customer-pickup.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
 import cateringImage from "@/assets/catering-service.jpg";
 import mealBoxesImage from "@/assets/meal-boxes.jpg";
+import businessCateringImage from "@/assets/business-catering.jpg";
 import chefRecruitmentBg from "@/assets/chef-recruitment-bg.jpg";
 
 const customerServices = [
@@ -49,6 +50,14 @@ const customerServices = [
     href: "/meal-boxes",
     icon: Package,
     color: "from-rose-500 to-rose-600"
+  },
+  {
+    image: businessCateringImage,
+    title: "För företag",
+    description: "Lunch, catering och måltidslösningar för ditt företag",
+    href: "/business",
+    icon: Building2,
+    color: "from-emerald-500 to-emerald-600"
   }
 ];
 
