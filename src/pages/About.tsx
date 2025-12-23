@@ -286,20 +286,11 @@ const About = () => {
                 <Badge variant="secondary">Medgrundare</Badge>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed mb-4">
+                <p className="text-muted-foreground leading-relaxed">
                   Frilansande grafisk formgivare och videoeditor med erfarenhet som 
                   fullstackutvecklare. Studerar Business Computing and Information Systems 
                   vid University of Central Lancashire.
                 </p>
-                <a 
-                  href="https://www.linkedin.com/in/victor-akande" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
-                >
-                  <Linkedin className="w-5 h-5" />
-                  <span className="text-sm font-medium">LinkedIn</span>
-                </a>
               </CardContent>
             </Card>
           </div>
