@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      business_partners: {
+        Row: {
+          address: string
+          application_status: string | null
+          business_description: string | null
+          business_name: string
+          business_type: string
+          city: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string
+          created_at: string
+          food_safety_approved: boolean | null
+          has_insurance: boolean | null
+          id: string
+          organization_number: string
+          postal_code: string
+          rejection_reason: string | null
+          updated_at: string
+          user_id: string | null
+          website_url: string | null
+        }
+        Insert: {
+          address: string
+          application_status?: string | null
+          business_description?: string | null
+          business_name: string
+          business_type: string
+          city: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string
+          created_at?: string
+          food_safety_approved?: boolean | null
+          has_insurance?: boolean | null
+          id?: string
+          organization_number: string
+          postal_code: string
+          rejection_reason?: string | null
+          updated_at?: string
+          user_id?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          address?: string
+          application_status?: string | null
+          business_description?: string | null
+          business_name?: string
+          business_type?: string
+          city?: string
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string
+          created_at?: string
+          food_safety_approved?: boolean | null
+          has_insurance?: boolean | null
+          id?: string
+          organization_number?: string
+          postal_code?: string
+          rejection_reason?: string | null
+          updated_at?: string
+          user_id?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       chef_videos: {
         Row: {
           chef_id: string
