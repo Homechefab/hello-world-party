@@ -227,8 +227,60 @@ const About = () => {
         </div>
       </section>
 
-      {/* Contact CTA */}
+      {/* Meet the Team */}
       <section className="py-16">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              Möt teamet
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Personerna bakom Homechef
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* CEO */}
+            <Card className="text-center">
+              <CardHeader>
+                <div className="w-32 h-32 bg-gradient-to-br from-primary/20 to-primary/40 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-primary/30">
+                  <Users className="w-12 h-12 text-primary" />
+                </div>
+                <CardTitle className="text-xl">VD & Grundare</CardTitle>
+                <Badge variant="secondary">CEO</Badge>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground leading-relaxed">
+                  Utbildad statsvetare och sociolog med bred erfarenhet från olika branscher 
+                  och eget företagande. Drivs av visionen att koppla samman matälskare 
+                  med passionerade hemmakockar och skapa en plattform som gör skillnad.
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Co-Founder */}
+            <Card className="text-center">
+              <CardHeader>
+                <div className="w-32 h-32 bg-gradient-to-br from-primary/20 to-primary/40 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-primary/30">
+                  <Users className="w-12 h-12 text-primary" />
+                </div>
+                <CardTitle className="text-xl">Victor</CardTitle>
+                <Badge variant="secondary">Medgrundare & CTO</Badge>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground leading-relaxed">
+                  Student som snart tar examen som systemutvecklare. Ansvarar för 
+                  den tekniska utvecklingen av Homechef och arbetar med att bygga 
+                  en robust och användarvänlig plattform för både kockar och kunder.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact CTA */}
+      <section className="py-16 bg-secondary/30">
         <div className="container mx-auto px-4">
           <Card className="max-w-2xl mx-auto text-center">
             <CardHeader>
