@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import rentKitchenImage from "@/assets/service-rent-kitchen.jpg";
 import orderFoodImage from "@/assets/service-order-food.jpg";
 import deliveryImage from "@/assets/service-delivery.jpg";
+import businessCateringImage from "@/assets/business-catering.jpg";
 
 const businessServices = [
   {
@@ -24,6 +25,13 @@ const businessServices = [
     description: "Leverera mat och tjäna extra pengar på din lediga tid",
     href: "/delivery-partner/onboarding",
     color: "from-purple-500 to-purple-600"
+  },
+  {
+    image: businessCateringImage,
+    title: "För företag",
+    description: "Catering, lunch och måltidslösningar för ditt företag",
+    href: "/business",
+    color: "from-emerald-500 to-emerald-600"
   }
 ];
 
