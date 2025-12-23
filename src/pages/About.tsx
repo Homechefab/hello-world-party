@@ -1,6 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Users, Target, ChefHat, Sparkles, Globe } from "lucide-react";
+import teamFarhan from "@/assets/team-victor.jpg";
+import teamVictor from "@/assets/team-farhan.jpg";
 
 const About = () => {
   const values = [
@@ -240,38 +242,45 @@ const About = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {/* CEO */}
-            <Card className="text-center">
+            {/* CEO - Farhan */}
+            <Card className="text-center overflow-hidden">
               <CardHeader>
-                <div className="w-32 h-32 bg-gradient-to-br from-primary/20 to-primary/40 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-primary/30">
-                  <Users className="w-12 h-12 text-primary" />
+                <div className="w-40 h-40 rounded-full mx-auto mb-4 border-4 border-primary/30 overflow-hidden shadow-lg">
+                  <img 
+                    src={teamFarhan} 
+                    alt="Farhan Javanmiri - VD och Grundare" 
+                    className="w-full h-full object-cover object-top"
+                  />
                 </div>
-                <CardTitle className="text-xl">VD & Grundare</CardTitle>
-                <Badge variant="secondary">CEO</Badge>
+                <CardTitle className="text-xl">Farhan Javanmiri</CardTitle>
+                <Badge variant="secondary">VD & Grundare</Badge>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  Utbildad statsvetare och sociolog med bred erfarenhet från olika branscher 
-                  och eget företagande. Drivs av visionen att koppla samman matälskare 
-                  med passionerade hemmakockar och skapa en plattform som gör skillnad.
+                  Utbildad statsvetare och beteendevetare. Sju års erfarenhet från 
+                  olika branscher samt tre års erfarenhet som företagare.
                 </p>
               </CardContent>
             </Card>
 
-            {/* Co-Founder */}
-            <Card className="text-center">
+            {/* Co-Founder - Victor */}
+            <Card className="text-center overflow-hidden">
               <CardHeader>
-                <div className="w-32 h-32 bg-gradient-to-br from-primary/20 to-primary/40 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-primary/30">
-                  <Users className="w-12 h-12 text-primary" />
+                <div className="w-40 h-40 rounded-full mx-auto mb-4 border-4 border-primary/30 overflow-hidden shadow-lg">
+                  <img 
+                    src={teamVictor} 
+                    alt="Victor Akande - Medgrundare" 
+                    className="w-full h-full object-cover object-top"
+                  />
                 </div>
-                <CardTitle className="text-xl">Victor</CardTitle>
-                <Badge variant="secondary">Medgrundare & CTO</Badge>
+                <CardTitle className="text-xl">Victor Akande</CardTitle>
+                <Badge variant="secondary">Medgrundare</Badge>
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  Student som snart tar examen som systemutvecklare. Ansvarar för 
-                  den tekniska utvecklingen av Homechef och arbetar med att bygga 
-                  en robust och användarvänlig plattform för både kockar och kunder.
+                  Frilansande grafisk formgivare och videoeditor med erfarenhet som 
+                  fullstackutvecklare. Studerar Business Computing and Information Systems 
+                  vid University of Central Lancashire.
                 </p>
               </CardContent>
             </Card>
