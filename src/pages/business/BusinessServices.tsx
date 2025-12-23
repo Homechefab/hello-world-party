@@ -208,7 +208,7 @@ const BusinessServicesPage = () => {
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <a href="mailto:foretag@homechef.nu">foretag@homechef.nu</a>
+              <a href="mailto:foretag@homechef.nu">Kontakta oss</a>
             </Button>
           </div>
         </section>
