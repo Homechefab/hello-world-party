@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="bg-gradient-warm border-t border-border rounded-xl mt-4">
       <div className="max-w-7xl mx-auto px-6 py-12" style={{paddingBottom: 'calc(1rem + env(safe-area-inset-bottom))'}}>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-8">
           {/* Brand */}
           <div className="space-y-3">
             <Link to="/" className="flex items-center">
@@ -74,6 +74,17 @@ const Footer = () => {
               <li><Link to="/restaurant/partnership#marknadsföring" className="hover:text-primary transition-colors">Marknadsföring</Link></li>
               <li><Link to="/restaurant/partnership#support" className="hover:text-primary transition-colors">Support</Link></li>
               <li><Link to="/restaurant/partnership#betalningar" className="hover:text-primary transition-colors">Betalningar</Link></li>
+            </ul>
+          </div>
+
+          {/* För företag */}
+          <div className="space-y-3">
+            <h4 className="font-semibold text-foreground text-sm">För företag</h4>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link to="/business" className="hover:text-primary transition-colors">Bli företagspartner</Link></li>
+              <li><Link to="/business#services" className="hover:text-primary transition-colors">Våra tjänster</Link></li>
+              <li><Link to="/business#benefits" className="hover:text-primary transition-colors">Fördelar</Link></li>
+              <li><Link to="/business#contact" className="hover:text-primary transition-colors">Kontakta oss</Link></li>
             </ul>
           </div>
         </div>

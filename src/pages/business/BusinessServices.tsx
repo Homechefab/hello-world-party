@@ -1,39 +1,46 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Building2, Utensils, CalendarDays, Truck, Users, Clock, CheckCircle, ArrowRight } from "lucide-react";
+import { Building2, Utensils, TrendingUp, ShieldCheck, CheckCircle, ArrowRight, Store, Truck } from "lucide-react";
 import businessCateringImage from "@/assets/business-catering.jpg";
 
 const services = [
   {
     icon: Utensils,
-    title: "Lunch till kontoret",
-    description: "Daglig eller veckovis leverans av hemlagad lunch till ert kontor"
+    title: "Sälj catering",
+    description: "Nå nya kunder genom vår plattform och erbjud catering till företag och privatpersoner"
   },
   {
-    icon: CalendarDays,
-    title: "Eventcatering",
-    description: "Catering till möten, konferenser och företagsevent"
+    icon: Store,
+    title: "Sälj färdiglagad mat",
+    description: "Lista dina färdiglagade rätter och matlådor för avhämtning eller leverans"
   },
   {
-    icon: Users,
-    title: "Personalfester",
-    description: "Mat till kickoffs, julfester och andra personalarrangemang"
+    icon: TrendingUp,
+    title: "Öka din försäljning",
+    description: "Få tillgång till tusentals hungriga kunder i ditt område"
   },
   {
     icon: Truck,
-    title: "Regelbundna leveranser",
-    description: "Prenumerationstjänst för kontinuerlig matleverans"
+    title: "Leveranslösningar",
+    description: "Använd våra leveranspartners eller hantera leverans själv"
   }
 ];
 
 const benefits = [
-  "Lokala hemmakockar med autentiska recept",
-  "Flexibla beställningar efter era behov",
-  "Mångfald av kök och smaker",
-  "Enkel fakturering för företag",
-  "Schemalagda leveranser",
-  "Allergianpassade alternativ"
+  "Ingen startavgift - betala endast vid försäljning",
+  "Enkel beställningshantering via vår app",
+  "Automatisk betalningshantering",
+  "Marknadsföring till tusentals kunder",
+  "Flexibla öppettider och tillgänglighet",
+  "Support och hjälp från vårt team"
+];
+
+const requirements = [
+  "Registrerat livsmedelsföretag",
+  "Godkänd av Livsmedelsverket",
+  "Giltig ansvarsförsäkring",
+  "Möjlighet att hantera beställningar digitalt"
 ];
 
 const BusinessServicesPage = () => {
@@ -43,7 +50,7 @@ const BusinessServicesPage = () => {
       <section className="relative h-[60vh] overflow-hidden">
         <img 
           src={businessCateringImage} 
-          alt="Företagscatering från Homechef"
+          alt="Företagspartner med Homechef"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent" />
@@ -54,21 +61,21 @@ const BusinessServicesPage = () => {
               För företag
             </div>
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Hemlagad mat för ditt företag
+              Sälj din mat via Homechef
             </h1>
             <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Ge dina medarbetare och gäster en unik matupplevelse med lokala 
-              hemmakockar. Från daglig lunch till stora event.
+              Är du ett etablerat matföretag som erbjuder catering eller säljer färdiglagad mat? 
+              Nå fler kunder genom Sveriges första marknadsplats för hemlagad och lokalt producerad mat.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button size="lg" asChild>
-                <Link to="/business/contact">
-                  Kontakta oss
+                <Link to="/business/application">
+                  Ansök som företagspartner
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white/20" asChild>
-                <Link to="/business/register">Registrera företag</Link>
+                <a href="mailto:foretag@homechef.nu">Kontakta oss</a>
               </Button>
             </div>
           </div>
@@ -77,13 +84,13 @@ const BusinessServicesPage = () => {
 
       <div className="container mx-auto px-4 py-16">
         {/* Services Grid */}
-        <section className="mb-20">
+        <section id="services" className="mb-20 scroll-mt-20">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-foreground mb-4">
-              Våra företagstjänster
+              Vad du kan göra på Homechef
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Vi erbjuder skräddarsydda matlösningar för företag av alla storlekar
+              Som företagspartner får du tillgång till en växande kundbas som söker kvalitetsmat
             </p>
           </div>
 
@@ -105,16 +112,15 @@ const BusinessServicesPage = () => {
         </section>
 
         {/* Benefits Section */}
-        <section className="mb-20">
+        <section id="benefits" className="mb-20 scroll-mt-20">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl font-bold text-foreground mb-6">
-                Varför välja Homechef för företag?
+                Fördelar med Homechef för företag
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Vi kopplar ihop lokala hemmakockar med företag som vill erbjuda 
-                sina medarbetare och gäster något extra. Autentisk, hemlagad mat 
-                med personlig touch.
+                Vi hjälper etablerade matföretag att nå nya kunder och öka sin försäljning 
+                genom vår digitala marknadsplats.
               </p>
               <ul className="space-y-4">
                 {benefits.map((benefit) => (
@@ -128,62 +134,76 @@ const BusinessServicesPage = () => {
             <Card className="bg-primary/5 border-primary/20">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5" />
-                  Så fungerar det
+                  <ShieldCheck className="h-5 w-5" />
+                  Krav för att bli partner
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex gap-4">
-                  <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold flex-shrink-0">
-                    1
+              <CardContent className="space-y-4">
+                {requirements.map((req, index) => (
+                  <div key={req} className="flex gap-4">
+                    <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold flex-shrink-0">
+                      {index + 1}
+                    </div>
+                    <div className="flex items-center">
+                      <p className="text-foreground">{req}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold">Kontakta oss</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Berätta om era behov och önskemål
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold flex-shrink-0">
-                    2
-                  </div>
-                  <div>
-                    <h4 className="font-semibold">Vi matchar er med kockar</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Baserat på meny, allergier och leveranstider
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <div className="w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold flex-shrink-0">
-                    3
-                  </div>
-                  <div>
-                    <h4 className="font-semibold">Njut av hemlagad mat</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Levererat direkt till ert kontor eller event
-                    </p>
-                  </div>
-                </div>
+                ))}
               </CardContent>
             </Card>
           </div>
         </section>
 
+        {/* How it works */}
+        <section className="mb-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              Så kommer du igång
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                1
+              </div>
+              <h3 className="font-semibold text-lg mb-2">Ansök</h3>
+              <p className="text-muted-foreground">
+                Fyll i ansökningsformuläret med information om ditt företag
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                2
+              </div>
+              <h3 className="font-semibold text-lg mb-2">Godkänns</h3>
+              <p className="text-muted-foreground">
+                Vi granskar din ansökan och verifierar dina tillstånd
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
+                3
+              </div>
+              <h3 className="font-semibold text-lg mb-2">Börja sälja</h3>
+              <p className="text-muted-foreground">
+                Lägg upp din meny och börja ta emot beställningar
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* CTA Section */}
-        <section className="bg-primary/10 rounded-2xl p-8 md:p-12 text-center">
+        <section id="contact" className="bg-primary/10 rounded-2xl p-8 md:p-12 text-center scroll-mt-20">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
-            Redo att komma igång?
+            Redo att nå fler kunder?
           </h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Kontakta oss idag för att diskutera hur vi kan hjälpa ert företag 
-            med hemlagad mat av högsta kvalitet.
+            Ansök idag och bli en del av Sveriges växande marknadsplats för kvalitetsmat.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" asChild>
-              <Link to="/business/contact">
-                Kontakta oss
+              <Link to="/business/application">
+                Ansök som företagspartner
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
