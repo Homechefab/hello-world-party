@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Users, Target, ChefHat, Sparkles, Globe } from "lucide-react";
-import teamFarhan from "@/assets/team-victor.jpg";
+import teamFarhan from "@/assets/team-farhan-v2.jpg";
 import teamVictor from "@/assets/team-farhan.jpg";
 
 const About = () => {
