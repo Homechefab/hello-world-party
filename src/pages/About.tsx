@@ -261,7 +261,7 @@ const About = () => {
                   olika branscher samt tre års erfarenhet som företagare.
                 </p>
                 <a 
-                  href="https://www.linkedin.com/in/farhan-javanmiri" 
+                  href="https://www.linkedin.com/in/farhan-javanmiri-a6426424a/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
