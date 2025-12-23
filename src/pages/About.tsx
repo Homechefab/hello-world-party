@@ -257,8 +257,9 @@ const About = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  Utbildad statsvetare och beteendevetare. Sju års erfarenhet från 
-                  olika branscher samt tre års erfarenhet som företagare.
+                  Med en bakgrund inom statsvetenskap och beteendevetenskap kombinerar Farhan 
+                  sju års branscherfarenhet med tre års entreprenörskap för att leda Homechef. 
+                  Hans vision är att demokratisera matbranschen och skapa nya möjligheter för hemmakockar.
                 </p>
                 <a 
                   href="https://www.linkedin.com/in/farhan-javanmiri-a6426424a/" 
@@ -287,9 +288,9 @@ const About = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  Frilansande grafisk formgivare och videoeditor med erfarenhet som 
-                  fullstackutvecklare. Studerar Business Computing and Information Systems 
-                  vid University of Central Lancashire.
+                  Victor driver Homechefs tekniska utveckling med sin expertis inom fullstack-utveckling 
+                  och design. Som student inom Business Computing kombinerar han affärsförståelse 
+                  med teknisk innovation för att bygga en skalbar plattform.
                 </p>
               </CardContent>
             </Card>
