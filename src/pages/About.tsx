@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Heart, Users, Target, ChefHat, Sparkles, Globe } from "lucide-react";
-import teamFarhan from "@/assets/team-farhan-v2.jpg";
+import teamFarhan from "@/assets/team-farhan-new.jpg";
 import teamVictor from "@/assets/team-farhan.jpg";
 
 const About = () => {
@@ -249,7 +249,7 @@ const About = () => {
                   <img 
                     src={teamFarhan} 
                     alt="Farhan Javanmiri - VD och Grundare" 
-                    className="w-full h-full object-cover object-top"
+                    className="w-full h-full object-cover object-[center_25%] scale-110"
                   />
                 </div>
                 <CardTitle className="text-xl">Farhan Javanmiri</CardTitle>
