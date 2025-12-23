@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Heart, Users, Target, ChefHat, Sparkles, Globe } from "lucide-react";
+import { Heart, Users, Target, ChefHat, Sparkles, Globe, Linkedin } from "lucide-react";
 import teamFarhan from "@/assets/team-farhan-new.jpg";
 import teamVictor from "@/assets/team-farhan.jpg";
 
@@ -256,10 +256,19 @@ const About = () => {
                 <Badge variant="secondary">VD & Grundare</Badge>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-muted-foreground leading-relaxed mb-4">
                   Utbildad statsvetare och beteendevetare. Sju års erfarenhet från 
                   olika branscher samt tre års erfarenhet som företagare.
                 </p>
+                <a 
+                  href="https://www.linkedin.com/in/farhan-javanmiri" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                >
+                  <Linkedin className="w-5 h-5" />
+                  <span className="text-sm font-medium">LinkedIn</span>
+                </a>
               </CardContent>
             </Card>
 
@@ -277,11 +286,20 @@ const About = () => {
                 <Badge variant="secondary">Medgrundare</Badge>
               </CardHeader>
               <CardContent>
-                <p className="text-muted-foreground leading-relaxed">
+                <p className="text-muted-foreground leading-relaxed mb-4">
                   Frilansande grafisk formgivare och videoeditor med erfarenhet som 
                   fullstackutvecklare. Studerar Business Computing and Information Systems 
                   vid University of Central Lancashire.
                 </p>
+                <a 
+                  href="https://www.linkedin.com/in/victor-akande" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors"
+                >
+                  <Linkedin className="w-5 h-5" />
+                  <span className="text-sm font-medium">LinkedIn</span>
+                </a>
               </CardContent>
             </Card>
           </div>
