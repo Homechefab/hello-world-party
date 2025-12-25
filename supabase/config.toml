@@ -102,3 +102,6 @@ verify_jwt = true
 
 [functions.send-application-notification]
 verify_jwt = false
+
+[functions.send-business-confirmation]
+verify_jwt = false
