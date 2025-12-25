@@ -25,7 +25,7 @@ const Hero = () => {
             <span className="block text-lg md:text-xl font-normal text-yellow-cream mt-2">hemlagad mat nära dig</span>
           </h1>
           <p className="text-lg mb-6 text-white/90">
-            Beställ hemlagad mat från duktiga kockar i ditt område.
+            Beställ hemlagad mat från kommunalt godkända kockar i ditt område.
           </p>
           
           <div id="search" className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl max-w-2xl mx-auto">
