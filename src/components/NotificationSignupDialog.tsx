@@ -9,6 +9,7 @@ import {
 import { X, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import popupHeaderBg from "@/assets/popup-header-bg.jpg";
 
 interface NotificationSignupDialogProps {
   trigger?: React.ReactNode;
@@ -131,17 +132,28 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }
           <X className="h-4 w-4 text-white" />
         </button>
 
-        {/* Gradient Header */}
-        <div className="bg-gradient-to-br from-primary via-primary/90 to-primary/80 p-6 pt-8 text-center text-white">
-          <div className="flex justify-center mb-3">
-            <div className="p-2.5 bg-white/20 rounded-full backdrop-blur-sm">
-              <Sparkles className="w-6 h-6" />
+        {/* Header with background image and gradient overlay */}
+        <div className="relative p-6 pt-8 text-center text-white overflow-hidden">
+          {/* Background image */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${popupHeaderBg})` }}
+          />
+          {/* Gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/85 via-primary/75 to-primary/65" />
+          
+          {/* Content */}
+          <div className="relative z-10">
+            <div className="flex justify-center mb-3">
+              <div className="p-2.5 bg-white/20 rounded-full backdrop-blur-sm">
+                <Sparkles className="w-6 h-6" />
+              </div>
             </div>
+            <h2 className="text-xl font-bold mb-1">Få Early Access</h2>
+            <p className="text-white/90 text-sm">
+              Bli först när vi lanserar i ditt område!
+            </p>
           </div>
-          <h2 className="text-xl font-bold mb-1">Få Early Access</h2>
-          <p className="text-white/90 text-sm">
-            Bli först när vi lanserar i ditt område!
-          </p>
         </div>
 
         {/* Form Section */}
