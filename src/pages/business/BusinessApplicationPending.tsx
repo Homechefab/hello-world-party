@@ -64,7 +64,7 @@ const BusinessApplicationPending = () => {
 
             <div className="flex items-center justify-center gap-2 text-muted-foreground">
               <Mail className="h-4 w-4" />
-              <span>Har du frågor? Kontakta oss på <a href="mailto:foretag@homechef.nu" className="text-primary hover:underline">foretag@homechef.nu</a></span>
+              <span>Har du frågor? Kontakta oss på <a href="mailto:info@homechef.nu" className="text-primary hover:underline">info@homechef.nu</a></span>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
