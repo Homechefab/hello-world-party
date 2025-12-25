@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Search, ShieldCheck } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-food.jpg";
 
@@ -24,8 +24,14 @@ const Hero = () => {
             Homechef
             <span className="block text-lg md:text-xl font-normal text-yellow-cream mt-2">hemlagad mat nära dig</span>
           </h1>
-          <p className="text-lg mb-6 text-white/90">
-            Beställ hemlagad mat från kommunalt godkända kockar i ditt område.
+          <p className="text-lg mb-6 text-white/90 flex items-center justify-center gap-2">
+            <span className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
+              <ShieldCheck className="w-4 h-4 text-green-300" />
+              Kommunalt godkända kockar
+            </span>
+          </p>
+          <p className="text-base mb-6 text-white/80">
+            Beställ hemlagad mat från kockar med tillstånd i ditt område.
           </p>
           
           <div id="search" className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl max-w-2xl mx-auto">
