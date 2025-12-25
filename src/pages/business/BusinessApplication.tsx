@@ -164,7 +164,7 @@ const BusinessApplication = () => {
 
       if (error) throw error;
 
-      // Send confirmation email (don't wait for it, let it run in background)
+      // Send confirmation email to business (don't wait for it)
       supabase.functions.invoke('send-business-confirmation', {
         body: {
           businessName: data.businessName,
@@ -177,6 +177,26 @@ const BusinessApplication = () => {
           console.error("Error sending confirmation email:", emailError);
         } else {
           console.log("Confirmation email sent successfully");
+        }
+      });
+
+      // Notify admin about new application (don't wait for it)
+      supabase.functions.invoke('notify-admin-business-application', {
+        body: {
+          businessName: data.businessName,
+          contactName: data.contactName,
+          contactEmail: data.contactEmail,
+          contactPhone: data.contactPhone,
+          businessType: data.businessType,
+          organizationNumber: data.organizationNumber,
+          city: data.city,
+          hasDocument: !!documentUrl
+        }
+      }).then(({ error: adminError }) => {
+        if (adminError) {
+          console.error("Error notifying admin:", adminError);
+        } else {
+          console.log("Admin notification sent successfully");
         }
       });
 
