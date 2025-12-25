@@ -11,6 +11,7 @@ import { LoginLogsViewer } from '@/components/admin/LoginLogsViewer';
 import { UserManagement } from '@/components/admin/UserManagement';
 import { CommissionReports } from '@/components/admin/CommissionReports';
 import { PaymentOverview } from '@/components/admin/PaymentOverview';
+import { EarlyAccessSignups } from '@/components/admin/EarlyAccessSignups';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Users, 
@@ -20,6 +21,7 @@ import {
   DollarSign,
   TrendingUp,
   CreditCard,
+  Bell,
   Building2
 } from 'lucide-react';
 
@@ -197,6 +199,11 @@ export const AdminDashboard = () => {
             <span className="sm:hidden">Företag</span>
           </TabsTrigger>
           <TabsTrigger value="archive" className="whitespace-nowrap">Arkiv</TabsTrigger>
+          <TabsTrigger value="early-access" className="whitespace-nowrap">
+            <Bell className="h-4 w-4 mr-1 hidden sm:inline" />
+            <span className="hidden sm:inline">Early Access</span>
+            <span className="sm:hidden">Early</span>
+          </TabsTrigger>
           <TabsTrigger value="commission" className="whitespace-nowrap">Provisionsunderlag</TabsTrigger>
           <TabsTrigger value="payments" className="whitespace-nowrap">
             <CreditCard className="h-4 w-4 mr-1 hidden sm:inline" />
@@ -241,6 +248,10 @@ export const AdminDashboard = () => {
               <ChefApprovalManager showArchived={true} />
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="early-access">
+          <EarlyAccessSignups />
         </TabsContent>
 
         <TabsContent value="commission">
