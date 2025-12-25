@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Search, Bell } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-food.jpg";
 import NotificationSignupDialog from "./NotificationSignupDialog";
@@ -52,12 +52,12 @@ const Hero = () => {
               </div>
             </form>
             
-            <div className="mt-3 pt-3 border-t border-border/50">
-              <p className="text-sm text-muted-foreground mb-2">Finns inga kockar i ditt område?</p>
+            <div className="mt-3 flex justify-center">
               <NotificationSignupDialog 
                 trigger={
-                  <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80">
-                    Meddela mig när en kock finns tillgänglig →
+                  <Button variant="outline" size="default" className="gap-2 bg-white hover:bg-muted">
+                    <Bell className="w-4 h-4" />
+                    Meddela mig när en kock finns i mitt område
                   </Button>
                 }
               />
