@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Building2, ArrowLeft, Loader2 } from "lucide-react";
+import { Building2, ArrowLeft, Loader2, Upload, FileText, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const businessApplicationSchema = z.object({
@@ -48,6 +48,8 @@ const BusinessApplication = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [documentFile, setDocumentFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const form = useForm<BusinessApplicationForm>({
     resolver: zodResolver(businessApplicationSchema),
@@ -69,10 +71,75 @@ const BusinessApplication = () => {
     }
   });
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+      if (!allowedTypes.includes(file.type)) {
+        toast({
+          title: "Ogiltig filtyp",
+          description: "Endast PDF, JPG och PNG-filer är tillåtna.",
+          variant: "destructive"
+        });
+        return;
+      }
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        toast({
+          title: "Filen är för stor",
+          description: "Maximal filstorlek är 10 MB.",
+          variant: "destructive"
+        });
+        return;
+      }
+      setDocumentFile(file);
+    }
+  };
+
+  const uploadDocument = async (): Promise<string | null> => {
+    if (!documentFile) return null;
+    
+    setIsUploading(true);
+    try {
+      const fileExt = documentFile.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `business-registrations/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('business-documents')
+        .upload(filePath, documentFile);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('business-documents')
+        .getPublicUrl(filePath);
+
+      return publicUrl;
+    } catch (error: any) {
+      console.error("Error uploading document:", error);
+      toast({
+        title: "Kunde inte ladda upp dokumentet",
+        description: error.message || "Försök igen.",
+        variant: "destructive"
+      });
+      return null;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const onSubmit = async (data: BusinessApplicationForm) => {
     setIsSubmitting(true);
     
     try {
+      // Upload document if provided
+      let documentUrl: string | null = null;
+      if (documentFile) {
+        documentUrl = await uploadDocument();
+      }
+
       const { data: { user } } = await supabase.auth.getUser();
       
       // Insert application - user_id can be null for non-logged-in users
@@ -91,7 +158,8 @@ const BusinessApplication = () => {
         website_url: data.websiteUrl || null,
         food_safety_approved: data.foodSafetyApproved,
         has_insurance: data.hasInsurance,
-        application_status: "pending"
+        application_status: "pending",
+        food_registration_document_url: documentUrl
       });
 
       if (error) throw error;
@@ -323,6 +391,54 @@ const BusinessApplication = () => {
                   </div>
                 </div>
 
+                {/* Dokumentuppladdning */}
+                <div className="space-y-4">
+                  <h3 className="font-semibold text-lg">Livsmedelsregistrering</h3>
+                  
+                  <div className="space-y-2">
+                    <FormLabel>Ladda upp bevis på livsmedelsregistrering</FormLabel>
+                    <FormDescription>
+                      Ladda upp ert tillstånd för livsmedelsregistrering (PDF, JPG eller PNG, max 10 MB)
+                    </FormDescription>
+                    
+                    <div className="flex flex-col gap-3">
+                      {!documentFile ? (
+                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-muted-foreground/25 rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <Upload className="w-8 h-8 mb-2 text-muted-foreground" />
+                            <p className="text-sm text-muted-foreground">
+                              Klicka för att ladda upp dokument
+                            </p>
+                          </div>
+                          <input
+                            type="file"
+                            className="hidden"
+                            accept=".pdf,.jpg,.jpeg,.png"
+                            onChange={handleFileChange}
+                          />
+                        </label>
+                      ) : (
+                        <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border">
+                          <div className="flex items-center gap-2">
+                            <FileText className="w-5 h-5 text-primary" />
+                            <span className="text-sm font-medium truncate max-w-[200px]">
+                              {documentFile.name}
+                            </span>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setDocumentFile(null)}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
                 {/* Bekräftelser */}
                 <div className="space-y-4">
                   <h3 className="font-semibold text-lg">Bekräftelser</h3>
@@ -392,11 +508,11 @@ const BusinessApplication = () => {
                   />
                 </div>
 
-                <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
-                  {isSubmitting ? (
+                <Button type="submit" className="w-full" size="lg" disabled={isSubmitting || isUploading}>
+                  {isSubmitting || isUploading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Skickar ansökan...
+                      {isUploading ? "Laddar upp dokument..." : "Skickar ansökan..."}
                     </>
                   ) : (
                     "Skicka ansökan"

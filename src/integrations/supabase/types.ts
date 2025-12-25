@@ -26,6 +26,7 @@ export type Database = {
           contact_name: string
           contact_phone: string
           created_at: string
+          food_registration_document_url: string | null
           food_safety_approved: boolean | null
           has_insurance: boolean | null
           id: string
@@ -47,6 +48,7 @@ export type Database = {
           contact_name: string
           contact_phone: string
           created_at?: string
+          food_registration_document_url?: string | null
           food_safety_approved?: boolean | null
           has_insurance?: boolean | null
           id?: string
@@ -68,6 +70,7 @@ export type Database = {
           contact_name?: string
           contact_phone?: string
           created_at?: string
+          food_registration_document_url?: string | null
           food_safety_approved?: boolean | null
           has_insurance?: boolean | null
           id?: string
