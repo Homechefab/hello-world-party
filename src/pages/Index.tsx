@@ -36,7 +36,7 @@ const Index = () => {
         <FAQ />
         <Footer />
         <LiveChat />
-        <NotificationSignupDialog autoOpen />
+        <NotificationSignupDialog triggerOnScroll="#popular-chefs" />
       </div>
     </>
   );
