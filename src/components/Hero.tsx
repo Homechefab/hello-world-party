@@ -27,7 +27,7 @@ const Hero = () => {
           <p className="text-lg mb-6 text-white/90 flex items-center justify-center gap-2">
             <span className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
               <ShieldCheck className="w-4 h-4 text-green-300" />
-              Kommunalt godkända kockar
+              Kockar godkända av kommunen med livsmedelstillstånd
             </span>
           </p>
           <p className="text-base mb-6 text-white/80">
