@@ -25,9 +25,6 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    // TODO: Återställ denna kontroll efter testning
-    // const hasSeenPopup = localStorage.getItem("notification_popup_seen");
-    // if (hasSeenPopup) return;
 
     if (triggerOnScroll) {
       const handleScroll = () => {
