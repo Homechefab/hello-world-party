@@ -8,6 +8,7 @@ import RoleBasedServices from "@/components/services/RoleBasedServices";
 import { useRole } from "@/hooks/useRole";
 import SEOHead from "@/components/SEOHead";
 import LiveChat from "@/components/LiveChat";
+import NotificationSignupDialog from "@/components/NotificationSignupDialog";
 
 const Index = () => {
   const { role } = useRole();
@@ -35,6 +36,7 @@ const Index = () => {
         <FAQ />
         <Footer />
         <LiveChat />
+        <NotificationSignupDialog autoOpen />
       </div>
     </>
   );
