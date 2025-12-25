@@ -164,6 +164,22 @@ const BusinessApplication = () => {
 
       if (error) throw error;
 
+      // Send confirmation email (don't wait for it, let it run in background)
+      supabase.functions.invoke('send-business-confirmation', {
+        body: {
+          businessName: data.businessName,
+          contactName: data.contactName,
+          contactEmail: data.contactEmail,
+          businessType: data.businessType
+        }
+      }).then(({ error: emailError }) => {
+        if (emailError) {
+          console.error("Error sending confirmation email:", emailError);
+        } else {
+          console.log("Confirmation email sent successfully");
+        }
+      });
+
       toast({
         title: "Ansökan skickad!",
         description: "Vi granskar din ansökan och återkommer inom 2-3 arbetsdagar.",
