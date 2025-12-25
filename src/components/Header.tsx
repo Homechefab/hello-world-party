@@ -35,6 +35,7 @@ const Header = () => {
     chef: 'Kock',
     kitchen_partner: 'Kökspartner',
     restaurant: 'Restaurang',
+    business: 'Företagare',
     admin: 'Administratör'
   };
 
@@ -56,6 +57,7 @@ const Header = () => {
       chef: '/chef', // Public chef services page
       kitchen_partner: '/kitchen-partner/hyr-ut-ditt-kok', // Public kitchen partner info page
       restaurant: '/restaurant/partnership', // Public restaurant partnership page
+      business: '/business/services', // Business services page
     };
 
     navigate(targetByRole[newRole] || '/');
@@ -124,7 +126,7 @@ const Header = () => {
             <DropdownMenuContent align="end" className="w-48 z-50 bg-background">
               <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {(['customer','chef','kitchen_partner','restaurant','admin'] as const).map((r) => (
+              {(['customer','chef','kitchen_partner','restaurant','business','admin'] as const).map((r) => (
                 <DropdownMenuItem
                   key={r}
                   onClick={() => handleRoleSwitch(r)}
@@ -192,7 +194,7 @@ const Header = () => {
                     <DropdownMenuContent className="w-full z-50 bg-background">
                       <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      {(['customer','chef','kitchen_partner','restaurant','admin'] as const).map((r) => (
+                      {(['customer','chef','kitchen_partner','restaurant','business','admin'] as const).map((r) => (
                         <DropdownMenuItem
                           key={r}
                           onClick={() => {
