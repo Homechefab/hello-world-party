@@ -31,7 +31,7 @@ const Hero = () => {
             </span>
           </p>
           <p className="text-base mb-6 text-white/80">
-            Upptäck autentisk hemlagad mat från lokala kockar nära dig.
+            Alla våra kockar är registrerade hos kommunen och har livsmedelstillstånd.
           </p>
           
           <div id="search" className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl max-w-2xl mx-auto">
