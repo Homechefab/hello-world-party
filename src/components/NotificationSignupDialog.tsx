@@ -119,11 +119,14 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }
           {trigger}
         </div>
       )}
-      <DialogContent className="sm:max-w-sm p-0 gap-0 border-0 overflow-hidden">
+      <DialogContent 
+        className="max-w-[340px] p-0 gap-0 border-0 overflow-hidden rounded-xl shadow-2xl"
+        hideCloseButton
+      >
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="absolute right-3 top-3 z-10 rounded-full p-1 hover:bg-white/20 transition-colors"
+          className="absolute right-3 top-3 z-10 rounded-full p-1.5 bg-black/20 hover:bg-black/30 transition-colors"
         >
           <X className="h-4 w-4 text-white" />
         </button>
