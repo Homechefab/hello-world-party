@@ -75,7 +75,7 @@ const BusinessServicesPage = () => {
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="bg-white/10 border-white/30 text-white hover:bg-white/20" asChild>
-                <a href="mailto:foretag@homechef.nu">Kontakta oss</a>
+                <a href="mailto:info@homechef.nu">Kontakta oss</a>
               </Button>
             </div>
           </div>
@@ -208,7 +208,7 @@ const BusinessServicesPage = () => {
               </Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <a href="mailto:foretag@homechef.nu">Kontakta oss</a>
+              <a href="mailto:info@homechef.nu">Kontakta oss</a>
             </Button>
           </div>
         </section>
