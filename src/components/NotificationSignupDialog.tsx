@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,14 +16,34 @@ import { useToast } from "@/hooks/use-toast";
 
 interface NotificationSignupDialogProps {
   trigger?: React.ReactNode;
+  autoOpen?: boolean;
 }
 
-const NotificationSignupDialog = ({ trigger }: NotificationSignupDialogProps) => {
+const NotificationSignupDialog = ({ trigger, autoOpen = false }: NotificationSignupDialogProps) => {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [activeTab, setActiveTab] = useState("email");
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (autoOpen) {
+      const hasSeenPopup = localStorage.getItem("notification_popup_seen");
+      if (!hasSeenPopup) {
+        const timer = setTimeout(() => {
+          setOpen(true);
+        }, 2000); // Visa efter 2 sekunder
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [autoOpen]);
+
+  const handleClose = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (!isOpen && autoOpen) {
+      localStorage.setItem("notification_popup_seen", "true");
+    }
+  };
 
   const handleEmailSignup = (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +84,7 @@ const NotificationSignupDialog = ({ trigger }: NotificationSignupDialogProps) =>
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogTrigger asChild>
         {trigger || (
           <Button variant="outline" className="gap-2">
