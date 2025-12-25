@@ -13,9 +13,10 @@ import { supabase } from "@/integrations/supabase/client";
 interface NotificationSignupDialogProps {
   trigger?: React.ReactNode;
   autoOpen?: boolean;
+  triggerOnScroll?: string; // CSS selector to watch for scroll
 }
 
-const NotificationSignupDialog = ({ trigger, autoOpen = false }: NotificationSignupDialogProps) => {
+const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }: NotificationSignupDialogProps) => {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [postalCode, setPostalCode] = useState("");
@@ -23,22 +24,38 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false }: NotificationSig
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (autoOpen) {
-      const hasSeenPopup = localStorage.getItem("notification_popup_seen");
-      if (!hasSeenPopup) {
-        const timer = setTimeout(() => {
-          setOpen(true);
-        }, 2000);
-        return () => clearTimeout(timer);
-      }
+    const hasSeenPopup = localStorage.getItem("notification_popup_seen");
+    if (hasSeenPopup) return;
+
+    if (triggerOnScroll) {
+      const handleScroll = () => {
+        const element = document.querySelector(triggerOnScroll);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          const isVisible = rect.top <= window.innerHeight * 0.8;
+          if (isVisible) {
+            setOpen(true);
+            window.removeEventListener("scroll", handleScroll);
+          }
+        }
+      };
+
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      // Check immediately in case already scrolled
+      handleScroll();
+      
+      return () => window.removeEventListener("scroll", handleScroll);
+    } else if (autoOpen) {
+      const timer = setTimeout(() => {
+        setOpen(true);
+      }, 2000);
+      return () => clearTimeout(timer);
     }
-  }, [autoOpen]);
+  }, [autoOpen, triggerOnScroll]);
 
   const handleClose = () => {
     setOpen(false);
-    if (autoOpen) {
-      localStorage.setItem("notification_popup_seen", "true");
-    }
+    localStorage.setItem("notification_popup_seen", "true");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -102,65 +119,65 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false }: NotificationSig
           {trigger}
         </div>
       )}
-      <DialogContent className="sm:max-w-md p-0 gap-0 border-0 overflow-hidden">
+      <DialogContent className="sm:max-w-sm p-0 gap-0 border-0 overflow-hidden">
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="absolute right-4 top-4 z-10 rounded-full p-1 hover:bg-white/20 transition-colors"
+          className="absolute right-3 top-3 z-10 rounded-full p-1 hover:bg-white/20 transition-colors"
         >
-          <X className="h-5 w-5 text-white" />
+          <X className="h-4 w-4 text-white" />
         </button>
 
         {/* Gradient Header */}
-        <div className="bg-gradient-to-br from-primary via-primary/90 to-primary/80 p-8 pt-12 text-center text-white">
-          <div className="flex justify-center mb-4">
-            <div className="p-3 bg-white/20 rounded-full backdrop-blur-sm">
-              <Sparkles className="w-8 h-8" />
+        <div className="bg-gradient-to-br from-primary via-primary/90 to-primary/80 p-6 pt-8 text-center text-white">
+          <div className="flex justify-center mb-3">
+            <div className="p-2.5 bg-white/20 rounded-full backdrop-blur-sm">
+              <Sparkles className="w-6 h-6" />
             </div>
           </div>
-          <h2 className="text-2xl font-bold mb-2">Få Early Access</h2>
+          <h2 className="text-xl font-bold mb-1">Få Early Access</h2>
           <p className="text-white/90 text-sm">
-            Var först med att prova HomeChef när vi lanserar i ditt område!
+            Bli först när vi lanserar i ditt område!
           </p>
         </div>
 
         {/* Form Section */}
-        <div className="p-6 bg-background">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="signup-email">E-postadress</Label>
+        <div className="p-5 bg-background">
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="signup-email" className="text-sm">E-postadress</Label>
               <Input
                 id="signup-email"
                 type="email"
                 placeholder="din@email.se"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="h-12 text-base"
+                className="h-10"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="signup-postalcode">Postnummer</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="signup-postalcode" className="text-sm">Postnummer</Label>
               <Input
                 id="signup-postalcode"
                 type="text"
                 placeholder="123 45"
                 value={postalCode}
                 onChange={(e) => setPostalCode(e.target.value)}
-                className="h-12 text-base"
+                className="h-10"
                 maxLength={6}
               />
             </div>
             <Button 
               type="submit" 
-              className="w-full h-12 text-base font-semibold"
+              className="w-full h-10 font-semibold"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Registrerar..." : "Registrera dig nu"}
+              {isSubmitting ? "Registrerar..." : "Registrera dig"}
             </Button>
           </form>
           
-          <p className="text-center text-xs text-muted-foreground mt-4">
-            Vi respekterar din integritet. Avregistrera dig när som helst.
+          <p className="text-center text-xs text-muted-foreground mt-3">
+            Vi respekterar din integritet.
           </p>
         </div>
       </DialogContent>
