@@ -18,10 +18,11 @@ const roleLabels: Record<UserRole, string> = {
   chef: 'Kock',
   kitchen_partner: 'Kökspartner',
   restaurant: 'Restaurang',
+  business: 'Företagare',
   admin: 'Admin'
 };
 
-const allRoles: UserRole[] = ['customer', 'chef', 'kitchen_partner', 'restaurant', 'admin'];
+const allRoles: UserRole[] = ['customer', 'chef', 'kitchen_partner', 'restaurant', 'business', 'admin'];
 
 export const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
