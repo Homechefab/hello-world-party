@@ -84,7 +84,7 @@ const Footer = () => {
               <li><Link to="/business" className="hover:text-primary transition-colors">Bli företagspartner</Link></li>
               <li><Link to="/business#services" className="hover:text-primary transition-colors">Våra tjänster</Link></li>
               <li><Link to="/business#benefits" className="hover:text-primary transition-colors">Fördelar</Link></li>
-              <li><a href="mailto:foretag@homechef.nu" className="hover:text-primary transition-colors">Kontakta oss</a></li>
+              <li><a href="mailto:info@homechef.nu" className="hover:text-primary transition-colors">Kontakta oss</a></li>
             </ul>
           </div>
         </div>
