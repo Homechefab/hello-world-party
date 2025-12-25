@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Search, Bell } from "lucide-react";
+import { Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-food.jpg";
-import NotificationSignupDialog from "./NotificationSignupDialog";
 
 const Hero = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -51,17 +50,6 @@ const Hero = () => {
                 </Button>
               </div>
             </form>
-            
-            <div className="mt-3 flex justify-center">
-              <NotificationSignupDialog 
-                trigger={
-                  <Button variant="outline" size="default" className="gap-2 bg-white hover:bg-muted">
-                    <Bell className="w-4 h-4" />
-                    Meddela mig när en kock finns i mitt område
-                  </Button>
-                }
-              />
-            </div>
           </div>
         </div>
       </div>
