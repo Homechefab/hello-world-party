@@ -64,7 +64,7 @@ const BusinessServicesPage = () => {
               Sälj din mat via Homechef
             </h1>
             <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Är du ett etablerat matföretag som erbjuder catering eller säljer färdiglagad mat? 
+              Är det ett etablerat företag som erbjuder catering eller säljer färdiglagad mat? 
               Nå fler kunder genom Sveriges första marknadsplats för hemlagad och lokalt producerad mat.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
