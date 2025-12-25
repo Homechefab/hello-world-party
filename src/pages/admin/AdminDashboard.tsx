@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { ChefApprovalManager } from '@/components/admin/ChefApprovalManager';
 import { KitchenPartnerApprovalManager } from '@/components/admin/KitchenPartnerApprovalManager';
 import { RestaurantApprovalManager } from '@/components/admin/RestaurantApprovalManager';
+import { BusinessApprovalManager } from '@/components/admin/BusinessApprovalManager';
 import { LoginLogsViewer } from '@/components/admin/LoginLogsViewer';
 import { UserManagement } from '@/components/admin/UserManagement';
 import { CommissionReports } from '@/components/admin/CommissionReports';
@@ -18,7 +19,8 @@ import {
   Clock,
   DollarSign,
   TrendingUp,
-  CreditCard
+  CreditCard,
+  Building2
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
@@ -61,6 +63,11 @@ export const AdminDashboard = () => {
         .select('*', { count: 'exact', head: true })
         .eq('approved', false);
 
+      const { count: pendingBusiness } = await supabase
+        .from('business_partners')
+        .select('*', { count: 'exact', head: true })
+        .eq('application_status', 'pending');
+
       // Hämta godkända användare
       const { count: approvedChefs } = await supabase
         .from('chefs')
@@ -77,11 +84,16 @@ export const AdminDashboard = () => {
         .select('*', { count: 'exact', head: true })
         .eq('approved', true);
 
+      const { count: approvedBusiness } = await supabase
+        .from('business_partners')
+        .select('*', { count: 'exact', head: true })
+        .eq('application_status', 'approved');
+
       setStats({
         totalUsers: userCount || 0,
-        pendingApprovals: (pendingChefs || 0) + (pendingPartners || 0) + (pendingRestaurants || 0),
+        pendingApprovals: (pendingChefs || 0) + (pendingPartners || 0) + (pendingRestaurants || 0) + (pendingBusiness || 0),
         activeComplaints: 0,
-        completedOnboardings: (approvedChefs || 0) + (approvedPartners || 0) + (approvedRestaurants || 0),
+        completedOnboardings: (approvedChefs || 0) + (approvedPartners || 0) + (approvedRestaurants || 0) + (approvedBusiness || 0),
         totalRevenue: 0,
         activeOrders: 0
       });
@@ -179,6 +191,11 @@ export const AdminDashboard = () => {
             <span className="hidden sm:inline">Restaurang-ansökningar</span>
             <span className="sm:hidden">Restauranger</span>
           </TabsTrigger>
+          <TabsTrigger value="business" className="whitespace-nowrap">
+            <Building2 className="h-4 w-4 mr-1 hidden sm:inline" />
+            <span className="hidden sm:inline">Företag</span>
+            <span className="sm:hidden">Företag</span>
+          </TabsTrigger>
           <TabsTrigger value="archive" className="whitespace-nowrap">Arkiv</TabsTrigger>
           <TabsTrigger value="commission" className="whitespace-nowrap">Provisionsunderlag</TabsTrigger>
           <TabsTrigger value="payments" className="whitespace-nowrap">
@@ -208,6 +225,10 @@ export const AdminDashboard = () => {
 
         <TabsContent value="restaurants">
           <RestaurantApprovalManager />
+        </TabsContent>
+
+        <TabsContent value="business">
+          <BusinessApprovalManager />
         </TabsContent>
 
         <TabsContent value="archive">

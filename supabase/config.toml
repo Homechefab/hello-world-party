@@ -105,3 +105,9 @@ verify_jwt = false
 
 [functions.send-business-confirmation]
 verify_jwt = false
+
+[functions.notify-admin-business-application]
+verify_jwt = false
+
+[functions.send-business-decision]
+verify_jwt = false
