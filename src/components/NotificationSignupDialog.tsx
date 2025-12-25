@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
 } from "@/components/ui/dialog";
 import { X, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface NotificationSignupDialogProps {
   trigger?: React.ReactNode;
@@ -16,7 +18,9 @@ interface NotificationSignupDialogProps {
 const NotificationSignupDialog = ({ trigger, autoOpen = false }: NotificationSignupDialogProps) => {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
+  const [postalCode, setPostalCode] = useState("");
   const [open, setOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (autoOpen) {
@@ -37,8 +41,9 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false }: NotificationSig
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!email) {
       toast({
         title: "Fel",
@@ -47,13 +52,47 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false }: NotificationSig
       });
       return;
     }
-    
-    toast({
-      title: "Tack för din registrering!",
-      description: "Du kommer få early access när vi lanserar i ditt område",
-    });
-    setEmail("");
-    handleClose();
+
+    if (!postalCode) {
+      toast({
+        title: "Fel",
+        description: "Vänligen ange ditt postnummer",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase
+        .from("early_access_signups")
+        .insert({
+          email: email.trim(),
+          postal_code: postalCode.trim(),
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Tack för din registrering!",
+        description: "Du kommer få early access när vi lanserar i ditt område",
+      });
+      setEmail("");
+      setPostalCode("");
+      handleClose();
+    } catch (error: any) {
+      console.error("Error saving signup:", error);
+      toast({
+        title: "Något gick fel",
+        description: "Försök igen senare",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -89,16 +128,34 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false }: NotificationSig
         <div className="p-6 bg-background">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
+              <Label htmlFor="signup-email">E-postadress</Label>
               <Input
+                id="signup-email"
                 type="email"
-                placeholder="Din e-postadress"
+                placeholder="din@email.se"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="h-12 text-base"
               />
             </div>
-            <Button type="submit" className="w-full h-12 text-base font-semibold">
-              Registrera dig nu
+            <div className="space-y-2">
+              <Label htmlFor="signup-postalcode">Postnummer</Label>
+              <Input
+                id="signup-postalcode"
+                type="text"
+                placeholder="123 45"
+                value={postalCode}
+                onChange={(e) => setPostalCode(e.target.value)}
+                className="h-12 text-base"
+                maxLength={6}
+              />
+            </div>
+            <Button 
+              type="submit" 
+              className="w-full h-12 text-base font-semibold"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Registrerar..." : "Registrera dig nu"}
             </Button>
           </form>
           
