@@ -25,3 +25,8 @@ dist-ssr
 
 *storybook.log
 storybook-static
+
+# Android signing
+android/key.properties
+android/*.keystore
+android/*.jks
