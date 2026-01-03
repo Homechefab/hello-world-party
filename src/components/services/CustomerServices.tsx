@@ -105,14 +105,14 @@ const CustomerServices = () => {
         </div>
         
         {/* Second row - 2 services centered */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+        <div className="flex flex-col md:flex-row gap-6 justify-center max-w-5xl mx-auto">
           {customerServices.slice(3, 5).map((service) => {
             const IconComponent = service.icon;
             return (
               <Link
                 key={service.title}
                 to={service.href}
-                className="group block"
+                className="group block w-full md:w-[calc(33.333%-1rem)]"
               >
                 <Card className="hover:shadow-card transition-all duration-300 hover:-translate-y-2 overflow-hidden h-full">
                   <div className="relative h-48 overflow-hidden">
