@@ -247,7 +247,7 @@ const PartnershipPage = () => {
                     E-post
                   </h3>
                   <p className="text-muted-foreground">
-                    partners@homechef.se
+                    info@homechef.nu
                   </p>
                 </CardContent>
               </Card>
@@ -259,7 +259,7 @@ const PartnershipPage = () => {
                     Telefon
                   </h3>
                   <p className="text-muted-foreground">
-                    08-123 45 67
+                    0734234686
                   </p>
                 </CardContent>
               </Card>

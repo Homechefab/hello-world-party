@@ -85,7 +85,7 @@ const ApplicationPending = () => {
                     <Phone className="w-5 h-5 text-primary" />
                     <div className="text-left">
                       <div className="font-medium">Ring oss</div>
-                      <div className="text-sm text-muted-foreground">08-123 456 78</div>
+                      <div className="text-sm text-muted-foreground">0734234686</div>
                     </div>
                   </div>
                 </Button>

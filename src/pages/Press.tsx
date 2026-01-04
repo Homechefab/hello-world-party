@@ -230,8 +230,8 @@ const Press = () => {
                   <Mail className="w-5 h-5 text-primary" />
                   <div>
                     <div className="font-medium">E-post</div>
-                    <a href="mailto:press@homechef.se" className="text-primary hover:underline">
-                      press@homechef.se
+                    <a href="mailto:info@homechef.nu" className="text-primary hover:underline">
+                      info@homechef.nu
                     </a>
                   </div>
                 </div>
@@ -239,8 +239,8 @@ const Press = () => {
                   <Phone className="w-5 h-5 text-primary" />
                   <div>
                     <div className="font-medium">Telefon</div>
-                    <a href="tel:+46701234567" className="text-primary hover:underline">
-                      +46 70 123 45 67
+                    <a href="tel:+46734234686" className="text-primary hover:underline">
+                      0734234686
                     </a>
                   </div>
                 </div>
