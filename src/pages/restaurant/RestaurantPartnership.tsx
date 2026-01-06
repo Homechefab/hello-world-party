@@ -12,7 +12,7 @@ import {
   CheckCircle,
   Phone,
   Mail,
-  Truck,
+  
   CreditCard,
   Target,
   Building,
@@ -50,9 +50,9 @@ const RestaurantPartnership = () => {
       description: "Extra intäkter utan behov av större lokal"
     },
     {
-      icon: Truck,
-      title: "Smidig leverans",
-      description: "Vi ordnar leveransen, eller använd era egna förare"
+      icon: Shield,
+      title: "Trygg plattform",
+      description: "Säker beställningshantering och support"
     },
     {
       icon: CreditCard,
@@ -110,13 +110,6 @@ const RestaurantPartnership = () => {
   ];
 
   const services = [
-    {
-      icon: Truck,
-      title: "Leverans",
-      description: "Vi ser till att maten kommer fram snabbt och varm",
-      features: ["Snabb leverans", "Rätt temperatur", "Spårning för kunden"],
-      id: "hemkörning"
-    },
     {
       icon: Target,
       title: "Marknadsföring",
