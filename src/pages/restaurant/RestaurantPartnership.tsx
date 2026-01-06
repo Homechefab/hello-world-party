@@ -63,7 +63,7 @@ const RestaurantPartnership = () => {
   const pricingPlans = [
     {
       name: "Liten restaurang",
-      price: "7 199",
+      price: "5 399",
       icon: Building,
       description: "Perfekt för mindre restauranger och kaféer",
       features: [
@@ -77,7 +77,7 @@ const RestaurantPartnership = () => {
     },
     {
       name: "Medelstor restaurang",
-      price: "17 999",
+      price: "13 499",
       icon: Building2,
       description: "För etablerade restauranger med hög omsättning",
       features: [
@@ -92,7 +92,7 @@ const RestaurantPartnership = () => {
     },
     {
       name: "Stor restaurang",
-      price: "35 999",
+      price: "26 999",
       icon: Landmark,
       description: "För restaurangkedjor och stora verksamheter",
       features: [
@@ -202,7 +202,7 @@ const RestaurantPartnership = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
             <Badge variant="outline" className="mb-4 bg-green-500/10 text-green-600 border-green-500/30">
-              I genomsnitt 60% billigare än konkurrenterna
+              I genomsnitt 70% billigare än konkurrenterna
             </Badge>
             <h2 className="text-3xl font-bold mb-4">Våra prisplaner</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
