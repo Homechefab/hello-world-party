@@ -6,7 +6,7 @@ const RestaurantFAQ = () => {
   const faqs = [
     {
       question: "Vilka abonnemang erbjuder Homechef?",
-      answer: "Vi erbjuder tre abonnemang: Starter (495 kr/mån) för mindre restauranger, Growth (995 kr/mån) för etablerade restauranger, och Premium (1495 kr/mån) för fullservice. Alla abonnemang har fast månadskostnad utan dolda avgifter eller provisioner på er försäljning."
+      answer: "Vi erbjuder tre abonnemang: Liten restaurang (7 199 kr/mån) för mindre restauranger och kaféer, Medelstor restaurang (17 999 kr/mån) för etablerade restauranger, och Stor restaurang (35 999 kr/mån) för restaurangkedjor och stora verksamheter. Alla abonnemang har fast månadskostnad utan dolda avgifter eller provisioner på er försäljning."
     },
     {
       question: "Hur snabbt kan vi komma igång?",
