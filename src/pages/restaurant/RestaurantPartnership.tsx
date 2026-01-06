@@ -186,12 +186,12 @@ const RestaurantPartnership = () => {
           </div>
 
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-10">
-            {/* Foodora example */}
+            {/* Competitors example */}
             <Card className="border-red-200 bg-red-50/50 dark:bg-red-950/20 dark:border-red-900/50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-red-600 dark:text-red-400">
                   <TrendingUp className="w-5 h-5" />
-                  Provisionsmodell (t.ex. Foodora)
+                  Provisionsmodell (konkurrenterna)
                 </CardTitle>
                 <CardDescription>30% provision per order</CardDescription>
               </CardHeader>
