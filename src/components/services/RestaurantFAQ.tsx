@@ -5,8 +5,8 @@ import { HelpCircle } from "lucide-react";
 const RestaurantFAQ = () => {
   const faqs = [
     {
-      question: "Vilka avgifter tar Homechef?",
-      answer: "Homechef tar en provision på 15-25% beroende på omfattningen av tjänster ni använder. Om ni sköter egen leverans är avgiften lägre. Det finns inga månadskostnader eller startavgifter - ni betalar bara när ni får beställningar. Vi erbjuder också volymrabatter för restauranger med hög försäljning."
+      question: "Vilka abonnemang erbjuder Homechef?",
+      answer: "Vi erbjuder tre abonnemang: Starter (495 kr/mån) för mindre restauranger, Growth (995 kr/mån) för etablerade restauranger, och Premium (1495 kr/mån) för fullservice. Alla abonnemang har fast månadskostnad utan dolda avgifter eller provisioner på er försäljning."
     },
     {
       question: "Hur snabbt kan vi komma igång?",
@@ -14,7 +14,7 @@ const RestaurantFAQ = () => {
     },
     {
       question: "Måste vi använda Homechefs leveranstjänst?",
-      answer: "Nej, ni kan välja att använda era egna förare om ni vill. Många restauranger föredrar detta då det ger bättre kontroll över kundupplevelsen. Om ni inte har egna förare fixar vi leveransen åt er mot en mindre avgift. Ni kan också blanda - använda egna förare för närområdet och vår tjänst för längre sträckor."
+      answer: "Nej, ni kan välja att använda era egna förare om ni vill. Många restauranger föredrar detta då det ger bättre kontroll över kundupplevelsen. Om ni inte har egna förare fixar vi leveransen åt er. Ni kan också blanda - använda egna förare för närområdet och vår tjänst för längre sträckor."
     },
     {
       question: "Hur fungerar betalningarna?",
@@ -22,7 +22,7 @@ const RestaurantFAQ = () => {
     },
     {
       question: "Kan vi sätta våra egna priser?",
-      answer: "Ja, ni bestämmer helt själva vilka priser ni vill ha på er mat. Vi rekommenderar att ni justerar för plattformsavgiften, men slutpriset är alltid ert beslut. Ni kan också enkelt skapa erbjudanden, paketpriser eller kampanjer när ni vill öka försäljningen."
+      answer: "Ja, ni bestämmer helt själva vilka priser ni vill ha på er mat. Med vår abonnemangsmodell behåller ni 100% av intäkterna från varje order, så ni slipper justera priserna för att täcka provisioner. Ni kan också enkelt skapa erbjudanden, paketpriser eller kampanjer när ni vill öka försäljningen."
     },
     {
       question: "Vad händer om en kund klagar på maten?",
@@ -37,8 +37,8 @@ const RestaurantFAQ = () => {
       answer: "Vi marknadsför alla våra restaurangpartners genom vår hemsida, app, sociala medier och annonsering. Nya partners får extra exponering på startsidan. Vi använder SEO för att synas i sökmotorer och skickar ut nyhetsbrev till våra kunder. Ni får även verktyg för att marknadsföra er profil själva."
     },
     {
-      question: "Måste vi justera vår befintliga meny?",
-      answer: "Ni kan använda er befintliga meny som den är, men vissa rätter passar bättre för hemleverans än andra. Vi rekommenderar att fokusera på rätter som håller sig bra under transport. Ni kan också skapa en separat meny bara för Homechef med rätter optimerade för leverans."
+      question: "Kan vi byta abonnemang när som helst?",
+      answer: "Ja, ni kan uppgradera eller nedgradera ert abonnemang när som helst. Ändringar träder i kraft vid nästa faktureringsperiod. Det finns inga bindningstider, så ni kan anpassa ert abonnemang efter era behov och säsong."
     },
     {
       question: "Vad krävs för att bli godkänd som restaurangpartner?",
@@ -49,8 +49,8 @@ const RestaurantFAQ = () => {
       answer: "Vår plattform hjälper er att hantera beställningsflödet effektivt. Ni kan sätta gränser för hur många beställningar ni tar per timme och justera tillgängligheten i realtid. Vi har även ett system som fördelar beställningar jämnt över tiden för att undvika rusningar."
     },
     {
-      question: "Kan vi pausa vårt samarbete tillfälligt?",
-      answer: "Ja, ni kan när som helst pausa ert konto om ni behöver det. Detta kan vara bra under renoveringar, semesterstängningar eller om ni är fullbokade. Ni kan enkelt aktivera kontot igen när ni är redo att ta emot beställningar. Det finns inga avgifter för att pausa."
+      question: "Kan vi pausa vårt abonnemang tillfälligt?",
+      answer: "Ja, ni kan när som helst pausa ert abonnemang om ni behöver det. Detta kan vara bra under renoveringar, semesterstängningar eller om ni är fullbokade. Ni kan enkelt aktivera kontot igen när ni är redo att ta emot beställningar. Pausning är gratis i upp till 30 dagar."
     }
   ];
 
