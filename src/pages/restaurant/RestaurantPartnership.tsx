@@ -22,7 +22,6 @@ import {
 import { Link } from "react-router-dom";
 import RestaurantFAQ from "@/components/services/RestaurantFAQ";
 import SavingsCalculator from "@/components/restaurant/SavingsCalculator";
-import SalesPitchPDF from "@/components/restaurant/SalesPitchPDF";
 
 const RestaurantPartnership = () => {
   const location = useLocation();
@@ -486,7 +485,6 @@ const RestaurantPartnership = () => {
               <Mail className="w-4 h-4" />
               info@homechef.nu
             </Button>
-            <SalesPitchPDF />
           </div>
         </div>
       </section>

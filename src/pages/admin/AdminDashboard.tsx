@@ -12,6 +12,7 @@ import { UserManagement } from '@/components/admin/UserManagement';
 import { CommissionReports } from '@/components/admin/CommissionReports';
 import { PaymentOverview } from '@/components/admin/PaymentOverview';
 import { EarlyAccessSignups } from '@/components/admin/EarlyAccessSignups';
+import SalesPitchPDF from '@/components/restaurant/SalesPitchPDF';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Users, 
@@ -22,7 +23,8 @@ import {
   TrendingUp,
   CreditCard,
   Bell,
-  Building2
+  Building2,
+  FileText
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
@@ -215,6 +217,11 @@ export const AdminDashboard = () => {
             <span className="sm:hidden">Användare</span>
           </TabsTrigger>
           <TabsTrigger value="logins" className="whitespace-nowrap">Inloggningar</TabsTrigger>
+          <TabsTrigger value="sales-materials" className="whitespace-nowrap">
+            <FileText className="h-4 w-4 mr-1 hidden sm:inline" />
+            <span className="hidden sm:inline">Säljmaterial</span>
+            <span className="sm:hidden">Sälj</span>
+          </TabsTrigger>
           <TabsTrigger value="complaints" className="whitespace-nowrap">Klagomål</TabsTrigger>
           <TabsTrigger value="settings" className="whitespace-nowrap">
             <span className="hidden sm:inline">Inställningar</span>
@@ -268,6 +275,27 @@ export const AdminDashboard = () => {
 
         <TabsContent value="logins">
           <LoginLogsViewer />
+        </TabsContent>
+
+        <TabsContent value="sales-materials">
+          <Card>
+            <CardHeader>
+              <CardTitle>Säljmaterial för restauranger</CardTitle>
+              <CardDescription>
+                Ladda ner säljpitch-PDF för att presentera till restauranger som visat intresse
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="bg-muted/50 rounded-lg p-6">
+                <h3 className="font-semibold mb-2">Restaurang Säljpitch (PDF)</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  En professionell 6-sidig PDF som visar våra prisplaner, jämförelse med Foodora, 
+                  och fördelarna med vår fasta månadsavgift. Perfekt att skicka till potentiella restaurangpartners.
+                </p>
+                <SalesPitchPDF />
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="complaints">
