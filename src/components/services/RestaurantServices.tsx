@@ -44,8 +44,8 @@ const RestaurantServices = () => {
 
   const pricingPlans = [
     {
-      name: "Starter",
-      price: "495",
+      name: "Liten restaurang",
+      price: "7 199",
       icon: Building,
       description: "Perfekt för mindre restauranger och kaféer",
       features: [
@@ -58,8 +58,8 @@ const RestaurantServices = () => {
       popular: false
     },
     {
-      name: "Growth",
-      price: "995",
+      name: "Medelstor restaurang",
+      price: "17 999",
       icon: Building2,
       description: "För etablerade restauranger med hög omsättning",
       features: [
@@ -73,12 +73,12 @@ const RestaurantServices = () => {
       popular: true
     },
     {
-      name: "Premium",
-      price: "1 495",
+      name: "Stor restaurang",
+      price: "35 999",
       icon: Landmark,
-      description: "Fullservice för restauranger med höga krav",
+      description: "För restaurangkedjor och stora verksamheter",
       features: [
-        "Allt i Growth",
+        "Allt i Medelstor",
         "Dedikerad kontoansvarig",
         "API-integration",
         "Anpassade lösningar",
