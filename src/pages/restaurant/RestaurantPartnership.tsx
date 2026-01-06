@@ -162,9 +162,110 @@ const RestaurantPartnership = () => {
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
-            <Button variant="outline" size="lg">
+            <Button variant="outline" size="lg" onClick={() => document.getElementById('fördelar')?.scrollIntoView({ behavior: 'smooth' })}>
               Läs mer om fördelarna
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Comparison Section */}
+      <section id="fördelar" className="py-16 bg-gradient-to-r from-green-500/5 to-emerald-500/10">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-10">
+            <Badge variant="outline" className="mb-4 bg-green-500/10 text-green-600 border-green-500/30">
+              Spara upp till 70% jämfört med konkurrenterna
+            </Badge>
+            <h2 className="text-3xl font-bold mb-4">Varför välja Homechef?</h2>
+            <p className="text-muted-foreground max-w-3xl mx-auto">
+              Stora leveransplattformar som Foodora tar ofta 20–30% i provision per order. 
+              Det innebär att ju mer ni säljer, desto mer betalar ni. Med vår fasta månadsavgift 
+              behåller ni hela marginalen – oavsett hur många beställningar ni får.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-10">
+            {/* Foodora example */}
+            <Card className="border-red-200 bg-red-50/50 dark:bg-red-950/20 dark:border-red-900/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-red-600 dark:text-red-400">
+                  <TrendingUp className="w-5 h-5" />
+                  Provisionsmodell (t.ex. Foodora)
+                </CardTitle>
+                <CardDescription>30% provision per order</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="text-sm text-muted-foreground">
+                  <p className="font-medium mb-2">Exempel: 10 ordrar/dag à 200 kr</p>
+                  <ul className="space-y-1">
+                    <li>• 300 ordrar/månad × 200 kr = 60 000 kr omsättning</li>
+                    <li>• 30% provision = <span className="font-bold text-red-600 dark:text-red-400">18 000 kr/månad</span></li>
+                    <li>• Årskostnad: <span className="font-bold text-red-600 dark:text-red-400">216 000 kr</span></li>
+                  </ul>
+                </div>
+                <p className="text-xs text-muted-foreground italic">
+                  Ju mer ni säljer, desto mer betalar ni i avgifter.
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Homechef example */}
+            <Card className="border-green-200 bg-green-50/50 dark:bg-green-950/20 dark:border-green-900/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-green-600 dark:text-green-400">
+                  <Shield className="w-5 h-5" />
+                  Fast månadsavgift (Homechef)
+                </CardTitle>
+                <CardDescription>Ingen provision – behåll hela marginalen</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="text-sm text-muted-foreground">
+                  <p className="font-medium mb-2">Samma exempel: 10 ordrar/dag</p>
+                  <ul className="space-y-1">
+                    <li>• Fast pris från <span className="font-bold text-green-600 dark:text-green-400">5 399 kr/månad</span></li>
+                    <li>• Årskostnad: <span className="font-bold text-green-600 dark:text-green-400">64 788 kr</span></li>
+                    <li>• <span className="font-bold text-green-600 dark:text-green-400">Besparing: ~151 000 kr/år</span></li>
+                  </ul>
+                </div>
+                <p className="text-xs text-muted-foreground italic">
+                  Ju mer ni säljer, desto mer tjänar NI – inte plattformen.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="bg-card border rounded-xl p-6 max-w-3xl mx-auto">
+            <h3 className="font-semibold text-lg mb-4 text-center">Fördelar med fast månadsavgift</h3>
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="flex items-start gap-3">
+                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium">Förutsägbar kostnad</p>
+                  <p className="text-sm text-muted-foreground">Inga överraskningar – samma pris varje månad</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium">Högre lönsamhet</p>
+                  <p className="text-sm text-muted-foreground">Behåll hela marginalen på varje order</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium">Incitament att växa</p>
+                  <p className="text-sm text-muted-foreground">Mer försäljning = mer vinst för er</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-medium">70% billigare</p>
+                  <p className="text-sm text-muted-foreground">I genomsnitt jämfört med provisionsmodeller</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
