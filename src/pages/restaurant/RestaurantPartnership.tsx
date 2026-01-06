@@ -14,7 +14,10 @@ import {
   Mail,
   Truck,
   CreditCard,
-  Target
+  Target,
+  Building,
+  Building2,
+  Landmark
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import RestaurantFAQ from "@/components/services/RestaurantFAQ";
@@ -54,6 +57,54 @@ const RestaurantPartnership = () => {
       icon: CreditCard,
       title: "Snabba utbetalningar",
       description: "Pengarna kommer in direkt på ert konto"
+    }
+  ];
+
+  const pricingPlans = [
+    {
+      name: "Liten restaurang",
+      price: "7 199",
+      icon: Building,
+      description: "Perfekt för mindre restauranger och kaféer",
+      features: [
+        "Upp till 50 rätter i menyn",
+        "Grundläggande statistik",
+        "E-postsupport",
+        "Restaurangprofil",
+        "Beställningshantering"
+      ],
+      popular: false
+    },
+    {
+      name: "Medelstor restaurang",
+      price: "17 999",
+      icon: Building2,
+      description: "För etablerade restauranger med hög omsättning",
+      features: [
+        "Obegränsat antal rätter",
+        "Avancerad statistik & rapporter",
+        "Prioriterad support dygnet runt",
+        "Marknadsföringsverktyg",
+        "Flera användarkonton",
+        "Kampanjhantering"
+      ],
+      popular: true
+    },
+    {
+      name: "Stor restaurang",
+      price: "35 999",
+      icon: Landmark,
+      description: "För restaurangkedjor och stora verksamheter",
+      features: [
+        "Allt i Medelstor",
+        "Dedikerad kontoansvarig",
+        "API-integration",
+        "Anpassade lösningar",
+        "Multi-location support",
+        "Premium marknadsföring",
+        "Prioriterad placering"
+      ],
+      popular: false
     }
   ];
 
@@ -146,8 +197,85 @@ const RestaurantPartnership = () => {
         </div>
       </section>
 
+      {/* Pricing Plans */}
+      <section id="prisplaner" className="py-16 bg-secondary/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-10">
+            <Badge variant="outline" className="mb-4 bg-green-500/10 text-green-600 border-green-500/30">
+              I genomsnitt 60% billigare än konkurrenterna
+            </Badge>
+            <h2 className="text-3xl font-bold mb-4">Våra prisplaner</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Fast månadskostnad - ingen provision på era försäljningar. 
+              Ni behåller hela marginalen på varje order.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {pricingPlans.map((plan, index) => (
+              <Card 
+                key={index} 
+                className={`relative hover:shadow-xl transition-all duration-300 ${
+                  plan.popular 
+                    ? 'border-primary shadow-lg scale-105 z-10' 
+                    : 'border-border/50'
+                }`}
+              >
+                {plan.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                    <Badge className="bg-primary text-primary-foreground">
+                      Mest populär
+                    </Badge>
+                  </div>
+                )}
+                <CardHeader className="text-center pb-2">
+                  <div className={`w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4 ${
+                    plan.popular 
+                      ? 'bg-primary text-primary-foreground' 
+                      : 'bg-primary/10'
+                  }`}>
+                    <plan.icon className={`w-7 h-7 ${plan.popular ? '' : 'text-primary'}`} />
+                  </div>
+                  <CardTitle className="text-xl">{plan.name}</CardTitle>
+                  <CardDescription className="min-h-[40px]">{plan.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="text-center">
+                  <div className="mb-6">
+                    <span className="text-4xl font-bold">{plan.price}</span>
+                    <span className="text-muted-foreground"> kr/mån</span>
+                  </div>
+                  <ul className="space-y-3 text-left mb-6">
+                    {plan.features.map((feature, featureIndex) => (
+                      <li key={featureIndex} className="flex items-start gap-2">
+                        <CheckCircle className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
+                          plan.popular ? 'text-primary' : 'text-green-500'
+                        }`} />
+                        <span className="text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Button 
+                    asChild 
+                    className={`w-full ${
+                      plan.popular 
+                        ? 'bg-primary hover:bg-primary/90' 
+                        : ''
+                    }`}
+                    variant={plan.popular ? 'default' : 'outline'}
+                  >
+                    <Link to="/restaurant/apply">
+                      Kom igång
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Services */}
-      <section id="våra-tjänster" className="py-16 bg-secondary/30">
+      <section id="våra-tjänster" className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Vad vi hjälper er med</h2>
@@ -187,7 +315,7 @@ const RestaurantPartnership = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-16">
+      <section className="py-16 bg-secondary/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Tre steg till start</h2>
@@ -198,7 +326,7 @@ const RestaurantPartnership = () => {
           
           <div className="grid md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-bold">
+              <div className="w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-bold">
                 1
               </div>
               <h3 className="font-semibold mb-4">Ansök</h3>
@@ -207,7 +335,7 @@ const RestaurantPartnership = () => {
               </p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-bold">
+              <div className="w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-bold">
                 2
               </div>
               <h3 className="font-semibold mb-4">Granskning</h3>
@@ -216,7 +344,7 @@ const RestaurantPartnership = () => {
               </p>
             </div>
             <div className="text-center">
-              <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-bold">
+              <div className="w-16 h-16 bg-primary text-primary-foreground rounded-full flex items-center justify-center mx-auto mb-6 text-xl font-bold">
                 3
               </div>
               <h3 className="font-semibold mb-4">Igång!</h3>
