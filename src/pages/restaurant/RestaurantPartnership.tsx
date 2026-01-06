@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import RestaurantFAQ from "@/components/services/RestaurantFAQ";
+import SavingsCalculator from "@/components/restaurant/SavingsCalculator";
 
 const RestaurantPartnership = () => {
   const location = useLocation();
@@ -266,6 +267,11 @@ const RestaurantPartnership = () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Calculator */}
+          <div className="mt-12 max-w-2xl mx-auto">
+            <SavingsCalculator />
           </div>
         </div>
       </section>
