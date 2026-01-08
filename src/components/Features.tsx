@@ -1,6 +1,8 @@
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Shield, Clock, Heart } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const features = [
   {
@@ -30,6 +32,64 @@ const features = [
 ];
 
 const Features = () => {
+  const [stats, setStats] = useState({
+    customers: 0,
+    chefs: 0,
+    dishes: 0,
+    avgRating: 0
+  });
+
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        // Get count of approved chefs
+        const { count: chefsCount } = await supabase
+          .from("chefs")
+          .select("*", { count: "exact", head: true })
+          .eq("kitchen_approved", true);
+
+        // Get count of available dishes
+        const { count: dishesCount } = await supabase
+          .from("dishes")
+          .select("*", { count: "exact", head: true })
+          .eq("available", true);
+
+        // Get average rating from reviews
+        const { data: reviews } = await supabase
+          .from("reviews")
+          .select("rating");
+
+        const avgRating = reviews && reviews.length > 0
+          ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+          : 0;
+
+        // Get count of unique customers (profiles with customer role)
+        const { count: customersCount } = await supabase
+          .from("profiles")
+          .select("*", { count: "exact", head: true })
+          .eq("role", "customer");
+
+        setStats({
+          customers: customersCount || 0,
+          chefs: chefsCount || 0,
+          dishes: dishesCount || 0,
+          avgRating: Math.round(avgRating * 10) / 10
+        });
+      } catch (error) {
+        console.error("Error loading stats:", error);
+      }
+    };
+
+    loadStats();
+  }, []);
+
+  const statsDisplay = [
+    { number: stats.customers > 0 ? `${stats.customers}+` : "-", label: "Nöjda kunder" },
+    { number: stats.chefs > 0 ? `${stats.chefs}+` : "-", label: "Hemmakockar" },
+    { number: stats.dishes > 0 ? `${stats.dishes}+` : "-", label: "Olika rätter" },
+    { number: stats.avgRating > 0 ? stats.avgRating.toFixed(1) : "-", label: "Genomsnittligt betyg" }
+  ];
+
   return (
     <section className="py-8 bg-gradient-secondary rounded-xl my-4">
       <div className="max-w-4xl mx-auto px-6">
@@ -45,7 +105,7 @@ const Features = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           {features.map((feature, index) => {
             const IconComponent = feature.icon;
             return (
@@ -64,6 +124,21 @@ const Features = () => {
               </Card>
             );
           })}
+        </div>
+        
+        <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 border border-border">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {statsDisplay.map((stat, index) => (
+              <div key={index} className="text-center">
+                <div className="text-2xl md:text-3xl font-bold text-primary mb-1">
+                  {stat.number}
+                </div>
+                <div className="text-xs text-muted-foreground font-medium">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
