@@ -98,7 +98,7 @@ const SalesPitchPDF = () => {
       addTitle("Problemet med provisionsmodeller", 18);
       y += 15;
       
-      addParagraph("Stora leveransplattformar som Foodora, Uber Eats och Wolt tar typiskt 20-30% i provision per order. Detta innebär:");
+      addParagraph("Stora leveransplattformar tar typiskt 20-30% i provision per order. Detta innebär:");
       y += 5;
       
       addBullet("Ju mer ni säljer, desto mer betalar ni i avgifter");
@@ -220,7 +220,7 @@ const SalesPitchPDF = () => {
       doc.addPage();
       y = 25;
       
-      addTitle("Jämförelse: Homechef vs Foodora", 18);
+      addTitle("Jämförelse: Homechef vs konkurrenterna", 18);
       y += 15;
       
       // Table header
@@ -230,7 +230,7 @@ const SalesPitchPDF = () => {
       doc.setFont("helvetica", "bold");
       doc.setTextColor(255, 255, 255);
       doc.text("Restaurangstorlek", margin + 5, y + 8);
-      doc.text("Foodora (~30%)", margin + 55, y + 8);
+      doc.text("Konkurrenter (~30%)", margin + 55, y + 8);
       doc.text("Homechef", margin + 105, y + 8);
       doc.text("Besparing/år", margin + 145, y + 8);
       y += 12;
@@ -276,7 +276,7 @@ const SalesPitchPDF = () => {
       doc.setFontSize(11);
       doc.setFont("helvetica", "bold");
       doc.setTextColor(44, 62, 80);
-      doc.text("Viktigt: Ju mer ni säljer via Foodora, desto mer straffas ni.", margin + 5, y + 10);
+      doc.text("Viktigt: Ju mer ni säljer via konkurrenterna, desto mer straffas ni.", margin + 5, y + 10);
       doc.setFont("helvetica", "normal");
       doc.text("Med Homechef tjänar NI mer ju mer ni säljer – inte plattformen.", margin + 5, y + 20);
 
