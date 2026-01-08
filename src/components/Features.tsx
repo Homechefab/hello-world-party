@@ -29,13 +29,6 @@ const features = [
   }
 ];
 
-const stats = [
-  { number: "2,500+", label: "Nöjda kunder" },
-  { number: "150+", label: "Hemmakockar" },
-  { number: "50+", label: "Olika rätter" },
-  { number: "4.8", label: "Genomsnittlig betyg" }
-];
-
 const Features = () => {
   return (
     <section className="py-8 bg-gradient-secondary rounded-xl my-4">
@@ -52,7 +45,7 @@ const Features = () => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {features.map((feature, index) => {
             const IconComponent = feature.icon;
             return (
@@ -71,21 +64,6 @@ const Features = () => {
               </Card>
             );
           })}
-        </div>
-        
-        <div className="bg-white/50 backdrop-blur-sm rounded-xl p-6 border border-border">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {stats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-2xl md:text-3xl font-bold text-primary mb-1">
-                  {stat.number}
-                </div>
-                <div className="text-xs text-muted-foreground font-medium">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
     </section>
