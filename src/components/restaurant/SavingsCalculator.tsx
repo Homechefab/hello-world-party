@@ -12,10 +12,10 @@ const SavingsCalculator = () => {
     const ordersPerMonth = ordersPerDay * 30;
     const monthlyRevenue = ordersPerMonth * avgOrderValue;
     
-    // Foodora cost (30% commission)
-    const foodoraCommission = 0.30;
-    const foodoraMonthlyCost = monthlyRevenue * foodoraCommission;
-    const foodoraYearlyCost = foodoraMonthlyCost * 12;
+    // Competitor cost (30% commission)
+    const competitorCommission = 0.30;
+    const competitorMonthlyCost = monthlyRevenue * competitorCommission;
+    const competitorYearlyCost = competitorMonthlyCost * 12;
 
     // Determine which Homechef plan fits
     let homechefPlan = "Liten";
@@ -32,15 +32,15 @@ const SavingsCalculator = () => {
     const homechefYearlyCost = homechefMonthlyCost * 12;
 
     // Savings
-    const monthlySavings = foodoraMonthlyCost - homechefMonthlyCost;
-    const yearlySavings = foodoraYearlyCost - homechefYearlyCost;
-    const savingsPercent = ((foodoraMonthlyCost - homechefMonthlyCost) / foodoraMonthlyCost) * 100;
+    const monthlySavings = competitorMonthlyCost - homechefMonthlyCost;
+    const yearlySavings = competitorYearlyCost - homechefYearlyCost;
+    const savingsPercent = ((competitorMonthlyCost - homechefMonthlyCost) / competitorMonthlyCost) * 100;
 
     return {
       ordersPerMonth,
       monthlyRevenue,
-      foodoraMonthlyCost,
-      foodoraYearlyCost,
+      competitorMonthlyCost,
+      competitorYearlyCost,
       homechefPlan,
       homechefMonthlyCost,
       homechefYearlyCost,
@@ -117,16 +117,16 @@ const SavingsCalculator = () => {
 
         {/* Results */}
         <div className="grid sm:grid-cols-2 gap-4">
-          {/* Foodora card */}
+          {/* Competitor card */}
           <Card className="bg-red-50/50 dark:bg-red-950/20 border-red-200 dark:border-red-900/50">
             <CardContent className="pt-4 text-center">
               <p className="text-sm text-muted-foreground mb-1">Provisionsmodell (30%)</p>
               <p className="text-2xl font-bold text-red-600 dark:text-red-400">
-                {formatCurrency(calculations.foodoraMonthlyCost)}
+                {formatCurrency(calculations.competitorMonthlyCost)}
               </p>
               <p className="text-xs text-muted-foreground">per månad</p>
               <p className="text-sm mt-2 text-red-600/80 dark:text-red-400/80">
-                {formatCurrency(calculations.foodoraYearlyCost)}/år
+                {formatCurrency(calculations.competitorYearlyCost)}/år
               </p>
             </CardContent>
           </Card>

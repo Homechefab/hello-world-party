@@ -289,7 +289,7 @@ export const AdminDashboard = () => {
               <div className="bg-muted/50 rounded-lg p-6">
                 <h3 className="font-semibold mb-2">Restaurang Säljpitch (PDF)</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  En professionell 6-sidig PDF som visar våra prisplaner, jämförelse med Foodora, 
+                  En professionell 6-sidig PDF som visar våra prisplaner, jämförelse med konkurrenterna, 
                   och fördelarna med vår fasta månadsavgift. Perfekt att skicka till potentiella restaurangpartners.
                 </p>
                 <SalesPitchPDF />

@@ -172,7 +172,7 @@ const RestaurantPartnership = () => {
             </Badge>
             <h2 className="text-3xl font-bold mb-4">Varför välja Homechef?</h2>
             <p className="text-muted-foreground max-w-3xl mx-auto">
-              Stora leveransplattformar som Foodora tar ofta 20–30% i provision per order. 
+              Stora leveransplattformar tar ofta 20–30% i provision per order. 
               Det innebär att ju mer ni säljer, desto mer betalar ni. Med vår fasta månadsavgift 
               behåller ni hela marginalen – oavsett hur många beställningar ni får.
             </p>
