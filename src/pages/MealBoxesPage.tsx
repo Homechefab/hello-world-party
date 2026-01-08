@@ -1,53 +1,8 @@
-import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Package, Clock, Truck, Star, Filter } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Package, Clock, Truck, Info } from "lucide-react";
 import mealBoxesImage from "@/assets/meal-boxes.jpg";
-import chickenRiceImage from "@/assets/chicken-rice-mealbox.jpg";
-import pastaImage from "@/assets/pasta-mealbox.jpg";
-import meatballsImage from "@/assets/meatballs-mealbox.jpg";
 
 const MealBoxesPage = () => {
-  const [filter, setFilter] = useState("all");
-
-  // Exempel matlådor
-  const mealBoxes = [
-    {
-      id: 1,
-      name: "Grillad kyckling med grönsaker & quinoa",
-      chef: "Anna Andersson",
-      price: 95,
-      prepTime: "30 min",
-      rating: 4.8,
-      image: chickenRiceImage,
-      available: true,
-      delivery: true
-    },
-    {
-      id: 2,
-      name: "Pasta med färska tomater & basilika",
-      chef: "Erik Svensson",
-      price: 89,
-      prepTime: "25 min",
-      rating: 4.9,
-      image: pastaImage,
-      available: true,
-      delivery: false
-    },
-    {
-      id: 3,
-      name: "Köttbullar med mos & lingon",
-      chef: "Maria Johansson",
-      price: 125,
-      prepTime: "20 min",
-      rating: 5.0,
-      image: meatballsImage,
-      available: true,
-      delivery: true
-    }
-  ];
-
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -70,65 +25,16 @@ const MealBoxesPage = () => {
       </div>
 
       <div className="container mx-auto px-4 py-12">
-        {/* Filter Section */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8">
-          <Select value={filter} onValueChange={setFilter}>
-            <SelectTrigger className="w-full md:w-[200px]">
-              <Filter className="w-4 h-4 mr-2" />
-              <SelectValue placeholder="Filtrera" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Alla matlådor</SelectItem>
-              <SelectItem value="delivery">Med hemleverans</SelectItem>
-              <SelectItem value="pickup">Endast avhämtning</SelectItem>
-              <SelectItem value="vegetarian">Vegetariskt</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Meal Boxes Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {mealBoxes.map((box) => (
-            <Card key={box.id} className="hover:shadow-card transition-all duration-300 hover:-translate-y-1">
-              <div className="relative h-56 bg-muted flex items-center justify-center overflow-hidden">
-                <img 
-                  src={box.image}
-                  alt={`Matlåda ${box.name}`}
-                  className="w-full h-full object-contain p-4"
-                  loading="lazy"
-                  decoding="async"
-                />
-                {box.delivery && (
-                  <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
-                    <Truck className="w-4 h-4" />
-                    Leverans
-                  </div>
-                )}
-              </div>
-              <CardHeader>
-                <CardTitle className="text-xl">{box.name}</CardTitle>
-                <CardDescription>av {box.chef}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span className="font-medium">{box.rating}</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    <span className="text-sm">{box.prepTime}</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-primary">{box.price} kr</span>
-                  <Button size="sm">
-                    Beställ
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+        {/* Coming Soon Message */}
+        <div className="text-center py-16 max-w-2xl mx-auto">
+          <Info className="w-16 h-16 text-primary mx-auto mb-6" />
+          <h2 className="text-3xl font-bold text-foreground mb-4">
+            Kommer snart!
+          </h2>
+          <p className="text-lg text-muted-foreground mb-8">
+            Vi jobbar på att få våra hemkockar att erbjuda färdiglagade matlådor. 
+            Snart kan du beställa hemlagad mat som är redo att värmas och ätas.
+          </p>
         </div>
 
         {/* Info Section */}
