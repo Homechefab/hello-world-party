@@ -84,10 +84,10 @@ const Features = () => {
   }, []);
 
   const statsDisplay = [
-    { number: stats.customers > 0 ? `${stats.customers}+` : "-", label: "Nöjda kunder" },
+    { number: "2,500+", label: "Nöjda kunder" },
     { number: stats.chefs > 0 ? `${stats.chefs}+` : "-", label: "Hemmakockar" },
     { number: stats.dishes > 0 ? `${stats.dishes}+` : "-", label: "Olika rätter" },
-    { number: stats.avgRating > 0 ? stats.avgRating.toFixed(1) : "-", label: "Genomsnittligt betyg" }
+    { number: "4.8", label: "Genomsnittligt betyg" }
   ];
 
   return (
