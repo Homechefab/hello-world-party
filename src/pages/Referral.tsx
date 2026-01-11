@@ -96,18 +96,9 @@ const Referral = () => {
     }
   };
 
-  const handleShareWhatsApp = () => {
-    const text = `Testa Homechef - Sveriges marknadsplats för hemlagad mat! Använd min kod ${referralCode} och få 50 bonuspoäng: ${referralLink}`;
-    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
-  };
-
-  const handleShareFacebook = () => {
-    window.open(
-      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}&quote=${encodeURIComponent(`Använd min Homechef-kod ${referralCode} och få 50 bonuspoäng!`)}`,
-      "_blank",
-      "width=600,height=400"
-    );
-  };
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`Testa Homechef - Sveriges marknadsplats för hemlagad mat! Använd min kod ${referralCode} och få 50 bonuspoäng: ${referralLink}`)}`;
+  
+  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}&quote=${encodeURIComponent(`Använd min Homechef-kod ${referralCode} och få 50 bonuspoäng!`)}`;
 
   const rewards = [
     {
@@ -202,18 +193,22 @@ const Referral = () => {
                   <Button
                     variant="outline"
                     className="gap-2"
-                    onClick={handleShareWhatsApp}
+                    asChild
                   >
-                    <MessageCircle className="h-4 w-4 text-green-500" />
-                    WhatsApp
+                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                      <MessageCircle className="h-4 w-4 text-green-500" />
+                      WhatsApp
+                    </a>
                   </Button>
                   <Button
                     variant="outline"
                     className="gap-2"
-                    onClick={handleShareFacebook}
+                    asChild
                   >
-                    <Facebook className="h-4 w-4 text-blue-600" />
-                    Facebook
+                    <a href={facebookUrl} target="_blank" rel="noopener noreferrer">
+                      <Facebook className="h-4 w-4 text-blue-600" />
+                      Facebook
+                    </a>
                   </Button>
                 </div>
               </div>
