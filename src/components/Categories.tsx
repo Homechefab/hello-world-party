@@ -45,7 +45,7 @@ const PopularChefs = () => {
       <section id="popular-chefs" className="py-8 bg-secondary/30 rounded-xl my-4">
         <div className="max-w-4xl mx-auto px-6">
           <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 text-foreground">
-            Kockar nära dig
+            Godkända kockar nära dig
           </h2>
           <div className="flex justify-center py-8">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -59,7 +59,7 @@ const PopularChefs = () => {
     <section id="popular-chefs" className="py-8 bg-secondary/30 rounded-xl my-4">
       <div className="max-w-4xl mx-auto px-6">
         <h2 className="text-2xl md:text-3xl font-bold text-center mb-6 text-foreground">
-          Kockar nära dig
+          Godkända kockar nära dig
         </h2>
         
         {chefs.length === 0 ? (
