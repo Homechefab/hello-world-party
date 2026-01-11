@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -6,35 +6,113 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Separator } from "@/components/ui/separator";
+import { Gift } from "lucide-react";
 
 interface RegisterFormProps {
   onToggleMode: () => void;
+  initialReferralCode?: string;
 }
 
-export const RegisterForm = ({ onToggleMode }: RegisterFormProps) => {
+export const RegisterForm = ({ onToggleMode, initialReferralCode = "" }: RegisterFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [referralCode, setReferralCode] = useState(initialReferralCode);
   const [loading, setLoading] = useState(false);
+  const [validatingCode, setValidatingCode] = useState(false);
+  const [codeValid, setCodeValid] = useState<boolean | null>(null);
   const { toast } = useToast();
+
+  // Check URL for referral code on mount
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get('ref');
+    if (refCode && !referralCode) {
+      setReferralCode(refCode.toUpperCase());
+      validateReferralCode(refCode);
+    }
+  }, []);
+
+  // Validate referral code when it changes
+  const validateReferralCode = async (code: string) => {
+    if (!code || code.length < 4) {
+      setCodeValid(null);
+      return;
+    }
+
+    setValidatingCode(true);
+    try {
+      const { data, error } = await supabase
+        .from('user_referral_codes')
+        .select('referral_code')
+        .eq('referral_code', code.toUpperCase().trim())
+        .maybeSingle();
+
+      if (error) throw error;
+      setCodeValid(!!data);
+    } catch (error) {
+      console.error('Error validating referral code:', error);
+      setCodeValid(false);
+    } finally {
+      setValidatingCode(false);
+    }
+  };
+
+  const handleReferralCodeChange = (value: string) => {
+    const upperValue = value.toUpperCase();
+    setReferralCode(upperValue);
+    if (upperValue.length >= 4) {
+      validateReferralCode(upperValue);
+    } else {
+      setCodeValid(null);
+    }
+  };
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      // Store referral code in user metadata for processing after signup
+      const { data: authData, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: `${window.location.origin}/`,
           data: {
             full_name: fullName,
+            referral_code: referralCode.trim() || null,
           },
         },
       });
 
       if (error) throw error;
+
+      // If signup successful and we have a referral code, process it
+      if (authData.user && referralCode.trim()) {
+        try {
+          const { data: referralResult, error: referralError } = await supabase
+            .rpc('process_referral_signup', {
+              p_new_user_id: authData.user.id,
+              p_referral_code: referralCode.trim()
+            });
+
+          if (referralError) {
+            console.error('Referral processing error:', referralError);
+          } else if (referralResult && typeof referralResult === 'object' && 'success' in referralResult) {
+            if (referralResult.success) {
+              toast({
+                title: "Värvningskod accepterad! 🎉",
+                description: "Du får 50 bonuspoäng efter ditt första köp.",
+              });
+            } else {
+              console.log('Referral not applied:', referralResult.error);
+            }
+          }
+        } catch (refError) {
+          console.error('Error processing referral:', refError);
+        }
+      }
 
       toast({
         title: "Registrering lyckades!",
@@ -53,6 +131,11 @@ export const RegisterForm = ({ onToggleMode }: RegisterFormProps) => {
 
   const handleSocialLogin = async (provider: 'google' | 'facebook') => {
     try {
+      // Store referral code in localStorage for processing after OAuth
+      if (referralCode.trim()) {
+        localStorage.setItem('pending_referral_code', referralCode.trim());
+      }
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: provider,
         options: {
@@ -114,6 +197,53 @@ export const RegisterForm = ({ onToggleMode }: RegisterFormProps) => {
               minLength={6}
             />
           </div>
+
+          {/* Referral Code Field */}
+          <div className="space-y-2">
+            <Label htmlFor="referralCode" className="flex items-center gap-2">
+              <Gift className="h-4 w-4 text-primary" />
+              Värvningskod (valfritt)
+            </Label>
+            <div className="relative">
+              <Input
+                id="referralCode"
+                type="text"
+                placeholder="T.ex. HC1A2B3C"
+                value={referralCode}
+                onChange={(e) => handleReferralCodeChange(e.target.value)}
+                className={`pr-10 ${
+                  codeValid === true ? 'border-green-500 focus-visible:ring-green-500' : 
+                  codeValid === false ? 'border-red-500 focus-visible:ring-red-500' : ''
+                }`}
+              />
+              {validatingCode && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                </div>
+              )}
+              {!validatingCode && codeValid === true && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
+                  ✓
+                </div>
+              )}
+              {!validatingCode && codeValid === false && referralCode.length >= 4 && (
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-red-500">
+                  ✗
+                </div>
+              )}
+            </div>
+            {codeValid === true && (
+              <p className="text-sm text-green-600">
+                Giltig kod! Du får 50 bonuspoäng efter ditt första köp.
+              </p>
+            )}
+            {codeValid === false && referralCode.length >= 4 && (
+              <p className="text-sm text-red-600">
+                Ogiltigt värvningskod. Kontrollera koden och försök igen.
+              </p>
+            )}
+          </div>
+
           <Button type="submit" className="w-full" disabled={loading} variant="food">
             {loading ? "Registrerar..." : "Skapa konto"}
           </Button>
