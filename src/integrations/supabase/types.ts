@@ -1331,6 +1331,7 @@ export type Database = {
         Args: { p_order_amount: number; p_order_id: string; p_user_id: string }
         Returns: Json
       }
+      complete_referral: { Args: { p_user_id: string }; Returns: Json }
       generate_referral_code: { Args: { p_user_id: string }; Returns: string }
       get_or_create_referral_code: {
         Args: { p_user_id: string }
@@ -1351,6 +1352,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      process_referral_signup: {
+        Args: { p_new_user_id: string; p_referral_code: string }
+        Returns: Json
       }
       reject_kitchen_partner: {
         Args: { partner_id: string; reason: string }
