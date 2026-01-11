@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Gift, Users, Copy, Check, MessageCircle, Facebook, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import SEOHead from "@/components/SEOHead";
 
 const Referral = () => {
@@ -13,29 +14,51 @@ const Referral = () => {
   const { user } = useAuth();
   const [copied, setCopied] = useState(false);
   const [referralCode, setReferralCode] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [referralStats, setReferralStats] = useState({
     totalReferrals: 0,
-    pendingReferrals: 0,
+    successfulReferrals: 0,
     earnedPoints: 0,
   });
 
   useEffect(() => {
-    // Generate or fetch referral code based on user
-    if (user?.id) {
-      // Generate a simple referral code based on user ID
-      const code = `HC${user.id.substring(0, 6).toUpperCase()}`;
-      setReferralCode(code);
-      
-      // In production, fetch actual stats from database
-      setReferralStats({
-        totalReferrals: 0,
-        pendingReferrals: 0,
-        earnedPoints: 0,
-      });
-    } else {
-      setReferralCode("HOMECHEF2025");
-    }
-  }, [user]);
+    const fetchReferralData = async () => {
+      if (!user?.id) {
+        setReferralCode("");
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        // Call the database function to get or create referral code
+        const { data, error } = await supabase
+          .rpc('get_or_create_referral_code', { p_user_id: user.id });
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          const result = data[0];
+          setReferralCode(result.referral_code);
+          setReferralStats({
+            totalReferrals: result.total_referrals || 0,
+            successfulReferrals: result.successful_referrals || 0,
+            earnedPoints: result.total_points_earned || 0,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching referral data:', error);
+        toast({
+          title: "Kunde inte hämta värvningskod",
+          description: "Försök igen senare.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchReferralData();
+  }, [user, toast]);
 
   const referralLink = `${window.location.origin}?ref=${referralCode}`;
 
@@ -138,7 +161,7 @@ const Referral = () => {
             <CardContent className="space-y-6">
               <div className="flex items-center gap-2">
                 <Input
-                  value={referralCode}
+                  value={isLoading ? "Laddar..." : (referralCode || "Logga in för att få din kod")}
                   readOnly
                   className="text-2xl font-bold text-center tracking-widest"
                 />
@@ -210,8 +233,8 @@ const Referral = () => {
                 </Card>
                 <Card className="text-center">
                   <CardContent className="pt-6">
-                    <div className="text-3xl font-bold text-primary">{referralStats.pendingReferrals}</div>
-                    <div className="text-sm text-muted-foreground">Väntande</div>
+                    <div className="text-3xl font-bold text-primary">{referralStats.successfulReferrals}</div>
+                    <div className="text-sm text-muted-foreground">Lyckade</div>
                   </CardContent>
                 </Card>
                 <Card className="text-center">
