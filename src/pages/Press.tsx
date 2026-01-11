@@ -1,39 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Download, Mail, Phone, Calendar, Users, ChefHat, ShoppingBag, MapPin } from "lucide-react";
+import { Download, Mail, Phone } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
-
-const pressReleases = [
-  {
-    id: 1,
-    title: "Homechef lanserar Sveriges första marknadsplats för hemlagad mat",
-    date: "2025-01-15",
-    summary: "Homechef revolutionerar hur svenskar köper och säljer hemlagad mat genom en ny digital plattform som kopplar samman hemkockar med matälskare.",
-    category: "Lansering",
-  },
-  {
-    id: 2,
-    title: "Över 100 hemkockar anslutna till Homechef",
-    date: "2025-02-01",
-    summary: "Bara några veckor efter lansering har Homechef redan över 100 registrerade hemkockar som erbjuder allt från traditionell husmanskost till internationella specialiteter.",
-    category: "Milstolpe",
-  },
-  {
-    id: 3,
-    title: "Homechef expanderar med köksuthyrning",
-    date: "2025-03-01",
-    summary: "Ny funktion låter professionella kök hyras ut till hemkockar som vill skala upp sin verksamhet.",
-    category: "Produkt",
-  },
-];
-
-const statistics = [
-  { label: "Registrerade hemkockar", value: "100+", icon: ChefHat },
-  { label: "Genomförda beställningar", value: "1,000+", icon: ShoppingBag },
-  { label: "Nöjda kunder", value: "95%", icon: Users },
-  { label: "Städer", value: "Stockholm", icon: MapPin },
-];
 
 const Press = () => {
   const handleDownloadLogo = (format: string) => {
@@ -71,22 +39,6 @@ const Press = () => {
         </section>
 
         <div className="container mx-auto px-4 py-12 space-y-16">
-          {/* Statistics */}
-          <section>
-            <h2 className="text-2xl font-bold mb-8 text-center">Homechef i siffror</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {statistics.map((stat) => (
-                <Card key={stat.label} className="text-center">
-                  <CardContent className="pt-6">
-                    <stat.icon className="w-8 h-8 mx-auto mb-3 text-primary" />
-                    <div className="text-3xl font-bold text-primary mb-1">{stat.value}</div>
-                    <div className="text-sm text-muted-foreground">{stat.label}</div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </section>
-
           {/* About Homechef */}
           <section>
             <Card>
@@ -116,32 +68,6 @@ const Press = () => {
                 </ul>
               </CardContent>
             </Card>
-          </section>
-
-          {/* Press Releases */}
-          <section>
-            <h2 className="text-2xl font-bold mb-8">Pressmeddelanden</h2>
-            <div className="space-y-4">
-              {pressReleases.map((release) => (
-                <Card key={release.id} className="hover:shadow-md transition-shadow">
-                  <CardHeader>
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <Badge variant="secondary">{release.category}</Badge>
-                          <span className="text-sm text-muted-foreground flex items-center gap-1">
-                            <Calendar className="w-3 h-3" />
-                            {new Date(release.date).toLocaleDateString("sv-SE")}
-                          </span>
-                        </div>
-                        <CardTitle className="text-lg">{release.title}</CardTitle>
-                        <CardDescription className="mt-2">{release.summary}</CardDescription>
-                      </div>
-                    </div>
-                  </CardHeader>
-                </Card>
-              ))}
-            </div>
           </section>
 
           {/* Brand Assets */}
