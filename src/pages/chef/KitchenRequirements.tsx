@@ -17,9 +17,17 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import approvedKitchenImage from "@/assets/swedish-villa-kitchen-realistic.jpg";
-import kitchenHeroImage from "@/assets/kitchen-requirements-hero.jpg";
+import separationZonesImage from "@/assets/kitchen-separation-zones.jpg";
 import handHygieneImage from "@/assets/kitchen-hand-hygiene.jpg";
+import illnessRoutinesImage from "@/assets/kitchen-illness-routines.jpg";
+import cleaningRoutinesImage from "@/assets/kitchen-cleaning-routines.jpg";
+import familyPetsRulesImage from "@/assets/kitchen-family-pets-rules.jpg";
+import rawFinishedSeparationImage from "@/assets/kitchen-raw-finished-separation.jpg";
 import temperatureControlImage from "@/assets/kitchen-temperature-control.jpg";
+import haccpAnalysisImage from "@/assets/kitchen-haccp-analysis.jpg";
+import animalProductsImage from "@/assets/kitchen-animal-products.jpg";
+import workClothesImage from "@/assets/kitchen-work-clothes.jpg";
+import waterQualityImage from "@/assets/kitchen-water-quality.jpg";
 
 const KitchenRequirements = () => {
   const basicRequirements = [
@@ -169,7 +177,7 @@ const KitchenRequirements = () => {
         </div>
       </section>
 
-      {/* Visual Guide Section */}
+      {/* Visual Guide Section - All Municipal Requirements */}
       <section className="py-16 bg-gradient-to-br from-primary/5 to-accent/5">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -177,65 +185,165 @@ const KitchenRequirements = () => {
               <Play className="w-4 h-4 mr-2" />
               Visuell guide
             </Badge>
-            <h2 className="text-3xl font-bold mb-4">Se hur det ska se ut</h2>
+            <h2 className="text-3xl font-bold mb-4">Alla kommunala krav – visuellt</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Bilder på hur ett godkänt hemkök kan organiseras enligt kommunala krav
+              Bildguide för varje krav som ditt hemkök måste uppfylla
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
+            {/* 1. Separering */}
             <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
               <div className="aspect-video relative">
                 <img 
-                  src={kitchenHeroImage} 
-                  alt="Separering mellan privat och verksamhet i köket"
+                  src={separationZonesImage} 
+                  alt="Separering mellan verksamhet och privat användning"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
                   <p className="text-white font-medium text-sm">Separering privat/verksamhet</p>
                 </div>
               </div>
-              <CardContent className="p-4">
-                <p className="text-sm text-muted-foreground">
-                  Tydligt markerade zoner för privat användning och verksamhet enligt lagkrav.
-                </p>
-              </CardContent>
             </Card>
 
+            {/* 2. Handhygien */}
             <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
               <div className="aspect-video relative">
                 <img 
                   src={handHygieneImage} 
-                  alt="Handhygien i köket"
+                  alt="Handhygien - tvätta händer mellan moment"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
                   <p className="text-white font-medium text-sm">Handhygien</p>
                 </div>
               </div>
-              <CardContent className="p-4">
-                <p className="text-sm text-muted-foreground">
-                  Möjlighet att tvätta händer mellan olika moment är ett grundkrav.
-                </p>
-              </CardContent>
             </Card>
 
+            {/* 3. Rutiner för sjukdom */}
+            <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
+              <div className="aspect-video relative">
+                <img 
+                  src={illnessRoutinesImage} 
+                  alt="Rutiner för sjukdom i hemmet"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                  <p className="text-white font-medium text-sm">Rutiner för sjukdom</p>
+                </div>
+              </div>
+            </Card>
+
+            {/* 4. Rengöringsrutiner */}
+            <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
+              <div className="aspect-video relative">
+                <img 
+                  src={cleaningRoutinesImage} 
+                  alt="Rengöringsrutiner för redskap och ytor"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                  <p className="text-white font-medium text-sm">Rengöringsrutiner</p>
+                </div>
+              </div>
+            </Card>
+
+            {/* 5. Familj och husdjur */}
+            <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
+              <div className="aspect-video relative">
+                <img 
+                  src={familyPetsRulesImage} 
+                  alt="Rutiner för familjemedlemmar och husdjur"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                  <p className="text-white font-medium text-sm">Familj & husdjur</p>
+                </div>
+              </div>
+            </Card>
+
+            {/* 6. Separera råvaror och färdiga produkter */}
+            <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
+              <div className="aspect-video relative">
+                <img 
+                  src={rawFinishedSeparationImage} 
+                  alt="Separera råvaror och färdiga produkter"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                  <p className="text-white font-medium text-sm">Råvaror vs färdiga produkter</p>
+                </div>
+              </div>
+            </Card>
+
+            {/* 7. Temperaturkontroll */}
             <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
               <div className="aspect-video relative">
                 <img 
                   src={temperatureControlImage} 
-                  alt="Temperaturkontroll och organiserad förvaring"
+                  alt="Temperaturkontroll och hygien"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
                   <p className="text-white font-medium text-sm">Temperaturkontroll</p>
                 </div>
               </div>
-              <CardContent className="p-4">
-                <p className="text-sm text-muted-foreground">
-                  Lämplig utrustning för temperaturkontroll och separering av råvaror.
-                </p>
-              </CardContent>
+            </Card>
+
+            {/* 8. HACCP-analys */}
+            <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
+              <div className="aspect-video relative">
+                <img 
+                  src={haccpAnalysisImage} 
+                  alt="HACCP-analys av risker"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                  <p className="text-white font-medium text-sm">HACCP-analys</p>
+                </div>
+              </div>
+            </Card>
+
+            {/* 9. Animaliska produkter */}
+            <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
+              <div className="aspect-video relative">
+                <img 
+                  src={animalProductsImage} 
+                  alt="Hantering av fisk, kött och animaliska produkter"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                  <p className="text-white font-medium text-sm">Animaliska produkter</p>
+                </div>
+              </div>
+            </Card>
+
+            {/* 10. Arbetskläder */}
+            <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
+              <div className="aspect-video relative">
+                <img 
+                  src={workClothesImage} 
+                  alt="Arbetskläder, kökshanddukar och städmaterial"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                  <p className="text-white font-medium text-sm">Arbetskläder & textilier</p>
+                </div>
+              </div>
+            </Card>
+
+            {/* 11. Vattenkvalitet */}
+            <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
+              <div className="aspect-video relative">
+                <img 
+                  src={waterQualityImage} 
+                  alt="Vattenkvalitet vid egen brunn"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
+                  <p className="text-white font-medium text-sm">Vattenkvalitet</p>
+                </div>
+              </div>
             </Card>
           </div>
         </div>
