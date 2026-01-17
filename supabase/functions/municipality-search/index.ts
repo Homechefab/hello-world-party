@@ -65,23 +65,31 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: 'Du är en expert på svenska kommuner och deras e-tjänster. Svara ENDAST med giltigt JSON utan andra tecken eller text.'
+            content: 'Du är en expert på svenska kommuner och deras e-tjänster för livsmedelsregistrering. Du ska alltid hitta den officiella kommunwebbplatsen och länken till livsmedelsregistrering eller registrering av livsmedelsverksamhet. Svara ENDAST med giltigt JSON utan markdown-formatering.'
           },
           {
             role: 'user',
-            content: `För adressen "${address}" i Sverige, hitta vilken kommun den tillhör och ge mig aktuella länkar till ansökningsblanketter eller e-tjänster för livsmedelsregistrering/livsmedelstillstånd från den kommunen. 
+            content: `Hitta vilken kommun adressen "${address}" i Sverige tillhör och ge mig den DIREKTA länken till kommunens sida för registrering av livsmedelsverksamhet (ofta kallat "anmälan om livsmedelsverksamhet" eller "registrera livsmedelsanläggning").
 
-Svara i exakt detta JSON-format:
+Sök på kommunens officiella webbplats efter:
+- E-tjänster för livsmedelsregistrering
+- Anmälan om livsmedelsverksamhet
+- Registrera livsmedelsanläggning
+- Starta livsmedelsföretag
+
+Svara i exakt detta JSON-format (utan markdown):
 {
   "municipality": "Kommunnamn",
   "links": [
     {
-      "title": "Namn på tjänst/blankett",
-      "url": "https://fullständig-url",
-      "description": "Kort beskrivning"
+      "title": "Registrera livsmedelsverksamhet",
+      "url": "https://direktlänk-till-e-tjänst",
+      "description": "E-tjänst för att anmäla livsmedelsverksamhet"
     }
   ]
-}`
+}
+
+Om du hittar kommunens webbplats men inte den exakta e-tjänsten, inkludera åtminstone en länk till kommunens huvudsida för livsmedel/miljö med instruktioner om var användaren kan hitta rätt blankett.`
           }
         ],
         temperature: 0.2,
