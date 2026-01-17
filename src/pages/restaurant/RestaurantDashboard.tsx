@@ -10,14 +10,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import DishCardManage from "@/components/shared/DishCardManage";
 import { 
   Store, 
   TrendingUp, 
   Package,
   Star,
   Plus,
-  Edit,
-  Trash2,
   Loader2
 } from "lucide-react";
 
@@ -375,57 +374,20 @@ const RestaurantDashboard = () => {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {dishes.map(dish => (
-                <Card key={dish.id}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg">{dish.name}</CardTitle>
-                        <CardDescription className="line-clamp-2">{dish.description}</CardDescription>
-                      </div>
-                      <Badge variant={dish.available ? "default" : "secondary"}>
-                        {dish.available ? 'Tillgänglig' : 'Ej tillgänglig'}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-2xl font-bold">{dish.price} kr</span>
-                        {dish.category && (
-                          <Badge variant="outline">{dish.category}</Badge>
-                        )}
-                      </div>
-                      
-                      <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => openDishDialog(dish)}
-                          className="flex-1"
-                        >
-                          <Edit className="w-4 h-4 mr-1" />
-                          Redigera
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => toggleDishAvailability(dish.id, dish.available ?? false)}
-                        >
-                          {dish.available ? 'Inaktivera' : 'Aktivera'}
-                        </Button>
-                        <Button 
-                          size="sm" 
-                          variant="destructive"
-                          onClick={() => deleteDish(dish.id)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <DishCardManage
+                  key={dish.id}
+                  name={dish.name}
+                  price={dish.price}
+                  description={dish.description}
+                  imageUrl={dish.image_url}
+                  category={dish.category}
+                  available={dish.available ?? true}
+                  onEdit={() => openDishDialog(dish)}
+                  onToggleAvailability={() => toggleDishAvailability(dish.id, dish.available ?? false)}
+                  onDelete={() => deleteDish(dish.id)}
+                />
               ))}
             </div>
           )}
