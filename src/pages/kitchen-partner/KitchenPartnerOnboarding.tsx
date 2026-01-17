@@ -257,6 +257,22 @@ export const KitchenPartnerOnboarding = () => {
         // Don't fail the whole process if notification fails
       }
 
+      // Send onboarding guide to applicant
+      try {
+        await supabase.functions.invoke('send-onboarding-email', {
+          body: {
+            type: 'kitchen_partner',
+            applicant_name: formData.contactPerson,
+            applicant_email: formData.email,
+            business_name: formData.businessName
+          }
+        });
+        console.log('Onboarding email sent successfully');
+      } catch (onboardingError) {
+        console.error('Failed to send onboarding email:', onboardingError);
+        // Don't fail the whole process if onboarding email fails
+      }
+
       toast({
         title: "Ansökan skickad!",
         description: "Vi kommer att granska din ansökan och återkomma inom 2-3 arbetsdagar"
