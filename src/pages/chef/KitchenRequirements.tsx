@@ -30,20 +30,6 @@ import workClothesImage from "@/assets/kitchen-work-clothes.jpg";
 import waterQualityImage from "@/assets/kitchen-water-quality.jpg";
 
 const KitchenRequirements = () => {
-  const basicRequirements = [
-    "Separering mellan verksamhet och privat användning - i tid eller rum",
-    "Handhygien - möjlighet att tvätta händer mellan olika moment",
-    "Rutiner för sjukdom - vad som gäller när någon i hemmet är sjuk", 
-    "Rengöringsrutiner för redskap, ytor och utrustning",
-    "Rutiner för familjemedlemmar och husdjur under verksamhet",
-    "Tillräckligt med ytor för att separera råvaror och färdiga produkter",
-    "Lämplig utrustning för temperaturkontroll och hygien",
-    "HACCP-analys av risker i din specifika verksamhet",
-    "Extra noggrannhet vid hantering av fisk, kött och animaliska produkter",
-    "Rutiner för arbetskläder, kökshanddukar och städmaterial",
-    "Vattenkvalitet - extra rutiner vid egen brunn"
-  ];
-
   const equipmentNeeds = [
     {
       icon: Thermometer,
@@ -139,24 +125,10 @@ const KitchenRequirements = () => {
               </div>
             </div>
 
-            {/* Requirements List */}
+            {/* Info Box */}
             <div className="space-y-6">
               <div className="bg-card rounded-lg p-6 border">
-                <div className="flex items-center gap-3 mb-4">
-                  <Shield className="w-6 h-6 text-green-500" />
-                  <h3 className="text-xl font-semibold">Kommunala krav</h3>
-                </div>
-                
-                <div className="space-y-4">
-                  {basicRequirements.map((requirement, index) => (
-                    <div key={index} className="flex items-start gap-3">
-                      <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-sm text-muted-foreground">{requirement}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-6 p-4 bg-blue-500/10 rounded-lg border border-blue-200/20">
+                <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-200/20">
                   <div className="flex items-start gap-3">
                     <AlertCircle className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
                     <div>
