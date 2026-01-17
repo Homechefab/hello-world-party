@@ -187,7 +187,7 @@ const onboardingData: OnboardingContent[] = [
     faq: [
       {
         question: 'Vilken provision tar Homechef?',
-        answer: 'Vi tar 18% provision pa varje bestallning via plattformen.'
+        answer: 'Vi tar 20% provision pa varje bestallning via plattformen.'
       },
       {
         question: 'Kan vi integrera med vart kassasystem?',
@@ -268,7 +268,7 @@ const onboardingData: OnboardingContent[] = [
       },
       {
         question: 'Vilken provision tar Homechef?',
-        answer: 'Vi tar 15% provision pa varje bokning.'
+        answer: 'Vi tar 20% provision pa varje bokning.'
       },
       {
         question: 'Hur ofta far jag betalt?',
@@ -355,7 +355,7 @@ const onboardingData: OnboardingContent[] = [
       },
       {
         question: 'Hur mycket tar Homechef i provision?',
-        answer: 'Vi tar 15% provision pa varje forsaljning. Detta inkluderar betalningshantering och kundtjanst.'
+        answer: 'Vi tar 20% provision pa varje forsaljning. Detta inkluderar betalningshantering och kundtjanst.'
       },
       {
         question: 'Hur ofta far jag betalt?',
