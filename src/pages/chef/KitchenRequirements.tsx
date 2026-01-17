@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Shield, 
   CheckCircle,
-  AlertCircle,
   Home,
   Users,
   Thermometer,
@@ -16,7 +15,7 @@ import {
   Play
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import approvedKitchenImage from "@/assets/swedish-villa-kitchen-realistic.jpg";
+
 import separationZonesImage from "@/assets/kitchen-separation-zones.jpg";
 import handHygieneImage from "@/assets/kitchen-hand-hygiene.jpg";
 import illnessRoutinesImage from "@/assets/kitchen-illness-routines.jpg";
@@ -108,46 +107,6 @@ const KitchenRequirements = () => {
         </div>
       </section>
 
-      {/* Kitchen Example */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start max-w-6xl mx-auto">
-            {/* Kitchen Image */}
-            <div className="relative">
-              <img 
-                src={approvedKitchenImage} 
-                alt="Exempel på godkänt kök enligt kommunala krav"
-                className="w-full rounded-lg shadow-lg"
-              />
-              <div className="absolute top-4 left-4 bg-green-500/90 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2">
-                <CheckCircle className="w-4 h-4" />
-                Godkänt kök
-              </div>
-            </div>
-
-            {/* Info Box */}
-            <div className="space-y-6">
-              <div className="bg-card rounded-lg p-6 border">
-                <div className="p-4 bg-blue-500/10 rounded-lg border border-blue-200/20">
-                  <div className="flex items-start gap-3">
-                    <AlertCircle className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1">
-                        Enligt livsmedelslagstiftningen
-                      </p>
-                      <p className="text-xs text-blue-600 dark:text-blue-400">
-                        "Det måste finnas ordentlig separation mellan det som tillhör din livsmedelsverksamhet 
-                        och det som hör till dina normala hushållsaktiviteter. I vissa fall kan separering ske i tid, 
-                        förutsatt att du har goda rutiner för detta."
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Visual Guide Section - All Municipal Requirements */}
       <section className="py-16 bg-gradient-to-br from-primary/5 to-accent/5">
