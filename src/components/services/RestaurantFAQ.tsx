@@ -6,7 +6,7 @@ const RestaurantFAQ = () => {
   const faqs = [
     {
       question: "Vilka avgifter tar Homechef?",
-      answer: "Homechef tar en fast provision på 20% av ordervärdet. Det finns inga månadskostnader eller startavgifter - ni betalar bara när ni får beställningar."
+      answer: "Restauranger betalar ett fast månadsabonnemang baserat på storlek (Liten, Medelstor, Stor). Det finns inga provisionsavgifter - ni betalar samma fasta avgift oavsett hur mycket ni säljer."
     },
     {
       question: "Hur snabbt kan vi komma igång?",
