@@ -34,8 +34,8 @@ const RestaurantServices = () => {
     },
     {
       icon: Shield,
-      title: "Trygg betalning",
-      description: "Pengarna betalas direkt till ert konto"
+      title: "Fast månadsavgift",
+      description: "3 999 kr/mån – inga provisioner, ni behåller hela intäkten"
     }
   ];
 

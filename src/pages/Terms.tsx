@@ -444,7 +444,9 @@ const Terms = () => {
               <div>
                 <h3 className="text-lg font-medium mb-2">13.2 Serviceavgift</h3>
                 <p className="text-muted-foreground">
-                  Restaurangpartners betalar ett månadsabonnemang baserat på restaurangens storlek (Liten, Medelstor, Stor).
+                  Restaurangpartners betalar en fast månadsavgift på 3 999 kr/mån för tillgång till plattformen, 
+                  betalningslösning, orderhantering och synlighet. Inga provisionsavgifter tas ut på försäljningen. 
+                  Kunden betalar maten samt en fast leveransavgift som går till leveransbudet.
                 </p>
               </div>
             </section>
@@ -831,7 +833,7 @@ const Terms = () => {
                 <li>Om ångerfristens sista dag infaller under en lördag, söndag eller en helgdag 
                     förlängs ångerfristen så att den även gäller nästkommande vardag.</li>
                 <li>Säljare som registrerar sig på Plattformen accepterar att Homechef tar ut serviceavgift 
-                    på 20% av ordervärdet för Hemmakockar, Kökspartners och Företag. Restauranger betalar månadsabonnemang.</li>
+                    på 20% av ordervärdet för Hemmakockar, Kökspartners och Företag. Restauranger betalar fast månadsavgift på 3 999 kr/mån.</li>
               </ol>
             </section>
           </CardContent>
