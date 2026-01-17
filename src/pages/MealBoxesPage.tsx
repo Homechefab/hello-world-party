@@ -1,109 +1,110 @@
 import { useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Package, Clock, Truck, Star, Filter, Search, MapPin, Building2, ChefHat } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Package, Truck, Star, Search, MapPin, Building2, ChefHat, UtensilsCrossed } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Link } from "react-router-dom";
 import mealBoxesImage from "@/assets/meal-boxes.jpg";
-import chickenRiceImage from "@/assets/chicken-rice-mealbox.jpg";
-import pastaImage from "@/assets/pasta-mealbox.jpg";
-import meatballsImage from "@/assets/meatballs-mealbox.jpg";
 
 const MealBoxesPage = () => {
-  const [filter, setFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [locationQuery, setLocationQuery] = useState("");
   const [providerType, setProviderType] = useState("all");
 
-  // Exempel matlådor med kock/företagsinfo
-  const mealBoxes = [
+  // Exempel på leverantörer (kockar och företag) som säljer matlådor
+  const providers = [
     {
-      id: 1,
-      name: "Grillad kyckling med grönsaker & quinoa",
-      chef: "Anna Andersson",
-      providerType: "chef",
+      id: "1",
+      name: "Anna Andersson",
+      type: "chef",
       location: "Stockholm",
-      price: 95,
-      prepTime: "30 min",
       rating: 4.8,
-      image: chickenRiceImage,
-      available: true,
-      delivery: true
+      reviewCount: 45,
+      description: "Hemlagade matlådor med fokus på hälsosam mat och fräscha råvaror",
+      mealBoxCount: 8,
+      hasDelivery: true,
+      specialties: ["Kyckling", "Vegetariskt", "Fisk"]
     },
     {
-      id: 2,
-      name: "Pasta med färska tomater & basilika",
-      chef: "Erik Svensson",
-      providerType: "chef",
-      location: "Göteborg",
-      price: 89,
-      prepTime: "25 min",
-      rating: 4.9,
-      image: pastaImage,
-      available: true,
-      delivery: false
-    },
-    {
-      id: 3,
-      name: "Köttbullar med mos & lingon",
-      chef: "Maria Johansson",
-      providerType: "chef",
-      location: "Malmö",
-      price: 125,
-      prepTime: "20 min",
-      rating: 5.0,
-      image: meatballsImage,
-      available: true,
-      delivery: true
-    },
-    {
-      id: 4,
-      name: "Vegansk buddha bowl",
-      chef: "Green Kitchen AB",
-      providerType: "business",
+      id: "2",
+      name: "Green Kitchen AB",
+      type: "business",
       location: "Stockholm",
-      price: 99,
-      prepTime: "15 min",
       rating: 4.7,
-      image: chickenRiceImage,
-      available: true,
-      delivery: true
+      reviewCount: 128,
+      description: "Veganska och vegetariska matlådor för den medvetna konsumenten",
+      mealBoxCount: 15,
+      hasDelivery: true,
+      specialties: ["Veganskt", "Ekologiskt", "Glutenfritt"]
     },
     {
-      id: 5,
-      name: "Laxfilé med dillsås",
-      chef: "Måltidslådan Sverige",
-      providerType: "business",
+      id: "3",
+      name: "Erik Svensson",
+      type: "chef",
+      location: "Göteborg",
+      rating: 4.9,
+      reviewCount: 32,
+      description: "Klassisk husmanskost med moderna inslag. Perfekt för hela familjen",
+      mealBoxCount: 6,
+      hasDelivery: false,
+      specialties: ["Husmanskost", "Köttbullar", "Pytt i panna"]
+    },
+    {
+      id: "4",
+      name: "Måltidslådan Sverige",
+      type: "business",
       location: "Uppsala",
-      price: 145,
-      prepTime: "20 min",
       rating: 4.6,
-      image: pastaImage,
-      available: true,
-      delivery: true
+      reviewCount: 89,
+      description: "Färska matlådor med fokus på svenska råvaror och säsongens grönsaker",
+      mealBoxCount: 20,
+      hasDelivery: true,
+      specialties: ["Svenskt kött", "Säsongsmat", "Fisk"]
+    },
+    {
+      id: "5",
+      name: "Maria Johansson",
+      type: "chef",
+      location: "Malmö",
+      rating: 5.0,
+      reviewCount: 18,
+      description: "Italienskinspirerade matlådor med färsk pasta och hemgjorda såser",
+      mealBoxCount: 5,
+      hasDelivery: true,
+      specialties: ["Italienskt", "Pasta", "Pizza"]
+    },
+    {
+      id: "6",
+      name: "Nordic Meal Prep",
+      type: "business",
+      location: "Stockholm",
+      rating: 4.5,
+      reviewCount: 156,
+      description: "Proteinrika matlådor för aktiva. Perfekt för träning och återhämtning",
+      mealBoxCount: 12,
+      hasDelivery: true,
+      specialties: ["Protein", "Fitness", "Keto"]
     }
   ];
 
-  // Filtrera matlådor baserat på sök, plats och leverantörstyp
-  const filteredMealBoxes = mealBoxes.filter((box) => {
+  // Filtrera leverantörer baserat på sök, plats och typ
+  const filteredProviders = providers.filter((provider) => {
     const matchesSearch = 
-      box.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      box.chef.toLowerCase().includes(searchQuery.toLowerCase());
+      provider.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      provider.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      provider.specialties.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
     
     const matchesLocation = 
       locationQuery === "" || 
-      box.location.toLowerCase().includes(locationQuery.toLowerCase());
+      provider.location.toLowerCase().includes(locationQuery.toLowerCase());
     
-    const matchesProvider = 
+    const matchesType = 
       providerType === "all" || 
-      box.providerType === providerType;
-    
-    const matchesFilter = 
-      filter === "all" ||
-      (filter === "delivery" && box.delivery) ||
-      (filter === "pickup" && !box.delivery);
+      provider.type === providerType;
 
-    return matchesSearch && matchesLocation && matchesProvider && matchesFilter;
+    return matchesSearch && matchesLocation && matchesType;
   });
 
   return (
@@ -117,12 +118,12 @@ const MealBoxesPage = () => {
           backgroundPosition: 'center'
         }}
       >
-        <div className="text-center text-white z-10">
-          <h1 className="text-5xl font-bold mb-4 drop-shadow-lg">
+        <div className="text-center text-white z-10 px-4">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">
             Färdiglagade matlådor
           </h1>
-          <p className="text-xl drop-shadow-lg">
-            Sök efter kockar och företag som säljer hemlagade matlådor
+          <p className="text-xl drop-shadow-lg max-w-2xl mx-auto">
+            Sök efter kockar och företag som säljer hemlagade matlådor i ditt område
           </p>
         </div>
       </div>
@@ -135,7 +136,7 @@ const MealBoxesPage = () => {
             <div className="relative md:col-span-2">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
-                placeholder="Sök kock, företag eller maträtt..."
+                placeholder="Sök kock, företag eller typ av mat..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10"
@@ -156,190 +157,174 @@ const MealBoxesPage = () => {
             {/* Provider Type Select */}
             <Select value={providerType} onValueChange={setProviderType}>
               <SelectTrigger>
-                <SelectValue placeholder="Leverantör" />
+                <SelectValue placeholder="Leverantörstyp" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Alla leverantörer</SelectItem>
-                <SelectItem value="chef">
-                  <span className="flex items-center gap-2">
-                    <ChefHat className="w-4 h-4" />
-                    Kockar
-                  </span>
-                </SelectItem>
-                <SelectItem value="business">
-                  <span className="flex items-center gap-2">
-                    <Building2 className="w-4 h-4" />
-                    Företag
-                  </span>
-                </SelectItem>
+                <SelectItem value="chef">Kockar</SelectItem>
+                <SelectItem value="business">Företag</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          {/* Additional Filters */}
-          <div className="flex flex-wrap gap-4 mt-4 pt-4 border-t">
-            <Select value={filter} onValueChange={setFilter}>
-              <SelectTrigger className="w-[180px]">
-                <Filter className="w-4 h-4 mr-2" />
-                <SelectValue placeholder="Leverans" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Alla alternativ</SelectItem>
-                <SelectItem value="delivery">Med hemleverans</SelectItem>
-                <SelectItem value="pickup">Endast avhämtning</SelectItem>
-              </SelectContent>
-            </Select>
-            
-            {(searchQuery || locationQuery || providerType !== "all" || filter !== "all") && (
+          {/* Clear filters */}
+          {(searchQuery || locationQuery || providerType !== "all") && (
+            <div className="mt-4 pt-4 border-t">
               <Button 
                 variant="outline" 
+                size="sm"
                 onClick={() => {
                   setSearchQuery("");
                   setLocationQuery("");
                   setProviderType("all");
-                  setFilter("all");
                 }}
               >
                 Rensa filter
               </Button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Results Count */}
         <div className="mb-6">
           <p className="text-muted-foreground">
-            Visar {filteredMealBoxes.length} resultat
+            Visar {filteredProviders.length} leverantör{filteredProviders.length !== 1 ? 'er' : ''}
             {searchQuery && ` för "${searchQuery}"`}
             {locationQuery && ` i ${locationQuery}`}
           </p>
         </div>
 
-        {/* Meal Boxes Grid */}
+        {/* Providers Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {filteredMealBoxes.map((box) => (
-            <Card key={box.id} className="hover:shadow-card transition-all duration-300 hover:-translate-y-1">
-              <div className="relative h-56 bg-muted flex items-center justify-center overflow-hidden">
-                <img 
-                  src={box.image}
-                  alt={`Matlåda ${box.name}`}
-                  className="w-full h-full object-contain p-4"
-                  loading="lazy"
-                  decoding="async"
-                />
-                {box.delivery && (
-                  <div className="absolute top-4 right-4 bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
-                    <Truck className="w-4 h-4" />
-                    Leverans
+          {filteredProviders.map((provider) => (
+            <Link key={provider.id} to={`/provider/${provider.id}`}>
+              <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full">
+                <CardContent className="p-6">
+                  {/* Header with type badge */}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                        provider.type === "chef" 
+                          ? "bg-primary/10 text-primary" 
+                          : "bg-accent/10 text-accent-foreground"
+                      }`}>
+                        {provider.type === "chef" ? (
+                          <ChefHat className="w-6 h-6" />
+                        ) : (
+                          <Building2 className="w-6 h-6" />
+                        )}
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">{provider.name}</h3>
+                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                          <MapPin className="w-3 h-3" />
+                          {provider.location}
+                        </div>
+                      </div>
+                    </div>
+                    <Badge variant={provider.type === "chef" ? "default" : "secondary"}>
+                      {provider.type === "chef" ? "Kock" : "Företag"}
+                    </Badge>
                   </div>
-                )}
-                <div className="absolute top-4 left-4 bg-background/90 text-foreground px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
-                  {box.providerType === "chef" ? (
-                    <>
-                      <ChefHat className="w-4 h-4" />
-                      Kock
-                    </>
-                  ) : (
-                    <>
-                      <Building2 className="w-4 h-4" />
-                      Företag
-                    </>
-                  )}
-                </div>
-              </div>
-              <CardHeader>
-                <CardTitle className="text-xl">{box.name}</CardTitle>
-                <CardDescription className="flex items-center gap-2">
-                  <span>av {box.chef}</span>
-                  <span className="text-muted-foreground">•</span>
-                  <span className="flex items-center gap-1">
-                    <MapPin className="w-3 h-3" />
-                    {box.location}
-                  </span>
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <span className="font-medium">{box.rating}</span>
+
+                  {/* Description */}
+                  <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                    {provider.description}
+                  </p>
+
+                  {/* Specialties */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {provider.specialties.slice(0, 3).map((specialty) => (
+                      <Badge key={specialty} variant="outline" className="text-xs">
+                        {specialty}
+                      </Badge>
+                    ))}
                   </div>
-                  <div className="flex items-center gap-1 text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    <span className="text-sm">{box.prepTime}</span>
+
+                  {/* Stats */}
+                  <div className="flex items-center justify-between text-sm border-t pt-4">
+                    <div className="flex items-center gap-1">
+                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                      <span className="font-medium">{provider.rating}</span>
+                      <span className="text-muted-foreground">({provider.reviewCount})</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-muted-foreground">
+                      <Package className="w-4 h-4" />
+                      <span>{provider.mealBoxCount} matlådor</span>
+                    </div>
+                    {provider.hasDelivery && (
+                      <div className="flex items-center gap-1 text-primary">
+                        <Truck className="w-4 h-4" />
+                        <span className="text-xs">Leverans</span>
+                      </div>
+                    )}
                   </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-2xl font-bold text-primary">{box.price} kr</span>
-                  <Button size="sm">
-                    Beställ
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
 
         {/* Empty State */}
-        {filteredMealBoxes.length === 0 && (
-          <div className="text-center py-12">
-            <Package className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Inga resultat hittades</h3>
-            <p className="text-muted-foreground mb-4">
-              Prova att ändra din sökning eller filter
+        {filteredProviders.length === 0 && (
+          <div className="text-center py-16">
+            <UtensilsCrossed className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Inga leverantörer hittades</h3>
+            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+              Vi hittade inga kockar eller företag som matchar din sökning. Prova att ändra dina filter.
             </p>
-            <Button 
-              variant="outline"
-              onClick={() => {
-                setSearchQuery("");
-                setLocationQuery("");
-                setProviderType("all");
-                setFilter("all");
-              }}
-            >
-              Rensa alla filter
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button 
+                variant="outline"
+                onClick={() => {
+                  setSearchQuery("");
+                  setLocationQuery("");
+                  setProviderType("all");
+                }}
+              >
+                Rensa alla filter
+              </Button>
+              <Link to="/chef/application">
+                <Button>Registrera dig som kock</Button>
+              </Link>
+            </div>
           </div>
         )}
 
         {/* Info Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-          <Card>
-            <CardHeader>
-              <Package className="w-8 h-8 text-primary mb-2" />
-              <CardTitle className="text-lg">Färdiglagat</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                All mat är färdiglagad av professionella kockar och redo att ätas
-              </p>
-            </CardContent>
-          </Card>
+        {filteredProviders.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <Card>
+              <CardContent className="pt-6">
+                <Package className="w-8 h-8 text-primary mb-4" />
+                <h4 className="font-semibold mb-2">Färdiglagat</h4>
+                <p className="text-sm text-muted-foreground">
+                  All mat är färdiglagad och redo att ätas eller värmas snabbt
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <Clock className="w-8 h-8 text-primary mb-2" />
-              <CardTitle className="text-lg">Snabb uppvärmning</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                Värm i mikro eller ugn på 5-10 minuter och njut av hemlagad mat
-              </p>
-            </CardContent>
-          </Card>
+            <Card>
+              <CardContent className="pt-6">
+                <ChefHat className="w-8 h-8 text-primary mb-4" />
+                <h4 className="font-semibold mb-2">Lokala kockar</h4>
+                <p className="text-sm text-muted-foreground">
+                  Stöd lokala kockar och företag som lagar mat med passion
+                </p>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <Truck className="w-8 h-8 text-primary mb-2" />
-              <CardTitle className="text-lg">Leverans eller upphämtning</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">
-                Välj mellan hemleverans eller hämta upp hos kocken nära dig
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+            <Card>
+              <CardContent className="pt-6">
+                <Truck className="w-8 h-8 text-primary mb-4" />
+                <h4 className="font-semibold mb-2">Leverans eller hämtning</h4>
+                <p className="text-sm text-muted-foreground">
+                  Välj mellan hemleverans eller hämta upp hos leverantören
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );
