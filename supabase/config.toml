@@ -111,3 +111,6 @@ verify_jwt = false
 
 [functions.send-business-decision]
 verify_jwt = false
+
+[functions.send-onboarding-email]
+verify_jwt = false
