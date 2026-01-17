@@ -1,43 +1,89 @@
-# Videomanus: "Organisera ditt hemkök för livsmedelsföretag"
+# Videomanus: "Kommunala krav för hemkockar"
 **Längd: 60 sekunder**
 
-## SCEN 1: PROBLEMET (0-10 sekunder)
-**Bild:** video-scene-1-before.jpg  
-**Voiceover:** "Vill du starta ett livsmedelsföretag hemifrån? Först måste ditt kök uppfylla kommunens krav. Här är hur du gör det rätt."
+---
 
-**Visuell fokus:** Pan över det oorganiserade köket, zooma in på blandade privat/företagsvaror
+## SCEN 1: INTRODUKTION (0-8 sekunder)
+**Voiceover:** "Vill du starta ett livsmedelsföretag hemifrån? Här är de kommunala kraven du måste uppfylla för att få ditt kök godkänt."
+
+**Visuell fokus:** Panorering över ett välorganiserat hemkök, ljust och inbjudande
 
 ---
 
-## SCEN 2: PLANERING (10-20 sekunder)
-**Bild:** video-scene-2-planning.jpg  
-**Voiceover:** "Steg 1: Planera din uppdelning. Enligt livsmedelslagstiftningen måste du separera privat användning från företagsverksamheten - antingen i tid eller rum."
+## SCEN 2: SEPARERING (8-18 sekunder)
+**Voiceover:** "Enligt livsmedelslagstiftningen måste du ha ordentlig separation mellan verksamhet och privat användning. Detta kan ske antingen i tid eller rum - så länge du har goda rutiner."
 
-**Visuell fokus:** Händer som pekar på olika zoner, närbilder på planering med tejp
+**Visuell fokus:** 
+- Tydligt markerade zoner "PRIVAT" och "VERKSAMHET"
+- Händer som organiserar köksytor
 
----
-
-## SCEN 3: VASKEN (20-35 sekunder)  
-**Bild:** video-scene-3-sink.jpg
-**Voiceover:** "Steg 2: Dela upp vasken. Vänster sida för privat disk, höger sida för företaget. Detta säkerställer god handhygien och förhindrar korskontaminering mellan familjeliv och verksamhet."
-
-**Visuell fokus:** Närbilder på märkning av vask, händer som placerar rätt disk på rätt sida
+**Text-overlay:** "Separation i tid eller rum"
 
 ---
 
-## SCEN 4: FÖRVARING (35-50 sekunder)
-**Bild:** video-scene-4-fridge.jpg  
-**Voiceover:** "Steg 3: Organisera förvaring. Märk tydligt vilka hyllor och skåp som är för privat respektive företagsbruk. Använd separata behållare och håll koll på temperaturer."
+## SCEN 3: HYGIEN & RUTINER (18-32 sekunder)
+**Voiceover:** "Du behöver rutiner för handhygien mellan olika moment, sjukdomsrutiner när någon i hemmet är sjuk, samt tydliga regler för familjemedlemmar och husdjur under verksamheten."
 
-**Visuell fokus:** Öppna kylskåp, händer som organiserar, närbilder på etiketter
+**Visuell fokus:**
+- Händer som tvättas noggrant vid vask
+- Skylt med hygienrutiner
+- Arbetsyta som rengörs
+
+**Text-overlay:** "Handhygien • Sjukdomsrutiner • Familj & husdjur"
 
 ---
 
-## SCEN 5: SLUTRESULTAT (50-60 sekunder)
-**Bild:** video-scene-5-final.jpg  
-**Voiceover:** "Resultat: Ett professionellt organiserat kök som uppfyller alla kommunala krav. Nu är du redo att ansöka om tillstånd och starta ditt livsmedelsföretag!"
+## SCEN 4: UTRUSTNING & FÖRVARING (32-45 sekunder)
+**Voiceover:** "Se till att du har tillräckligt med ytor för att separera råvaror från färdiga produkter. Du behöver också lämplig utrustning för temperaturkontroll och rengöring av redskap och ytor."
 
-**Visuell fokus:** Panorering över det färdiga köket, zooma ut för att visa helheten
+**Visuell fokus:**
+- Separata skärbrädor för rått och tillagat
+- Termometer som kontrollerar temperatur
+- Organiserat kylskåp med märkta zoner
+
+**Text-overlay:** "Temperaturkontroll • Separering • Rengöring"
+
+---
+
+## SCEN 5: HACCP & SPECIALHANTERING (45-55 sekunder)
+**Voiceover:** "Du måste göra en HACCP-analys av riskerna i just din verksamhet. Extra noggrannhet krävs vid hantering av fisk, kött och animaliska produkter. Glöm inte rutiner för arbetskläder och vattenkvalitet."
+
+**Visuell fokus:**
+- Dokumentation och checklistor
+- Noggrann hantering av råvaror
+- Arbetskläder som byts
+
+**Text-overlay:** "HACCP-analys • Animaliska produkter • Dokumentation"
+
+---
+
+## SCEN 6: AVSLUTNING (55-60 sekunder)
+**Voiceover:** "Med rätt rutiner och utrustning är du redo att ansöka om tillstånd. Homechef hjälper dig genom hela processen!"
+
+**Visuell fokus:** Panorering över det färdiga, godkända köket
+
+**Text-overlay:** "Besök Homechef.se"
+
+---
+
+## KOMMUNALA KRAV - SAMMANFATTNING:
+
+### Obligatoriska rutiner:
+1. **Separering** - mellan verksamhet och privat (tid eller rum)
+2. **Handhygien** - möjlighet att tvätta händer mellan olika moment
+3. **Sjukdomsrutiner** - vad som gäller när någon i hemmet är sjuk
+4. **Rengöringsrutiner** - för redskap, ytor och utrustning
+5. **Familj & husdjur** - rutiner under verksamhet
+
+### Utrustning & ytor:
+6. **Tillräckliga ytor** - separera råvaror och färdiga produkter
+7. **Temperaturkontroll** - lämplig utrustning för hygien
+8. **HACCP-analys** - av risker i din specifika verksamhet
+
+### Specialhantering:
+9. **Animaliska produkter** - extra noggrannhet vid fisk, kött
+10. **Arbetskläder** - rutiner för kläder, kökshanddukar, städmaterial
+11. **Vattenkvalitet** - extra rutiner vid egen brunn
 
 ---
 
@@ -51,37 +97,24 @@
 ### Ljudspår:
 - Professionell svensk röst, tydlig och vänlig ton
 - Bakgrundsmusik: Lugn, professionell, diskret
-- Ljudeffekter vid märkning/organisering
 
 ### Text-overlays:
-- "PRIVAT" / "FÖRETAG" framhävs när de nämns
-- Viktig information kan förstärkas med text:
-  - "Separation i tid eller rum"
-  - "God handhygien"
-  - "Temperaturkontroll"
+- Viktig information förstärks med text
+- Tydliga ikoner för varje kategori
 
-### Call-to-Action (sista 3 sekunderna):
+### Call-to-Action (sista 5 sekunderna):
 - "Besök Homechef.se för att börja din ansökan"
 - Logo och webbadress synlig
 
 ---
 
-## NYCKELBUDSKAP:
-1. **Lagkrav måste följas** - Separation är obligatorisk
-2. **Enkelt att genomföra** - Bara organisering och märkning
-3. **Professionellt resultat** - Redo för myndighetskontroll
-4. **Nästa steg** - Homechef hjälper med ansökan
-
 ## MÅLGRUPP:
 - Hemkockar som vill starta företag
 - Kreativa matentusiaster
 - Personer som söker sidoinkomst
-- Redan etablerade kockar som vill expandera
 
 ## AI-VIDEOVERKTYG REKOMMENDATIONER:
 1. **Runway ML** - Bäst för professionella videor
-2. **Pika Labs** - Bra för snabba prototyper  
+2. **Pika Labs** - Bra för snabba prototyper
 3. **Luma AI** - Utmärkt för realistiska rörelser
 4. **Stable Video Diffusion** - Gratis alternativ
-
-Använd bilderna i ordning och följ manuset för bästa resultat!
