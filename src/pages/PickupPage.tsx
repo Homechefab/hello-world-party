@@ -49,7 +49,7 @@ const PickupPage = () => {
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div 
-        className="relative h-[400px] flex items-center justify-center"
+        className="relative h-[400px] flex items-center justify-center z-0"
         style={{
           backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${mealBoxesImage})`,
           backgroundSize: 'cover',
