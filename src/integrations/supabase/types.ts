@@ -883,6 +883,39 @@ export type Database = {
         }
         Relationships: []
       }
+      referrals: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          points_awarded: number | null
+          referral_code: string
+          referred_user_id: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          points_awarded?: number | null
+          referral_code: string
+          referred_user_id?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          points_awarded?: number | null
+          referral_code?: string
+          referred_user_id?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       restaurant_dishes: {
         Row: {
           allergens: string[] | null
@@ -1179,6 +1212,39 @@ export type Database = {
         }
         Relationships: []
       }
+      user_referral_codes: {
+        Row: {
+          created_at: string
+          id: string
+          referral_code: string
+          successful_referrals: number | null
+          total_points_earned: number | null
+          total_referrals: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          referral_code: string
+          successful_referrals?: number | null
+          total_points_earned?: number | null
+          total_referrals?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          referral_code?: string
+          successful_referrals?: number | null
+          total_points_earned?: number | null
+          total_referrals?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -1265,6 +1331,17 @@ export type Database = {
         Args: { p_order_amount: number; p_order_id: string; p_user_id: string }
         Returns: Json
       }
+      complete_referral: { Args: { p_user_id: string }; Returns: Json }
+      generate_referral_code: { Args: { p_user_id: string }; Returns: string }
+      get_or_create_referral_code: {
+        Args: { p_user_id: string }
+        Returns: {
+          referral_code: string
+          successful_referrals: number
+          total_points_earned: number
+          total_referrals: number
+        }[]
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
@@ -1275,6 +1352,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      process_referral_signup: {
+        Args: { p_new_user_id: string; p_referral_code: string }
+        Returns: Json
       }
       reject_kitchen_partner: {
         Args: { partner_id: string; reason: string }
