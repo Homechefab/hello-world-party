@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Clock, DollarSign, Plus, Check } from "lucide-react";
+import { Clock, Check } from "lucide-react";
+import DishCard from "@/components/shared/DishCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -147,60 +147,16 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
         </TabsList>
 
         <TabsContent value={activeCategory} className="mt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredTemplates.map((template) => (
-              <Card key={template.id} className="group hover:shadow-lg transition-shadow">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <CardTitle className="text-lg">{template.name}</CardTitle>
-                      <Badge variant="secondary" className="mt-1">
-                        {template.category}
-                      </Badge>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <CardDescription className="text-sm line-clamp-2">
-                    {template.description}
-                  </CardDescription>
-                  
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      {template.preparation_time || 30} min
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <DollarSign className="w-4 h-4" />
-                      {template.suggested_price || 0} kr
-                    </div>
-                  </div>
-
-                  {template.allergens && template.allergens.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {template.allergens.slice(0, 3).map((allergen) => (
-                        <Badge key={allergen} variant="outline" className="text-xs">
-                          {allergen}
-                        </Badge>
-                      ))}
-                      {template.allergens.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{template.allergens.length - 3}
-                        </Badge>
-                      )}
-                    </div>
-                  )}
-
-                  <Button
-                    onClick={() => handleSelectTemplate(template)}
-                    className="w-full bg-gradient-primary text-white hover:opacity-90"
-                    size="sm"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Lägg till i min meny
-                  </Button>
-                </CardContent>
-              </Card>
+              <DishCard
+                key={template.id}
+                name={template.name}
+                price={template.suggested_price || 0}
+                description={template.description}
+                imageUrl={template.image_url}
+                onAdd={() => handleSelectTemplate(template)}
+              />
             ))}
           </div>
         </TabsContent>
