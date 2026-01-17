@@ -114,3 +114,6 @@ verify_jwt = false
 
 [functions.send-onboarding-email]
 verify_jwt = false
+
+[functions.municipality-search]
+verify_jwt = false
