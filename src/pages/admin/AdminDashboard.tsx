@@ -12,6 +12,7 @@ import { UserManagement } from '@/components/admin/UserManagement';
 import { CommissionReports } from '@/components/admin/CommissionReports';
 import { PaymentOverview } from '@/components/admin/PaymentOverview';
 import { EarlyAccessSignups } from '@/components/admin/EarlyAccessSignups';
+import { OnboardingMaterials } from '@/components/admin/OnboardingMaterials';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Users, 
@@ -22,7 +23,8 @@ import {
   TrendingUp,
   CreditCard,
   Bell,
-  Building2
+  Building2,
+  FileText
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
@@ -215,6 +217,11 @@ export const AdminDashboard = () => {
             <span className="sm:hidden">Användare</span>
           </TabsTrigger>
           <TabsTrigger value="logins" className="whitespace-nowrap">Inloggningar</TabsTrigger>
+          <TabsTrigger value="onboarding" className="whitespace-nowrap">
+            <FileText className="h-4 w-4 mr-1 hidden sm:inline" />
+            <span className="hidden sm:inline">Onboarding</span>
+            <span className="sm:hidden">Onb.</span>
+          </TabsTrigger>
           <TabsTrigger value="complaints" className="whitespace-nowrap">Klagomål</TabsTrigger>
           <TabsTrigger value="settings" className="whitespace-nowrap">
             <span className="hidden sm:inline">Inställningar</span>
@@ -268,6 +275,10 @@ export const AdminDashboard = () => {
 
         <TabsContent value="logins">
           <LoginLogsViewer />
+        </TabsContent>
+
+        <TabsContent value="onboarding">
+          <OnboardingMaterials />
         </TabsContent>
 
         <TabsContent value="complaints">

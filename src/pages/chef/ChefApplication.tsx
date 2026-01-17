@@ -209,6 +209,22 @@ const ChefApplication = () => {
           // Fortsätt även om notifieringen misslyckas
         }
 
+        // Skicka onboarding-guide till sökanden
+        try {
+          await supabase.functions.invoke('send-onboarding-email', {
+            body: {
+              type: 'chef',
+              applicant_name: formData.fullName,
+              applicant_email: formData.contactEmail,
+              business_name: formData.businessName || 'Mitt företag'
+            }
+          });
+          console.log('Onboarding email sent successfully');
+        } catch (onboardingError) {
+          console.error('Failed to send onboarding email:', onboardingError);
+          // Fortsätt även om onboarding-mailet misslyckas
+        }
+
         toast({
           title: "Ansökan skickad!",
           description: "Vi granskar din ansökan och återkommer via email inom 2-3 arbetsdagar.",
