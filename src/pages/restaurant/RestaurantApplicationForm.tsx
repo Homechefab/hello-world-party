@@ -236,6 +236,22 @@ const RestaurantApplicationForm = () => {
         // Fortsätt även om notifieringen misslyckas
       }
 
+      // Send onboarding guide to applicant
+      try {
+        await supabase.functions.invoke('send-onboarding-email', {
+          body: {
+            type: 'restaurant',
+            applicant_name: formData.contactPerson,
+            applicant_email: formData.email,
+            business_name: formData.restaurantName
+          }
+        });
+        console.log('Onboarding email sent successfully');
+      } catch (onboardingError) {
+        console.error('Failed to send onboarding email:', onboardingError);
+        // Fortsätt även om onboarding-mejlet misslyckas
+      }
+
       toast({
         title: "Ansökan skickad!",
         description: "Vi återkommer inom 2-3 arbetsdagar.",
