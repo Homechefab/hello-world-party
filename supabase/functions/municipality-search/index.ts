@@ -125,9 +125,17 @@ Svara i exakt detta JSON-format:
     console.log('Perplexity API response:', data);
     
     const content = data.choices[0].message.content;
+    console.log('Raw content:', content);
     
     try {
-      const parsedResult = JSON.parse(content);
+      // Extract JSON from markdown code blocks if present
+      let jsonContent = content;
+      const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (jsonMatch) {
+        jsonContent = jsonMatch[1].trim();
+      }
+      
+      const parsedResult = JSON.parse(jsonContent);
       console.log('Parsed result:', parsedResult);
       
       return new Response(JSON.stringify(parsedResult), {
