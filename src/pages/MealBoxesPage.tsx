@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Package, Truck, Star, Search, MapPin, Building2, ChefHat, UtensilsCrossed } from "lucide-react";
+import { Package, Truck, Star, Search, MapPin, Building2, ChefHat } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
 import mealBoxesImage from "@/assets/meal-boxes.jpg";
@@ -13,81 +13,19 @@ const MealBoxesPage = () => {
   const [locationQuery, setLocationQuery] = useState("");
   const [providerType, setProviderType] = useState("all");
 
-  // Exempel på leverantörer (kockar och företag) som säljer matlådor
-  const providers = [
-    {
-      id: "1",
-      name: "Anna Andersson",
-      type: "chef",
-      location: "Stockholm",
-      rating: 4.8,
-      reviewCount: 45,
-      description: "Hemlagade matlådor med fokus på hälsosam mat och fräscha råvaror",
-      mealBoxCount: 8,
-      hasDelivery: true,
-      specialties: ["Kyckling", "Vegetariskt", "Fisk"]
-    },
-    {
-      id: "2",
-      name: "Green Kitchen AB",
-      type: "business",
-      location: "Stockholm",
-      rating: 4.7,
-      reviewCount: 128,
-      description: "Veganska och vegetariska matlådor för den medvetna konsumenten",
-      mealBoxCount: 15,
-      hasDelivery: true,
-      specialties: ["Veganskt", "Ekologiskt", "Glutenfritt"]
-    },
-    {
-      id: "3",
-      name: "Erik Svensson",
-      type: "chef",
-      location: "Göteborg",
-      rating: 4.9,
-      reviewCount: 32,
-      description: "Klassisk husmanskost med moderna inslag. Perfekt för hela familjen",
-      mealBoxCount: 6,
-      hasDelivery: false,
-      specialties: ["Husmanskost", "Köttbullar", "Pytt i panna"]
-    },
-    {
-      id: "4",
-      name: "Måltidslådan Sverige",
-      type: "business",
-      location: "Uppsala",
-      rating: 4.6,
-      reviewCount: 89,
-      description: "Färska matlådor med fokus på svenska råvaror och säsongens grönsaker",
-      mealBoxCount: 20,
-      hasDelivery: true,
-      specialties: ["Svenskt kött", "Säsongsmat", "Fisk"]
-    },
-    {
-      id: "5",
-      name: "Maria Johansson",
-      type: "chef",
-      location: "Malmö",
-      rating: 5.0,
-      reviewCount: 18,
-      description: "Italienskinspirerade matlådor med färsk pasta och hemgjorda såser",
-      mealBoxCount: 5,
-      hasDelivery: true,
-      specialties: ["Italienskt", "Pasta", "Pizza"]
-    },
-    {
-      id: "6",
-      name: "Nordic Meal Prep",
-      type: "business",
-      location: "Stockholm",
-      rating: 4.5,
-      reviewCount: 156,
-      description: "Proteinrika matlådor för aktiva. Perfekt för träning och återhämtning",
-      mealBoxCount: 12,
-      hasDelivery: true,
-      specialties: ["Protein", "Fitness", "Keto"]
-    }
-  ];
+  // Inga leverantörer registrerade än - tom lista
+  const providers: {
+    id: string;
+    name: string;
+    type: string;
+    location: string;
+    rating: number;
+    reviewCount: number;
+    description: string;
+    mealBoxCount: number;
+    hasDelivery: boolean;
+    specialties: string[];
+  }[] = [];
 
   // Filtrera leverantörer baserat på sök, plats och typ
   const filteredProviders = providers.filter((provider) => {
@@ -265,27 +203,29 @@ const MealBoxesPage = () => {
           ))}
         </div>
 
-        {/* Empty State */}
-        {filteredProviders.length === 0 && (
+        {/* Empty State - Inga leverantörer registrerade */}
+        {providers.length === 0 && (
           <div className="text-center py-16">
-            <UtensilsCrossed className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Inga leverantörer hittades</h3>
-            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              Vi hittade inga kockar eller företag som matchar din sökning. Prova att ändra dina filter.
+            <ChefHat className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-2xl font-semibold text-foreground mb-4">
+              {searchQuery || locationQuery
+                ? `Inga leverantörer registrerade ${locationQuery ? `i "${locationQuery}"` : ''} än`
+                : "Inga leverantörer registrerade än"
+              }
+            </h3>
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+              Vi arbetar på att få fler kockar och företag som säljer matlådor till ditt område. Bli den första att registrera dig!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button 
-                variant="outline"
-                onClick={() => {
-                  setSearchQuery("");
-                  setLocationQuery("");
-                  setProviderType("all");
-                }}
-              >
-                Rensa alla filter
-              </Button>
               <Link to="/chef/application">
-                <Button>Registrera dig som kock</Button>
+                <Button size="lg">
+                  Registrera dig som kock
+                </Button>
+              </Link>
+              <Link to="/business/application">
+                <Button variant="outline" size="lg">
+                  Registrera företag
+                </Button>
               </Link>
             </div>
           </div>
