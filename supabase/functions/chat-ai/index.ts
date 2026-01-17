@@ -22,7 +22,7 @@ Homechef är Sveriges marknadsplats för hemlagad mat. Vi kopplar hemmakockar me
 
 **LOJALITET:** 1 poäng/10 kr. Var 5:e köp = 10% rabatt.
 
-**PROVISION:** 20% på Kockar, Kökspartners och Företag. Restauranger betalar månadsabonnemang.
+**PROVISION:** 20% på Kockar, Kökspartners och Företag. Restauranger betalar fast månadsavgift på 3 999 kr/mån (inga provisioner, kunden betalar mat + leveransavgift till budet).
 
 **PROBLEM?**
 - Beställning kom ej → Ring 0734234686 för återbetalning
