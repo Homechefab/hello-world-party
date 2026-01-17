@@ -50,63 +50,73 @@ const onboardingData: OnboardingContent[] = [
     title: 'Kock',
     icon: <ChefHat className="h-6 w-6" />,
     color: 'bg-orange-500',
-    introduction: 'Välkommen till Homechef! Denna guide hjälper dig genom hela ansökningsprocessen för att bli hemkock på vår plattform.',
+    introduction: 'Valkommen till Homechef! Denna guide hjalper dig genom hela ansokningsprocessen for att bli hemkock pa var plattform.',
     steps: [
       {
-        title: '1. Skicka in ansökan',
-        description: 'Fyll i dina personuppgifter, erfarenhet och ladda upp ditt kommunbeslut (livsmedelstillstånd).',
+        title: '1. Skicka in ansokan',
+        description: 'Fyll i dina personuppgifter, erfarenhet och ladda upp ditt kommunbeslut (livsmedelstillstand).',
         timeframe: 'Ca 15-20 minuter',
         tips: [
           'Ha ditt kommunbeslut redo som PDF eller bild',
           'Beskriv din kulinariska erfarenhet detaljerat',
-          'Ange den e-post där du vill få inloggningsuppgifter'
+          'Ange den e-post dar du vill fa inloggningsuppgifter'
         ]
       },
       {
         title: '2. Granskning av admin',
-        description: 'Vårt team granskar din ansökan och dina dokument.',
+        description: 'Vart team granskar din ansokan och dina dokument.',
         timeframe: '2-3 arbetsdagar',
         tips: [
-          'Vi kontaktar dig om vi behöver kompletteringar',
-          'Du får ett mail när beslut är fattat'
+          'Vi kontaktar dig om vi behover kompletteringar',
+          'Du far ett mail nar beslut ar fattat'
         ]
       },
       {
-        title: '3. Godkännande & kontoskapande',
-        description: 'När du godkänns skapas ditt kock-konto automatiskt och du får inloggningsuppgifter via e-post.',
-        timeframe: 'Omedelbart efter godkännande',
+        title: '3. Godkannande och kontoskapande',
+        description: 'Nar du godkanns skapas ditt kock-konto automatiskt och du far inloggningsuppgifter via e-post.',
+        timeframe: 'Omedelbart efter godkannande',
         tips: [
-          'Kolla din skräppost om du inte ser mailet',
-          'Byt lösenord vid första inloggning'
+          'Kolla din skrappost om du inte ser mailet',
+          'Byt losenord vid forsta inloggning'
         ]
       },
       {
-        title: '4. Börja sälja!',
-        description: 'Logga in på din dashboard, lägg upp dina rätter och börja ta emot beställningar.',
+        title: '4. Uppstartsmote',
+        description: 'Nar du fatt dina inloggningsuppgifter bokar vi in ett personligt mote for att hjalpa dig komma igang.',
+        timeframe: 'Inom en vecka efter godkannande',
         tips: [
-          'Ta proffsiga foton på dina rätter',
-          'Sätt konkurrenskraftiga priser',
-          'Svara snabbt på förfrågningar för bättre recensioner'
+          'Vi hjalper dig lagga upp dina ratter',
+          'Tips pa hur du tar proffsiga bilder pa maten',
+          'Genomgang av din dashboard och funktioner',
+          'Fragor och svar om plattformen'
+        ]
+      },
+      {
+        title: '5. Borja salja!',
+        description: 'Efter uppstartsmotet ar du redo att borja ta emot bestallningar.',
+        tips: [
+          'Satt konkurrenskraftiga priser',
+          'Svara snabbt pa forfragningar for battre recensioner'
         ]
       }
     ],
     requirements: [
-      'Godkänt kommunbeslut (livsmedelstillstånd) - OBLIGATORISKT',
-      'Registrerat företag eller F-skattsedel (rekommenderas)',
-      'Ansvarsförsäkring (rekommenderas)',
-      'Godkänt kök enligt kommunens krav'
+      'Godkant kommunbeslut (livsmedelstillstand) - OBLIGATORISKT',
+      'Registrerat foretag eller F-skattsedel (rekommenderas)',
+      'Ansvarsforsakring (rekommenderas)',
+      'Godkant kok enligt kommunens krav'
     ],
     faq: [
       {
-        question: 'Hur lång tid tar godkännandet?',
-        answer: 'Vanligtvis 2-3 arbetsdagar. Om komplettering behövs kan det ta längre.'
+        question: 'Hur lang tid tar godkannandet?',
+        answer: 'Vanligtvis 2-3 arbetsdagar. Om komplettering behovs kan det ta langre.'
       },
       {
-        question: 'Vad kostar det att vara kock på Homechef?',
-        answer: 'Det är gratis att registrera sig. Vi tar 20% provision på försäljningen.'
+        question: 'Vad kostar det att vara kock pa Homechef?',
+        answer: 'Det ar gratis att registrera sig. Vi tar 20% provision pa forsaljningen.'
       },
       {
-        question: 'Hur får jag betalt?',
+        question: 'Hur far jag betalt?',
         answer: 'Utbetalningar sker veckovis till ditt angivna bankkonto.'
       }
     ],
@@ -121,60 +131,70 @@ const onboardingData: OnboardingContent[] = [
     title: 'Restaurang',
     icon: <UtensilsCrossed className="h-6 w-6" />,
     color: 'bg-blue-500',
-    introduction: 'Välkommen till Homechef! Denna guide hjälper din restaurang att nå fler kunder genom vår plattform.',
+    introduction: 'Valkommen till Homechef! Denna guide hjalper din restaurang att na fler kunder genom var plattform.',
     steps: [
       {
-        title: '1. Skicka in ansökan',
-        description: 'Fyll i restaurangens uppgifter, beskrivning och ladda upp relevanta tillstånd.',
+        title: '1. Skicka in ansokan',
+        description: 'Fyll i restaurangens uppgifter, beskrivning och ladda upp relevanta tillstand.',
         timeframe: 'Ca 20-30 minuter',
         tips: [
-          'Ha ditt restaurangtillstånd redo',
+          'Ha ditt restaurangtillstand redo',
           'Beskriv er matprofil och specialiteter',
-          'Ange kontaktperson för Homechef-ärenden'
+          'Ange kontaktperson for Homechef-arenden'
         ]
       },
       {
         title: '2. Granskning',
-        description: 'Vårt team granskar din ansökan och verifierar att alla krav är uppfyllda.',
+        description: 'Vart team granskar din ansokan och verifierar att alla krav ar uppfyllda.',
         timeframe: '3-5 arbetsdagar',
         tips: [
-          'Se till att HACCP-dokumentation är i ordning',
-          'Vi kan göra ett kort telefonsamtal för verifiering'
+          'Se till att HACCP-dokumentation ar i ordning',
+          'Vi kan gora ett kort telefonsamtal for verifiering'
         ]
       },
       {
         title: '3. Kontoskapande',
-        description: 'Efter godkännande skapas ert restaurangkonto med full tillgång till plattformen.',
-        timeframe: 'Omedelbart efter godkännande'
+        description: 'Efter godkannande skapas ert restaurangkonto med full tillgang till plattformen.',
+        timeframe: 'Omedelbart efter godkannande'
       },
       {
-        title: '4. Lägg upp er meny',
-        description: 'Lägg upp era rätter med bilder, priser och beskrivningar. Börja ta emot beställningar!',
+        title: '4. Uppstartsmote',
+        description: 'Vi bokar in ett mote for att hjalpa er komma igang med plattformen.',
+        timeframe: 'Inom en vecka efter godkannande',
         tips: [
-          'Professionella foton ökar försäljningen med 40%',
+          'Genomgang av hur ni lagger upp menyn',
+          'Tips pa fotografering av ratter',
+          'Fragor och svar om plattformen'
+        ]
+      },
+      {
+        title: '5. Lagg upp er meny',
+        description: 'Lagg upp era ratter med bilder, priser och beskrivningar. Borja ta emot bestallningar!',
+        tips: [
+          'Professionella foton okar forsaljningen med 40%',
           'Uppdatera menyn regelbundet',
-          'Erbjud specialerbjudanden för nya kunder'
+          'Erbjud specialerbjudanden for nya kunder'
         ]
       }
     ],
     requirements: [
-      'Restaurangtillstånd från kommunen - OBLIGATORISKT',
+      'Restaurangtillstand fran kommunen - OBLIGATORISKT',
       'HACCP-dokumentation (rekommenderas)',
-      'Ansvarsförsäkring (rekommenderas)',
+      'Ansvarsforsakring (rekommenderas)',
       'Organisationsnummer'
     ],
     faq: [
       {
         question: 'Vilken provision tar Homechef?',
-        answer: 'Vi tar 18% provision på varje beställning via plattformen.'
+        answer: 'Vi tar 18% provision pa varje bestallning via plattformen.'
       },
       {
-        question: 'Kan vi integrera med vårt kassasystem?',
-        answer: 'Ja, vi erbjuder integration med flera populära kassasystem. Kontakta oss för mer info.'
+        question: 'Kan vi integrera med vart kassasystem?',
+        answer: 'Ja, vi erbjuder integration med flera populara kassasystem. Kontakta oss for mer info.'
       },
       {
         question: 'Hur hanteras leveranser?',
-        answer: 'Ni väljer själva om ni vill erbjuda hämtning, egen leverans eller använda våra samarbetspartners.'
+        answer: 'Ni valjer sjalva om ni vill erbjuda hamtning, egen leverans eller anvanda vara samarbetspartners.'
       }
     ],
     contact: {
@@ -185,63 +205,73 @@ const onboardingData: OnboardingContent[] = [
   },
   {
     role: 'kitchen_partner',
-    title: 'Kökspartner',
+    title: 'Kokspartner',
     icon: <Building2 className="h-6 w-6" />,
     color: 'bg-green-500',
-    introduction: 'Välkommen till Homechef! Som kökspartner hyr du ut ditt kök till kockar som behöver en professionell arbetsplats.',
+    introduction: 'Valkommen till Homechef! Som kokspartner hyr du ut ditt kok till kockar som behover en professionell arbetsplats.',
     steps: [
       {
-        title: '1. Registrera ditt kök',
-        description: 'Beskriv ditt kök, utrustning, tillgängliga tider och pris per timme.',
+        title: '1. Registrera ditt kok',
+        description: 'Beskriv ditt kok, utrustning, tillgangliga tider och pris per timme.',
         timeframe: 'Ca 15-20 minuter',
         tips: [
-          'Ta tydliga foton på köket och utrustningen',
-          'Lista all tillgänglig utrustning',
-          'Var tydlig med regler och förväntningar'
+          'Ta tydliga foton pa koket och utrustningen',
+          'Lista all tillganglig utrustning',
+          'Var tydlig med regler och forvantningar'
         ]
       },
       {
         title: '2. Verifiering',
-        description: 'Vi granskar att köket uppfyller våra krav och eventuellt gör en inspektion.',
+        description: 'Vi granskar att koket uppfyller vara krav och eventuellt gor en inspektion.',
         timeframe: '3-7 arbetsdagar',
         tips: [
-          'Se till att köket är godkänt av kommunen',
-          'Ha brandskyddsutrustning på plats'
+          'Se till att koket ar godkant av kommunen',
+          'Ha brandskyddsutrustning pa plats'
         ]
       },
       {
         title: '3. Aktivering',
-        description: 'När ditt kök är godkänt blir det synligt för kockar som söker arbetsplats.',
-        timeframe: 'Omedelbart efter godkännande'
+        description: 'Nar ditt kok ar godkant blir det synligt for kockar som soker arbetsplats.',
+        timeframe: 'Omedelbart efter godkannande'
       },
       {
-        title: '4. Ta emot bokningar',
-        description: 'Godkänn eller neka bokningsförfrågningar. Vi hanterar betalningen.',
+        title: '4. Uppstartsmote',
+        description: 'Vi bokar in ett mote for att hjalpa dig komma igang med plattformen.',
+        timeframe: 'Inom en vecka efter godkannande',
         tips: [
-          'Svara snabbt på förfrågningar',
-          'Håll kalendern uppdaterad',
+          'Genomgang av bokningssystemet',
+          'Tips pa hur du presenterar ditt kok',
+          'Fragor och svar om plattformen'
+        ]
+      },
+      {
+        title: '5. Ta emot bokningar',
+        description: 'Godkann eller neka bokningsforfragningar. Vi hanterar betalningen.',
+        tips: [
+          'Svara snabbt pa forfragningar',
+          'Hall kalendern uppdaterad',
           'Goda recensioner ger fler bokningar'
         ]
       }
     ],
     requirements: [
-      'Godkänt kök från kommunen - OBLIGATORISKT',
-      'Ansvarsförsäkring (rekommenderas)',
-      'Grundläggande köksutrustning',
-      'Brandsläckare och säkerhetsutrustning'
+      'Godkant kok fran kommunen - OBLIGATORISKT',
+      'Ansvarsforsakring (rekommenderas)',
+      'Grundlaggande koksutrustning',
+      'Brandslackare och sakerhetsutrustning'
     ],
     faq: [
       {
-        question: 'Vad är en rimlig timpris?',
-        answer: 'De flesta kök tar mellan 200-500 kr/timme beroende på storlek och utrustning.'
+        question: 'Vad ar en rimlig timpris?',
+        answer: 'De flesta kok tar mellan 200-500 kr/timme beroende pa storlek och utrustning.'
       },
       {
         question: 'Vilken provision tar Homechef?',
-        answer: 'Vi tar 15% provision på varje bokning.'
+        answer: 'Vi tar 15% provision pa varje bokning.'
       },
       {
-        question: 'Hur ofta får jag betalt?',
-        answer: 'Utbetalningar sker månadsvis till ditt angivna bankkonto.'
+        question: 'Hur ofta far jag betalt?',
+        answer: 'Utbetalningar sker manadsvis till ditt angivna bankkonto.'
       }
     ],
     contact: {
@@ -303,7 +333,7 @@ const generatePDF = (content: OnboardingContent) => {
 
     if (step.timeframe) {
       doc.setTextColor(100, 100, 100);
-      doc.text(`⏱ ${step.timeframe}`, margin, yPos);
+      doc.text(`Tid: ${step.timeframe}`, margin, yPos);
       yPos += 6;
     }
 
@@ -332,7 +362,7 @@ const generatePDF = (content: OnboardingContent) => {
   doc.setFontSize(11);
   doc.setFont('helvetica', 'normal');
   content.requirements.forEach(req => {
-    const reqLines = doc.splitTextToSize(`✓ ${req}`, pageWidth - 2 * margin);
+    const reqLines = doc.splitTextToSize(`- ${req}`, pageWidth - 2 * margin);
     doc.text(reqLines, margin, yPos);
     yPos += reqLines.length * 6 + 3;
   });
@@ -384,10 +414,10 @@ const generatePDF = (content: OnboardingContent) => {
 
   doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
-  doc.text(`📞 ${content.contact.phone}`, margin, yPos);
-  doc.text(`📧 ${content.contact.email}`, margin + 60, yPos);
+  doc.text(`Telefon: ${content.contact.phone}`, margin, yPos);
+  doc.text(`E-post: ${content.contact.email}`, margin + 60, yPos);
   yPos += 6;
-  doc.text(`🕐 ${content.contact.hours}`, margin, yPos);
+  doc.text(`Oppettider: ${content.contact.hours}`, margin, yPos);
 
   // Footer
   const pageCount = doc.getNumberOfPages();
