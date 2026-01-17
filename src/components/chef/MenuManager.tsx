@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -10,11 +9,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { 
   Plus, 
-  Edit, 
-  Clock, 
-  DollarSign, 
-  Eye, 
-  EyeOff,
   Save,
   ChefHat
 } from "lucide-react";
@@ -22,6 +16,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import DishTemplates from "./DishTemplates";
+import DishCardManage from "@/components/shared/DishCardManage";
 
 interface Dish {
   id: string;
@@ -215,68 +210,19 @@ const MenuManager = () => {
                 </TabsList>
 
                 <TabsContent value={activeCategory} className="mt-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {filteredDishes.map((dish) => (
-                      <Card key={dish.id} className={`relative ${!dish.available ? 'opacity-60' : ''}`}>
-                        <CardHeader className="pb-3">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
-                              <CardTitle className="text-lg">{dish.name}</CardTitle>
-                              <div className="flex items-center gap-2 mt-1">
-                                <Badge variant="secondary">
-                                  {dish.category}
-                                </Badge>
-                                {dish.available ? (
-                                  <Badge variant="default" className="bg-green-100 text-green-700">
-                                    <Eye className="w-3 h-3 mr-1" />
-                                    Synlig
-                                  </Badge>
-                                ) : (
-                                  <Badge variant="secondary">
-                                    <EyeOff className="w-3 h-3 mr-1" />
-                                    Dold
-                                  </Badge>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                          <CardDescription className="text-sm line-clamp-2">
-                            {dish.description}
-                          </CardDescription>
-                          
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-1">
-                              <Clock className="w-4 h-4" />
-                              {dish.preparation_time} min
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <DollarSign className="w-4 h-4" />
-                              {dish.price} kr
-                            </div>
-                          </div>
-
-                          <div className="flex items-center justify-between pt-2">
-                            <div className="flex items-center gap-2">
-                              <Switch
-                                checked={dish.available || false}
-                                onCheckedChange={(checked) => toggleDishAvailability(dish.id, checked)}
-                              />
-                              <span className="text-sm text-muted-foreground">
-                                {dish.available ? "Synlig" : "Dold"}
-                              </span>
-                            </div>
-                            <Button
-                              onClick={() => handleEditDish(dish)}
-                              variant="outline"
-                              size="sm"
-                            >
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </CardContent>
-                      </Card>
+                      <DishCardManage
+                        key={dish.id}
+                        name={dish.name}
+                        price={dish.price}
+                        description={dish.description}
+                        imageUrl={dish.image_url}
+                        category={dish.category}
+                        available={dish.available ?? true}
+                        onEdit={() => handleEditDish(dish)}
+                        onToggleAvailability={() => toggleDishAvailability(dish.id, !dish.available)}
+                      />
                     ))}
                   </div>
                 </TabsContent>
