@@ -283,82 +283,91 @@ const onboardingData: OnboardingContent[] = [
   },
   {
     role: 'business',
-    title: 'Foretagspartner',
+    title: 'Matladeforetag & Catering',
     icon: <Building2 className="h-6 w-6" />,
     color: 'bg-purple-500',
-    introduction: 'Valkommen till Homechef! Som foretagspartner kan ni erbjuda era anstallda och kunder tillgang till hemalagad mat fran lokala kockar.',
+    introduction: 'Valkommen till Homechef! Som matladeforetag eller cateringfirma kan ni salja era fardiglagade matlador och cateringtjanster direkt till kunder via var plattform. Efter godkand ansokan far ni tillgang till vart natverk av hungriga kunder!',
     steps: [
       {
         title: '1. Skicka in ansokan',
-        description: 'Fyll i foretagsuppgifter, organisationsnummer och beskriv hur ni vill anvanda Homechef.',
+        description: 'Fyll i foretagsuppgifter, organisationsnummer och ladda upp dokument som visar att ni har tillstand att salja mat.',
         timeframe: 'Ca 20-30 minuter',
         tips: [
-          'Ha organisationsnummer och foretagsuppgifter redo',
-          'Beskriv ert behov - catering, personalmat, events?',
-          'Ange kontaktperson for Homechef-samarbetet'
+          'Ha organisationsnummer redo',
+          'Ladda upp livsmedelsregistrering fran kommunen',
+          'Beskriv era matlador/cateringtjanster',
+          'Bifoga bilder pa era produkter (rekommenderas)'
         ]
       },
       {
-        title: '2. Granskning och kontakt',
-        description: 'Vart team granskar er ansokan och kontaktar er for att diskutera samarbetet.',
+        title: '2. Granskning av ansokan',
+        description: 'Vart team granskar er ansokan och era dokument for att sakerstalla livsmedelstrygghet.',
         timeframe: '3-5 arbetsdagar',
         tips: [
-          'Vi ringer eller mailar for att diskutera era behov',
-          'Forbered fragor om hur ni vill anvanda tjansten'
+          'Vi kontrollerar att ni har giltiga tillstand',
+          'Vi kan begara kompletterande dokument vid behov',
+          'Holl koll pa er mejl for uppdateringar'
         ]
       },
       {
-        title: '3. Avtalsskapande',
-        description: 'Vi skapar ett skraddarsytt avtal baserat pa era behov och volymer.',
-        timeframe: '1-2 veckor',
+        title: '3. Godkannande & kontosetup',
+        description: 'Nar er ansokan ar godkand far ni tillgang till saljardashboarden dar ni kan lagga upp era produkter.',
+        timeframe: '1-2 dagar efter godkannande',
         tips: [
-          'Vi diskuterar priser och volymer',
-          'Specialerbjudanden for stora foretag'
+          'Skapa ert foretagskonto',
+          'Lagg in bankuppgifter for utbetalningar',
+          'Satt upp era leveransomraden'
         ]
       },
       {
-        title: '4. Uppstartsmote',
-        description: 'Vi bokar in ett mote for att hjalpa er komma igang med plattformen och era anstallda.',
-        timeframe: 'Inom en vecka efter avtal',
+        title: '4. Lagg upp era produkter',
+        description: 'Lagg till era matlador, menyer och cateringtjanster i systemet med bilder, priser och beskrivningar.',
+        timeframe: 'Vanligtvis 1-3 timmar',
         tips: [
-          'Genomgang av hur era anstallda bestaller',
-          'Setup av foretagskonto och fakturering',
-          'Tips pa hur ni kommunicerar tjansten internt',
-          'Fragor och svar om plattformen'
+          'Anvand hogkvalitativa bilder pa maten',
+          'Skriv tydliga beskrivningar med ingredienser',
+          'Ange allergener och kostinformation',
+          'Satt konkurrenskraftiga priser'
         ]
       },
       {
-        title: '5. Lansering',
-        description: 'Lansera Homechef for era anstallda eller kunder och borja bestalla!',
+        title: '5. Borja salja!',
+        description: 'Nar era produkter ar uppladdade blir de synliga for kunder i ert omrade. Ni far notiser om nya bestallningar.',
         tips: [
-          'Vi hjalper med internt kommunikationsmaterial',
-          'Mojlighet till rabatterade priser vid stora volymer',
-          'Dedikerad kontaktperson for ert foretag'
+          'Svara snabbt pa bestallningar for goda omdomen',
+          'Holl era produkter uppdaterade',
+          'Erbjud sasongsmenyer for att locka nya kunder',
+          'Vi hjalper er med marknadsformaterial'
         ]
       }
     ],
     requirements: [
       'Registrerat foretag med organisationsnummer - OBLIGATORISKT',
-      'Kontaktperson med beslutanderatt',
-      'Faktureringsuppgifter',
-      'Uppskattad volym per manad (rekommenderas)'
+      'Livsmedelsregistrering fran kommunen - OBLIGATORISKT',
+      'Ansvarsforsakring for livsmedelsverksamhet',
+      'Bilder pa produkter och meny',
+      'Bankuppgifter for utbetalningar'
     ],
     faq: [
       {
-        question: 'Vilka foretag kan anvanda Homechef?',
-        answer: 'Alla foretag oavsett storlek kan anvanda var tjanst - fran sma startups till stora koncerner.'
+        question: 'Vilka foretag kan salja pa Homechef?',
+        answer: 'Alla foretag som sysslad med fardiglagade matlador, meal prep, catering eller liknande livsmedelsverksamhet med giltiga tillstand.'
       },
       {
-        question: 'Hur fungerar faktureringen?',
-        answer: 'Ni far en samlad faktura i slutet av varje manad for alla bestallningar.'
+        question: 'Hur mycket tar Homechef i provision?',
+        answer: 'Vi tar 15% provision pa varje forsaljning. Detta inkluderar betalningshantering och kundtjanst.'
       },
       {
-        question: 'Finns det rabatter for stora volymer?',
-        answer: 'Ja, vi erbjuder volymrabatter. Kontakta oss for att diskutera era behov.'
+        question: 'Hur ofta far jag betalt?',
+        answer: 'Utbetalningar sker varje vecka till ert angivna bankkonto for bestallningar som levererats.'
       },
       {
-        question: 'Kan vi anvanda Homechef for events?',
-        answer: 'Absolut! Vi hjalper er hitta kockar for catering, teambuilding och andra events.'
+        question: 'Kan jag satta egna priser?',
+        answer: 'Ja, ni bestammer helt sjalva priserna pa era produkter. Vi rekommenderar att inkludera leveranskostnad i priset.'
+      },
+      {
+        question: 'Hur fungerar leveransen?',
+        answer: 'Ni ansvarar for leverans inom ert angivna omrade. Vi hjalper er med ruttigguider och leveransoptimering.'
       }
     ],
     contact: {
