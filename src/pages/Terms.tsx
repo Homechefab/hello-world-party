@@ -444,7 +444,7 @@ const Terms = () => {
               <div>
                 <h3 className="text-lg font-medium mb-2">13.2 Serviceavgift</h3>
                 <p className="text-muted-foreground">
-                  Homechef tar ut 20% serviceavgift på ordervärdet från Restaurangpartners.
+                  Restaurangpartners betalar ett månadsabonnemang baserat på restaurangens storlek (Liten, Medelstor, Stor).
                 </p>
               </div>
             </section>
@@ -831,7 +831,7 @@ const Terms = () => {
                 <li>Om ångerfristens sista dag infaller under en lördag, söndag eller en helgdag 
                     förlängs ångerfristen så att den även gäller nästkommande vardag.</li>
                 <li>Säljare som registrerar sig på Plattformen accepterar att Homechef tar ut serviceavgift 
-                    på 20% av ordervärdet för alla tjänster (Hemmakockar, Restauranger, Kökspartners och Företag).</li>
+                    på 20% av ordervärdet för Hemmakockar, Kökspartners och Företag. Restauranger betalar månadsabonnemang.</li>
               </ol>
             </section>
           </CardContent>
