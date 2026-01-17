@@ -6,6 +6,68 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const normalizeForMatch = (value: string) =>
+  value
+    .toLowerCase()
+    .replaceAll('å', 'a')
+    .replaceAll('ä', 'a')
+    .replaceAll('ö', 'o')
+    .replaceAll('é', 'e')
+    .replaceAll('kommun', '')
+    .replace(/[^a-z0-9]/g, '');
+
+const pickFallbackMunicipalityUrl = (data: any, municipality?: string): string | null => {
+  const urls: string[] = [];
+
+  if (Array.isArray(data?.citations)) {
+    urls.push(...data.citations.filter((u: unknown) => typeof u === 'string'));
+  }
+
+  if (Array.isArray(data?.search_results)) {
+    for (const r of data.search_results) {
+      if (typeof r?.url === 'string') urls.push(r.url);
+    }
+  }
+
+  const blockedHostParts = [
+    'kommunkartan',
+    'fastighetsbyran',
+    'arbetsformedlingen',
+    'wikipedia',
+    'linkedin',
+    'facebook',
+    'instagram',
+    'youtube',
+    'twitter',
+    'x.com',
+  ];
+
+  const muniKey = municipality ? normalizeForMatch(municipality) : '';
+
+  const candidates: { url: string; host: string }[] = [];
+  for (const raw of urls) {
+    try {
+      const u = new URL(raw);
+      const host = u.hostname.replace(/^www\./, '');
+      if (!host.endsWith('.se')) continue;
+      if (blockedHostParts.some((b) => host.includes(b))) continue;
+      candidates.push({ url: u.toString(), host });
+    } catch {
+      // ignore invalid URLs
+    }
+  }
+
+  if (candidates.length === 0) return null;
+
+  // Prefer hostnames that resemble the municipality name
+  if (muniKey) {
+    const match = candidates.find((c) => normalizeForMatch(c.host).includes(muniKey));
+    if (match) return match.url;
+  }
+
+  return candidates[0].url;
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -145,6 +207,21 @@ Om du hittar kommunens webbplats men inte den exakta e-tjänsten, inkludera åtm
       
       const parsedResult = JSON.parse(jsonContent);
       console.log('Parsed result:', parsedResult);
+
+      if (!Array.isArray(parsedResult?.links)) {
+        parsedResult.links = [];
+      }
+
+      if (parsedResult.links.length === 0) {
+        const fallbackUrl = pickFallbackMunicipalityUrl(data, parsedResult?.municipality);
+        if (fallbackUrl) {
+          parsedResult.links.push({
+            title: 'Kommunens hemsida',
+            url: fallbackUrl,
+            description: 'Officiell webbplats (om e-tjänsten inte hittades direkt).'
+          });
+        }
+      }
       
       return new Response(JSON.stringify(parsedResult), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
