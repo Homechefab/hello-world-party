@@ -66,9 +66,9 @@ const PickupPage = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-12 relative z-10">
         {/* Search Section */}
-        <div className="bg-card rounded-lg shadow-card p-6 mb-8 -mt-20 relative z-20">
+        <div className="bg-card rounded-lg shadow-card p-6 mb-8 mt-6 relative z-50">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Search Input */}
             <div className="relative md:col-span-2">
