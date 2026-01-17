@@ -64,21 +64,31 @@ const onboardingData: Record<string, OnboardingContent> = {
         ]
       },
       {
-        title: '3. Godkännande & kontoskapande',
-        description: 'När du godkänns skapas ditt kock-konto automatiskt och du får inloggningsuppgifter via e-post.',
-        timeframe: 'Omedelbart efter godkännande',
+        title: '3. Godkannande och kontoskapande',
+        description: 'Nar du godkanns skapas ditt kock-konto automatiskt och du far inloggningsuppgifter via e-post.',
+        timeframe: 'Omedelbart efter godkannande',
         tips: [
-          'Kolla din skräppost om du inte ser mailet',
-          'Byt lösenord vid första inloggning'
+          'Kolla din skrappost om du inte ser mailet',
+          'Byt losenord vid forsta inloggning'
         ]
       },
       {
-        title: '4. Börja sälja!',
-        description: 'Logga in på din dashboard, lägg upp dina rätter och börja ta emot beställningar.',
+        title: '4. Uppstartsmote',
+        description: 'Nar du fatt dina inloggningsuppgifter bokar vi in ett personligt mote for att hjalpa dig komma igang.',
+        timeframe: 'Inom en vecka efter godkannande',
         tips: [
-          'Ta proffsiga foton på dina rätter',
-          'Sätt konkurrenskraftiga priser',
-          'Svara snabbt på förfrågningar för bättre recensioner'
+          'Vi hjalper dig lagga upp dina ratter',
+          'Tips pa hur du tar proffsiga bilder pa maten',
+          'Genomgang av din dashboard och funktioner',
+          'Fragor och svar om plattformen'
+        ]
+      },
+      {
+        title: '5. Borja salja!',
+        description: 'Efter uppstartsmotet ar du redo att borja ta emot bestallningar.',
+        tips: [
+          'Satt konkurrenskraftiga priser',
+          'Svara snabbt pa forfragningar for battre recensioner'
         ]
       }
     ],
@@ -135,16 +145,26 @@ const onboardingData: Record<string, OnboardingContent> = {
       },
       {
         title: '3. Kontoskapande',
-        description: 'Efter godkännande skapas ert restaurangkonto med full tillgång till plattformen.',
-        timeframe: 'Omedelbart efter godkännande'
+        description: 'Efter godkannande skapas ert restaurangkonto med full tillgang till plattformen.',
+        timeframe: 'Omedelbart efter godkannande'
       },
       {
-        title: '4. Lägg upp er meny',
-        description: 'Lägg upp era rätter med bilder, priser och beskrivningar. Börja ta emot beställningar!',
+        title: '4. Uppstartsmote',
+        description: 'Vi bokar in ett mote for att hjalpa er komma igang med plattformen.',
+        timeframe: 'Inom en vecka efter godkannande',
         tips: [
-          'Professionella foton ökar försäljningen med 40%',
+          'Genomgang av hur ni lagger upp menyn',
+          'Tips pa fotografering av ratter',
+          'Fragor och svar om plattformen'
+        ]
+      },
+      {
+        title: '5. Lagg upp er meny',
+        description: 'Lagg upp era ratter med bilder, priser och beskrivningar. Borja ta emot bestallningar!',
+        tips: [
+          'Professionella foton okar forsaljningen med 40%',
           'Uppdatera menyn regelbundet',
-          'Erbjud specialerbjudanden för nya kunder'
+          'Erbjud specialerbjudanden for nya kunder'
         ]
       }
     ],
@@ -201,15 +221,25 @@ const onboardingData: Record<string, OnboardingContent> = {
       },
       {
         title: '3. Aktivering',
-        description: 'När ditt kök är godkänt blir det synligt för kockar som söker arbetsplats.',
-        timeframe: 'Omedelbart efter godkännande'
+        description: 'Nar ditt kok ar godkant blir det synligt for kockar som soker arbetsplats.',
+        timeframe: 'Omedelbart efter godkannande'
       },
       {
-        title: '4. Ta emot bokningar',
-        description: 'Godkänn eller neka bokningsförfrågningar. Vi hanterar betalningen.',
+        title: '4. Uppstartsmote',
+        description: 'Vi bokar in ett mote for att hjalpa dig komma igang med plattformen.',
+        timeframe: 'Inom en vecka efter godkannande',
         tips: [
-          'Svara snabbt på förfrågningar',
-          'Håll kalendern uppdaterad',
+          'Genomgang av bokningssystemet',
+          'Tips pa hur du presenterar ditt kok',
+          'Fragor och svar om plattformen'
+        ]
+      },
+      {
+        title: '5. Ta emot bokningar',
+        description: 'Godkann eller neka bokningsforfragningar. Vi hanterar betalningen.',
+        tips: [
+          'Svara snabbt pa forfragningar',
+          'Hall kalendern uppdaterad',
           'Goda recensioner ger fler bokningar'
         ]
       }
