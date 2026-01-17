@@ -121,7 +121,7 @@ const onboardingData: Record<string, OnboardingContent> = {
   restaurant: {
     role: 'restaurant',
     title: 'Restaurang',
-    provision: 'Månadsabonnemang',
+    provision: '3 999 kr/mån (fast avgift)',
     introduction: 'Välkommen till Homechef! Denna guide hjälper din restaurang att nå fler kunder genom vår plattform.',
     steps: [
       {
@@ -177,7 +177,7 @@ const onboardingData: Record<string, OnboardingContent> = {
     faq: [
       {
         question: 'Vad kostar det att vara pa Homechef?',
-        answer: 'Restauranger betalar ett manadsabonnemang baserat pa storlek (Liten, Medelstor, Stor). Ingen provision pa forsaljningen.'
+        answer: 'Fast manadsavgift pa 3 999 kr/man. Inga provisioner - ni beháller hela intakten fran maten. Kunden betalar maten + leveransavgift som gar till budet.'
       },
       {
         question: 'Kan vi integrera med vårt kassasystem?',

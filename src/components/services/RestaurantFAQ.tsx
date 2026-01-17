@@ -6,7 +6,7 @@ const RestaurantFAQ = () => {
   const faqs = [
     {
       question: "Vilka avgifter tar Homechef?",
-      answer: "Restauranger betalar ett fast månadsabonnemang baserat på storlek (Liten, Medelstor, Stor). Det finns inga provisionsavgifter - ni betalar samma fasta avgift oavsett hur mycket ni säljer."
+      answer: "Restauranger betalar en fast månadsavgift på 3 999 kr/mån. Inga provisionsavgifter – ni behåller hela intäkten från maten. Kunden betalar maten + en fast leveransavgift som går direkt till budet."
     },
     {
       question: "Hur snabbt kan vi komma igång?",
