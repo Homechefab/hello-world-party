@@ -14,7 +14,8 @@ import {
   Clock,
   AlertCircle,
   Mail,
-  Phone
+  Phone,
+  Briefcase
 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -659,7 +660,7 @@ export const OnboardingMaterials = () => {
       </CardHeader>
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="chef" className="flex items-center gap-2">
               <ChefHat className="h-4 w-4" />
               <span className="hidden sm:inline">Kock</span>
@@ -671,6 +672,10 @@ export const OnboardingMaterials = () => {
             <TabsTrigger value="kitchen_partner" className="flex items-center gap-2">
               <Building2 className="h-4 w-4" />
               <span className="hidden sm:inline">Kökspartner</span>
+            </TabsTrigger>
+            <TabsTrigger value="business" className="flex items-center gap-2">
+              <Briefcase className="h-4 w-4" />
+              <span className="hidden sm:inline">Företag</span>
             </TabsTrigger>
           </TabsList>
 
