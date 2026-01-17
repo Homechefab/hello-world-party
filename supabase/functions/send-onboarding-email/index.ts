@@ -121,7 +121,7 @@ const onboardingData: Record<string, OnboardingContent> = {
   restaurant: {
     role: 'restaurant',
     title: 'Restaurang',
-    provision: '18%',
+    provision: '20%',
     introduction: 'Välkommen till Homechef! Denna guide hjälper din restaurang att nå fler kunder genom vår plattform.',
     steps: [
       {
@@ -177,7 +177,7 @@ const onboardingData: Record<string, OnboardingContent> = {
     faq: [
       {
         question: 'Vilken provision tar Homechef?',
-        answer: 'Vi tar 18% provision på varje beställning via plattformen.'
+        answer: 'Vi tar 20% provision på varje beställning via plattformen.'
       },
       {
         question: 'Kan vi integrera med vårt kassasystem?',
@@ -197,7 +197,7 @@ const onboardingData: Record<string, OnboardingContent> = {
   kitchen_partner: {
     role: 'kitchen_partner',
     title: 'Kokspartner',
-    provision: '15%',
+    provision: '20%',
     introduction: 'Valkommen till Homechef! Som kokspartner hyr du ut ditt kok till kockar som behover en professionell arbetsplats.',
     steps: [
       {
@@ -257,7 +257,7 @@ const onboardingData: Record<string, OnboardingContent> = {
       },
       {
         question: 'Vilken provision tar Homechef?',
-        answer: 'Vi tar 15% provision pa varje bokning.'
+        answer: 'Vi tar 20% provision pa varje bokning.'
       },
       {
         question: 'Hur ofta far jag betalt?',
@@ -273,7 +273,7 @@ const onboardingData: Record<string, OnboardingContent> = {
   business: {
     role: 'business',
     title: 'Foretagspartner',
-    provision: 'Individuellt avtal',
+    provision: '20%',
     introduction: 'Valkommen till Homechef! Som foretagspartner kan ni erbjuda era anstallda och kunder tillgang till hemalagad mat fran lokala kockar.',
     steps: [
       {

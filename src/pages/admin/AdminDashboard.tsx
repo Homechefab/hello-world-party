@@ -311,7 +311,7 @@ export const AdminDashboard = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <span>Provision (%)</span>
-                  <Button variant="outline" size="sm">15%</Button>
+                  <Button variant="outline" size="sm">20%</Button>
                 </div>
               </div>
             </CardContent>
