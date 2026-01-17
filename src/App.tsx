@@ -44,6 +44,17 @@ import BusinessRegistration from "./pages/chef/BusinessRegistration";
 import ChefForum from "./pages/chef/ChefForum";
 import ChefOfTheMonth from "./pages/chef/ChefOfTheMonth";
 import SalesStatistics from "./pages/chef/SalesStatistics";
+import SeparationZones from "./pages/chef/requirements/SeparationZones";
+import HandHygiene from "./pages/chef/requirements/HandHygiene";
+import IllnessRoutines from "./pages/chef/requirements/IllnessRoutines";
+import CleaningRoutines from "./pages/chef/requirements/CleaningRoutines";
+import FamilyPetsRules from "./pages/chef/requirements/FamilyPetsRules";
+import RawFinishedSeparation from "./pages/chef/requirements/RawFinishedSeparation";
+import TemperatureControl from "./pages/chef/requirements/TemperatureControl";
+import HaccpAnalysis from "./pages/chef/requirements/HaccpAnalysis";
+import AnimalProducts from "./pages/chef/requirements/AnimalProducts";
+import WorkClothes from "./pages/chef/requirements/WorkClothes";
+import WaterQuality from "./pages/chef/requirements/WaterQuality";
 import Mentorship from "./pages/chef/Mentorship";
 import { KitchenPartnerDashboard } from "./pages/kitchen-partner/KitchenPartnerDashboard";
 import { KitchenPartnerOnboarding } from "./pages/kitchen-partner/KitchenPartnerOnboarding";
@@ -152,6 +163,17 @@ const App = () => {
             <Route path="/chef/meal-boxes" element={<PublicLayout><MealBoxes /></PublicLayout>} />
             <Route path="/chef/experiences" element={<PublicLayout><ChefExperiences /></PublicLayout>} />
             <Route path="/chef/kitchen-requirements" element={<PublicLayout><KitchenRequirements /></PublicLayout>} />
+            <Route path="/chef/requirements/separation-zones" element={<PublicLayout><SeparationZones /></PublicLayout>} />
+            <Route path="/chef/requirements/hand-hygiene" element={<PublicLayout><HandHygiene /></PublicLayout>} />
+            <Route path="/chef/requirements/illness-routines" element={<PublicLayout><IllnessRoutines /></PublicLayout>} />
+            <Route path="/chef/requirements/cleaning-routines" element={<PublicLayout><CleaningRoutines /></PublicLayout>} />
+            <Route path="/chef/requirements/family-pets-rules" element={<PublicLayout><FamilyPetsRules /></PublicLayout>} />
+            <Route path="/chef/requirements/raw-finished-separation" element={<PublicLayout><RawFinishedSeparation /></PublicLayout>} />
+            <Route path="/chef/requirements/temperature-control" element={<PublicLayout><TemperatureControl /></PublicLayout>} />
+            <Route path="/chef/requirements/haccp-analysis" element={<PublicLayout><HaccpAnalysis /></PublicLayout>} />
+            <Route path="/chef/requirements/animal-products" element={<PublicLayout><AnimalProducts /></PublicLayout>} />
+            <Route path="/chef/requirements/work-clothes" element={<PublicLayout><WorkClothes /></PublicLayout>} />
+            <Route path="/chef/requirements/water-quality" element={<PublicLayout><WaterQuality /></PublicLayout>} />
             <Route path="/chef/municipality-requirements" element={<PublicLayout><MunicipalityRequirements /></PublicLayout>} />
             <Route path="/chef/kitchen-assessment" element={<PublicLayout><KitchenAssessment /></PublicLayout>} />
             <Route path="/chef/business-registration" element={<PublicLayout><BusinessRegistration /></PublicLayout>} />
