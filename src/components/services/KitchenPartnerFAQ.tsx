@@ -30,7 +30,7 @@ const KitchenPartnerFAQ = () => {
     },
     {
       question: "Vad ingår i Homechefs provision?",
-      answer: "Homechef tar en provision på 15-20% av hyresintäkten. Detta täcker plattformen, betalhantering, försäkring, kundsupport och marknadsföring. Det finns inga månadskostnader eller startavgifter - du betalar bara när du faktiskt hyr ut."
+      answer: "Homechef tar en provision på 20% av hyresintäkten. Detta täcker plattformen, betalhantering, försäkring, kundsupport och marknadsföring. Det finns inga månadskostnader eller startavgifter - du betalar bara när du faktiskt hyr ut."
     },
     {
       question: "Måste jag vara på plats under uthyrningen?",
