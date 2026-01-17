@@ -180,6 +180,22 @@ const BusinessApplication = () => {
         }
       });
 
+      // Send onboarding guide to applicant
+      supabase.functions.invoke('send-onboarding-email', {
+        body: {
+          type: 'business',
+          applicant_name: data.contactName,
+          applicant_email: data.contactEmail,
+          business_name: data.businessName
+        }
+      }).then(({ error: onboardingError }) => {
+        if (onboardingError) {
+          console.error("Error sending onboarding email:", onboardingError);
+        } else {
+          console.log("Onboarding email sent successfully");
+        }
+      });
+
       // Notify admin about new application (don't wait for it)
       supabase.functions.invoke('notify-admin-business-application', {
         body: {
