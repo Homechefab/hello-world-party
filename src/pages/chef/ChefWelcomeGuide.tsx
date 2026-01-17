@@ -61,7 +61,7 @@ const ChefWelcomeGuide = () => {
         },
         {
           title: "Sätt rätt pris",
-          description: "Räkna in alla kostnader: ingredienser, el, förpackning och din tid. Glöm inte vår 15% plattformsavgift",
+          description: "Räkna in alla kostnader: ingredienser, el, förpackning och din tid. Glöm inte vår 20% plattformsavgift",
           actionText: "Priskalkylator",
           actionLink: "/chef/dashboard"
         }
