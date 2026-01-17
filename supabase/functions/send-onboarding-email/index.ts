@@ -9,7 +9,7 @@ const corsHeaders = {
 };
 
 interface OnboardingEmailRequest {
-  type: 'chef' | 'kitchen_partner' | 'restaurant';
+  type: 'chef' | 'kitchen_partner' | 'restaurant' | 'business';
   applicant_name: string;
   applicant_email: string;
   business_name: string;
@@ -196,27 +196,27 @@ const onboardingData: Record<string, OnboardingContent> = {
   },
   kitchen_partner: {
     role: 'kitchen_partner',
-    title: 'Kökspartner',
+    title: 'Kokspartner',
     provision: '15%',
-    introduction: 'Välkommen till Homechef! Som kökspartner hyr du ut ditt kök till kockar som behöver en professionell arbetsplats.',
+    introduction: 'Valkommen till Homechef! Som kokspartner hyr du ut ditt kok till kockar som behover en professionell arbetsplats.',
     steps: [
       {
-        title: '1. Registrera ditt kök',
-        description: 'Beskriv ditt kök, utrustning, tillgängliga tider och pris per timme.',
+        title: '1. Registrera ditt kok',
+        description: 'Beskriv ditt kok, utrustning, tillgangliga tider och pris per timme.',
         timeframe: 'Ca 15-20 minuter',
         tips: [
-          'Ta tydliga foton på köket och utrustningen',
-          'Lista all tillgänglig utrustning',
-          'Var tydlig med regler och förväntningar'
+          'Ta tydliga foton pa koket och utrustningen',
+          'Lista all tillganglig utrustning',
+          'Var tydlig med regler och forvantningar'
         ]
       },
       {
         title: '2. Verifiering',
-        description: 'Vi granskar att köket uppfyller våra krav och eventuellt gör en inspektion.',
+        description: 'Vi granskar att koket uppfyller vara krav och eventuellt gor en inspektion.',
         timeframe: '3-7 arbetsdagar',
         tips: [
-          'Se till att köket är godkänt av kommunen',
-          'Ha brandskyddsutrustning på plats'
+          'Se till att koket ar godkant av kommunen',
+          'Ha brandskyddsutrustning pa plats'
         ]
       },
       {
@@ -245,23 +245,108 @@ const onboardingData: Record<string, OnboardingContent> = {
       }
     ],
     requirements: [
-      'Godkänt kök från kommunen - OBLIGATORISKT',
-      'Ansvarsförsäkring (rekommenderas)',
-      'Grundläggande köksutrustning',
-      'Brandsläckare och säkerhetsutrustning'
+      'Godkant kok fran kommunen - OBLIGATORISKT',
+      'Ansvarsforsakring (rekommenderas)',
+      'Grundlaggande koksutrustning',
+      'Brandslackare och sakerhetsutrustning'
     ],
     faq: [
       {
-        question: 'Vad är en rimlig timpris?',
-        answer: 'De flesta kök tar mellan 200-500 kr/timme beroende på storlek och utrustning.'
+        question: 'Vad ar en rimlig timpris?',
+        answer: 'De flesta kok tar mellan 200-500 kr/timme beroende pa storlek och utrustning.'
       },
       {
         question: 'Vilken provision tar Homechef?',
-        answer: 'Vi tar 15% provision på varje bokning.'
+        answer: 'Vi tar 15% provision pa varje bokning.'
       },
       {
-        question: 'Hur ofta får jag betalt?',
-        answer: 'Utbetalningar sker månadsvis till ditt angivna bankkonto.'
+        question: 'Hur ofta far jag betalt?',
+        answer: 'Utbetalningar sker manadsvis till ditt angivna bankkonto.'
+      }
+    ],
+    contact: {
+      phone: '0734234686',
+      email: 'support@homechef.se',
+      hours: 'Vardagar 09-18, Helger 10-16'
+    }
+  },
+  business: {
+    role: 'business',
+    title: 'Foretagspartner',
+    provision: 'Individuellt avtal',
+    introduction: 'Valkommen till Homechef! Som foretagspartner kan ni erbjuda era anstallda och kunder tillgang till hemalagad mat fran lokala kockar.',
+    steps: [
+      {
+        title: '1. Skicka in ansokan',
+        description: 'Fyll i foretagsuppgifter, organisationsnummer och beskriv hur ni vill anvanda Homechef.',
+        timeframe: 'Ca 20-30 minuter',
+        tips: [
+          'Ha organisationsnummer och foretagsuppgifter redo',
+          'Beskriv ert behov - catering, personalmat, events?',
+          'Ange kontaktperson for Homechef-samarbetet'
+        ]
+      },
+      {
+        title: '2. Granskning och kontakt',
+        description: 'Vart team granskar er ansokan och kontaktar er for att diskutera samarbetet.',
+        timeframe: '3-5 arbetsdagar',
+        tips: [
+          'Vi ringer eller mailar for att diskutera era behov',
+          'Forbered fragor om hur ni vill anvanda tjansten'
+        ]
+      },
+      {
+        title: '3. Avtalsskapande',
+        description: 'Vi skapar ett skraddarsytt avtal baserat pa era behov och volymer.',
+        timeframe: '1-2 veckor',
+        tips: [
+          'Vi diskuterar priser och volymer',
+          'Specialerbjudanden for stora foretag'
+        ]
+      },
+      {
+        title: '4. Uppstartsmote',
+        description: 'Vi bokar in ett mote for att hjalpa er komma igang med plattformen och era anstallda.',
+        timeframe: 'Inom en vecka efter avtal',
+        tips: [
+          'Genomgang av hur era anstallda bestaller',
+          'Setup av foretagskonto och fakturering',
+          'Tips pa hur ni kommunicerar tjansten internt',
+          'Fragor och svar om plattformen'
+        ]
+      },
+      {
+        title: '5. Lansering',
+        description: 'Lansera Homechef for era anstallda eller kunder och borja bestalla!',
+        tips: [
+          'Vi hjalper med internt kommunikationsmaterial',
+          'Mojlighet till rabatterade priser vid stora volymer',
+          'Dedikerad kontaktperson for ert foretag'
+        ]
+      }
+    ],
+    requirements: [
+      'Registrerat foretag med organisationsnummer - OBLIGATORISKT',
+      'Kontaktperson med beslutanderatt',
+      'Faktureringsuppgifter',
+      'Uppskattad volym per manad (rekommenderas)'
+    ],
+    faq: [
+      {
+        question: 'Vilka foretag kan anvanda Homechef?',
+        answer: 'Alla foretag oavsett storlek kan anvanda var tjanst - fran sma startups till stora koncerner.'
+      },
+      {
+        question: 'Hur fungerar faktureringen?',
+        answer: 'Ni far en samlad faktura i slutet av varje manad for alla bestallningar.'
+      },
+      {
+        question: 'Finns det rabatter for stora volymer?',
+        answer: 'Ja, vi erbjuder volymrabatter. Kontakta oss for att diskutera era behov.'
+      },
+      {
+        question: 'Kan vi anvanda Homechef for events?',
+        answer: 'Absolut! Vi hjalper er hitta kockar for catering, teambuilding och andra events.'
       }
     ],
     contact: {

@@ -279,6 +279,92 @@ const onboardingData: OnboardingContent[] = [
       email: 'support@homechef.se',
       hours: 'Vardagar 09-18, Helger 10-16'
     }
+  },
+  {
+    role: 'business',
+    title: 'Foretagspartner',
+    icon: <Building2 className="h-6 w-6" />,
+    color: 'bg-purple-500',
+    introduction: 'Valkommen till Homechef! Som foretagspartner kan ni erbjuda era anstallda och kunder tillgang till hemalagad mat fran lokala kockar.',
+    steps: [
+      {
+        title: '1. Skicka in ansokan',
+        description: 'Fyll i foretagsuppgifter, organisationsnummer och beskriv hur ni vill anvanda Homechef.',
+        timeframe: 'Ca 20-30 minuter',
+        tips: [
+          'Ha organisationsnummer och foretagsuppgifter redo',
+          'Beskriv ert behov - catering, personalmat, events?',
+          'Ange kontaktperson for Homechef-samarbetet'
+        ]
+      },
+      {
+        title: '2. Granskning och kontakt',
+        description: 'Vart team granskar er ansokan och kontaktar er for att diskutera samarbetet.',
+        timeframe: '3-5 arbetsdagar',
+        tips: [
+          'Vi ringer eller mailar for att diskutera era behov',
+          'Forbered fragor om hur ni vill anvanda tjansten'
+        ]
+      },
+      {
+        title: '3. Avtalsskapande',
+        description: 'Vi skapar ett skraddarsytt avtal baserat pa era behov och volymer.',
+        timeframe: '1-2 veckor',
+        tips: [
+          'Vi diskuterar priser och volymer',
+          'Specialerbjudanden for stora foretag'
+        ]
+      },
+      {
+        title: '4. Uppstartsmote',
+        description: 'Vi bokar in ett mote for att hjalpa er komma igang med plattformen och era anstallda.',
+        timeframe: 'Inom en vecka efter avtal',
+        tips: [
+          'Genomgang av hur era anstallda bestaller',
+          'Setup av foretagskonto och fakturering',
+          'Tips pa hur ni kommunicerar tjansten internt',
+          'Fragor och svar om plattformen'
+        ]
+      },
+      {
+        title: '5. Lansering',
+        description: 'Lansera Homechef for era anstallda eller kunder och borja bestalla!',
+        tips: [
+          'Vi hjalper med internt kommunikationsmaterial',
+          'Mojlighet till rabatterade priser vid stora volymer',
+          'Dedikerad kontaktperson for ert foretag'
+        ]
+      }
+    ],
+    requirements: [
+      'Registrerat foretag med organisationsnummer - OBLIGATORISKT',
+      'Kontaktperson med beslutanderatt',
+      'Faktureringsuppgifter',
+      'Uppskattad volym per manad (rekommenderas)'
+    ],
+    faq: [
+      {
+        question: 'Vilka foretag kan anvanda Homechef?',
+        answer: 'Alla foretag oavsett storlek kan anvanda var tjanst - fran sma startups till stora koncerner.'
+      },
+      {
+        question: 'Hur fungerar faktureringen?',
+        answer: 'Ni far en samlad faktura i slutet av varje manad for alla bestallningar.'
+      },
+      {
+        question: 'Finns det rabatter for stora volymer?',
+        answer: 'Ja, vi erbjuder volymrabatter. Kontakta oss for att diskutera era behov.'
+      },
+      {
+        question: 'Kan vi anvanda Homechef for events?',
+        answer: 'Absolut! Vi hjalper er hitta kockar for catering, teambuilding och andra events.'
+      }
+    ],
+    contact: {
+      phone: '0734234686',
+      email: 'support@homechef.se',
+      hours: 'Vardagar 09-18, Helger 10-16'
+    }
   }
 ];
 
