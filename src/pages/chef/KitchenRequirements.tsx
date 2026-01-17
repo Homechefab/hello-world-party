@@ -12,10 +12,14 @@ import {
   ArrowRight,
   Phone,
   Mail,
-  FileText
+  FileText,
+  Play
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import approvedKitchenImage from "@/assets/swedish-villa-kitchen-realistic.jpg";
+import kitchenHeroImage from "@/assets/kitchen-requirements-hero.jpg";
+import handHygieneImage from "@/assets/kitchen-hand-hygiene.jpg";
+import temperatureControlImage from "@/assets/kitchen-temperature-control.jpg";
 
 const KitchenRequirements = () => {
   const basicRequirements = [
@@ -165,6 +169,77 @@ const KitchenRequirements = () => {
         </div>
       </section>
 
+      {/* Visual Guide Section */}
+      <section className="py-16 bg-gradient-to-br from-primary/5 to-accent/5">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <Badge variant="secondary" className="mb-4">
+              <Play className="w-4 h-4 mr-2" />
+              Visuell guide
+            </Badge>
+            <h2 className="text-3xl font-bold mb-4">Se hur det ska se ut</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Bilder på hur ett godkänt hemkök kan organiseras enligt kommunala krav
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
+              <div className="aspect-video relative">
+                <img 
+                  src={kitchenHeroImage} 
+                  alt="Separering mellan privat och verksamhet i köket"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                  <p className="text-white font-medium text-sm">Separering privat/verksamhet</p>
+                </div>
+              </div>
+              <CardContent className="p-4">
+                <p className="text-sm text-muted-foreground">
+                  Tydligt markerade zoner för privat användning och verksamhet enligt lagkrav.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
+              <div className="aspect-video relative">
+                <img 
+                  src={handHygieneImage} 
+                  alt="Handhygien i köket"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                  <p className="text-white font-medium text-sm">Handhygien</p>
+                </div>
+              </div>
+              <CardContent className="p-4">
+                <p className="text-sm text-muted-foreground">
+                  Möjlighet att tvätta händer mellan olika moment är ett grundkrav.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="overflow-hidden hover:shadow-lg transition-all duration-300">
+              <div className="aspect-video relative">
+                <img 
+                  src={temperatureControlImage} 
+                  alt="Temperaturkontroll och organiserad förvaring"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                  <p className="text-white font-medium text-sm">Temperaturkontroll</p>
+                </div>
+              </div>
+              <CardContent className="p-4">
+                <p className="text-sm text-muted-foreground">
+                  Lämplig utrustning för temperaturkontroll och separering av råvaror.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
       {/* Equipment Requirements */}
       <section className="py-16 bg-secondary/30">
         <div className="container mx-auto px-4">
