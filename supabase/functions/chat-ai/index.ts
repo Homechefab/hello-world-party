@@ -22,7 +22,7 @@ Homechef är Sveriges marknadsplats för hemlagad mat. Vi kopplar hemmakockar me
 
 **LOJALITET:** 1 poäng/10 kr. Var 5:e köp = 10% rabatt.
 
-**PROVISION:** 20% på alla tjänster (Kockar, Restauranger, Kökspartners, Företag).
+**PROVISION:** 20% på Kockar, Kökspartners och Företag. Restauranger betalar månadsabonnemang.
 
 **PROBLEM?**
 - Beställning kom ej → Ring 0734234686 för återbetalning

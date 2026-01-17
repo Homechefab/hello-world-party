@@ -186,8 +186,8 @@ const onboardingData: OnboardingContent[] = [
     ],
     faq: [
       {
-        question: 'Vilken provision tar Homechef?',
-        answer: 'Vi tar 20% provision pa varje bestallning via plattformen.'
+        question: 'Vad kostar det att vara pa Homechef?',
+        answer: 'Restauranger betalar ett manadsabonnemang baserat pa storlek (Liten, Medelstor, Stor). Ingen provision pa forsaljning.'
       },
       {
         question: 'Kan vi integrera med vart kassasystem?',

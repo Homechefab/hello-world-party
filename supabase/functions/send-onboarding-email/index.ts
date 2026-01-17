@@ -121,7 +121,7 @@ const onboardingData: Record<string, OnboardingContent> = {
   restaurant: {
     role: 'restaurant',
     title: 'Restaurang',
-    provision: '20%',
+    provision: 'Månadsabonnemang',
     introduction: 'Välkommen till Homechef! Denna guide hjälper din restaurang att nå fler kunder genom vår plattform.',
     steps: [
       {
@@ -176,8 +176,8 @@ const onboardingData: Record<string, OnboardingContent> = {
     ],
     faq: [
       {
-        question: 'Vilken provision tar Homechef?',
-        answer: 'Vi tar 20% provision på varje beställning via plattformen.'
+        question: 'Vad kostar det att vara pa Homechef?',
+        answer: 'Restauranger betalar ett manadsabonnemang baserat pa storlek (Liten, Medelstor, Stor). Ingen provision pa forsaljningen.'
       },
       {
         question: 'Kan vi integrera med vårt kassasystem?',
