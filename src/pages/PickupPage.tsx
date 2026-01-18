@@ -3,8 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Package, Star, MapPin, Building2, ChefHat, Clock, Calendar, Search, Loader2 } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Package, Star, MapPin, Building2, ChefHat, Clock, Calendar, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useProviders } from "@/hooks/useProviders";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,7 +12,6 @@ import { toast } from "sonner";
 const PickupPage = () => {
   const [locationQuery, setLocationQuery] = useState("");
   const [dateQuery, setDateQuery] = useState("");
-  const [eventType, setEventType] = useState("");
   
   const [searchLocation, setSearchLocation] = useState("");
   const [notifyEmail, setNotifyEmail] = useState("");
@@ -44,7 +42,7 @@ const PickupPage = () => {
 
           {/* Search Section - inside hero */}
           <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
               {/* Location Input */}
               <div className="relative">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -69,23 +67,6 @@ const PickupPage = () => {
                 />
               </div>
 
-              {/* Event Type Select */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground z-10" />
-                <Select value={eventType} onValueChange={setEventType}>
-                  <SelectTrigger className="pl-10 bg-white border-border text-foreground">
-                    <SelectValue placeholder="Typ av event" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="birthday">Födelsedag</SelectItem>
-                    <SelectItem value="anniversary">Årsdag</SelectItem>
-                    <SelectItem value="business">Affärsmiddag</SelectItem>
-                    <SelectItem value="dinner">Middag</SelectItem>
-                    <SelectItem value="party">Fest</SelectItem>
-                    <SelectItem value="other">Annat</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
 
               {/* Search Button */}
               <Button variant="food" size="default" className="w-full" onClick={handleSearch}>
