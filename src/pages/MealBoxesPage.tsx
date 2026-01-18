@@ -189,7 +189,7 @@ const MealBoxesPage = () => {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
               <Button asChild variant="food" size="lg" className="w-full sm:w-auto">
-                <Link to="/register-chef">Registrera dig som kock</Link>
+                <Link to="/chef/application">Registrera dig som kock</Link>
               </Button>
               <Button 
                 variant="outline" 
