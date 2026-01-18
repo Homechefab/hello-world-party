@@ -88,7 +88,7 @@ export const EarlyAccessSignups = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{signups.length}</div>
-            <p className="text-xs text-muted-foreground">Tidiga prenumeranter</p>
+            <p className="text-xs text-muted-foreground">Early access-anmälningar</p>
           </CardContent>
         </Card>
 
@@ -124,7 +124,7 @@ export const EarlyAccessSignups = () => {
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <CardTitle>Tidiga prenumeranter</CardTitle>
+              <CardTitle>Early Access-anmälningar</CardTitle>
               <CardDescription>Alla som vill bli notifierade när kockar finns i deras område</CardDescription>
             </div>
             <div className="flex gap-2">
