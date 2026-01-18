@@ -47,8 +47,9 @@ serve(async (req) => {
     const amountExclVat = transaction.total_amount / (1 + vatRate);
     const vatAmount = transaction.total_amount - amountExclVat;
     
-    // Serviceavgift betalas av kund (20% påslag)
-    const serviceFeePercentage = 20;
+    // Hybridmodell: 6% serviceavgift från kund + 19% provision från säljare
+    const serviceFeePercentage = 6;
+    const sellerCommissionPercentage = 19;
 
     // Generate HTML that looks like a professional receipt
     const htmlReport = `
@@ -357,11 +358,19 @@ serve(async (req) => {
       <div class="commission-box">
         <div class="commission-title">Avgiftsfördelning</div>
         <div class="commission-row">
-          <span class="label">Serviceavgift (${serviceFeePercentage}% på kundpriset)</span>
-          <span class="value platform-fee">${transaction.platform_fee.toFixed(2)} ${transaction.currency}</span>
+          <span class="label">Serviceavgift från kund (${serviceFeePercentage}%)</span>
+          <span class="value platform-fee">${(transaction.total_amount - transaction.total_amount / 1.06).toFixed(2)} ${transaction.currency}</span>
         </div>
         <div class="commission-row">
-          <span class="label">Till säljare (100% av angivet pris)</span>
+          <span class="label">Provision från säljare (${sellerCommissionPercentage}%)</span>
+          <span class="value platform-fee">${((transaction.total_amount / 1.06) * 0.19).toFixed(2)} ${transaction.currency}</span>
+        </div>
+        <div class="commission-row" style="border-top: 1px solid #F59E0B; padding-top: 12px; margin-top: 8px;">
+          <span class="label"><strong>Totalt till Homechef</strong></span>
+          <span class="value platform-fee"><strong>${transaction.platform_fee.toFixed(2)} ${transaction.currency}</strong></span>
+        </div>
+        <div class="commission-row">
+          <span class="label">Till säljare (81% av angivet pris)</span>
           <span class="value chef-earnings">${transaction.chef_earnings.toFixed(2)} ${transaction.currency}</span>
         </div>
       </div>
