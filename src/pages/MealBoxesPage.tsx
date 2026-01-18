@@ -3,8 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Package, Truck, Star, MapPin, Building2, ChefHat, Calendar, Search, Cake, Heart, Briefcase, UtensilsCrossed, Loader2 } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Package, Truck, Star, MapPin, Building2, ChefHat, Calendar, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useProviders } from "@/hooks/useProviders";
 import { supabase } from "@/integrations/supabase/client";
@@ -13,8 +12,6 @@ import { toast } from "sonner";
 const MealBoxesPage = () => {
   const [locationQuery, setLocationQuery] = useState("");
   const [dateQuery, setDateQuery] = useState("");
-  const [eventType, setEventType] = useState("");
-  const [selectedQuickFilter, setSelectedQuickFilter] = useState<string | null>(null);
   const [searchLocation, setSearchLocation] = useState("");
   const [notifyEmail, setNotifyEmail] = useState("");
   const [notifyPostalCode, setNotifyPostalCode] = useState("");
@@ -25,22 +22,6 @@ const MealBoxesPage = () => {
     location: searchLocation,
   });
 
-  const quickFilters = [
-    { label: "Födelsedag", value: "birthday", icon: Cake },
-    { label: "Årsdag", value: "anniversary", icon: Heart },
-    { label: "Affärsmiddag", value: "business", icon: Briefcase },
-    { label: "Middag", value: "dinner", icon: UtensilsCrossed },
-  ];
-
-  const handleQuickFilter = (value: string) => {
-    if (selectedQuickFilter === value) {
-      setSelectedQuickFilter(null);
-      setEventType("");
-    } else {
-      setSelectedQuickFilter(value);
-      setEventType(value);
-    }
-  };
 
   const handleSearch = () => {
     setSearchLocation(locationQuery);
@@ -60,7 +41,7 @@ const MealBoxesPage = () => {
 
           {/* Search Section - inside hero */}
           <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
               {/* Location Input */}
               <div className="relative">
                 <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -85,47 +66,10 @@ const MealBoxesPage = () => {
                 />
               </div>
 
-              {/* Event Type Select */}
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground z-10" />
-                <Select value={eventType} onValueChange={setEventType}>
-                  <SelectTrigger className="pl-10 bg-white border-border text-foreground">
-                    <SelectValue placeholder="Typ av event" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="birthday">Födelsedag</SelectItem>
-                    <SelectItem value="anniversary">Årsdag</SelectItem>
-                    <SelectItem value="business">Affärsmiddag</SelectItem>
-                    <SelectItem value="dinner">Middag</SelectItem>
-                    <SelectItem value="party">Fest</SelectItem>
-                    <SelectItem value="other">Annat</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
               {/* Search Button */}
               <Button variant="food" size="default" className="w-full" onClick={handleSearch}>
                 Hitta matlådor
               </Button>
-            </div>
-
-            {/* Quick filters */}
-            <div className="flex flex-wrap justify-center gap-2 mt-4">
-              {quickFilters.map((filter) => {
-                const Icon = filter.icon;
-                return (
-                  <Button
-                    key={filter.value}
-                    variant={selectedQuickFilter === filter.value ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handleQuickFilter(filter.value)}
-                    className={`rounded-full ${selectedQuickFilter === filter.value ? "" : "bg-white hover:bg-gray-50 text-foreground border-border"}`}
-                  >
-                    <Icon className="w-4 h-4 mr-1.5" />
-                    {filter.label}
-                  </Button>
-                );
-              })}
             </div>
           </div>
         </div>
