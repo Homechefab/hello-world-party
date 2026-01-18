@@ -86,7 +86,7 @@ const SwishPayment = ({ amount, orderId, message, onSuccess, onError }: SwishPay
             <div>
               <h3 className="font-semibold text-lg">Betalningsförfrågan skickad!</h3>
               <p className="text-muted-foreground mt-1">
-                Öppna din Swish-app för att godkänna betalningen på {amount.toFixed(2)} kr
+                Öppna din Swish-app för att godkänna betalningen på {(amount * 1.2).toFixed(2)} kr
               </p>
             </div>
             <Button
@@ -135,9 +135,20 @@ const SwishPayment = ({ amount, orderId, message, onSuccess, onError }: SwishPay
           </p>
         </div>
 
-        <div className="flex items-center justify-between py-2 border-t">
-          <span className="text-muted-foreground">Att betala:</span>
-          <span className="text-xl font-bold">{amount.toFixed(2)} kr</span>
+        <div className="space-y-2 py-2 border-t">
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Delsumma:</span>
+            <span>{amount.toFixed(2)} kr</span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Serviceavgift (20%):</span>
+            <span>{(amount * 0.2).toFixed(2)} kr</span>
+          </div>
+          <div className="h-px bg-border" />
+          <div className="flex justify-between items-center">
+            <span className="font-medium">Totalt att betala:</span>
+            <span className="text-xl font-bold">{(amount * 1.2).toFixed(2)} kr</span>
+          </div>
         </div>
 
         <Button
@@ -154,7 +165,7 @@ const SwishPayment = ({ amount, orderId, message, onSuccess, onError }: SwishPay
           ) : (
             <>
               <Smartphone className="mr-2 h-4 w-4" />
-              Betala {amount.toFixed(2)} kr med Swish
+              Betala {(amount * 1.2).toFixed(2)} kr med Swish
             </>
           )}
         </Button>
