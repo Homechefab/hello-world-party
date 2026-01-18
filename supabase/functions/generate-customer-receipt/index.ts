@@ -317,15 +317,7 @@ serve(async (req) => {
       <div class="section">
         <div class="section-title">Betalningsöversikt</div>
         <div class="summary-row">
-          <span>Delsumma (exkl. moms)</span>
-          <span>${basePriceExclVat.toFixed(2)} kr</span>
-        </div>
-        <div class="summary-row">
-          <span>Moms (12%)</span>
-          <span>${vatAmount.toFixed(2)} kr</span>
-        </div>
-        <div class="summary-row">
-          <span>Varupris</span>
+          <span>Pris</span>
           <span>${basePrice.toFixed(2)} kr</span>
         </div>
         <div class="summary-row service-fee">
