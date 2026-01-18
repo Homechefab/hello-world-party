@@ -220,7 +220,7 @@ const PickupPage = () => {
           </div>
         )}
 
-        {/* Empty State */}
+        {/* Empty State - Notifieringsregistrering */}
         {!isLoading && providers.length === 0 && (
           <div className="text-center py-16">
             <ChefHat className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
@@ -231,19 +231,32 @@ const PickupPage = () => {
               }
             </h3>
             <p className="text-muted-foreground mb-8 max-w-md mx-auto">
-              Vi arbetar på att få fler kockar och företag som erbjuder mat för avhämtning till ditt område. Bli den första att registrera dig!
+              Vi arbetar på att få fler kockar och företag som erbjuder mat för avhämtning till ditt område.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link to="/chef/application">
-                <Button size="lg">
-                  Registrera dig som kock
+            
+            {/* Notification Signup */}
+            <div className="max-w-md mx-auto bg-card rounded-lg shadow-card p-6">
+              <h4 className="font-semibold text-lg mb-2">Få notifiering när kockar finns</h4>
+              <p className="text-sm text-muted-foreground mb-4">
+                Ange din e-post så meddelar vi dig när kockar registrerar sig i ditt område.
+              </p>
+              <form 
+                className="flex flex-col sm:flex-row gap-3"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  // TODO: Implement notification signup
+                }}
+              >
+                <Input
+                  type="email"
+                  placeholder="Din e-postadress"
+                  className="flex-1"
+                  required
+                />
+                <Button type="submit" variant="food">
+                  Prenumerera
                 </Button>
-              </Link>
-              <Link to="/business/application">
-                <Button variant="outline" size="lg">
-                  Registrera företag
-                </Button>
-              </Link>
+              </form>
             </div>
           </div>
         )}
