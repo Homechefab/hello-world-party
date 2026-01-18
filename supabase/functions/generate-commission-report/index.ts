@@ -42,14 +42,33 @@ serve(async (req) => {
       );
     }
 
-    // Calculate VAT (12% for food in Sweden)
-    const vatRate = 0.12;
-    const amountExclVat = transaction.total_amount / (1 + vatRate);
-    const vatAmount = transaction.total_amount - amountExclVat;
+    // Hybridmodell beräkningar
+    // total_amount inkluderar 6% serviceavgift, så baspris = total / 1.06
+    const totalAmount = transaction.total_amount;
+    const basePrice = totalAmount / 1.06;
+    const serviceFee = totalAmount - basePrice;
     
-    // Hybridmodell: 6% serviceavgift från kund + 19% provision från säljare
+    // VAT beräkning på baspris (12% för mat i Sverige)
+    const vatRate = 0.12;
+    const basePriceExclVat = basePrice / (1 + vatRate);
+    const vatAmount = basePrice - basePriceExclVat;
+    
+    // Provision från säljare (19% av baspriset)
+    const sellerCommission = basePrice * 0.19;
+    const sellerEarnings = basePrice * 0.81;
+    const totalToHomechef = serviceFee + sellerCommission;
+    
     const serviceFeePercentage = 6;
     const sellerCommissionPercentage = 19;
+
+    console.log("[COMMISSION-REPORT] Calculated amounts:", {
+      totalAmount,
+      basePrice,
+      serviceFee,
+      sellerCommission,
+      sellerEarnings,
+      totalToHomechef
+    });
 
     // Generate HTML that looks like a professional receipt
     const htmlReport = `
@@ -333,45 +352,62 @@ serve(async (req) => {
             <div class="item-name">${transaction.dish_name}</div>
             <div class="item-quantity">Antal: ${transaction.quantity} st</div>
           </div>
-          <div class="item-price">${transaction.total_amount.toFixed(2)} ${transaction.currency}</div>
+        <div class="item-price">${basePrice.toFixed(2)} ${transaction.currency}</div>
         </div>
       </div>
       
       <!-- Payment Summary -->
       <div class="section">
-        <div class="section-title">Sammanfattning</div>
+        <div class="section-title">Ekonomisk sammanfattning</div>
         <div class="summary-row">
-          <span>Delsumma (exkl. moms)</span>
-          <span>${amountExclVat.toFixed(2)} ${transaction.currency}</span>
+          <span>Kundens totala betalning</span>
+          <span><strong>${totalAmount.toFixed(2)} ${transaction.currency}</strong></span>
+        </div>
+        <div class="summary-row" style="border-top: 1px solid #e1e4e8; padding-top: 12px; margin-top: 8px;">
+          <span>Varubelopp (exkl. serviceavgift)</span>
+          <span>${basePrice.toFixed(2)} ${transaction.currency}</span>
         </div>
         <div class="summary-row">
-          <span>Moms (12%)</span>
+          <span>↳ Delsumma (exkl. moms)</span>
+          <span>${basePriceExclVat.toFixed(2)} ${transaction.currency}</span>
+        </div>
+        <div class="summary-row">
+          <span>↳ Moms (12%)</span>
           <span>${vatAmount.toFixed(2)} ${transaction.currency}</span>
-        </div>
-        <div class="summary-row total">
-          <span>Totalt</span>
-          <span>${transaction.total_amount.toFixed(2)} ${transaction.currency}</span>
         </div>
       </div>
       
       <!-- Commission Breakdown -->
       <div class="commission-box">
-        <div class="commission-title">Avgiftsfördelning</div>
+        <div class="commission-title">📊 Avgiftsfördelning (Hybridmodell)</div>
         <div class="commission-row">
           <span class="label">Serviceavgift från kund (${serviceFeePercentage}%)</span>
-          <span class="value platform-fee">${(transaction.total_amount - transaction.total_amount / 1.06).toFixed(2)} ${transaction.currency}</span>
+          <span class="value platform-fee">+${serviceFee.toFixed(2)} ${transaction.currency}</span>
         </div>
         <div class="commission-row">
           <span class="label">Provision från säljare (${sellerCommissionPercentage}%)</span>
-          <span class="value platform-fee">${((transaction.total_amount / 1.06) * 0.19).toFixed(2)} ${transaction.currency}</span>
+          <span class="value platform-fee">+${sellerCommission.toFixed(2)} ${transaction.currency}</span>
+        </div>
+        <div class="commission-row" style="border-top: 2px solid #F59E0B; padding-top: 12px; margin-top: 8px;">
+          <span class="label"><strong>💰 Totalt till Homechef</strong></span>
+          <span class="value platform-fee"><strong>${totalToHomechef.toFixed(2)} ${transaction.currency}</strong></span>
         </div>
         <div class="commission-row" style="border-top: 1px solid #F59E0B; padding-top: 12px; margin-top: 8px;">
-          <span class="label"><strong>Totalt till Homechef</strong></span>
-          <span class="value platform-fee"><strong>${transaction.platform_fee.toFixed(2)} ${transaction.currency}</strong></span>
+          <span class="label"><strong>🍳 Utbetalning till säljare (81%)</strong></span>
+          <span class="value chef-earnings"><strong>${sellerEarnings.toFixed(2)} ${transaction.currency}</strong></span>
         </div>
-        <div class="commission-row">
-          <span class="label">Till säljare (81% av angivet pris)</span>
-          <span class="value chef-earnings">${transaction.chef_earnings.toFixed(2)} ${transaction.currency}</span>
+      </div>
+      
+      <!-- Verification -->
+      <div class="section" style="background: #F0FDF4; padding: 16px; border-radius: 8px; margin-top: 16px;">
+        <div class="section-title" style="color: #166534;">✅ Verifiering</div>
+        <div class="summary-row" style="font-size: 13px;">
+          <span>Homechef intäkt + Säljare utbetalning</span>
+          <span>${(totalToHomechef + sellerEarnings).toFixed(2)} ${transaction.currency}</span>
+        </div>
+        <div class="summary-row" style="font-size: 13px;">
+          <span>Kundens betalning</span>
+          <span>${totalAmount.toFixed(2)} ${transaction.currency}</span>
         </div>
       </div>
       

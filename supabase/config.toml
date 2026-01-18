@@ -117,3 +117,9 @@ verify_jwt = false
 
 [functions.municipality-search]
 verify_jwt = false
+
+[functions.generate-customer-receipt]
+verify_jwt = false
+
+[functions.generate-commission-report]
+verify_jwt = false
