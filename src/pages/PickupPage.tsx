@@ -62,7 +62,7 @@ const PickupPage = () => {
                   placeholder="Din adress"
                   value={locationQuery}
                   onChange={(e) => setLocationQuery(e.target.value)}
-                  className="pl-10 bg-white border-border"
+                  className="pl-10 bg-white border-border text-foreground"
                   onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 />
               </div>
@@ -75,7 +75,7 @@ const PickupPage = () => {
                   placeholder="åååå-mm-dd"
                   value={dateQuery}
                   onChange={(e) => setDateQuery(e.target.value)}
-                  className="pl-10 bg-white border-border"
+                  className="pl-10 bg-white border-border text-foreground"
                 />
               </div>
 
@@ -83,7 +83,7 @@ const PickupPage = () => {
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground z-10" />
                 <Select value={eventType} onValueChange={setEventType}>
-                  <SelectTrigger className="pl-10 bg-white border-border">
+                  <SelectTrigger className="pl-10 bg-white border-border text-foreground">
                     <SelectValue placeholder="Typ av event" />
                   </SelectTrigger>
                   <SelectContent>
