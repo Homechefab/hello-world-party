@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Package, Star, MapPin, Building2, ChefHat, Clock, Calendar, Search, Cake, Heart, Briefcase, UtensilsCrossed, Loader2 } from "lucide-react";
+import { Package, Star, MapPin, Building2, ChefHat, Clock, Calendar, Search, Loader2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
 import { useProviders } from "@/hooks/useProviders";
@@ -14,7 +14,7 @@ const PickupPage = () => {
   const [locationQuery, setLocationQuery] = useState("");
   const [dateQuery, setDateQuery] = useState("");
   const [eventType, setEventType] = useState("");
-  const [selectedQuickFilter, setSelectedQuickFilter] = useState<string | null>(null);
+  
   const [searchLocation, setSearchLocation] = useState("");
   const [notifyEmail, setNotifyEmail] = useState("");
   const [notifyPostalCode, setNotifyPostalCode] = useState("");
@@ -25,22 +25,6 @@ const PickupPage = () => {
     location: searchLocation,
   });
 
-  const quickFilters = [
-    { label: "Födelsedag", value: "birthday", icon: Cake },
-    { label: "Årsdag", value: "anniversary", icon: Heart },
-    { label: "Affärsmiddag", value: "business", icon: Briefcase },
-    { label: "Middag", value: "dinner", icon: UtensilsCrossed },
-  ];
-
-  const handleQuickFilter = (value: string) => {
-    if (selectedQuickFilter === value) {
-      setSelectedQuickFilter(null);
-      setEventType("");
-    } else {
-      setSelectedQuickFilter(value);
-      setEventType(value);
-    }
-  };
 
   const handleSearch = () => {
     setSearchLocation(locationQuery);
@@ -109,24 +93,6 @@ const PickupPage = () => {
               </Button>
             </div>
 
-            {/* Quick filters */}
-            <div className="flex flex-wrap justify-center gap-2 mt-4">
-              {quickFilters.map((filter) => {
-                const Icon = filter.icon;
-                return (
-                  <Button
-                    key={filter.value}
-                    variant={selectedQuickFilter === filter.value ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handleQuickFilter(filter.value)}
-                    className={`rounded-full ${selectedQuickFilter === filter.value ? "" : "bg-white hover:bg-gray-50 text-foreground border-border"}`}
-                  >
-                    <Icon className="w-4 h-4 mr-1.5" />
-                    {filter.label}
-                  </Button>
-                );
-              })}
-            </div>
           </div>
         </div>
       </div>
