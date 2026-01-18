@@ -141,7 +141,7 @@ const TermsOfService = () => {
               <li>Ha godkänt kök enligt livsmedelsverkets regler</li>
               <li>Ha ansvarsförsäkring och livsmedelsförsäkring</li>
               <li>Följa alla tillämpliga lagar och regler</li>
-              <li>Betala provision till Homechef (20% av ordervärdet)</li>
+              <li>Acceptera att Homechef tar ut 20% serviceavgift från kunden (du får 100% av ditt pris)</li>
             </ul>
           </section>
 

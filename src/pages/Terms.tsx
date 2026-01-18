@@ -182,8 +182,8 @@ const Terms = () => {
                   medan Du ingår ett avtal med Homechef om eventuell leverans.
                 </p>
                 <p className="text-muted-foreground">
-                  Homechef tar ut en serviceavgift på 20% av ordervärdet från Säljaren. Denna avgift täcker 
-                  plattformens drift, support och marknadsföring.
+                  Homechef tar ut en serviceavgift på 20% som läggs på kundpriset. Denna avgift täcker 
+                  plattformens drift, support och marknadsföring. Säljaren får hela sitt angivna pris.
                 </p>
               </div>
             </section>
@@ -397,8 +397,8 @@ const Terms = () => {
               <div>
                 <h3 className="text-lg font-medium mb-2">11.3 Serviceavgift</h3>
                 <p className="text-muted-foreground">
-                  Homechef tar ut en serviceavgift på 20% av ordervärdet från Hemmakockar. Utbetalning till 
-                  Hemmakockar sker veckovis till registrerat bankkonto.
+                  Homechef lägger på en serviceavgift på 20% som betalas av kunden. Hemmakockar får 100% av 
+                  sitt angivna pris. Utbetalning sker veckovis till registrerat bankkonto.
                 </p>
               </div>
             </section>
@@ -421,7 +421,8 @@ const Terms = () => {
               <div>
                 <h3 className="text-lg font-medium mb-2">12.2 Serviceavgift</h3>
                 <p className="text-muted-foreground">
-                  Homechef tar ut 15% serviceavgift på uthyrningsintäkter. Utbetalning sker månadsvis.
+                  Homechef lägger på en serviceavgift på 20% som betalas av kunden vid köksuthyrning. 
+                  Kökspartners får 100% av sin angivna hyra. Utbetalning sker månadsvis.
                 </p>
               </div>
             </section>
@@ -832,8 +833,8 @@ const Terms = () => {
                     Plattformen, men de två begreppen har samma betydelse.</li>
                 <li>Om ångerfristens sista dag infaller under en lördag, söndag eller en helgdag 
                     förlängs ångerfristen så att den även gäller nästkommande vardag.</li>
-                <li>Säljare som registrerar sig på Plattformen accepterar att Homechef tar ut serviceavgift 
-                    på 20% av ordervärdet för Hemmakockar, Kökspartners och Företag. Restauranger betalar fast månadsavgift på 3 999 kr/mån.</li>
+              <li>Homechef lägger på en serviceavgift på 20% som betalas av kunden för beställningar via 
+                    Hemmakockar, Kökspartners och Företag. Säljaren får 100% av sitt angivna pris. Restauranger betalar fast månadsavgift på 3 999 kr/mån.</li>
               </ol>
             </section>
           </CardContent>

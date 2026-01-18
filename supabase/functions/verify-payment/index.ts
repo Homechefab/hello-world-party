@@ -54,8 +54,11 @@ serve(async (req) => {
     );
     
     const totalAmount = (session.amount_total || 0) / 100; // Convert from cents to SEK
-    const platformFee = totalAmount * 0.20; // 20% provision
-    const chefEarnings = totalAmount - platformFee;
+    // Serviceavgift betalas av kund: totalAmount = basePrice * 1.20
+    // Så basePrice = totalAmount / 1.20, serviceFee = totalAmount - basePrice
+    const basePrice = totalAmount / 1.20;
+    const platformFee = totalAmount - basePrice; // 20% serviceavgift
+    const chefEarnings = basePrice; // Säljaren får 100% av sitt pris
     const dishName = items.data[0]?.description || session.metadata?.dishName || "Okänd rätt";
     
     try {

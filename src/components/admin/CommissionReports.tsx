@@ -108,11 +108,11 @@ export const CommissionReports = () => {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Homechef provision</CardTitle>
+            <CardTitle className="text-sm font-medium">Homechef serviceavgift</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-primary">{totalPlatformFees.toFixed(2)} SEK</div>
-            <p className="text-xs text-muted-foreground">20% av försäljning</p>
+            <p className="text-xs text-muted-foreground">20% serviceavgift från kunder</p>
           </CardContent>
         </Card>
 
@@ -122,7 +122,7 @@ export const CommissionReports = () => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">{totalChefEarnings.toFixed(2)} SEK</div>
-            <p className="text-xs text-muted-foreground">80% av försäljning</p>
+            <p className="text-xs text-muted-foreground">100% av säljarnas priser</p>
           </CardContent>
         </Card>
       </div>
@@ -148,8 +148,8 @@ export const CommissionReports = () => {
                     <TableHead>Kund</TableHead>
                     <TableHead>Rätt</TableHead>
                     <TableHead className="text-right">Totalt</TableHead>
-                    <TableHead className="text-right">Provision (20%)</TableHead>
-                    <TableHead className="text-right">Kock (80%)</TableHead>
+                    <TableHead className="text-right">Serviceavgift</TableHead>
+                    <TableHead className="text-right">Till säljare</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Åtgärder</TableHead>
                   </TableRow>

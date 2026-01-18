@@ -47,9 +47,8 @@ serve(async (req) => {
     const amountExclVat = transaction.total_amount / (1 + vatRate);
     const vatAmount = transaction.total_amount - amountExclVat;
     
-    // Calculate commission percentages
-    const platformPercentage = 20;
-    const chefPercentage = 80;
+    // Serviceavgift betalas av kund (20% påslag)
+    const serviceFeePercentage = 20;
 
     // Generate HTML that looks like a professional receipt
     const htmlReport = `
@@ -356,13 +355,13 @@ serve(async (req) => {
       
       <!-- Commission Breakdown -->
       <div class="commission-box">
-        <div class="commission-title">Provisionsfördelning</div>
+        <div class="commission-title">Avgiftsfördelning</div>
         <div class="commission-row">
-          <span class="label">Homechef provision (${platformPercentage}%)</span>
+          <span class="label">Serviceavgift (${serviceFeePercentage}% på kundpriset)</span>
           <span class="value platform-fee">${transaction.platform_fee.toFixed(2)} ${transaction.currency}</span>
         </div>
         <div class="commission-row">
-          <span class="label">Kock (${chefPercentage}%)</span>
+          <span class="label">Till säljare (100% av angivet pris)</span>
           <span class="value chef-earnings">${transaction.chef_earnings.toFixed(2)} ${transaction.currency}</span>
         </div>
       </div>

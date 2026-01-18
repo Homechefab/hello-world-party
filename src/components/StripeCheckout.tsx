@@ -95,9 +95,9 @@ export const StripeCheckout: React.FC<StripeCheckoutProps> = ({
     }
   };
 
-  const totalPrice = price * quantity;
-  const platformFee = totalPrice * 0.20; // 20% provision
-  const chefEarnings = totalPrice - platformFee;
+  const basePrice = price * quantity;
+  const serviceFee = basePrice * 0.20; // 20% serviceavgift som läggs på kundpriset
+  const totalPrice = basePrice + serviceFee;
 
   return (
     <Card className="w-full">
@@ -121,19 +121,23 @@ export const StripeCheckout: React.FC<StripeCheckoutProps> = ({
             <span>{price} kr</span>
           </div>
           <div className="flex justify-between font-semibold text-lg border-t pt-2">
-            <span>Totalt:</span>
-            <span>{totalPrice} kr</span>
+            <span>Pris:</span>
+            <span>{basePrice} kr</span>
           </div>
           
           <div className="mt-4 p-3 bg-muted rounded-lg text-sm space-y-1">
-            <div className="font-medium">Provisionsfördelning:</div>
+            <div className="font-medium">Prisuppdelning:</div>
             <div className="flex justify-between text-muted-foreground">
-              <span>Homechef provision (20%):</span>
-              <span>{platformFee.toFixed(2)} kr</span>
+              <span>Pris ({quantity} st × {price} kr):</span>
+              <span>{basePrice.toFixed(2)} kr</span>
             </div>
             <div className="flex justify-between text-muted-foreground">
-              <span>Kockens intäkt (80%):</span>
-              <span>{chefEarnings.toFixed(2)} kr</span>
+              <span>Serviceavgift (20%):</span>
+              <span>{serviceFee.toFixed(2)} kr</span>
+            </div>
+            <div className="flex justify-between font-medium">
+              <span>Totalt att betala:</span>
+              <span>{totalPrice.toFixed(2)} kr</span>
             </div>
           </div>
         </div>
