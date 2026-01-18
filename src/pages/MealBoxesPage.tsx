@@ -113,7 +113,7 @@ const MealBoxesPage = () => {
                     variant={selectedQuickFilter === filter.value ? "default" : "outline"}
                     size="sm"
                     onClick={() => handleQuickFilter(filter.value)}
-                    className={`rounded-full ${selectedQuickFilter === filter.value ? "" : "bg-white hover:bg-gray-50"}`}
+                    className={`rounded-full ${selectedQuickFilter === filter.value ? "" : "bg-white hover:bg-gray-50 text-foreground border-border"}`}
                   >
                     <Icon className="w-4 h-4 mr-1.5" />
                     {filter.label}
