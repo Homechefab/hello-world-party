@@ -186,7 +186,7 @@ const CateringPage = () => {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
               <Button asChild variant="food" size="lg" className="w-full sm:w-auto">
-                <Link to="/register-business">Registrera dig som catering</Link>
+                <Link to="/business/application">Registrera dig som catering</Link>
               </Button>
               <Button 
                 variant="outline" 
