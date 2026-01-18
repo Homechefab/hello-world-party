@@ -27,6 +27,16 @@ serve(async (req) => {
       throw new Error("Amount and payer phone number are required");
     }
 
+    // Add 20% service fee to the amount
+    const serviceFeeRate = 0.20;
+    const totalAmount = amount * (1 + serviceFeeRate);
+
+    console.log("Swish payment amount calculation:", {
+      originalAmount: amount,
+      serviceFee: amount * serviceFeeRate,
+      totalAmount: totalAmount
+    });
+
     // Validate Swedish phone number format
     const phoneRegex = /^46\d{9}$/;
     if (!phoneRegex.test(payerAlias.replace(/\D/g, ''))) {
@@ -54,7 +64,7 @@ serve(async (req) => {
       callbackUrl: callbackUrl || `https://rkucenozpmaixfphpiub.supabase.co/functions/v1/swish-callback`,
       payerAlias: payerAlias.replace(/\D/g, ''),
       payeeAlias: payeeAlias,
-      amount: amount.toFixed(2),
+      amount: totalAmount.toFixed(2),
       currency: "SEK",
       message: message || "Betalning via Homechef",
     };
@@ -105,7 +115,7 @@ serve(async (req) => {
 
     await supabaseClient.from("swish_payments").insert({
       instruction_id: instructionId,
-      amount: amount,
+      amount: totalAmount,
       payer_alias: payerAlias,
       payee_alias: payeeAlias,
       message: message,
