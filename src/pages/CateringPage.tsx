@@ -1,310 +1,309 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Users, Calendar, Clock, CheckCircle, Mail, Phone, MapPin } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import cateringImage from "@/assets/catering-service.jpg";
-
-const cateringTypes = [
-  { value: "corporate", label: "Företagsevent / Konferens" },
-  { value: "wedding", label: "Bröllop" },
-  { value: "birthday", label: "Födelsedag" },
-  { value: "graduation", label: "Studenten" },
-  { value: "other", label: "Annat privat event" }
-];
-
-const guestRanges = [
-  { value: "10-20", label: "10-20 gäster" },
-  { value: "20-50", label: "20-50 gäster" },
-  { value: "50-100", label: "50-100 gäster" },
-  { value: "100+", label: "100+ gäster" }
-];
-
-const benefits = [
-  "Hemlagad mat av professionella kockar",
-  "Skräddarsydda menyer efter dina önskemål",
-  "Flexibla leveranstider",
-  "Konkurrenskraftiga priser",
-  "Försäkrade och godkända kök",
-  "Support från bokning till leverans"
-];
+import { Badge } from "@/components/ui/badge";
+import { Package, Star, MapPin, Building2, ChefHat, Calendar, Loader2, Users, Clock, Utensils } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useProviders } from "@/hooks/useProviders";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const CateringPage = () => {
-  const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    eventType: "",
-    guestCount: "",
-    eventDate: "",
-    location: "",
-    message: ""
+  const [locationQuery, setLocationQuery] = useState("");
+  const [dateQuery, setDateQuery] = useState("");
+  const [searchLocation, setSearchLocation] = useState("");
+  const [notifyEmail, setNotifyEmail] = useState("");
+  const [notifyPostalCode, setNotifyPostalCode] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showNotifyForm, setShowNotifyForm] = useState(false);
+
+  const { data: providers = [], isLoading } = useProviders({
+    location: searchLocation,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast({
-      title: "Förfrågan skickad!",
-      description: "Vi återkommer inom 24 timmar med ett skräddarsytt erbjudande."
-    });
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      eventType: "",
-      guestCount: "",
-      eventDate: "",
-      location: "",
-      message: ""
-    });
-  };
-
-  const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleSearch = () => {
+    setSearchLocation(locationQuery);
   };
 
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative h-[400px] overflow-hidden">
-        <img 
-          src={cateringImage} 
-          alt="Catering services"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/50 flex items-center">
-          <div className="container mx-auto px-4">
-            <div className="max-w-2xl text-white">
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                Beställ catering för ditt event
-              </h1>
-              <p className="text-lg md:text-xl mb-6">
-                Hemlagad mat från professionella kockar, perfekt för alla tillfällen
-              </p>
+      <div className="relative min-h-[400px] flex items-center justify-center bg-gradient-hero">
+        <div className="text-center text-white z-10 px-4 w-full max-w-4xl mx-auto py-12">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">
+            Beställ catering
+          </h1>
+          <p className="text-xl drop-shadow-lg max-w-2xl mx-auto mb-8">
+            Sök efter cateringföretag i ditt område
+          </p>
+
+          {/* Search Section - inside hero */}
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
+              {/* Location Input */}
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  placeholder="Din adress"
+                  value={locationQuery}
+                  onChange={(e) => setLocationQuery(e.target.value)}
+                  className="pl-10 bg-white border-border text-foreground"
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                />
+              </div>
+              
+              {/* Date Input */}
+              <div className="relative">
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  type="date"
+                  placeholder="åååå-mm-dd"
+                  value={dateQuery}
+                  onChange={(e) => setDateQuery(e.target.value)}
+                  className="pl-10 bg-white border-border text-foreground"
+                />
+              </div>
+
+              {/* Search Button */}
+              <Button variant="food" size="default" className="w-full" onClick={handleSearch}>
+                Hitta catering
+              </Button>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Benefits Section */}
-      <section className="py-12 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-foreground mb-4">
-                Varför välja Homechef för catering?
-              </h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {benefits.map((benefit, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <CheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
-                  <p className="text-foreground">{benefit}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+      <div className="container mx-auto px-4 py-12">
+        {/* Results Count */}
+        <div className="mb-6">
+          <p className="text-muted-foreground">
+            {isLoading ? "Söker..." : `Visar ${providers.length} leverantör${providers.length !== 1 ? 'er' : ''}`}
+            {searchLocation && ` i ${searchLocation}`}
+          </p>
         </div>
-      </section>
 
-      {/* Request Form Section */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold text-foreground mb-4">
-                Begär offert för catering
-              </h2>
-              <p className="text-muted-foreground">
-                Fyll i formuläret så återkommer vi med ett skräddarsytt förslag
-              </p>
-            </div>
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        )}
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Cateringförfrågan</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* Kontaktinformation */}
-                  <div className="space-y-4">
-                    <h3 className="font-semibold text-foreground flex items-center gap-2">
-                      <Users className="w-5 h-5" />
-                      Kontaktinformation
-                    </h3>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Namn *</Label>
-                        <Input 
-                          id="name"
-                          value={formData.name}
-                          onChange={(e) => handleChange("name", e.target.value)}
-                          required
-                          placeholder="Ditt namn"
-                        />
-                      </div>
-                      
-                      <div className="space-y-2">
-                        <Label htmlFor="phone">Telefon *</Label>
-                        <div className="relative">
-                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                          <Input 
-                            id="phone"
-                            value={formData.phone}
-                            onChange={(e) => handleChange("phone", e.target.value)}
-                            required
-                            placeholder="070-123 45 67"
-                            className="pl-10"
-                          />
+        {/* Providers Grid */}
+        {!isLoading && providers.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {providers.map((provider) => (
+              <Link key={provider.id} to={`/chef/${provider.id}`}>
+                <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full">
+                  <CardContent className="p-6">
+                    {/* Header with type badge */}
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                          provider.type === "chef" 
+                            ? "bg-primary/10 text-primary" 
+                            : "bg-accent/10 text-accent-foreground"
+                        }`}>
+                          {provider.imageUrl ? (
+                            <img 
+                              src={provider.imageUrl} 
+                              alt={provider.name}
+                              className="w-full h-full rounded-full object-cover"
+                            />
+                          ) : provider.type === "chef" ? (
+                            <ChefHat className="w-6 h-6" />
+                          ) : (
+                            <Building2 className="w-6 h-6" />
+                          )}
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-lg">{provider.name}</h3>
+                          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                            <MapPin className="w-3 h-3" />
+                            {provider.location}
+                          </div>
                         </div>
                       </div>
+                      <Badge variant={provider.type === "chef" ? "default" : "secondary"}>
+                        {provider.type === "chef" ? "Kock" : "Företag"}
+                      </Badge>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="email">E-post *</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input 
-                          id="email"
-                          type="email"
-                          value={formData.email}
-                          onChange={(e) => handleChange("email", e.target.value)}
-                          required
-                          placeholder="din@email.se"
-                          className="pl-10"
-                        />
+                    {/* Description */}
+                    <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+                      {provider.description}
+                    </p>
+
+                    {/* Specialties */}
+                    {provider.specialties.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {provider.specialties.slice(0, 3).map((specialty) => (
+                          <Badge key={specialty} variant="outline" className="text-xs">
+                            {specialty}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Stats */}
+                    <div className="flex items-center justify-between text-sm border-t pt-4">
+                      <div className="flex items-center gap-1">
+                        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                        <span className="font-medium">{provider.rating || "-"}</span>
+                        <span className="text-muted-foreground">({provider.reviewCount})</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-muted-foreground">
+                        <Package className="w-4 h-4" />
+                        <span>{provider.itemCount} rätter</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-primary">
+                        <Users className="w-4 h-4" />
+                        <span className="text-xs">Catering</span>
                       </div>
                     </div>
-                  </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        )}
 
-                  {/* Eventinformation */}
-                  <div className="space-y-4">
-                    <h3 className="font-semibold text-foreground flex items-center gap-2">
-                      <Calendar className="w-5 h-5" />
-                      Eventinformation
-                    </h3>
+        {/* Empty State - CTA Buttons */}
+        {!isLoading && providers.length === 0 && (
+          <div className="text-center py-16">
+            <ChefHat className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+            <h3 className="text-2xl font-semibold text-foreground mb-4">
+              {searchLocation
+                ? `Inga cateringföretag hittades i "${searchLocation}"`
+                : "Inga cateringföretag registrerade än"
+              }
+            </h3>
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+              Vi arbetar på att få fler cateringföretag till ditt område.
+            </p>
+            
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
+              <Button asChild variant="food" size="lg" className="w-full sm:w-auto">
+                <Link to="/register-chef">Registrera dig som kock</Link>
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="w-full sm:w-auto border-foreground/20"
+                onClick={() => setShowNotifyForm(true)}
+              >
+                Få notifiering när kockar finns
+              </Button>
+            </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="eventType">Typ av event *</Label>
-                        <Select value={formData.eventType} onValueChange={(value) => handleChange("eventType", value)}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Välj typ av event" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {cateringTypes.map((type) => (
-                              <SelectItem key={type.value} value={type.value}>
-                                {type.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="guestCount">Antal gäster *</Label>
-                        <Select value={formData.guestCount} onValueChange={(value) => handleChange("guestCount", value)}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Välj antal gäster" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {guestRanges.map((range) => (
-                              <SelectItem key={range.value} value={range.value}>
-                                {range.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="eventDate">Datum för event *</Label>
-                      <div className="relative">
-                        <Clock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input 
-                          id="eventDate"
-                          type="date"
-                          value={formData.eventDate}
-                          onChange={(e) => handleChange("eventDate", e.target.value)}
-                          required
-                          className="pl-10"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="location">Plats / Ort *</Label>
-                      <div className="relative">
-                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                        <Input 
-                          id="location"
-                          value={formData.location}
-                          onChange={(e) => handleChange("location", e.target.value)}
-                          required
-                          placeholder="Stockholm, Göteborg, etc."
-                          className="pl-10"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Meddelande */}
-                  <div className="space-y-2">
-                    <Label htmlFor="message">Övriga önskemål eller information</Label>
-                    <Textarea 
-                      id="message"
-                      value={formData.message}
-                      onChange={(e) => handleChange("message", e.target.value)}
-                      placeholder="Berätta om dina önskemål för maten, allergier, speciella behov, etc."
-                      rows={5}
+            {/* Notification Form - shown when button clicked */}
+            {showNotifyForm && (
+              <div className="max-w-md mx-auto bg-card rounded-lg shadow-card p-6 mt-8">
+                <h4 className="font-semibold text-lg mb-2">Få notifiering när kockar finns</h4>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Ange din e-post och postnummer så meddelar vi dig när cateringföretag registrerar sig i ditt område.
+                </p>
+                <form 
+                  className="flex flex-col gap-3"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!notifyEmail || !notifyPostalCode) {
+                      toast.error("Fyll i både e-post och postnummer");
+                      return;
+                    }
+                    
+                    setIsSubmitting(true);
+                    try {
+                      const { error } = await supabase
+                        .from("early_access_signups")
+                        .insert({
+                          email: notifyEmail,
+                          postal_code: notifyPostalCode,
+                        });
+                      
+                      if (error) {
+                        if (error.code === "23505") {
+                          toast.error("Denna e-postadress är redan registrerad");
+                        } else {
+                          throw error;
+                        }
+                      } else {
+                        toast.success("Tack! Vi meddelar dig när cateringföretag finns i ditt område.");
+                        setNotifyEmail("");
+                        setNotifyPostalCode("");
+                        setShowNotifyForm(false);
+                      }
+                    } catch (error) {
+                      console.error("Error signing up:", error);
+                      toast.error("Något gick fel. Försök igen senare.");
+                    } finally {
+                      setIsSubmitting(false);
+                    }
+                  }}
+                >
+                  <Input
+                    type="email"
+                    placeholder="Din e-postadress"
+                    value={notifyEmail}
+                    onChange={(e) => setNotifyEmail(e.target.value)}
+                    required
+                  />
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Input
+                      type="text"
+                      placeholder="Ditt postnummer"
+                      value={notifyPostalCode}
+                      onChange={(e) => setNotifyPostalCode(e.target.value)}
+                      className="sm:w-32"
+                      required
                     />
+                    <Button type="submit" variant="food" disabled={isSubmitting} className="flex-1">
+                      {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Prenumerera"}
+                    </Button>
                   </div>
-
-                  <Button type="submit" className="w-full" size="lg">
-                    Skicka förfrågan
-                  </Button>
                 </form>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Info Section */}
+        {!isLoading && providers.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            <Card>
+              <CardContent className="pt-6">
+                <Utensils className="w-8 h-8 text-primary mb-4" />
+                <h4 className="font-semibold mb-2">Professionell catering</h4>
+                <p className="text-sm text-muted-foreground">
+                  Hemlagad mat av professionella kockar för alla tillfällen
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="pt-6">
+                <Users className="w-8 h-8 text-primary mb-4" />
+                <h4 className="font-semibold mb-2">Alla eventtyper</h4>
+                <p className="text-sm text-muted-foreground">
+                  Bröllop, företagsevent, födelsedagar och mycket mer
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="pt-6">
+                <Clock className="w-8 h-8 text-primary mb-4" />
+                <h4 className="font-semibold mb-2">Flexibel leverans</h4>
+                <p className="text-sm text-muted-foreground">
+                  Maten levereras på utsatt tid, precis som du önskar
+                </p>
               </CardContent>
             </Card>
           </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section className="py-16 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-4">
-              Så fungerar det
-            </h2>
-          </div>
-          
-          <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
-            {[
-              { step: 1, title: "Fyll i formulär", desc: "Berätta om ditt event och behov" },
-              { step: 2, title: "Få offert", desc: "Vi matchar dig med rätt kock" },
-              { step: 3, title: "Bekräfta bokning", desc: "Godkänn offerten och betala" },
-              { step: 4, title: "Njut av maten", desc: "Maten levereras på utsatt tid" }
-            ].map((item) => (
-              <div key={item.step} className="text-center">
-                <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xl font-bold mx-auto mb-4">
-                  {item.step}
-                </div>
-                <h3 className="font-semibold text-foreground mb-2">{item.title}</h3>
-                <p className="text-sm text-muted-foreground">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+        )}
+      </div>
     </div>
   );
 };
