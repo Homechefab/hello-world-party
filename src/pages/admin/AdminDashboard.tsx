@@ -203,8 +203,8 @@ export const AdminDashboard = () => {
           <TabsTrigger value="archive" className="whitespace-nowrap">Arkiv</TabsTrigger>
           <TabsTrigger value="early-access" className="whitespace-nowrap">
             <Bell className="h-4 w-4 mr-1 hidden sm:inline" />
-            <span className="hidden sm:inline">Early Access</span>
-            <span className="sm:hidden">Early</span>
+            <span className="hidden sm:inline">Tidiga prenumeranter</span>
+            <span className="sm:hidden">Pren.</span>
           </TabsTrigger>
           <TabsTrigger value="commission" className="whitespace-nowrap">Provisionsunderlag</TabsTrigger>
           <TabsTrigger value="payments" className="whitespace-nowrap">
