@@ -37,7 +37,7 @@ const PickupPage = () => {
             Beställ mat för avhämtning
           </h1>
           <p className="text-xl drop-shadow-lg max-w-2xl mx-auto mb-8">
-            Sök efter kockar och företag som erbjuder mat för avhämtning i ditt område
+            Sök efter kockar som erbjuder mat för avhämtning i ditt område
           </p>
 
           {/* Search Section - inside hero */}
