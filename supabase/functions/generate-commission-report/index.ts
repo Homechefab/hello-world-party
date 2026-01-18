@@ -58,6 +58,18 @@ serve(async (req) => {
     const sellerEarnings = basePrice * 0.81;
     const totalToHomechef = serviceFee + sellerCommission;
     
+    // Homechefs moms (25% på tjänster)
+    const homechefVatRate = 0.25;
+    const homechefIncomeExclVat = totalToHomechef / (1 + homechefVatRate);
+    const homechefVatAmount = totalToHomechef - homechefIncomeExclVat;
+    const homechefNetIncome = homechefIncomeExclVat;
+    
+    // Uppdelning av moms per intäktskälla
+    const serviceFeeExclVat = serviceFee / (1 + homechefVatRate);
+    const serviceFeeVat = serviceFee - serviceFeeExclVat;
+    const commissionExclVat = sellerCommission / (1 + homechefVatRate);
+    const commissionVat = sellerCommission - commissionExclVat;
+    
     const serviceFeePercentage = 6;
     const sellerCommissionPercentage = 19;
 
@@ -67,7 +79,9 @@ serve(async (req) => {
       serviceFee,
       sellerCommission,
       sellerEarnings,
-      totalToHomechef
+      totalToHomechef,
+      homechefVatAmount,
+      homechefNetIncome
     });
 
     // Generate HTML that looks like a professional receipt
@@ -389,12 +403,68 @@ serve(async (req) => {
           <span class="value platform-fee">+${sellerCommission.toFixed(2)} ${transaction.currency}</span>
         </div>
         <div class="commission-row" style="border-top: 2px solid #F59E0B; padding-top: 12px; margin-top: 8px;">
-          <span class="label"><strong>💰 Totalt till Homechef</strong></span>
+          <span class="label"><strong>💰 Totalt till Homechef (inkl. moms)</strong></span>
           <span class="value platform-fee"><strong>${totalToHomechef.toFixed(2)} ${transaction.currency}</strong></span>
         </div>
         <div class="commission-row" style="border-top: 1px solid #F59E0B; padding-top: 12px; margin-top: 8px;">
           <span class="label"><strong>🍳 Utbetalning till säljare (81%)</strong></span>
           <span class="value chef-earnings"><strong>${sellerEarnings.toFixed(2)} ${transaction.currency}</strong></span>
+        </div>
+      </div>
+      
+      <!-- Homechef VAT Breakdown for Accounting -->
+      <div class="section" style="background: linear-gradient(135deg, #EDE9FE 0%, #DDD6FE 100%); padding: 24px; border-radius: 8px; margin-top: 16px; border-left: 4px solid #7C3AED;">
+        <div class="section-title" style="color: #5B21B6; font-size: 14px; margin-bottom: 20px;">🧾 Homechefs momsredovisning (25% tjänstemoms)</div>
+        
+        <div style="background: white; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
+          <div style="font-size: 12px; color: #6b7280; text-transform: uppercase; margin-bottom: 8px;">Serviceavgift från kund</div>
+          <div class="summary-row" style="font-size: 14px;">
+            <span>Belopp inkl. moms</span>
+            <span>${serviceFee.toFixed(2)} ${transaction.currency}</span>
+          </div>
+          <div class="summary-row" style="font-size: 14px;">
+            <span>Belopp exkl. moms</span>
+            <span>${serviceFeeExclVat.toFixed(2)} ${transaction.currency}</span>
+          </div>
+          <div class="summary-row" style="font-size: 14px; color: #7C3AED;">
+            <span><strong>Utgående moms (25%)</strong></span>
+            <span><strong>${serviceFeeVat.toFixed(2)} ${transaction.currency}</strong></span>
+          </div>
+        </div>
+        
+        <div style="background: white; border-radius: 6px; padding: 16px; margin-bottom: 16px;">
+          <div style="font-size: 12px; color: #6b7280; text-transform: uppercase; margin-bottom: 8px;">Provision från säljare</div>
+          <div class="summary-row" style="font-size: 14px;">
+            <span>Belopp inkl. moms</span>
+            <span>${sellerCommission.toFixed(2)} ${transaction.currency}</span>
+          </div>
+          <div class="summary-row" style="font-size: 14px;">
+            <span>Belopp exkl. moms</span>
+            <span>${commissionExclVat.toFixed(2)} ${transaction.currency}</span>
+          </div>
+          <div class="summary-row" style="font-size: 14px; color: #7C3AED;">
+            <span><strong>Utgående moms (25%)</strong></span>
+            <span><strong>${commissionVat.toFixed(2)} ${transaction.currency}</strong></span>
+          </div>
+        </div>
+        
+        <div style="background: #7C3AED; color: white; border-radius: 6px; padding: 16px;">
+          <div class="summary-row" style="font-size: 14px;">
+            <span>Total intäkt inkl. moms</span>
+            <span>${totalToHomechef.toFixed(2)} ${transaction.currency}</span>
+          </div>
+          <div class="summary-row" style="font-size: 14px;">
+            <span>Total intäkt exkl. moms</span>
+            <span>${homechefIncomeExclVat.toFixed(2)} ${transaction.currency}</span>
+          </div>
+          <div class="summary-row" style="font-size: 16px; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 12px; margin-top: 8px;">
+            <span><strong>💸 Moms att redovisa till Skatteverket</strong></span>
+            <span><strong>${homechefVatAmount.toFixed(2)} ${transaction.currency}</strong></span>
+          </div>
+          <div class="summary-row" style="font-size: 16px;">
+            <span><strong>✅ Nettointäkt efter moms</strong></span>
+            <span><strong>${homechefNetIncome.toFixed(2)} ${transaction.currency}</strong></span>
+          </div>
         </div>
       </div>
       
@@ -408,6 +478,10 @@ serve(async (req) => {
         <div class="summary-row" style="font-size: 13px;">
           <span>Kundens betalning</span>
           <span>${totalAmount.toFixed(2)} ${transaction.currency}</span>
+        </div>
+        <div class="summary-row" style="font-size: 13px; border-top: 1px solid #BBF7D0; padding-top: 8px; margin-top: 8px;">
+          <span>Homechef moms (serviceavgift + provision)</span>
+          <span>${serviceFeeVat.toFixed(2)} + ${commissionVat.toFixed(2)} = ${homechefVatAmount.toFixed(2)} ${transaction.currency}</span>
         </div>
       </div>
       
