@@ -158,13 +158,22 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
             <span>{dishTitle}</span>
             <span>{quantity} st</span>
           </div>
-          <div className="flex justify-between">
-            <span>Pris per portion:</span>
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Pris per portion:</span>
             <span>{dishPrice} kr</span>
           </div>
-          <div className="flex justify-between font-medium">
-            <span>Totalt (inkl. moms):</span>
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Delsumma:</span>
             <span>{(totalAmount / 100).toLocaleString('sv-SE')} kr</span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Serviceavgift (20%):</span>
+            <span>{Math.round(totalAmount / 100 * 0.2)} kr</span>
+          </div>
+          <div className="h-px bg-border" />
+          <div className="flex justify-between font-semibold">
+            <span>Totalt att betala:</span>
+            <span>{Math.round(totalAmount / 100 * 1.2)} kr</span>
           </div>
         </div>
 
