@@ -3,7 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, ReceiptText, Loader2 } from "lucide-react";
+import { CheckCircle2, ReceiptText, FileText, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const PaymentSuccess = () => {
@@ -18,28 +18,30 @@ const PaymentSuccess = () => {
     }
   }, [searchParams]);
   const [loading, setLoading] = useState(true);
-    type PaymentLineItem = {
-      description: string;
-      quantity: number;
-      amount_total: number;
-      currency?: string;
-    };
+  const [generatingReceipt, setGeneratingReceipt] = useState(false);
+  
+  type PaymentLineItem = {
+    description: string;
+    quantity: number;
+    amount_total: number;
+    currency?: string;
+  };
 
-    type PaymentResult = {
-      amount_total?: number;
-      currency?: string;
-      payment_status?: string;
-      customer_email?: string;
-      commission_report?: {
-        total_amount: number;
-        platform_fee: number;
-        chef_earnings: number;
-      };
-      receipt_url?: string;
-      line_items?: PaymentLineItem[];
+  type PaymentResult = {
+    amount_total?: number;
+    currency?: string;
+    payment_status?: string;
+    customer_email?: string;
+    commission_report?: {
+      total_amount: number;
+      platform_fee: number;
+      chef_earnings: number;
     };
+    receipt_url?: string;
+    line_items?: PaymentLineItem[];
+  };
 
-    const [result, setResult] = useState<PaymentResult | null>(null);
+  const [result, setResult] = useState<PaymentResult | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -67,6 +69,53 @@ const PaymentSuccess = () => {
     verify();
   }, [sessionId, toast]);
 
+  const handleViewCustomerReceipt = async () => {
+    if (!sessionId) return;
+    
+    setGeneratingReceipt(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-customer-receipt", {
+        body: { sessionId }
+      });
+      
+      if (error) throw new Error(error.message);
+      
+      // Open HTML receipt in new window
+      const blob = new Blob([data], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const printWindow = window.open(url, '_blank');
+      
+      if (printWindow) {
+        printWindow.onload = () => {
+          setTimeout(() => {
+            printWindow.print();
+          }, 500);
+        };
+      }
+      
+      toast({
+        title: 'Kvitto öppnat',
+        description: 'Använd Ctrl+P eller Cmd+P för att spara som PDF'
+      });
+      
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    } catch (err) {
+      console.error("Error generating receipt:", err);
+      toast({ 
+        title: "Kunde inte generera kvitto", 
+        description: err instanceof Error ? err.message : "Okänt fel", 
+        variant: "destructive" 
+      });
+    } finally {
+      setGeneratingReceipt(false);
+    }
+  };
+
+  // Calculate displayed amounts
+  const totalAmount = result?.amount_total ? result.amount_total / 100 : 0;
+  const basePrice = totalAmount / 1.06;
+  const serviceFee = totalAmount - basePrice;
+
   return (
     <div className="container mx-auto max-w-3xl py-10 px-4">
       <Card>
@@ -88,27 +137,50 @@ const PaymentSuccess = () => {
             <>
               <div className="grid gap-2 text-sm">
                 <div className="flex justify-between">
-                  <span>Belopp:</span>
+                  <span>Varupris:</span>
                   <span className="font-medium">
-                    {result?.amount_total ? (result.amount_total / 100).toLocaleString('sv-SE') : '--'} {result?.currency?.toUpperCase?.() || 'SEK'}
+                    {basePrice.toLocaleString('sv-SE', { minimumFractionDigits: 2 })} kr
                   </span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between text-primary">
+                  <span>Serviceavgift (6%):</span>
+                  <span className="font-medium">
+                    +{serviceFee.toLocaleString('sv-SE', { minimumFractionDigits: 2 })} kr
+                  </span>
+                </div>
+                <div className="flex justify-between border-t pt-2 text-base font-semibold">
+                  <span>Totalt betalt:</span>
+                  <span>
+                    {totalAmount.toLocaleString('sv-SE', { minimumFractionDigits: 2 })} kr
+                  </span>
+                </div>
+                <div className="flex justify-between pt-2">
                   <span>Status:</span>
-                  <span className="font-medium">{result?.payment_status || 'okänd'}</span>
+                  <span className="font-medium text-green-600">{result?.payment_status === 'paid' ? 'Betald' : result?.payment_status || 'okänd'}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Kund:</span>
+                  <span>E-post:</span>
                   <span className="font-medium">{result?.customer_email || '—'}</span>
                 </div>
               </div>
 
-
-              <div className="flex gap-3 pt-2 flex-wrap">
+              <div className="flex gap-3 pt-4 flex-wrap">
+                <Button 
+                  onClick={handleViewCustomerReceipt} 
+                  disabled={generatingReceipt}
+                  className="gap-2"
+                >
+                  {generatingReceipt ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <ReceiptText className="w-4 h-4" />
+                  )}
+                  Visa & skriv ut kvitto
+                </Button>
                 {result?.receipt_url && (
                   <a href={result.receipt_url} target="_blank" rel="noreferrer">
-                    <Button className="gap-2">
-                      <ReceiptText className="w-4 h-4" /> Visa kvitto
+                    <Button variant="outline" className="gap-2">
+                      <FileText className="w-4 h-4" /> Stripe-kvitto
                     </Button>
                   </a>
                 )}
