@@ -238,7 +238,7 @@ const MealBoxesPage = () => {
             
             {/* Notification Signup */}
             <div className="max-w-md mx-auto bg-card rounded-lg shadow-card p-6">
-              <h4 className="font-semibold text-lg mb-2">Få notifiering när kockar eller företag som säljer färdiglagade matlådor finns</h4>
+              <h4 className="font-semibold text-lg mb-2">Få notifiering när kockar finns</h4>
               <p className="text-sm text-muted-foreground mb-4">
                 Ange din e-post så meddelar vi dig när leverantörer registrerar sig i ditt område.
               </p>
