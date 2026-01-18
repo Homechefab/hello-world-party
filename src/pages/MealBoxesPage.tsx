@@ -7,6 +7,8 @@ import { Package, Truck, Star, MapPin, Building2, ChefHat, Calendar, Search, Cak
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
 import { useProviders } from "@/hooks/useProviders";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const MealBoxesPage = () => {
   const [locationQuery, setLocationQuery] = useState("");
@@ -14,6 +16,9 @@ const MealBoxesPage = () => {
   const [eventType, setEventType] = useState("");
   const [selectedQuickFilter, setSelectedQuickFilter] = useState<string | null>(null);
   const [searchLocation, setSearchLocation] = useState("");
+  const [notifyEmail, setNotifyEmail] = useState("");
+  const [notifyPostalCode, setNotifyPostalCode] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { data: providers = [], isLoading } = useProviders({
     location: searchLocation,
@@ -240,24 +245,65 @@ const MealBoxesPage = () => {
             <div className="max-w-md mx-auto bg-card rounded-lg shadow-card p-6">
               <h4 className="font-semibold text-lg mb-2">Få notifiering när kockar finns</h4>
               <p className="text-sm text-muted-foreground mb-4">
-                Ange din e-post så meddelar vi dig när leverantörer registrerar sig i ditt område.
+                Ange din e-post och postnummer så meddelar vi dig när leverantörer registrerar sig i ditt område.
               </p>
               <form 
-                className="flex flex-col sm:flex-row gap-3"
-                onSubmit={(e) => {
+                className="flex flex-col gap-3"
+                onSubmit={async (e) => {
                   e.preventDefault();
-                  // TODO: Implement notification signup
+                  if (!notifyEmail || !notifyPostalCode) {
+                    toast.error("Fyll i både e-post och postnummer");
+                    return;
+                  }
+                  
+                  setIsSubmitting(true);
+                  try {
+                    const { error } = await supabase
+                      .from("early_access_signups")
+                      .insert({
+                        email: notifyEmail,
+                        postal_code: notifyPostalCode,
+                      });
+                    
+                    if (error) {
+                      if (error.code === "23505") {
+                        toast.error("Denna e-postadress är redan registrerad");
+                      } else {
+                        throw error;
+                      }
+                    } else {
+                      toast.success("Tack! Vi meddelar dig när kockar finns i ditt område.");
+                      setNotifyEmail("");
+                      setNotifyPostalCode("");
+                    }
+                  } catch (error) {
+                    console.error("Error signing up:", error);
+                    toast.error("Något gick fel. Försök igen senare.");
+                  } finally {
+                    setIsSubmitting(false);
+                  }
                 }}
               >
                 <Input
                   type="email"
                   placeholder="Din e-postadress"
-                  className="flex-1"
+                  value={notifyEmail}
+                  onChange={(e) => setNotifyEmail(e.target.value)}
                   required
                 />
-                <Button type="submit" variant="food">
-                  Prenumerera
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <Input
+                    type="text"
+                    placeholder="Ditt postnummer"
+                    value={notifyPostalCode}
+                    onChange={(e) => setNotifyPostalCode(e.target.value)}
+                    className="sm:w-32"
+                    required
+                  />
+                  <Button type="submit" variant="food" disabled={isSubmitting} className="flex-1">
+                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Prenumerera"}
+                  </Button>
+                </div>
               </form>
             </div>
           </div>
