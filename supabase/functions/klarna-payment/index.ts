@@ -109,13 +109,19 @@ serve(async (req) => {
       logStep("Dish found", { name: dish.name, price: dish.price });
 
       // Calculate total amount server-side (price in SEK, convert to öre for Klarna)
+      // Include 20% service fee
+      const serviceFeeRate = 0.20;
       const unitPriceInOre = Math.round(dish.price * 100);
-      resolvedOrderAmountInOre = unitPriceInOre * quantity;
-      resolvedTaxAmountInOre = Math.round(resolvedOrderAmountInOre * 0.2); // 20% VAT
+      const subtotalInOre = unitPriceInOre * quantity;
+      const serviceFeeInOre = Math.round(subtotalInOre * serviceFeeRate);
+      resolvedOrderAmountInOre = subtotalInOre + serviceFeeInOre;
+      resolvedTaxAmountInOre = Math.round(resolvedOrderAmountInOre * 0.2); // 20% VAT on total
 
-      logStep("Calculated amounts", {
+      logStep("Calculated amounts with service fee", {
         unitPriceInOre,
         quantity,
+        subtotalInOre,
+        serviceFeeInOre,
         totalAmountInOre: resolvedOrderAmountInOre,
         taxAmountInOre: resolvedTaxAmountInOre,
       });
@@ -128,8 +134,18 @@ serve(async (req) => {
           quantity,
           unit_price: unitPriceInOre,
           tax_rate: 2000, // 20% in basis points
-          total_amount: unitPriceInOre * quantity,
-          total_tax_amount: Math.round(unitPriceInOre * quantity * 0.2),
+          total_amount: subtotalInOre,
+          total_tax_amount: Math.round(subtotalInOre * 0.2),
+        },
+        {
+          type: "surcharge",
+          reference: "service-fee",
+          name: "Serviceavgift (20%)",
+          quantity: 1,
+          unit_price: serviceFeeInOre,
+          tax_rate: 2000,
+          total_amount: serviceFeeInOre,
+          total_tax_amount: Math.round(serviceFeeInOre * 0.2),
         },
       ];
     } else {
@@ -138,12 +154,31 @@ serve(async (req) => {
         throw new Error("Either (dishId + quantity) or (amount + orderLines) is required");
       }
 
-      resolvedOrderAmountInOre = Number(amount);
-      if (!Number.isFinite(resolvedOrderAmountInOre) || resolvedOrderAmountInOre < 1) {
+      // Add 20% service fee to the legacy amount
+      const serviceFeeRate = 0.20;
+      const originalAmountInOre = Number(amount);
+      if (!Number.isFinite(originalAmountInOre) || originalAmountInOre < 1) {
         throw new Error("amount must be a positive number in öre");
       }
 
-      resolvedOrderLines = orderLines;
+      const serviceFeeInOre = Math.round(originalAmountInOre * serviceFeeRate);
+      resolvedOrderAmountInOre = originalAmountInOre + serviceFeeInOre;
+
+      // Add service fee as a separate line item
+      resolvedOrderLines = [
+        ...orderLines,
+        {
+          type: "surcharge",
+          reference: "service-fee",
+          name: "Serviceavgift (20%)",
+          quantity: 1,
+          unit_price: serviceFeeInOre,
+          tax_rate: 2000,
+          total_amount: serviceFeeInOre,
+          total_tax_amount: Math.round(serviceFeeInOre * 0.2),
+        },
+      ];
+
       resolvedTaxAmountInOre = resolvedOrderLines.reduce(
         (sum, line) => sum + Number(line?.total_tax_amount ?? 0),
         0
@@ -152,8 +187,10 @@ serve(async (req) => {
         resolvedTaxAmountInOre = Math.round(resolvedOrderAmountInOre * 0.2);
       }
 
-      logStep("Received payment request (legacy)", {
-        amount: resolvedOrderAmountInOre,
+      logStep("Received payment request (legacy) with service fee", {
+        originalAmount: originalAmountInOre,
+        serviceFee: serviceFeeInOre,
+        totalAmount: resolvedOrderAmountInOre,
         currency: resolvedCurrency,
         orderLinesCount: resolvedOrderLines.length,
       });
