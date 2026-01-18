@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Package, Truck, Star, MapPin, Building2, ChefHat, Calendar, Search, Cake, Heart, Briefcase, UtensilsCrossed } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
-import mealBoxesImage from "@/assets/meal-boxes.jpg";
 
 const MealBoxesPage = () => {
   const [locationQuery, setLocationQuery] = useState("");
@@ -62,15 +61,8 @@ const MealBoxesPage = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div 
-        className="relative h-[400px] flex items-center justify-center z-0"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${mealBoxesImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center'
-        }}
-      >
-        <div className="text-center text-white z-10 px-4 w-full max-w-4xl mx-auto">
+      <div className="relative min-h-[400px] flex items-center justify-center bg-gradient-hero">
+        <div className="text-center text-white z-10 px-4 w-full max-w-4xl mx-auto py-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">
             Färdiglagade matlådor
           </h1>
