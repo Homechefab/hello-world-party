@@ -189,7 +189,7 @@ const MealBoxesPage = () => {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
               <Button asChild variant="food" size="lg" className="w-full sm:w-auto">
-                <Link to="/chef/application">Registrera dig som kock</Link>
+                <Link to="/chef/application">Registrera dig som kock eller företag</Link>
               </Button>
               <Button 
                 variant="outline" 
@@ -197,14 +197,14 @@ const MealBoxesPage = () => {
                 className="w-full sm:w-auto border-foreground/20"
                 onClick={() => setShowNotifyForm(true)}
               >
-                Få notifiering när kockar finns
+                Få notifiering när kockar eller företag finns
               </Button>
             </div>
 
             {/* Notification Form - shown when button clicked */}
             {showNotifyForm && (
               <div className="max-w-md mx-auto bg-card rounded-lg shadow-card p-6 mt-8">
-                <h4 className="font-semibold text-lg mb-2">Få notifiering när kockar finns</h4>
+                <h4 className="font-semibold text-lg mb-2">Få notifiering när kockar eller företag finns</h4>
                 <p className="text-sm text-muted-foreground mb-4">
                   Ange din e-post och postnummer så meddelar vi dig när leverantörer registrerar sig i ditt område.
                 </p>
