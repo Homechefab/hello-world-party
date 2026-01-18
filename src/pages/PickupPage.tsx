@@ -19,6 +19,7 @@ const PickupPage = () => {
   const [notifyEmail, setNotifyEmail] = useState("");
   const [notifyPostalCode, setNotifyPostalCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showNotifyForm, setShowNotifyForm] = useState(false);
 
   const { data: providers = [], isLoading } = useProviders({
     location: searchLocation,
@@ -225,7 +226,7 @@ const PickupPage = () => {
           </div>
         )}
 
-        {/* Empty State - Notifieringsregistrering */}
+        {/* Empty State - CTA Buttons */}
         {!isLoading && providers.length === 0 && (
           <div className="text-center py-16">
             <ChefHat className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
@@ -239,71 +240,89 @@ const PickupPage = () => {
               Vi arbetar på att få fler kockar och företag som erbjuder mat för avhämtning till ditt område.
             </p>
             
-            {/* Notification Signup */}
-            <div className="max-w-md mx-auto bg-card rounded-lg shadow-card p-6">
-              <h4 className="font-semibold text-lg mb-2">Få notifiering när kockar finns</h4>
-              <p className="text-sm text-muted-foreground mb-4">
-                Ange din e-post och postnummer så meddelar vi dig när kockar registrerar sig i ditt område.
-              </p>
-              <form 
-                className="flex flex-col gap-3"
-                onSubmit={async (e) => {
-                  e.preventDefault();
-                  if (!notifyEmail || !notifyPostalCode) {
-                    toast.error("Fyll i både e-post och postnummer");
-                    return;
-                  }
-                  
-                  setIsSubmitting(true);
-                  try {
-                    const { error } = await supabase
-                      .from("early_access_signups")
-                      .insert({
-                        email: notifyEmail,
-                        postal_code: notifyPostalCode,
-                      });
-                    
-                    if (error) {
-                      if (error.code === "23505") {
-                        toast.error("Denna e-postadress är redan registrerad");
-                      } else {
-                        throw error;
-                      }
-                    } else {
-                      toast.success("Tack! Vi meddelar dig när kockar finns i ditt område.");
-                      setNotifyEmail("");
-                      setNotifyPostalCode("");
-                    }
-                  } catch (error) {
-                    console.error("Error signing up:", error);
-                    toast.error("Något gick fel. Försök igen senare.");
-                  } finally {
-                    setIsSubmitting(false);
-                  }
-                }}
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
+              <Button asChild variant="food" size="lg" className="w-full sm:w-auto">
+                <Link to="/register-chef">Registrera dig som kock</Link>
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="w-full sm:w-auto border-foreground/20"
+                onClick={() => setShowNotifyForm(true)}
               >
-                <Input
-                  type="email"
-                  placeholder="Din e-postadress"
-                  value={notifyEmail}
-                  onChange={(e) => setNotifyEmail(e.target.value)}
-                  required
-                />
-                <div className="flex flex-col sm:flex-row gap-3">
+                Få notifiering när kockar finns
+              </Button>
+            </div>
+
+            {/* Notification Form - shown when button clicked */}
+            {showNotifyForm && (
+              <div className="max-w-md mx-auto bg-card rounded-lg shadow-card p-6 mt-8">
+                <h4 className="font-semibold text-lg mb-2">Få notifiering när kockar finns</h4>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Ange din e-post och postnummer så meddelar vi dig när kockar registrerar sig i ditt område.
+                </p>
+                <form 
+                  className="flex flex-col gap-3"
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (!notifyEmail || !notifyPostalCode) {
+                      toast.error("Fyll i både e-post och postnummer");
+                      return;
+                    }
+                    
+                    setIsSubmitting(true);
+                    try {
+                      const { error } = await supabase
+                        .from("early_access_signups")
+                        .insert({
+                          email: notifyEmail,
+                          postal_code: notifyPostalCode,
+                        });
+                      
+                      if (error) {
+                        if (error.code === "23505") {
+                          toast.error("Denna e-postadress är redan registrerad");
+                        } else {
+                          throw error;
+                        }
+                      } else {
+                        toast.success("Tack! Vi meddelar dig när kockar finns i ditt område.");
+                        setNotifyEmail("");
+                        setNotifyPostalCode("");
+                        setShowNotifyForm(false);
+                      }
+                    } catch (error) {
+                      console.error("Error signing up:", error);
+                      toast.error("Något gick fel. Försök igen senare.");
+                    } finally {
+                      setIsSubmitting(false);
+                    }
+                  }}
+                >
                   <Input
-                    type="text"
-                    placeholder="Ditt postnummer"
-                    value={notifyPostalCode}
-                    onChange={(e) => setNotifyPostalCode(e.target.value)}
-                    className="sm:w-32"
+                    type="email"
+                    placeholder="Din e-postadress"
+                    value={notifyEmail}
+                    onChange={(e) => setNotifyEmail(e.target.value)}
                     required
                   />
-                  <Button type="submit" variant="food" disabled={isSubmitting} className="flex-1">
-                    {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Prenumerera"}
-                  </Button>
-                </div>
-              </form>
-            </div>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Input
+                      type="text"
+                      placeholder="Ditt postnummer"
+                      value={notifyPostalCode}
+                      onChange={(e) => setNotifyPostalCode(e.target.value)}
+                      className="sm:w-32"
+                      required
+                    />
+                    <Button type="submit" variant="food" disabled={isSubmitting} className="flex-1">
+                      {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Prenumerera"}
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            )}
           </div>
         )}
 
