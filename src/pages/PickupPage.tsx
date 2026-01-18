@@ -3,15 +3,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Package, Star, MapPin, Building2, ChefHat, Clock, Calendar, Search, Cake, Heart, Briefcase, UtensilsCrossed } from "lucide-react";
+import { Package, Star, MapPin, Building2, ChefHat, Clock, Calendar, Search, Cake, Heart, Briefcase, UtensilsCrossed, Loader2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
+import { useProviders } from "@/hooks/useProviders";
 
 const PickupPage = () => {
   const [locationQuery, setLocationQuery] = useState("");
   const [dateQuery, setDateQuery] = useState("");
   const [eventType, setEventType] = useState("");
   const [selectedQuickFilter, setSelectedQuickFilter] = useState<string | null>(null);
+  const [searchLocation, setSearchLocation] = useState("");
+
+  const { data: providers = [], isLoading } = useProviders({
+    location: searchLocation,
+  });
 
   const quickFilters = [
     { label: "Födelsedag", value: "birthday", icon: Cake },
@@ -19,34 +25,6 @@ const PickupPage = () => {
     { label: "Affärsmiddag", value: "business", icon: Briefcase },
     { label: "Middag", value: "dinner", icon: UtensilsCrossed },
   ];
-
-  // Inga leverantörer registrerade än - tom lista
-  const providers: {
-    id: string;
-    name: string;
-    type: string;
-    location: string;
-    rating: number;
-    reviewCount: number;
-    description: string;
-    dishCount: number;
-    pickupTime: string;
-    specialties: string[];
-  }[] = [];
-
-  // Filtrera leverantörer baserat på plats och event-typ
-  const filteredProviders = providers.filter((provider) => {
-    const matchesLocation = 
-      locationQuery === "" || 
-      provider.location.toLowerCase().includes(locationQuery.toLowerCase());
-    
-    const matchesEventType = 
-      eventType === "" || 
-      selectedQuickFilter === null ||
-      provider.specialties.some(s => s.toLowerCase().includes(eventType.toLowerCase()));
-
-    return matchesLocation && matchesEventType;
-  });
 
   const handleQuickFilter = (value: string) => {
     if (selectedQuickFilter === value) {
@@ -56,6 +34,10 @@ const PickupPage = () => {
       setSelectedQuickFilter(value);
       setEventType(value);
     }
+  };
+
+  const handleSearch = () => {
+    setSearchLocation(locationQuery);
   };
 
   return (
@@ -81,6 +63,7 @@ const PickupPage = () => {
                   value={locationQuery}
                   onChange={(e) => setLocationQuery(e.target.value)}
                   className="pl-10 bg-white border-border"
+                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 />
               </div>
               
@@ -115,7 +98,7 @@ const PickupPage = () => {
               </div>
 
               {/* Search Button */}
-              <Button variant="food" size="default" className="w-full">
+              <Button variant="food" size="default" className="w-full" onClick={handleSearch}>
                 Hitta mat
               </Button>
             </div>
@@ -146,16 +129,23 @@ const PickupPage = () => {
         {/* Results Count */}
         <div className="mb-6">
           <p className="text-muted-foreground">
-            Visar {filteredProviders.length} leverantör{filteredProviders.length !== 1 ? 'er' : ''}
-            {locationQuery && ` i ${locationQuery}`}
+            {isLoading ? "Söker..." : `Visar ${providers.length} leverantör${providers.length !== 1 ? 'er' : ''}`}
+            {searchLocation && ` i ${searchLocation}`}
           </p>
         </div>
 
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+          </div>
+        )}
+
         {/* Providers Grid */}
-        {filteredProviders.length > 0 && (
+        {!isLoading && providers.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-            {filteredProviders.map((provider) => (
-              <Link key={provider.id} to={`/provider/${provider.id}`}>
+            {providers.map((provider) => (
+              <Link key={provider.id} to={`/chef/${provider.id}`}>
                 <Card className="group hover:shadow-card transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full">
                   <CardContent className="p-6">
                     {/* Header with type badge */}
@@ -166,7 +156,13 @@ const PickupPage = () => {
                             ? "bg-primary/10 text-primary" 
                             : "bg-accent/10 text-accent-foreground"
                         }`}>
-                          {provider.type === "chef" ? (
+                          {provider.imageUrl ? (
+                            <img 
+                              src={provider.imageUrl} 
+                              alt={provider.name}
+                              className="w-full h-full rounded-full object-cover"
+                            />
+                          ) : provider.type === "chef" ? (
                             <ChefHat className="w-6 h-6" />
                           ) : (
                             <Building2 className="w-6 h-6" />
@@ -191,28 +187,30 @@ const PickupPage = () => {
                     </p>
 
                     {/* Specialties */}
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {provider.specialties.slice(0, 3).map((specialty) => (
-                        <Badge key={specialty} variant="outline" className="text-xs">
-                          {specialty}
-                        </Badge>
-                      ))}
-                    </div>
+                    {provider.specialties.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {provider.specialties.slice(0, 3).map((specialty) => (
+                          <Badge key={specialty} variant="outline" className="text-xs">
+                            {specialty}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
 
                     {/* Stats */}
                     <div className="flex items-center justify-between text-sm border-t pt-4">
                       <div className="flex items-center gap-1">
                         <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        <span className="font-medium">{provider.rating}</span>
+                        <span className="font-medium">{provider.rating || "-"}</span>
                         <span className="text-muted-foreground">({provider.reviewCount})</span>
                       </div>
                       <div className="flex items-center gap-1 text-muted-foreground">
                         <Package className="w-4 h-4" />
-                        <span>{provider.dishCount} rätter</span>
+                        <span>{provider.itemCount} rätter</span>
                       </div>
                       <div className="flex items-center gap-1 text-primary">
                         <Clock className="w-4 h-4" />
-                        <span className="text-xs">{provider.pickupTime}</span>
+                        <span className="text-xs">Avhämtning</span>
                       </div>
                     </div>
                   </CardContent>
@@ -222,13 +220,13 @@ const PickupPage = () => {
           </div>
         )}
 
-        {/* Empty State - Inga leverantörer registrerade */}
-        {providers.length === 0 && (
+        {/* Empty State */}
+        {!isLoading && providers.length === 0 && (
           <div className="text-center py-16">
             <ChefHat className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-2xl font-semibold text-foreground mb-4">
-              {locationQuery
-                ? `Inga leverantörer registrerade i "${locationQuery}" än`
+              {searchLocation
+                ? `Inga leverantörer hittades i "${searchLocation}"`
                 : "Inga leverantörer registrerade än"
               }
             </h3>
@@ -251,7 +249,7 @@ const PickupPage = () => {
         )}
 
         {/* Info Section */}
-        {filteredProviders.length > 0 && (
+        {!isLoading && providers.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             <Card>
               <CardContent className="pt-6">
