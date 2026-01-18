@@ -139,13 +139,15 @@ serve(async (req) => {
       cancel_url: cancelUrl || `${req.headers.get("origin")}/payment-canceled`,
       metadata: {
         dish_name: dishName || 'Multiple items',
-        platform_fee_percentage: "20", // 20% provision för Homechef
+        customer_service_fee_percentage: "6", // 6% serviceavgift från kund
+        seller_commission_percentage: "19", // 19% provision från säljare
         total_amount: validatedTotalAmount > 0 ? String(validatedTotalAmount) : (totalAmount || ''),
       },
       payment_intent_data: {
         metadata: {
           dish_name: dishName || 'Multiple items',
-          platform_fee_percentage: "20",
+          customer_service_fee_percentage: "6",
+          seller_commission_percentage: "19",
         },
       },
     });

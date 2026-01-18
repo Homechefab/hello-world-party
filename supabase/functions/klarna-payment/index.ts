@@ -109,8 +109,8 @@ serve(async (req) => {
       logStep("Dish found", { name: dish.name, price: dish.price });
 
       // Calculate total amount server-side (price in SEK, convert to öre for Klarna)
-      // Include 20% service fee
-      const serviceFeeRate = 0.20;
+      // Include 6% service fee from customer
+      const serviceFeeRate = 0.06;
       const unitPriceInOre = Math.round(dish.price * 100);
       const subtotalInOre = unitPriceInOre * quantity;
       const serviceFeeInOre = Math.round(subtotalInOre * serviceFeeRate);
@@ -140,7 +140,7 @@ serve(async (req) => {
         {
           type: "surcharge",
           reference: "service-fee",
-          name: "Serviceavgift (20%)",
+          name: "Serviceavgift (6%)",
           quantity: 1,
           unit_price: serviceFeeInOre,
           tax_rate: 2000,
@@ -154,8 +154,8 @@ serve(async (req) => {
         throw new Error("Either (dishId + quantity) or (amount + orderLines) is required");
       }
 
-      // Add 20% service fee to the legacy amount
-      const serviceFeeRate = 0.20;
+      // Add 6% service fee to the legacy amount (customer pays)
+      const serviceFeeRate = 0.06;
       const originalAmountInOre = Number(amount);
       if (!Number.isFinite(originalAmountInOre) || originalAmountInOre < 1) {
         throw new Error("amount must be a positive number in öre");
@@ -170,7 +170,7 @@ serve(async (req) => {
         {
           type: "surcharge",
           reference: "service-fee",
-          name: "Serviceavgift (20%)",
+          name: "Serviceavgift (6%)",
           quantity: 1,
           unit_price: serviceFeeInOre,
           tax_rate: 2000,

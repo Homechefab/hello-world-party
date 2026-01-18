@@ -51,10 +51,20 @@ serve(async (req) => {
     logStep('Dish found', { name: dish.name, price: dish.price });
 
     // Calculate total amount server-side (price is in kr, convert to öre)
+    // Add 6% service fee from customer
+    const serviceFeeRate = 0.06;
     const unitPriceInOre = Math.round(dish.price * 100);
-    const totalAmount = unitPriceInOre * quantity;
+    const subtotalInOre = unitPriceInOre * quantity;
+    const serviceFeeInOre = Math.round(subtotalInOre * serviceFeeRate);
+    const totalAmountInOre = subtotalInOre + serviceFeeInOre;
 
-    logStep('Calculated amount', { unitPriceInOre, quantity, totalAmount });
+    logStep('Calculated amount with service fee', { 
+      unitPriceInOre, 
+      quantity, 
+      subtotalInOre,
+      serviceFeeInOre,
+      totalAmountInOre 
+    });
 
     // Create or retrieve the customer
     const customer = await createOrRetrieveCustomer({
@@ -63,7 +73,7 @@ serve(async (req) => {
       supabaseClient,
     });
 
-    // Create Stripe checkout session
+    // Create Stripe checkout session with dish + service fee as separate line items
     const session = await stripe.checkout.sessions.create({
       customer: customer.id,
       payment_method_types: ['card'],
@@ -74,7 +84,7 @@ serve(async (req) => {
             currency: 'sek',
             product_data: {
               name: dish.name,
-              description: `Quantity: ${quantity}, Pickup: ${pickupTime}`,
+              description: `Antal: ${quantity}, Hämtning: ${pickupTime}`,
               metadata: {
                 pickupAddress,
                 dishId: dish.id,
@@ -83,6 +93,17 @@ serve(async (req) => {
             unit_amount: unitPriceInOre,
           },
           quantity: quantity,
+        },
+        {
+          price_data: {
+            currency: 'sek',
+            product_data: {
+              name: 'Serviceavgift (6%)',
+              description: 'Homechef serviceavgift',
+            },
+            unit_amount: serviceFeeInOre,
+          },
+          quantity: 1,
         },
       ],
       success_url: `${req.headers.get('origin')}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
@@ -94,6 +115,7 @@ serve(async (req) => {
         quantity: quantity.toString(),
         pickupTime,
         pickupAddress,
+        serviceFee: serviceFeeInOre.toString(),
       },
     });
 
