@@ -3,15 +3,23 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Package, Truck, Star, Search, MapPin, Building2, ChefHat } from "lucide-react";
+import { Package, Truck, Star, MapPin, Building2, ChefHat, Calendar, Search, Cake, Heart, Briefcase, UtensilsCrossed } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Link } from "react-router-dom";
 import mealBoxesImage from "@/assets/meal-boxes.jpg";
 
 const MealBoxesPage = () => {
-  const [searchQuery, setSearchQuery] = useState("");
   const [locationQuery, setLocationQuery] = useState("");
-  const [providerType, setProviderType] = useState("all");
+  const [dateQuery, setDateQuery] = useState("");
+  const [eventType, setEventType] = useState("");
+  const [selectedQuickFilter, setSelectedQuickFilter] = useState<string | null>(null);
+
+  const quickFilters = [
+    { label: "Födelsedag", value: "birthday", icon: Cake },
+    { label: "Årsdag", value: "anniversary", icon: Heart },
+    { label: "Affärsmiddag", value: "business", icon: Briefcase },
+    { label: "Middag", value: "dinner", icon: UtensilsCrossed },
+  ];
 
   // Inga leverantörer registrerade än - tom lista
   const providers: {
@@ -27,23 +35,29 @@ const MealBoxesPage = () => {
     specialties: string[];
   }[] = [];
 
-  // Filtrera leverantörer baserat på sök, plats och typ
+  // Filtrera leverantörer baserat på plats och event-typ
   const filteredProviders = providers.filter((provider) => {
-    const matchesSearch = 
-      provider.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      provider.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      provider.specialties.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
-    
     const matchesLocation = 
       locationQuery === "" || 
       provider.location.toLowerCase().includes(locationQuery.toLowerCase());
     
-    const matchesType = 
-      providerType === "all" || 
-      provider.type === providerType;
+    const matchesEventType = 
+      eventType === "" || 
+      selectedQuickFilter === null ||
+      provider.specialties.some(s => s.toLowerCase().includes(eventType.toLowerCase()));
 
-    return matchesSearch && matchesLocation && matchesType;
+    return matchesLocation && matchesEventType;
   });
+
+  const handleQuickFilter = (value: string) => {
+    if (selectedQuickFilter === value) {
+      setSelectedQuickFilter(null);
+      setEventType("");
+    } else {
+      setSelectedQuickFilter(value);
+      setEventType(value);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -56,78 +70,91 @@ const MealBoxesPage = () => {
           backgroundPosition: 'center'
         }}
       >
-        <div className="text-center text-white z-10 px-4">
+        <div className="text-center text-white z-10 px-4 w-full max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-lg">
             Färdiglagade matlådor
           </h1>
-          <p className="text-xl drop-shadow-lg max-w-2xl mx-auto">
+          <p className="text-xl drop-shadow-lg max-w-2xl mx-auto mb-8">
             Sök efter kockar och företag som säljer hemlagade matlådor i ditt område
           </p>
+
+          {/* Search Section - inside hero */}
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-xl">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+              {/* Location Input */}
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  placeholder="Din adress"
+                  value={locationQuery}
+                  onChange={(e) => setLocationQuery(e.target.value)}
+                  className="pl-10 bg-white border-border"
+                />
+              </div>
+              
+              {/* Date Input */}
+              <div className="relative">
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Input
+                  type="date"
+                  placeholder="åååå-mm-dd"
+                  value={dateQuery}
+                  onChange={(e) => setDateQuery(e.target.value)}
+                  className="pl-10 bg-white border-border"
+                />
+              </div>
+
+              {/* Event Type Select */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground z-10" />
+                <Select value={eventType} onValueChange={setEventType}>
+                  <SelectTrigger className="pl-10 bg-white border-border">
+                    <SelectValue placeholder="Typ av event" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="birthday">Födelsedag</SelectItem>
+                    <SelectItem value="anniversary">Årsdag</SelectItem>
+                    <SelectItem value="business">Affärsmiddag</SelectItem>
+                    <SelectItem value="dinner">Middag</SelectItem>
+                    <SelectItem value="party">Fest</SelectItem>
+                    <SelectItem value="other">Annat</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Search Button */}
+              <Button variant="food" size="default" className="w-full">
+                Hitta matlådor
+              </Button>
+            </div>
+
+            {/* Quick filters */}
+            <div className="flex flex-wrap justify-center gap-2 mt-4">
+              {quickFilters.map((filter) => {
+                const Icon = filter.icon;
+                return (
+                  <Button
+                    key={filter.value}
+                    variant={selectedQuickFilter === filter.value ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handleQuickFilter(filter.value)}
+                    className={`rounded-full ${selectedQuickFilter === filter.value ? "" : "bg-white hover:bg-gray-50"}`}
+                  >
+                    <Icon className="w-4 h-4 mr-1.5" />
+                    {filter.label}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12 relative z-10">
-        {/* Search Section */}
-        <div className="bg-card rounded-lg shadow-card p-6 mb-8 mt-6 relative z-50">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {/* Search Input */}
-            <div className="relative md:col-span-2">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                placeholder="Sök kock, företag eller typ av mat..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            
-            {/* Location Input */}
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input
-                placeholder="Ort eller stad"
-                value={locationQuery}
-                onChange={(e) => setLocationQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-
-            {/* Provider Type Select */}
-            <Select value={providerType} onValueChange={setProviderType}>
-              <SelectTrigger>
-                <SelectValue placeholder="Leverantörstyp" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Alla leverantörer</SelectItem>
-                <SelectItem value="chef">Kockar</SelectItem>
-                <SelectItem value="business">Företag</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Clear filters */}
-          {(searchQuery || locationQuery || providerType !== "all") && (
-            <div className="mt-4 pt-4 border-t">
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => {
-                  setSearchQuery("");
-                  setLocationQuery("");
-                  setProviderType("all");
-                }}
-              >
-                Rensa filter
-              </Button>
-            </div>
-          )}
-        </div>
-
+      <div className="container mx-auto px-4 py-12">
         {/* Results Count */}
         <div className="mb-6">
           <p className="text-muted-foreground">
             Visar {filteredProviders.length} leverantör{filteredProviders.length !== 1 ? 'er' : ''}
-            {searchQuery && ` för "${searchQuery}"`}
             {locationQuery && ` i ${locationQuery}`}
           </p>
         </div>
@@ -208,8 +235,8 @@ const MealBoxesPage = () => {
           <div className="text-center py-16">
             <ChefHat className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-2xl font-semibold text-foreground mb-4">
-              {searchQuery || locationQuery
-                ? `Inga leverantörer registrerade ${locationQuery ? `i "${locationQuery}"` : ''} än`
+              {locationQuery
+                ? `Inga leverantörer registrerade i "${locationQuery}" än`
                 : "Inga leverantörer registrerade än"
               }
             </h3>
