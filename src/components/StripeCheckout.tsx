@@ -96,7 +96,7 @@ export const StripeCheckout: React.FC<StripeCheckoutProps> = ({
   };
 
   const basePrice = price * quantity;
-  const serviceFee = basePrice * 0.20; // 20% serviceavgift som läggs på kundpriset
+  const serviceFee = basePrice * 0.06; // 6% serviceavgift som läggs på kundpriset
   const totalPrice = basePrice + serviceFee;
 
   return (
@@ -132,7 +132,7 @@ export const StripeCheckout: React.FC<StripeCheckoutProps> = ({
               <span>{basePrice.toFixed(2)} kr</span>
             </div>
             <div className="flex justify-between text-muted-foreground">
-              <span>Serviceavgift (20%):</span>
+              <span>Serviceavgift (6%):</span>
               <span>{serviceFee.toFixed(2)} kr</span>
             </div>
             <div className="flex justify-between font-medium">

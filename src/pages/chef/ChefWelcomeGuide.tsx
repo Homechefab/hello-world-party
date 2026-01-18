@@ -61,7 +61,7 @@ const ChefWelcomeGuide = () => {
         },
         {
           title: "Sätt rätt pris",
-          description: "Räkna in alla kostnader: ingredienser, el, förpackning och din tid. Glöm inte vår 20% plattformsavgift",
+          description: "Räkna in alla kostnader: ingredienser, el, förpackning och din tid. Kom ihåg att Homechef tar 19% provision (du får 81% av priset)",
           actionText: "Priskalkylator",
           actionLink: "/chef/dashboard"
         }

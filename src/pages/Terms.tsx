@@ -182,8 +182,9 @@ const Terms = () => {
                   medan Du ingår ett avtal med Homechef om eventuell leverans.
                 </p>
                 <p className="text-muted-foreground">
-                  Homechef tar ut en serviceavgift på 20% som läggs på kundpriset. Denna avgift täcker 
-                  plattformens drift, support och marknadsföring. Säljaren får hela sitt angivna pris.
+                  Homechef tar ut en serviceavgift på 6% som läggs på kundpriset, samt en provision på 19% 
+                  från säljarens pris. Säljaren får därmed 81% av sitt angivna pris. Dessa avgifter täcker 
+                  plattformens drift, support och marknadsföring.
                 </p>
               </div>
             </section>

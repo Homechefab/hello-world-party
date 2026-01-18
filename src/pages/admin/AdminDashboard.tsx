@@ -310,8 +310,12 @@ export const AdminDashboard = () => {
                   <Button variant="outline" size="sm">50 kr</Button>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span>Provision (%)</span>
-                  <Button variant="outline" size="sm">20%</Button>
+                  <span>Kundavgift</span>
+                  <Button variant="outline" size="sm">6%</Button>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span>Säljarprovisioner</span>
+                  <Button variant="outline" size="sm">19%</Button>
                 </div>
               </div>
             </CardContent>
