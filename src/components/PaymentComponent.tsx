@@ -73,9 +73,18 @@ const PaymentComponent = ({
             </div>
           )}
           <div className="h-px bg-border my-2" />
-          <div className="flex justify-between font-semibold text-base">
-            <span>Totalt:</span>
+          <div className="flex justify-between text-sm">
+            <span>Delsumma:</span>
             <span>{dishPrice * quantity} kr</span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Serviceavgift (20%):</span>
+            <span>{Math.round(dishPrice * quantity * 0.2)} kr</span>
+          </div>
+          <div className="h-px bg-border my-2" />
+          <div className="flex justify-between font-semibold text-base">
+            <span>Totalt att betala:</span>
+            <span>{Math.round(dishPrice * quantity * 1.2)} kr</span>
           </div>
         </div>
         

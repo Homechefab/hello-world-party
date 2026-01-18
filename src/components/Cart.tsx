@@ -174,10 +174,21 @@ export const Cart = () => {
                 </div>
                 
                 <div className="border-t pt-4 pb-2 flex-shrink-0 bg-background">
-                  <div className="flex justify-between items-center mb-4">
-                  <span className="text-lg font-semibold">Totalt:</span>
-                  <span className="text-lg font-bold">{state.total} kr</span>
-                </div>
+                  <div className="space-y-2 mb-4">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground">Delsumma:</span>
+                      <span>{state.total} kr</span>
+                    </div>
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-muted-foreground">Serviceavgift (20%):</span>
+                      <span>{Math.round(state.total * 0.2)} kr</span>
+                    </div>
+                    <div className="h-px bg-border" />
+                    <div className="flex justify-between items-center">
+                      <span className="text-lg font-semibold">Totalt att betala:</span>
+                      <span className="text-lg font-bold">{Math.round(state.total * 1.2)} kr</span>
+                    </div>
+                  </div>
 
                 <Button
                     className="w-full" 
@@ -194,7 +205,7 @@ export const Cart = () => {
                     ) : user ? (
                       <>
                         <CreditCard className="w-4 h-4 mr-2" />
-                        Betala {state.total} kr
+                        Betala {Math.round(state.total * 1.2)} kr
                       </>
                     ) : (
                       "Logga in för att beställa"
