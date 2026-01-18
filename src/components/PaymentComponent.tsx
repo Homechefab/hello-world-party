@@ -78,13 +78,13 @@ const PaymentComponent = ({
             <span>{dishPrice * quantity} kr</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Serviceavgift (20%):</span>
-            <span>{Math.round(dishPrice * quantity * 0.2)} kr</span>
+            <span className="text-muted-foreground">Serviceavgift (6%):</span>
+            <span>{Math.round(dishPrice * quantity * 0.06)} kr</span>
           </div>
           <div className="h-px bg-border my-2" />
           <div className="flex justify-between font-semibold text-base">
             <span>Totalt att betala:</span>
-            <span>{Math.round(dishPrice * quantity * 1.2)} kr</span>
+            <span>{Math.round(dishPrice * quantity * 1.06)} kr</span>
           </div>
         </div>
         

@@ -29,8 +29,8 @@ const KitchenPartnerFAQ = () => {
       answer: "Betalningen sker automatiskt efter varje uthyrning. Pengarna överförs till ditt konto inom 1-3 bankdagar efter att hyrtiden är avslutad. Du får detaljerade rapporter på alla transaktioner och kan enkelt se din intjäning i dashboarden."
     },
     {
-      question: "Vad ingår i Homechefs serviceavgift?",
-      answer: "Homechef lägger på en serviceavgift på 20% som betalas av kunden. Du får 100% av din angivna hyra. Serviceavgiften täcker plattformen, betalhantering, försäkring, kundsupport och marknadsföring. Det finns inga månadskostnader eller startavgifter."
+      question: "Vad ingår i Homechefs avgifter?",
+      answer: "Homechef lägger på en serviceavgift på 6% som betalas av kunden, samt tar 19% provision från din hyra. Du får 81% av din angivna hyra. Avgifterna täcker plattformen, betalhantering, försäkring, kundsupport och marknadsföring. Det finns inga månadskostnader eller startavgifter."
     },
     {
       question: "Måste jag vara på plats under uthyrningen?",

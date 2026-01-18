@@ -22,7 +22,7 @@ Homechef är Sveriges marknadsplats för hemlagad mat. Vi kopplar hemmakockar me
 
 **LOJALITET:** 1 poäng/10 kr. Var 5:e köp = 10% rabatt.
 
-**SERVICEAVGIFT:** 20% läggs på kundpriset för Kockar, Kökspartners och Företag (säljaren får 100% av sitt pris). Restauranger betalar fast månadsavgift på 3 999 kr/mån (inga avgifter på försäljningen).
+**AVGIFTSMODELL:** Kunder betalar 6% serviceavgift. Säljare (Kockar, Kökspartners, Företag) betalar 19% provision och får 81% av sitt pris. Restauranger betalar fast månadsavgift på 3 999 kr/mån (inga avgifter på försäljningen).
 
 **PROBLEM?**
 - Beställning kom ej → Ring 0734234686 för återbetalning
@@ -67,7 +67,7 @@ ${GENERAL_KNOWLEDGE}
 - Bli kock: /chef/application, godkännande 2-3 dagar
 - KRAV: Godkännande från kommunen (livsmedelstillstånd)
 - REKOMMENDERAT: Försäkring och F-skatt (bra att ha men ej krav)
-- Serviceavgift: 20% läggs på kundpriset (du får 100% av ditt pris)
+- Avgifter: 6% kundavgift + 19% provision (du får 81% av ditt pris)
 - Utbetalning: Veckovis
 - Lägg till rätter: Kock-panelen → Menyer
 - Fler kunder: Bra foton + recensioner!
@@ -81,7 +81,7 @@ ${GENERAL_KNOWLEDGE}
 **KÖKSPARTNER-TIPS:**
 - Ansök: /hyr-ut-ditt-kok
 - Krav: Godkänt kök, försäkring, utrustning
-- Serviceavgift: 20% läggs på kundpriset (du får 100% av din hyra)
+- Avgifter: 6% kundavgift + 19% provision (du får 81% av din hyra)
 - Pris: Du bestämmer (200-500 kr/h vanligt)
 - Utbetalning: Månadsvis
 - Bokningar: Godkänn manuellt via dashboard

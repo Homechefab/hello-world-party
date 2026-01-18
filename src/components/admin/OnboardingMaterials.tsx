@@ -114,7 +114,7 @@ const onboardingData: OnboardingContent[] = [
       },
       {
         question: 'Vad kostar det att vara kock pa Homechef?',
-        answer: 'Det ar gratis att registrera sig. Homechef lagger pa 20% serviceavgift som kunden betalar. Du far 100% av ditt angivna pris.'
+        answer: 'Det ar gratis att registrera sig. Kunden betalar 6% serviceavgift och Homechef tar 19% provision fran ditt pris. Du far 81% av ditt angivna pris.'
       },
       {
         question: 'Hur far jag betalt?',
@@ -267,8 +267,8 @@ const onboardingData: OnboardingContent[] = [
         answer: 'De flesta kok tar mellan 200-500 kr/timme beroende pa storlek och utrustning.'
       },
       {
-        question: 'Vilken serviceavgift tar Homechef?',
-        answer: 'Homechef lagger pa 20% serviceavgift som betalas av kunden. Du far 100% av din angivna hyra.'
+        question: 'Vilken avgift tar Homechef?',
+        answer: 'Kunden betalar 6% serviceavgift och Homechef tar 19% provision fran din hyra. Du far 81% av din angivna hyra.'
       },
       {
         question: 'Hur ofta far jag betalt?',
@@ -354,8 +354,8 @@ const onboardingData: OnboardingContent[] = [
         answer: 'Alla foretag som sysslad med fardiglagade matlador, meal prep, catering eller liknande livsmedelsverksamhet med giltiga tillstand.'
       },
       {
-        question: 'Hur fungerar Homechefs serviceavgift?',
-        answer: 'Homechef lagger pa 20% serviceavgift som betalas av kunden. Ni far 100% av ert angivna pris. Serviceavgiften inkluderar betalningshantering och kundtjanst.'
+        question: 'Hur fungerar Homechefs avgifter?',
+        answer: 'Kunden betalar 6% serviceavgift och Homechef tar 19% provision fran ert pris. Ni far 81% av ert angivna pris. Avgifterna inkluderar betalningshantering och kundtjanst.'
       },
       {
         question: 'Hur ofta far jag betalt?',

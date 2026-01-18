@@ -27,8 +27,8 @@ serve(async (req) => {
       throw new Error("Amount and payer phone number are required");
     }
 
-    // Add 20% service fee to the amount
-    const serviceFeeRate = 0.20;
+    // Add 6% service fee to the amount (customer pays)
+    const serviceFeeRate = 0.06;
     const totalAmount = amount * (1 + serviceFeeRate);
 
     console.log("Swish payment amount calculation:", {

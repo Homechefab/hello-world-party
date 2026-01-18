@@ -54,11 +54,16 @@ serve(async (req) => {
     );
     
     const totalAmount = (session.amount_total || 0) / 100; // Convert from cents to SEK
-    // Serviceavgift betalas av kund: totalAmount = basePrice * 1.20
-    // Så basePrice = totalAmount / 1.20, serviceFee = totalAmount - basePrice
-    const basePrice = totalAmount / 1.20;
-    const platformFee = totalAmount - basePrice; // 20% serviceavgift
-    const chefEarnings = basePrice; // Säljaren får 100% av sitt pris
+    // Hybridmodell: 6% serviceavgift från kund + 19% provision från säljare
+    // totalAmount = basePrice * 1.06 (kund betalar 6% extra)
+    // Säljaren får basePrice * 0.81 (19% dras från säljarens pris)
+    const serviceFeeRate = 0.06;
+    const sellerCommissionRate = 0.19;
+    const basePrice = totalAmount / (1 + serviceFeeRate);
+    const serviceFee = totalAmount - basePrice; // 6% serviceavgift från kund
+    const sellerCommission = basePrice * sellerCommissionRate; // 19% provision från säljare
+    const platformFee = serviceFee + sellerCommission; // Totalt till Homechef
+    const chefEarnings = basePrice - sellerCommission; // Säljaren får 81% av sitt pris
     const dishName = items.data[0]?.description || session.metadata?.dishName || "Okänd rätt";
     
     try {
