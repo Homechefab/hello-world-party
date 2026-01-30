@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,8 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Users, Monitor, Smartphone, Tablet, Globe, RefreshCw, Calendar } from 'lucide-react';
-import { format, subDays, startOfDay } from 'date-fns';
+import { format, subDays, startOfDay, eachDayOfInterval, isSameDay } from 'date-fns';
 import { sv } from 'date-fns/locale';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
 
 interface Visitor {
   id: string;
@@ -69,6 +70,33 @@ const Visitors = () => {
     }
     return acc;
   }, {} as Record<string, number>) || {};
+
+  // Generate chart data - visits per day with device breakdown
+  const chartData = useMemo(() => {
+    if (!visitors || visitors.length === 0) return [];
+    
+    const days = parseInt(timeFilter);
+    const dateRange = eachDayOfInterval({
+      start: subDays(new Date(), days - 1),
+      end: new Date()
+    });
+    
+    return dateRange.map(day => {
+      const dayVisits = visitors.filter(v => 
+        isSameDay(new Date(v.visited_at), day)
+      );
+      
+      return {
+        date: format(day, 'd MMM', { locale: sv }),
+        fullDate: format(day, 'yyyy-MM-dd'),
+        total: dayVisits.length,
+        mobile: dayVisits.filter(v => v.device_type === 'mobile').length,
+        desktop: dayVisits.filter(v => v.device_type === 'desktop').length,
+        tablet: dayVisits.filter(v => v.device_type === 'tablet').length,
+        loggedIn: dayVisits.filter(v => v.user_id).length,
+      };
+    });
+  }, [visitors, timeFilter]);
 
   const getDeviceIcon = (type: string | null) => {
     switch (type) {
@@ -159,6 +187,101 @@ const Visitors = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Visitor Trend Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Besökstrender</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {chartData.length > 0 ? (
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis 
+                    dataKey="date" 
+                    className="text-xs fill-muted-foreground"
+                    tick={{ fontSize: 12 }}
+                  />
+                  <YAxis 
+                    className="text-xs fill-muted-foreground"
+                    tick={{ fontSize: 12 }}
+                    allowDecimals={false}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--background))', 
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                    labelStyle={{ color: 'hsl(var(--foreground))' }}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="total" 
+                    name="Totala besök"
+                    stroke="hsl(var(--primary))" 
+                    fillOpacity={1} 
+                    fill="url(#colorTotal)" 
+                    strokeWidth={2}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <p className="text-muted-foreground text-center py-8">Ingen data tillgänglig</p>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Device Breakdown Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Besök per enhetstyp</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {chartData.length > 0 ? (
+            <div className="h-[250px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis 
+                    dataKey="date" 
+                    className="text-xs fill-muted-foreground"
+                    tick={{ fontSize: 12 }}
+                  />
+                  <YAxis 
+                    className="text-xs fill-muted-foreground"
+                    tick={{ fontSize: 12 }}
+                    allowDecimals={false}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: 'hsl(var(--background))', 
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                    labelStyle={{ color: 'hsl(var(--foreground))' }}
+                  />
+                  <Legend />
+                  <Bar dataKey="desktop" name="Desktop" fill="hsl(var(--primary))" stackId="a" />
+                  <Bar dataKey="mobile" name="Mobil" fill="hsl(var(--accent))" stackId="a" />
+                  <Bar dataKey="tablet" name="Surfplatta" fill="hsl(var(--muted))" stackId="a" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <p className="text-muted-foreground text-center py-8">Ingen data tillgänglig</p>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Top Pages & Browser Stats */}
       <div className="grid gap-4 md:grid-cols-2">
