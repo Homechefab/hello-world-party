@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { useVisitorTracking } from '@/hooks/useVisitorTracking';
 import LiveChat from './LiveChat';
 import Header from './Header';
 import useAutoSafeArea from '@/hooks/useAutoSafeArea';
@@ -9,6 +10,7 @@ interface PublicLayoutProps {
 
 export const PublicLayout = ({ children }: PublicLayoutProps) => {
   useAutoSafeArea();
+  useVisitorTracking();
   
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
