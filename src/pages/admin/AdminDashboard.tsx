@@ -13,6 +13,7 @@ import { CommissionReports } from '@/components/admin/CommissionReports';
 import { PaymentOverview } from '@/components/admin/PaymentOverview';
 import { EarlyAccessSignups } from '@/components/admin/EarlyAccessSignups';
 import { OnboardingMaterials } from '@/components/admin/OnboardingMaterials';
+import Visitors from '@/pages/admin/Visitors';
 import { supabase } from '@/integrations/supabase/client';
 import { 
   Users, 
@@ -24,7 +25,8 @@ import {
   CreditCard,
   Bell,
   Building2,
-  FileText
+  FileText,
+  Eye
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
@@ -223,6 +225,11 @@ export const AdminDashboard = () => {
             <span className="sm:hidden">Onb.</span>
           </TabsTrigger>
           <TabsTrigger value="complaints" className="whitespace-nowrap">Klagomål</TabsTrigger>
+          <TabsTrigger value="visitors" className="whitespace-nowrap">
+            <Eye className="h-4 w-4 mr-1 hidden sm:inline" />
+            <span className="hidden sm:inline">Besökare</span>
+            <span className="sm:hidden">Besök</span>
+          </TabsTrigger>
           <TabsTrigger value="settings" className="whitespace-nowrap">
             <span className="hidden sm:inline">Inställningar</span>
             <span className="sm:hidden">Inst.</span>
@@ -291,6 +298,10 @@ export const AdminDashboard = () => {
               <p className="text-muted-foreground">Inga klagomål just nu.</p>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="visitors">
+          <Visitors />
         </TabsContent>
 
         <TabsContent value="settings">

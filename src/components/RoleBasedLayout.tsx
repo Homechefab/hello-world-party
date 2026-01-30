@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import { useRole } from '../hooks/useRole';
 import { useAuth } from '../hooks/useAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useVisitorTracking } from '@/hooks/useVisitorTracking';
 import LiveChat from './LiveChat';
 import Header from './Header';
 import useAutoSafeArea from '@/hooks/useAutoSafeArea';
@@ -12,6 +13,7 @@ interface RoleBasedLayoutProps {
 
 export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
   useAutoSafeArea();
+  useVisitorTracking();
   const { role, loading, isApproved } = useRole();
   const { user: authUser } = useAuth();
   const navigate = useNavigate();
