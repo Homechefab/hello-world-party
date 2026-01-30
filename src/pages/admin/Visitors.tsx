@@ -21,6 +21,7 @@ interface Visitor {
   session_id: string | null;
   device_type: string | null;
   browser: string | null;
+  user_email?: string | null;
 }
 
 const Visitors = () => {
@@ -31,15 +32,42 @@ const Visitors = () => {
     queryFn: async () => {
       const startDate = startOfDay(subDays(new Date(), parseInt(timeFilter)));
       
-      const { data, error } = await supabase
+      // First get visitors
+      const { data: visitorsData, error: visitorsError } = await supabase
         .from('visitors')
         .select('*')
         .gte('visited_at', startDate.toISOString())
         .order('visited_at', { ascending: false })
         .limit(500);
 
-      if (error) throw error;
-      return data as Visitor[];
+      if (visitorsError) throw visitorsError;
+
+      // Get unique user IDs that are not null
+      const userIds = [...new Set(visitorsData?.filter(v => v.user_id).map(v => v.user_id as string) || [])];
+      
+      // Fetch profiles for those users
+      let profilesMap: Record<string, string> = {};
+      if (userIds.length > 0) {
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('id, email')
+          .in('id', userIds);
+        
+        if (profilesData) {
+          profilesMap = profilesData.reduce((acc, p) => {
+            acc[p.id] = p.email;
+            return acc;
+          }, {} as Record<string, string>);
+        }
+      }
+
+      // Merge email data with visitors
+      const visitorsWithEmail = visitorsData?.map(v => ({
+        ...v,
+        user_email: v.user_id ? profilesMap[v.user_id] || null : null
+      })) || [];
+
+      return visitorsWithEmail as Visitor[];
     },
   });
 
@@ -345,7 +373,7 @@ const Visitors = () => {
                   <TableHead>Enhet</TableHead>
                   <TableHead>Webbläsare</TableHead>
                   <TableHead>Referens</TableHead>
-                  <TableHead>Inloggad</TableHead>
+                  <TableHead>Användare</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -374,9 +402,11 @@ const Visitors = () => {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Badge variant={visitor.user_id ? 'default' : 'secondary'}>
-                        {visitor.user_id ? 'Ja' : 'Nej'}
-                      </Badge>
+                      {visitor.user_email ? (
+                        <span className="text-sm font-medium text-primary">{visitor.user_email}</span>
+                      ) : (
+                        <Badge variant="secondary">Anonym</Badge>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
