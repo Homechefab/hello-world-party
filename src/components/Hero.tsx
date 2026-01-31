@@ -8,7 +8,7 @@ const Hero = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   return (
-    <section className="relative bg-gradient-hero min-h-[400px] flex items-center overflow-hidden rounded-xl my-4">
+    <section className="relative bg-gradient-hero min-h-[400px] flex items-center overflow-hidden rounded-xl mx-4 my-4">
       <div className="absolute inset-0 rounded-xl">
         <img
           src={heroImage}
