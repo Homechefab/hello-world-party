@@ -119,19 +119,20 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }
         </div>
       )}
       <DialogContent 
-        className="w-[340px] max-w-[90vw] p-0 gap-0 border-0 overflow-hidden rounded-xl shadow-2xl"
+        className="w-[320px] max-w-[85vw] max-h-[85vh] p-0 gap-0 border-0 overflow-hidden rounded-xl shadow-2xl"
         hideCloseButton
       >
-        {/* Close button */}
+        {/* Close button - positioned inside the dialog */}
         <button
           onClick={handleClose}
-          className="absolute right-3 top-3 z-10 rounded-full p-1.5 bg-black/20 hover:bg-black/30 transition-colors"
+          className="absolute right-2 top-2 z-20 rounded-full p-2 bg-black/30 hover:bg-black/50 transition-colors"
+          aria-label="Stäng"
         >
-          <X className="h-4 w-4 text-white" />
+          <X className="h-5 w-5 text-white" />
         </button>
 
         {/* Header with background image and gradient overlay */}
-        <div className="relative p-6 pt-8 text-center text-white overflow-hidden">
+        <div className="relative p-4 pt-10 text-center text-white overflow-hidden">
           {/* Background image */}
           <div 
             className="absolute inset-0 bg-cover bg-center"
@@ -142,22 +143,22 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }
           
           {/* Content */}
           <div className="relative z-10">
-            <div className="flex justify-center mb-3">
-              <div className="p-2.5 bg-white/20 rounded-full backdrop-blur-sm">
-                <Sparkles className="w-6 h-6" />
+            <div className="flex justify-center mb-2">
+              <div className="p-2 bg-white/20 rounded-full backdrop-blur-sm">
+                <Sparkles className="w-5 h-5" />
               </div>
             </div>
-            <h2 className="text-xl font-bold mb-1">Få Early Access</h2>
-            <p className="text-white/90 text-sm">
+            <h2 className="text-lg font-bold mb-0.5">Få Early Access</h2>
+            <p className="text-white/90 text-xs">
               Bli först när vi lanserar i ditt område!
             </p>
           </div>
         </div>
 
         {/* Form Section */}
-        <div className="p-5 bg-background">
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <div className="space-y-1.5">
+        <div className="p-4 bg-background">
+          <form onSubmit={handleSubmit} className="space-y-2.5">
+            <div className="space-y-1">
               <Label htmlFor="signup-email" className="text-sm">E-postadress</Label>
               <Input
                 id="signup-email"
@@ -165,10 +166,10 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }
                 placeholder="din@email.se"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="h-10"
+                className="h-9"
               />
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <Label htmlFor="signup-postalcode" className="text-sm">Postnummer</Label>
               <Input
                 id="signup-postalcode"
@@ -176,20 +177,20 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }
                 placeholder="123 45"
                 value={postalCode}
                 onChange={(e) => setPostalCode(e.target.value)}
-                className="h-10"
+                className="h-9"
                 maxLength={6}
               />
             </div>
             <Button 
               type="submit" 
-              className="w-full h-10 font-semibold"
+              className="w-full h-9 font-semibold"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Registrerar..." : "Registrera dig"}
             </Button>
           </form>
           
-          <p className="text-center text-xs text-muted-foreground mt-3">
+          <p className="text-center text-xs text-muted-foreground mt-2">
             Vi respekterar din integritet.
           </p>
         </div>
