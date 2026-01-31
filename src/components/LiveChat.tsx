@@ -539,7 +539,7 @@ const LiveChat = () => {
 
   if (!isOpen) {
     return (
-      <div className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-50">
+      <div className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-50" data-no-safe-adjust>
         <Button
           onClick={() => setIsOpen(true)}
           size="lg"
@@ -555,7 +555,7 @@ const LiveChat = () => {
   }
 
   return (
-    <div className="fixed bottom-0 right-0 md:bottom-6 md:right-6 z-50 w-full md:w-auto">
+    <div className="fixed bottom-0 right-0 md:bottom-6 md:right-6 z-50 w-full md:w-auto" data-no-safe-adjust>
       <Card className={`w-full md:w-96 shadow-2xl transition-all duration-300 rounded-none md:rounded-lg ${isMinimized ? 'h-16' : 'h-[100dvh] md:h-[500px]'}`}>
         <CardHeader className="pb-3 bg-gradient-primary text-white rounded-t-lg">
           <div className="flex items-center justify-between">
