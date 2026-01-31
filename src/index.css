@@ -203,9 +203,10 @@ All colors MUST be HSL.
   /* Include common Capacitor / Ionic wrappers to ensure the webview never scrolls horizontally. */
   :root, html, body, #root, .App, main, ion-app, .capacitor-root, .app-root, .app {
     max-width: 100vw !important;
+    max-width: 100dvw !important;
     width: 100% !important;
     overflow-x: hidden !important;
-    touch-action: pan-y !important; /* prevent horizontal panning */
+    touch-action: pan-y pinch-zoom !important; /* prevent horizontal panning but allow zoom */
   }
 
   /* Generic container limits so boxes and text wrap within the viewport */
@@ -221,6 +222,18 @@ All colors MUST be HSL.
   /* Ensure direct children don't unintentionally expand past viewport due to padding + 100vw usage */
   :root > *, html > body > *, #root > * {
     max-width: 100vw !important;
+    max-width: 100dvw !important;
     box-sizing: border-box !important;
+  }
+
+  /* Extra mobile safeguard - prevent any element from causing horizontal scroll */
+  @media (max-width: 768px) {
+    * {
+      max-width: 100vw;
+    }
+    
+    section, article, div, main, aside, nav, header, footer {
+      overflow-x: hidden;
+    }
   }
 }
