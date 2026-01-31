@@ -7,7 +7,6 @@ import FAQ from "@/components/FAQ";
 import RoleBasedServices from "@/components/services/RoleBasedServices";
 import { useRole } from "@/hooks/useRole";
 import SEOHead from "@/components/SEOHead";
-import LiveChat from "@/components/LiveChat";
 import NotificationSignupDialog from "@/components/NotificationSignupDialog";
 
 const Index = () => {
@@ -23,7 +22,7 @@ const Index = () => {
         type="website"
       />
       
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background overflow-x-hidden">
         <Hero />
         <RoleBasedServices />
         {role !== 'chef' && (
@@ -35,7 +34,6 @@ const Index = () => {
         <Features />
         <FAQ />
         <Footer />
-        <LiveChat />
         <NotificationSignupDialog triggerOnScroll="#popular-chefs" />
       </div>
     </>
