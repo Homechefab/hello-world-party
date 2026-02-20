@@ -259,7 +259,7 @@ const PartnershipPage = () => {
                     Telefon
                   </h3>
                   <p className="text-muted-foreground">
-                    08-123 45 67
+                    0734-23 46 86
                   </p>
                 </CardContent>
               </Card>
