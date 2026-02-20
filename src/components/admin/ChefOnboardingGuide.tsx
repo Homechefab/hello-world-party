@@ -7,230 +7,280 @@ export const ChefOnboardingGuide = () => {
   const generatePDF = () => {
     const doc = new jsPDF();
     const pageWidth = doc.internal.pageSize.getWidth();
-    const margin = 20;
+    const margin = 18;
     const contentWidth = pageWidth - margin * 2;
     let y = 20;
 
-    const addPage = () => { doc.addPage(); y = 20; };
-    const checkPage = (needed = 20) => { if (y + needed > 275) addPage(); };
+    const ORANGE = [220, 80, 30] as const;
+    const LIGHT_ORANGE = [255, 240, 230] as const;
+    const DARK = [40, 40, 40] as const;
+    const GRAY = [120, 120, 120] as const;
+    const WHITE = [255, 255, 255] as const;
+    const GREEN_BG = [235, 250, 240] as const;
+    const GREEN = [30, 140, 70] as const;
 
-    const h1 = (text: string) => {
-      checkPage(14);
-      doc.setFontSize(16); doc.setFont('helvetica', 'bold');
-      doc.setFillColor(220, 80, 30);
-      doc.rect(margin, y - 6, contentWidth, 12, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.text(text, margin + 4, y + 2);
-      doc.setTextColor(0, 0, 0);
-      y += 16;
+    const addPage = () => { doc.addPage(); y = 22; };
+    const checkPage = (needed = 20) => { if (y + needed > 275) addPage(); };
+    const space = (n = 5) => { y += n; };
+
+    const sectionTitle = (text: string, num: string) => {
+      checkPage(18);
+      doc.setFillColor(...ORANGE);
+      doc.roundedRect(margin, y - 5, contentWidth, 14, 3, 3, 'F');
+      doc.setFontSize(11); doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...WHITE);
+      doc.text(`${num}  ${text}`, margin + 5, y + 4);
+      doc.setTextColor(...DARK);
+      y += 18;
     };
 
-    const h2 = (text: string) => {
-      checkPage(10);
-      doc.setFontSize(12); doc.setFont('helvetica', 'bold');
-      doc.setTextColor(220, 80, 30);
-      doc.text(text, margin, y);
-      doc.setTextColor(0, 0, 0);
-      y += 8;
+    const pill = (text: string, x: number, py: number, w: number, filled = true) => {
+      if (filled) {
+        doc.setFillColor(...ORANGE);
+        doc.roundedRect(x, py - 5, w, 9, 2, 2, 'F');
+        doc.setTextColor(...WHITE);
+      } else {
+        doc.setDrawColor(...ORANGE);
+        doc.roundedRect(x, py - 5, w, 9, 2, 2, 'D');
+        doc.setTextColor(...ORANGE);
+      }
+      doc.setFontSize(8); doc.setFont('helvetica', 'bold');
+      doc.text(text, x + w / 2, py + 0.5, { align: 'center' });
+      doc.setTextColor(...DARK);
     };
 
     const body = (text: string, indent = 0) => {
       checkPage(8);
-      doc.setFontSize(10); doc.setFont('helvetica', 'normal');
-      doc.setTextColor(40, 40, 40);
+      doc.setFontSize(9.5); doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...DARK);
       const lines = doc.splitTextToSize(text, contentWidth - indent);
       lines.forEach((line: string) => {
         checkPage(6);
         doc.text(line, margin + indent, y);
-        y += 5.5;
+        y += 5.2;
       });
-      doc.setTextColor(0, 0, 0);
     };
 
-    const bullet = (text: string) => {
-      checkPage(8);
-      doc.setFontSize(10); doc.setFont('helvetica', 'normal');
-      doc.setTextColor(40, 40, 40);
-      const lines = doc.splitTextToSize(text, contentWidth - 8);
-      lines.forEach((line: string, i: number) => {
-        checkPage(6);
-        if (i === 0) doc.text('•', margin + 3, y);
-        doc.text(line, margin + 8, y);
-        y += 5.5;
-      });
-      doc.setTextColor(0, 0, 0);
+    const checkItem = (text: string) => {
+      checkPage(10);
+      doc.setFillColor(...LIGHT_ORANGE);
+      doc.roundedRect(margin, y - 5, contentWidth, 10, 2, 2, 'F');
+      doc.setFillColor(...ORANGE);
+      doc.roundedRect(margin + 3, y - 2.5, 5, 5, 1, 1, 'F');
+      doc.setTextColor(...WHITE);
+      doc.setFontSize(8); doc.setFont('helvetica', 'bold');
+      doc.text('ok', margin + 4, y + 1, { align: 'center' });
+      doc.setFontSize(9.5); doc.setFont('helvetica', 'normal'); doc.setTextColor(...DARK);
+      doc.text(text, margin + 12, y + 1);
+      y += 13;
     };
 
-    const space = (n = 5) => { y += n; };
+    const statBox = (value: string, label: string, sub: string, x: number, w: number) => {
+      doc.setFillColor(...LIGHT_ORANGE);
+      doc.roundedRect(x, y, w, 28, 3, 3, 'F');
+      doc.setFontSize(18); doc.setFont('helvetica', 'bold'); doc.setTextColor(...ORANGE);
+      doc.text(value, x + w / 2, y + 12, { align: 'center' });
+      doc.setFontSize(8); doc.setFont('helvetica', 'bold'); doc.setTextColor(...DARK);
+      doc.text(label, x + w / 2, y + 20, { align: 'center' });
+      doc.setFontSize(7); doc.setFont('helvetica', 'normal'); doc.setTextColor(...GRAY);
+      doc.text(sub, x + w / 2, y + 25.5, { align: 'center' });
+      doc.setTextColor(...DARK);
+    };
 
-    const highlight = (text: string) => {
-      checkPage(14);
-      doc.setFillColor(255, 248, 240);
-      doc.setDrawColor(220, 80, 30);
-      const lines = doc.splitTextToSize(text, contentWidth - 10);
-      const boxH = lines.length * 5.5 + 8;
-      doc.roundedRect(margin, y - 4, contentWidth, boxH, 2, 2, 'FD');
-      doc.setFontSize(10); doc.setFont('helvetica', 'italic'); doc.setTextColor(100, 40, 0);
+    const infoBox = (text: string) => {
+      checkPage(18);
+      doc.setFillColor(...GREEN_BG);
+      doc.setDrawColor(...GREEN);
+      const lines = doc.splitTextToSize(text, contentWidth - 12);
+      const h = lines.length * 5.5 + 10;
+      doc.roundedRect(margin, y - 3, contentWidth, h, 3, 3, 'FD');
+      doc.setFontSize(9); doc.setFont('helvetica', 'italic'); doc.setTextColor(...GREEN);
       lines.forEach((line: string) => {
-        doc.text(line, margin + 5, y + 2);
+        doc.text(line, margin + 6, y + 3);
         y += 5.5;
       });
-      doc.setTextColor(0, 0, 0);
-      y += 6;
+      y += 8;
+      doc.setTextColor(...DARK);
     };
 
-    // ── COVER PAGE ──
-    doc.setFillColor(220, 80, 30);
-    doc.rect(0, 0, pageWidth, 60, 'F');
-    doc.setFontSize(24); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
-    doc.text('Välkommen till Homechef', margin, 28);
-    doc.setFontSize(13); doc.setFont('helvetica', 'normal');
-    doc.text('Din guide till en framgångsrik start som kockpartner', margin, 40);
-    doc.setFontSize(10);
-    doc.text(`homechef.nu  •  info@homechef.nu  •  0734-23 46 86`, margin, 52);
-    doc.setTextColor(0, 0, 0);
-    y = 72;
+    // ── COVER ──
+    doc.setFillColor(...ORANGE);
+    doc.rect(0, 0, pageWidth, 55, 'F');
 
-    highlight('"Du är nu en del av Sveriges mest spännande matplattform. Vi kopplar samman passionerade kockar med matälskare – och vi ser till att du får betalt för det du älskar att göra."');
+    // Decorative circles
+    doc.setFillColor(255, 100, 50);
+    doc.circle(pageWidth - 20, 10, 25, 'F');
+    doc.setFillColor(180, 60, 20);
+    doc.circle(pageWidth - 5, 50, 15, 'F');
 
-    // ── 1. VÅR VISION ──
-    h1('1. Vår Vision – Tillsammans Bygger Vi Något Stort');
-    body('Homechef är en exklusiv marknadsplats där noggrant utvalda kockar möter matälskare som söker autentisk, hemlagad mat av högsta kvalitet. Att vara en Homechef-partner innebär att du är en del av ett selektivt nätverk – ett varumärke som kunderna litar på.');
-    space();
-    body('Vi tar hand om allt det administrativa: marknadsföring, betalningar, kundservice och logistik. Ditt fokus är det du är bäst på – att skapa fantastisk mat.');
+    doc.setFontSize(26); doc.setFont('helvetica', 'bold'); doc.setTextColor(...WHITE);
+    doc.text('Homechef', margin, 22);
+    doc.setFontSize(14); doc.setFont('helvetica', 'normal');
+    doc.text('Välkommen som kockpartner!', margin, 33);
+    doc.setFontSize(9);
+    doc.text('Din guide till en lyckad start', margin, 42);
+    doc.text('homechef.nu', margin, 51);
+    doc.setTextColor(...DARK);
+    y = 66;
+
+    infoBox('"Du är nu en del av Sveriges mest spännande matplattform. Vi kopplar samman passionerade kockar med matälskare – och vi ser till att du får betalt för det du älskar."');
+
+    // ── 1. VISION ──
+    sectionTitle('Vad vi gör för dig', '01');
+    body('Homechef hanterar marknadsföring, betalningar, kundservice och logistik. Du fokuserar på det du ar bast pa – maten.');
+    space(3);
+    const perks = ['Gratis marknadsföring', 'Betalningsskydd', 'Kundservice', 'Veckovis utbetalning'];
+    const pw = (contentWidth - 9) / 4;
+    perks.forEach((p, i) => pill(p, margin + i * (pw + 3), y + 5, pw));
+    y += 16;
     space(8);
 
     // ── 2. CHECKLISTA ──
-    h1('2. Kom Igång – Din Startchecklista');
-    const checks = [
+    sectionTitle('Din startchecklista', '02');
+    [
       'Byt lösenord vid första inloggning',
-      'Ladda upp en proffsig profilbild med bra ljussättning',
-      'Skriv en engagerande bio – berätta din mathistoria',
-      'Fyll i dina specialiteter och matkategorier',
+      'Ladda upp en proffsig profilbild',
+      'Skriv en kort och engagerande bio',
+      'Lagg till dina specialiteter',
       'Länka dina sociala medier i dashboarden',
-      'Lägg upp minst 3 rätter med foto, beskrivning och pris',
-      'Sätt dina tillgängliga leveranstider',
-      'Läs igenom och godkänn Homechefs partnervillkor',
-    ];
-    checks.forEach(c => body(`  ☐  ${c}`, 2));
-    space();
-    body('Tips: Kockar som startar med minst 5 rätter och ett professionellt profilfoto säljer i genomsnitt 3× mer under sin första månad.');
-    space(8);
+      'Lägg upp minst 3 rätter med foto och pris',
+      'Las igenom och godkänn partnervillkoren',
+    ].forEach(checkItem);
+    space(3);
+    infoBox('Kockar med minst 5 rätter och ett profilfoto säljer i genomsnitt 3x mer under sin första manad.');
+    space(3);
 
-    // ── 3. DIN PROFIL ──
-    h1('3. Din Profil – Ditt Skyltfönster');
-    body('Din profil är det första kunderna ser. En välgjord profil bygger förtroende och driver försäljning. Homechef visar det som skapar trygghet för kunden:');
-    space(3);
-    h2('Vad kunden ser');
-    ['Ditt namn och profilbild', 'Din bio och mathistoria', 'Specialiteter och kökstraditioner', 'Dina sociala medier (TikTok, Instagram, Facebook, Snapchat)', 'Kundrecensioner och stjärnbetyg', 'Dina rätter med bilder och priser'].forEach(i => bullet(i));
-    space(3);
-    h2('Vad som hålls privat – för din säkerhet');
-    body('Din personliga kontaktinformation – telefonnummer, e-postadress och hemadress – är aldrig synlig för kunder. Det skyddar din integritet och säkerställer att all kommunikation sker på ett tryggt och dokumenterat sätt via Homechef-plattformen. Om en tvist uppstår finns allt loggat och du är alltid skyddad.');
-    space(8);
-
-    // ── 4. FÖRSÄLJNING VIA HOMECHEF ──
-    h1('4. Försäljning via Homechef – Din Tryggaste Kanal');
-    body('Homechef är din primära försäljningskanal. Det är här du når ut till tusentals kunder som aktivt letar efter det du lagar. Att samla all din försäljning på en plattform ger dig dessutom:');
-    space(3);
-    bullet('Juridisk trygghet – vid eventuella kundtvister eller reklamationer finns allt dokumenterat och hanterat av oss.');
-    bullet('Kvalitetsstämpel – kunder litar på Homechef som varumärke, vilket ökar dina konverteringar.');
-    bullet('Betalningsskydd – du behöver aldrig hantera pengar, fakturor eller återbetalningar själv.');
-    bullet('Statistik och insikter – se exakt vad som säljer och optimera din meny.');
+    // ── 3. PROFIL ──
+    sectionTitle('Din profil – ditt skyltfönster', '03');
+    body('Kunderna ser: ditt namn, profilbild, bio, specialiteter, sociala medier, recensioner och dina rätter.');
     space(4);
-    body('En gemensam, stark plattform gynnar alla partners. Ju fler nöjda kunder vi har – desto mer exponering och försäljning får du.');
+    doc.setFillColor(...LIGHT_ORANGE);
+    doc.roundedRect(margin, y, contentWidth, 18, 3, 3, 'F');
+    doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(...ORANGE);
+    doc.text('Din integritet skyddas', margin + 5, y + 8);
+    doc.setFontSize(8.5); doc.setFont('helvetica', 'normal'); doc.setTextColor(...DARK);
+    doc.text('Privat telefon, e-post och adress ar aldrig synligt for kunder. All kommunikation', margin + 5, y + 14);
+    y += 14;
+    doc.text('sker via Homechef – du ar alltid trygg och skyddad vid eventuella tvister.', margin + 5, y + 3);
+    y += 12;
     space(8);
+
+    // ── 4. FÖRSÄLJNING ──
+    sectionTitle('Försäljning via Homechef', '04');
+    body('Homechef ar din primara försäljningskanal – har nar du tusentals kunder som aktivt letar efter det du lagar. Det ger dig:');
+    space(4);
+    const benefits = [
+      ['Juridisk trygghet', 'Tvister hanteras av oss'],
+      ['Kvalitetsstämpel', 'Kunderna litar pa Homechef'],
+      ['Statistik', 'Se vad som säljer bäst'],
+    ];
+    const bw = (contentWidth - 6) / 3;
+    benefits.forEach(([title, sub], i) => {
+      const bx = margin + i * (bw + 3);
+      doc.setFillColor(...ORANGE);
+      doc.roundedRect(bx, y, bw, 22, 3, 3, 'F');
+      doc.setFontSize(8.5); doc.setFont('helvetica', 'bold'); doc.setTextColor(...WHITE);
+      doc.text(title, bx + bw / 2, y + 9, { align: 'center' });
+      doc.setFontSize(7.5); doc.setFont('helvetica', 'normal');
+      doc.text(sub, bx + bw / 2, y + 16, { align: 'center' });
+    });
+    doc.setTextColor(...DARK);
+    y += 30;
+    space(6);
 
     // ── 5. SOCIALA MEDIER ──
-    h1('5. Sociala Medier – Bygg Ditt Varumärke, Öka Din Försäljning');
-    body('Dina sociala kanaler är ett kraftfullt verktyg för att locka nya kunder. Vi uppmuntrar dig varmt att vara aktiv och dela ditt kockande med världen.');
-    space(3);
-    bullet('Posta matbilder, recept och bakom-kulisserna-innehåll – det bygger förtroende och skapar nyfikenhet.');
-    bullet('Länka alltid till din Homechef-profil i din bio och i inlägg med texten "Beställ via homechef.nu".');
-    bullet('Tagga @homechef i dina inlägg – vi delar och förstärker ditt innehåll till vår publik.');
-    bullet('Att hänvisa kunder via Homechef ger dem ett tryggare köpupplevelse med betalningsskydd och support.');
+    sectionTitle('Sociala medier – mer synlighet, mer försäljning', '05');
+    body('Dina kanaler ar ett kraftfullt verktyg. Vi uppmuntrar dig att vara aktiv och dela ditt kockande!');
     space(4);
-    body('Kom ihåg: bilder och beskrivningar ska representera den faktiska rätten kunden beställer – ärlighet bygger långsiktiga kundrelationer och bra recensioner.');
-    space(8);
+    [
+      'Posta matbilder, recept och bakom kulisserna – det bygger förtroende.',
+      'Länka alltid till din Homechef-profil med texten "Bestall via homechef.nu".',
+      'Tagga @homechef i inlägg – vi delar och boostrar ditt innehall till var publik.',
+    ].forEach(t => {
+      checkPage(10);
+      doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(...DARK);
+      doc.setFillColor(...ORANGE);
+      doc.circle(margin + 3, y - 1, 1.5, 'F');
+      const lines = doc.splitTextToSize(t, contentWidth - 10);
+      lines.forEach((line: string) => { doc.text(line, margin + 8, y); y += 5.2; });
+      y += 1;
+    });
+    space(6);
 
     // ── 6. MAT & KVALITET ──
-    h1('6. Mat, Kvalitet & Allergener');
-    bullet('Alla rätter ska uppfylla kommunens livsmedelskrav och tillstånd – vi hjälper dig navigera om du är osäker.');
-    bullet('Tydlig allergeninformation är obligatorisk för varje rätt och ett krav enligt lag. Det skyddar dina kunder och dig.');
-    bullet('Håll din meny uppdaterad. Rätter som länge stått inaktiva påverkar ditt synlighetsbetyg negativt.');
-    bullet('Professionella matfotografier ökar din försäljning markant – vi kan ge tips och råd.');
+    sectionTitle('Mat, kvalitet & allergener', '06');
+    [
+      'Alla rätter ska uppfylla kommunens livsmedelskrav.',
+      'Allergeninformation ar obligatorisk – det är ett lagkrav som skyddar dina kunder.',
+      'Hall menyn uppdaterad för bättre synlighet i sök.',
+    ].forEach(t => {
+      checkPage(10);
+      doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(...DARK);
+      doc.setFillColor(...ORANGE);
+      doc.circle(margin + 3, y - 1, 1.5, 'F');
+      doc.text(t, margin + 8, y);
+      y += 7;
+    });
+    space(6);
+
+    // ── 7. BETALNING ──
+    sectionTitle('Betalning & utbetalning', '07');
+    statBox('81%', 'Din andel', 'av ditt pris', margin, 55);
+    statBox('19%', 'Homechefs provision', 'av ditt pris', margin + 58, 55);
+    statBox('6%', 'Serviceavgift', 'betalas av kunden', margin + 116, 55);
+    y += 36;
+    body('Utbetalning sker varje vecka direkt till ditt konto. Vi hanterar Kort, Swish och Klarna.');
     space(8);
 
-    // ── 7. BETALNING & UTBETALNING ──
-    h1('7. Betalning & Utbetalning');
-    body('Du sätter priset på dina rätter själv. Vi ser till att du får betalt smidigt och i tid.');
+    // ── 8. MARKNADSFÖRING ──
+    sectionTitle('Hur vi marknadsför dig', '08');
+    const mkt = ['Google Ads & SEO', 'Sociala medier', 'Nyhetsbrev', 'Featured-kampanjer'];
+    const mw = (contentWidth - 9) / 4;
+    mkt.forEach((m, i) => pill(m, margin + i * (mw + 3), y + 5, mw, i % 2 === 0));
+    y += 16;
     space(3);
-
-    // Simple table
-    doc.setFillColor(245, 245, 245);
-    doc.rect(margin, y, contentWidth, 30, 'F');
-    doc.setFontSize(11); doc.setFont('helvetica', 'bold'); doc.setTextColor(220, 80, 30);
-    doc.text('81%', margin + 10, y + 10);
-    doc.text('19%', margin + 75, y + 10);
-    doc.text('6%', margin + 140, y + 10);
-    doc.setFontSize(9); doc.setFont('helvetica', 'normal'); doc.setTextColor(60, 60, 60);
-    doc.text('Din andel', margin + 6, y + 18);
-    doc.text('Homechefs provision', margin + 62, y + 18);
-    doc.text('Kundens serviceavg.', margin + 127, y + 18);
-    doc.text('av ditt pris', margin + 8, y + 25);
-    doc.text('av ditt pris', margin + 72, y + 25);
-    doc.text('betalas av kunden', margin + 127, y + 25);
-    doc.setTextColor(0, 0, 0);
-    y += 38;
-
-    bullet('Kunder betalar tryggt via Kort, Swish eller Klarna – vi hanterar allt.');
-    bullet('Utbetalning sker veckovis direkt till ditt registrerade bankkonto.');
-    bullet('Du får en automatisk månadsrapport till din @homechef.se-adress.');
-    bullet('Moms och skattehantering är ditt ansvar – vi tillhandahåller komplett underlag.');
-    space(8);
-
-    // ── 8. HUR VI MARKNADSFÖR DIG ──
-    h1('8. Hur Vi Marknadsför Dig');
-    body('Vi investerar aktivt i att driva trafik och nya kunder till plattformen. Det gynnar dig direkt:');
-    space(3);
-    bullet('Synlighet på startsidan och i kategorisök');
-    bullet('Annonsering via Google Ads och organisk SEO');
-    bullet('Delning av ditt innehåll på våra sociala kanaler');
-    bullet('Nyhetsbrev till tusentals matintresserade kunder');
-    bullet('Featured chef-kampanjer för toppsäljare');
-    space(4);
-    body('Ju fler positiva recensioner och betyg du samlar – desto högre upp i sökresultaten hamnar du. Vi hjälper dig nå toppen.');
+    body('Ju fler bra recensioner du far – desto högre upp i sök hamnar du. Vi hjälper dig nå toppen.');
     space(8);
 
     // ── 9. SUPPORT ──
-    h1('9. Support & Kundkommunikation');
-    body('Du ska aldrig behöva hantera kundklagomål eller tvister på egen hand. Homechef tar hand om all kundservice, reklamationer och återbetalningar – det är en del av vad du betalar provision för.');
-    space(3);
-    bullet('Vid produktionsproblem eller sjukdom – meddela oss omedelbart via appen så informerar vi väntande kunder.');
-    bullet('Negativa recensioner är en naturlig del av verksamheten. Vi hjälper dig svara professionellt och vända dem till något positivt.');
-    space(4);
-    h2('Kontakta oss');
-    body('📞  Telefon: 0734-23 46 86');
-    body('📧  E-post: info@homechef.nu');
-    body('🕘  Öppettider: Måndag–Fredag, 09:00–18:00');
+    sectionTitle('Support & kontakt', '09');
+    body('Vi hanterar all kundservice, reklamationer och aterbetalninar at dig. Du behöver aldrig hantera tvister pa egen hand.');
+    space(5);
+    doc.setFillColor(...LIGHT_ORANGE);
+    doc.roundedRect(margin, y, contentWidth, 24, 3, 3, 'F');
+    doc.setFontSize(9); doc.setFont('helvetica', 'bold'); doc.setTextColor(...ORANGE);
+    doc.text('Telefon: 0734-23 46 86', margin + 8, y + 9);
+    doc.text('E-post: info@homechef.nu', margin + 8, y + 18);
+    doc.setTextColor(...GRAY);
+    doc.setFontSize(8); doc.setFont('helvetica', 'normal');
+    doc.text('Man-Fre 09:00-18:00', margin + contentWidth - 45, y + 9);
+    doc.setTextColor(...DARK);
+    y += 32;
     space(8);
 
     // ── AVSLUT ──
-    doc.setFillColor(220, 80, 30);
-    doc.rect(margin, y, contentWidth, 30, 'F');
-    doc.setFontSize(12); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
-    doc.text('Välkommen ombord – vi är din partner, inte bara din plattform.', margin + 5, y + 12);
-    doc.setFontSize(10); doc.setFont('helvetica', 'normal');
-    doc.text('"Ju mer du engagerar dig, desto mer tjänar du. Lycka till!"', margin + 5, y + 22);
-    doc.setTextColor(0, 0, 0);
-    y += 38;
+    checkPage(30);
+    doc.setFillColor(...ORANGE);
+    doc.roundedRect(margin, y, contentWidth, 28, 4, 4, 'F');
+    doc.setFillColor(255, 100, 50);
+    doc.circle(margin + contentWidth - 10, y + 14, 18, 'F');
+    doc.setFontSize(12); doc.setFont('helvetica', 'bold'); doc.setTextColor(...WHITE);
+    doc.text('Vi ar din partner – inte bara din plattform.', margin + 6, y + 11);
+    doc.setFontSize(9); doc.setFont('helvetica', 'italic');
+    doc.text('"Ju mer du engagerar dig, desto mer tjänar du. Lycka till!"', margin + 6, y + 21);
+    doc.setTextColor(...DARK);
+    y += 36;
 
-    // Footer on all pages
+    // Footer
     const totalPages = doc.getNumberOfPages();
     for (let i = 1; i <= totalPages; i++) {
       doc.setPage(i);
-      doc.setFontSize(8); doc.setFont('helvetica', 'normal'); doc.setTextColor(150, 150, 150);
-      doc.text(`homechef.nu  •  Sida ${i} av ${totalPages}`, margin, 290);
-      doc.text(`Genererat ${new Date().toLocaleDateString('sv-SE')}`, pageWidth - margin - 40, 290);
+      doc.setFillColor(...ORANGE);
+      doc.rect(0, 287, pageWidth, 10, 'F');
+      doc.setFontSize(7); doc.setFont('helvetica', 'normal'); doc.setTextColor(...WHITE);
+      doc.text('homechef.nu', margin, 293);
+      doc.text(`Sida ${i} av ${totalPages}`, pageWidth / 2, 293, { align: 'center' });
+      doc.text(new Date().toLocaleDateString('sv-SE'), pageWidth - margin, 293, { align: 'right' });
     }
 
     doc.save('Homechef_Kock-Onboarding.pdf');
@@ -257,7 +307,7 @@ export const ChefOnboardingGuide = () => {
             Ladda ner PDF
           </Button>
           <p className="text-xs text-muted-foreground">
-            Innehåller: vision, checklista, regler, betalning & support
+            Vision, checklista, regler, betalning & support
           </p>
         </CardContent>
       </Card>
