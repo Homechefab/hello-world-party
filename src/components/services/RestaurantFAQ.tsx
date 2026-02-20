@@ -5,8 +5,20 @@ import { HelpCircle } from "lucide-react";
 const RestaurantFAQ = () => {
   const faqs = [
     {
-      question: "Vilka avgifter tar Homechef?",
-      answer: "Restauranger betalar en fast månadsavgift på 3 999 kr/mån. Inga provisionsavgifter – ni behåller hela intäkten från maten. Kunden betalar maten + en fast leveransavgift som går direkt till budet."
+      question: "Vilka prisplaner finns för restauranger?",
+      answer: "Vi erbjuder tre prisplaner: Liten (3 999 kr/mån, upp till 50 beställningar/dag), Medelstor (5 999 kr/mån, upp till 150 beställningar/dag med premiumprofil och prioriterad support) och Stor/Företag (anpassat pris för kedjor med obegränsat antal beställningar och API-integration). Alla planer har 0% provision – ni behåller hela matintäkten."
+    },
+    {
+      question: "Kan jag byta prisplan?",
+      answer: "Ja, ni kan byta plan när som helst. Uppgradering sker direkt och ni får tillgång till alla funktioner i den nya planen omedelbart. Vid nedgradering gäller den nya planen från och med nästa faktureringsperiod. Kontakta vår support om ni vill byta plan."
+    },
+    {
+      question: "Finns det bindningstid?",
+      answer: "Nej, vi har ingen bindningstid. Alla planer löper månadsvis och kan avslutas med en månads uppsägningstid. Vi erbjuder även årsavtal med rabatterat pris om ni vill planera längre fram. Inga uppsägningsavgifter tillkommer oavsett plan."
+    },
+    {
+      question: "Vad händer om jag överskrider ordergränsen?",
+      answer: "Om ni på planen Liten (50 order/dag) eller Medelstor (150 order/dag) regelbundet överstiger er gräns kontaktar vi er och rekommenderar en uppgradering. Vi stänger aldrig av beställningar mitt i en dag – er verksamhet påverkas inte. En enstaka toppdag är inget problem, det är det genomsnittliga flödet som avgör vilken plan som passar er bäst."
     },
     {
       question: "Hur snabbt kan vi komma igång?",
