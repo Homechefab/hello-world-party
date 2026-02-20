@@ -6,7 +6,7 @@ const RestaurantFAQ = () => {
   const faqs = [
     {
       question: "Vilka prisplaner finns för restauranger?",
-      answer: "Vi erbjuder tre prisplaner: Liten (3 999 kr/mån, upp till 50 beställningar/dag), Medelstor (5 999 kr/mån, upp till 150 beställningar/dag med premiumprofil och prioriterad support) och Stor/Företag (anpassat pris för kedjor med obegränsat antal beställningar och API-integration). Alla planer har 0% provision – ni behåller hela matintäkten."
+      answer: "Vi erbjuder tre prisplaner: Liten (3 999 kr/mån, upp till 30 beställningar/dag), Medelstor (5 999 kr/mån, 30–60 beställningar/dag med premiumprofil och prioriterad support) och Stor/Företag (anpassat pris för kedjor med obegränsat antal beställningar och API-integration). Alla planer har 0% provision – ni behåller hela matintäkten."
     },
     {
       question: "Kan jag byta prisplan?",
@@ -18,7 +18,7 @@ const RestaurantFAQ = () => {
     },
     {
       question: "Vad händer om jag överskrider ordergränsen?",
-      answer: "Om ni på planen Liten (50 order/dag) eller Medelstor (150 order/dag) regelbundet överstiger er gräns kontaktar vi er och rekommenderar en uppgradering. Vi stänger aldrig av beställningar mitt i en dag – er verksamhet påverkas inte. En enstaka toppdag är inget problem, det är det genomsnittliga flödet som avgör vilken plan som passar er bäst."
+      answer: "Om ni på planen Liten (30 order/dag) eller Medelstor (30–60 order/dag) regelbundet överstiger er gräns kontaktar vi er och rekommenderar en uppgradering. Vi stänger aldrig av beställningar mitt i en dag – er verksamhet påverkas inte. En enstaka toppdag är inget problem, det är det genomsnittliga flödet som avgör vilken plan som passar er bäst."
     },
     {
       question: "Hur snabbt kan vi komma igång?",
