@@ -369,7 +369,7 @@ const RestaurantPartnership = () => {
             </Button>
             <Button variant="outline" size="lg" className="flex items-center gap-2">
               <Phone className="w-4 h-4" />
-              Ring oss: 08-123 45 67
+              Ring oss: 0734-23 46 86
             </Button>
             <Button variant="outline" size="lg" className="flex items-center gap-2">
               <Mail className="w-4 h-4" />
