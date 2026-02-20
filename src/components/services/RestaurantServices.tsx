@@ -34,8 +34,8 @@ const RestaurantServices = () => {
     },
     {
       icon: Shield,
-      title: "Fast månadsavgift",
-      description: "3 999 kr/mån – inga provisioner, ni behåller hela intäkten"
+      title: "Tre prisplaner",
+      description: "Från 3 999 kr/mån – välj plan efter er storlek, 0% provision"
     }
   ];
 
@@ -81,7 +81,7 @@ const RestaurantServices = () => {
             </Button>
             <Button asChild variant="outline" size="lg">
               <Link to="/restaurant/partnership">
-                Läs mer om fördelarna
+                Se våra 3 prisplaner
               </Link>
             </Button>
           </div>
