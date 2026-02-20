@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
 import {
   ChefHat,
   CheckCircle,
@@ -17,8 +18,10 @@ import {
   BookOpen,
   Phone,
   Mail,
-  Clock
+  Clock,
+  Download
 } from 'lucide-react';
+import jsPDF from 'jspdf';
 
 const Section = ({ icon: Icon, title, children, accent = false }: {
   icon: React.ElementType;
@@ -54,13 +57,190 @@ const Rule = ({ type, text }: { type: 'do' | 'dont' | 'warn'; text: string }) =>
 
 
 export const ChefOnboardingGuide = () => {
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 20;
+    const contentWidth = pageWidth - margin * 2;
+    let y = 20;
+
+    const addPage = () => { doc.addPage(); y = 20; };
+    const checkPage = (needed = 20) => { if (y + needed > 275) addPage(); };
+
+    const h1 = (text: string) => {
+      checkPage(14);
+      doc.setFontSize(18); doc.setFont('helvetica', 'bold');
+      doc.setFillColor(220, 80, 30);
+      doc.rect(margin, y - 6, contentWidth, 12, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.text(text, margin + 3, y + 2);
+      doc.setTextColor(0, 0, 0);
+      y += 16;
+    };
+
+    const h2 = (text: string) => {
+      checkPage(10);
+      doc.setFontSize(13); doc.setFont('helvetica', 'bold');
+      doc.setTextColor(220, 80, 30);
+      doc.text(text, margin, y);
+      doc.setTextColor(0, 0, 0);
+      y += 8;
+    };
+
+    const body = (text: string, indent = 0) => {
+      checkPage(8);
+      doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+      const lines = doc.splitTextToSize(text, contentWidth - indent);
+      lines.forEach((line: string) => {
+        checkPage(6);
+        doc.text(line, margin + indent, y);
+        y += 5;
+      });
+    };
+
+    const rule = (type: 'do' | 'dont' | 'warn', text: string) => {
+      checkPage(8);
+      const prefix = type === 'do' ? '✓' : type === 'dont' ? '✗' : '⚠';
+      doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+      const lines = doc.splitTextToSize(`${prefix}  ${text}`, contentWidth - 8);
+      lines.forEach((line: string) => {
+        checkPage(6);
+        doc.text(line, margin + 4, y);
+        y += 5;
+      });
+    };
+
+    const space = (n = 4) => { y += n; };
+
+    // Cover
+    doc.setFillColor(220, 80, 30);
+    doc.rect(0, 0, pageWidth, 50, 'F');
+    doc.setFontSize(22); doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
+    doc.text('Homechef – Kock-onboarding', margin, 22);
+    doc.setFontSize(11); doc.setFont('helvetica', 'normal');
+    doc.text('Komplett guide för nya partners', margin, 33);
+    doc.text(`Datum: ${new Date().toLocaleDateString('sv-SE')}`, margin, 42);
+    doc.setTextColor(0, 0, 0);
+    y = 60;
+
+    // 1. Vision
+    h1('1. Välkommen & Vår Vision');
+    body('Öppning: "Du är nu en del av Sveriges mest spännande matplattform. Vi kopplar samman passionerade kockar med matälskare – och vi ser till att du får betalt för det du älskar att göra."');
+    space();
+    body('Homechef är en exklusiv marknadsplats – vi selekterar noggrant vilka kockar vi godkänner, vilket gör varumärket starkare för alla.');
+    body('Vi gör jobbet: marknadsföring, betalningar, kundservice, logistik. Kocken fokuserar på det hen är bäst på – maten.');
+    space(6);
+
+    // 2. Checklista
+    h1('2. Första stegen – Checklista');
+    const checks = [
+      'Byt lösenord vid första inloggning (Obligatoriskt)',
+      'Ladda upp profilbild – proffsig och välbelyst (Viktigt)',
+      'Skriv en säljande bio – berätta din historia (Viktigt)',
+      'Fyll i specialiteter och matkategorier',
+      'Länka sociala medier i dashboarden',
+      'Ladda upp minst 3 rätter med foto, beskrivning & pris (Obligatoriskt)',
+      'Sätt tillgängliga leveranstider',
+      'Läs och godkänn Homechefs villkor (Obligatoriskt)',
+    ];
+    checks.forEach(c => body(`☐  ${c}`, 2));
+    space(6);
+
+    // 3. Regler
+    h1('3. Partnerregler – Icke Förhandlingsbara');
+    h2('Ingen parallell försäljningskanal');
+    rule('dont', 'Ingen egen hemsida eller webshop för matförsäljning – all försäljning sker uteslutande via homechef.nu.');
+    rule('dont', 'Inga betalningar utanför plattformen – varken Swish-nummer i sociala medier eller privata överenskommelser med kunder.');
+    rule('do', 'Du kan ha en blogg eller inspirationssida om matlagning – men beställningar ska alltid gå via Homechef.');
+    space();
+    h2('Privat telefonnummer är dolt');
+    rule('dont', 'Dela aldrig ditt privata mobilnummer med kunder – varken i chatten, i förpackningar eller på sociala medier.');
+    rule('dont', 'Kontakta inte kunder direkt utanför plattformen angående beställningar.');
+    rule('do', 'All kundkommunikation sker via Homechef-appen – vi hanterar support, tvister och återbetalningar åt dig.');
+    space();
+    h2('Sociala medier – hänvisa alltid till Homechef');
+    rule('do', 'Posta gärna matbilder, recept och matlagningsvideor – det bygger ditt varumärke.');
+    rule('do', 'Länka alltid till din Homechef-profil: "Beställ via homechef.nu".');
+    rule('do', 'Tagga @homechef i relevanta inlägg – vi delar och boostrar ditt innehåll.');
+    rule('dont', 'Uppge betalningsinformation eller ta beställningar via DM, kommentarer eller Stories.');
+    space(6);
+
+    // 4. Profil
+    h1('4. Din Profil – Säljande Närvaro');
+    h2('Visas för kunder');
+    ['Namn / smeknamn (du väljer)', 'Profilbild', 'Bio och mathistoria', 'Specialiteter & kökstraditioner', 'Sociala medier-ikoner', 'Kundrecensioner och betyg', 'Tillgängliga rätter med bilder & priser'].forEach(i => body(`• ${i}`, 4));
+    space();
+    h2('Dolt från kunder');
+    ['Privat telefonnummer', 'Personlig e-postadress', 'Hemadress / leveransadress', 'Bankuppgifter'].forEach(i => body(`• ${i}`, 4));
+    space();
+    body('Tips: Kockar med professionellt profilfoto och minst 5 rätter säljer i genomsnitt 3× mer.');
+    space(6);
+
+    // 5. Mat & Kvalitet
+    h1('5. Mat, Kvalitet & Allergener');
+    rule('do', 'Alla rätter måste uppfylla kommunens livsmedelskrav och tillstånd.');
+    rule('do', 'Tydlig allergeninformation är obligatorisk för varje rätt – detta är ett lagkrav.');
+    rule('do', 'Uppdatera menyn regelbundet. Rätter som inte är aktiva tas bort efter 30 dagar.');
+    rule('warn', 'Pris sätter kocken själv. Homechef tar 19% provision + kunden betalar 6% serviceavgift.');
+    space(6);
+
+    // 6. Betalning
+    h1('6. Betalning & Utbetalning');
+    body('Kockens andel: 81% av angivet pris');
+    body('Homechefs provision: 19% av angivet pris');
+    body('Kundens serviceavgift: 6% (läggs på av kunden)');
+    space();
+    body('• Kunder betalar via Kort, Swish eller Klarna – vi hanterar allt.');
+    body('• Utbetalning sker veckovis direkt till kockens registrerade bankkonto.');
+    body('• Månadsrapport skickas automatiskt till kockens @homechef.se-adress.');
+    body('• Moms och skattehantering är kockens ansvar – vi tillhandahåller underlag.');
+    space(6);
+
+    // 7. Marknadsföring
+    h1('7. Hur Vi Marknadsför Dig');
+    ['Synlighet på startsidan och i kategorisök', 'Marknadsföring via Google Ads & SEO', 'Delning av ditt innehåll på våra sociala kanaler', 'Nyhetsbrev till tusentals matintresserade kunder', 'Featured chef-kampanjer för toppsäljare'].forEach(i => rule('do', i));
+    space();
+    body('Ju fler betyg och recensioner kocken samlar – desto högre upp i sökresultaten hamnar hen.');
+    space(6);
+
+    // 8. Support
+    h1('8. Kommunikation & Support');
+    rule('do', 'Alla kundärenden hanteras av Homechef – kocken kontaktar aldrig kunder direkt angående klagomål.');
+    rule('do', 'Vid produktionsproblem eller sjukdom – meddela Homechef omedelbart via appen.');
+    rule('warn', 'Negativa recensioner är en del av verksamheten. Vi hjälper dig hantera dem professionellt.');
+    space();
+    body('Telefon: 0734-23 46 86  |  E-post: info@homechef.nu  |  Öppettider: Mån–Fre 09–18');
+    space(6);
+
+    // 9. Konsekvenser
+    h1('9. Varningar & Konsekvenser');
+    body('Nivå 1 – Varning: Skriftlig påminnelse – registreras i kontot.');
+    body('Nivå 2 – Tillfällig avstängning: Profilen inaktiveras i 14–30 dagar.');
+    body('Nivå 3 – Permanent utestängning: Kontot avslutas utan möjlighet till återaktivering.');
+    space();
+    body('Brott mot reglerna om parallell försäljning eller delning av kontaktuppgifter leder direkt till nivå 2 eller 3.');
+    space(6);
+
+    // Avslut
+    h1('Avslutning');
+    body('"Vi är glada att ha dig ombord. Ju mer du engagerar dig – bilder, sociala medier, bra recensioner – desto mer tjänar du. Vi är din partner, inte bara din plattform. Lycka till!"');
+
+    doc.save('Homechef_Kock-onboarding.pdf');
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="rounded-xl bg-gradient-to-r from-primary to-accent p-6 text-primary-foreground">
-        <div className="flex items-center gap-3 mb-2">
-          <ChefHat className="h-7 w-7" />
-          <h2 className="text-2xl font-bold">Kock-onboarding – Komplett guide</h2>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3 mb-2">
+            <ChefHat className="h-7 w-7" />
+            <h2 className="text-2xl font-bold">Kock-onboarding – Komplett guide</h2>
+          </div>
+          <Button onClick={generatePDF} variant="secondary" className="flex items-center gap-2 flex-shrink-0">
+            <Download className="h-4 w-4" />
+            Ladda ner PDF
+          </Button>
         </div>
         <p className="opacity-90 text-sm max-w-2xl">
           Allt du behöver gå igenom med en ny kock vid uppstartssamtalet. Presentera detta som en partnership – vi hjälper dem lyckas, de hjälper oss växa.
