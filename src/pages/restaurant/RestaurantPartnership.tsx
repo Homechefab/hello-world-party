@@ -190,85 +190,122 @@ const RestaurantPartnership = () => {
       <section id="priser" className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">En enkel prismodell</h2>
+            <h2 className="text-3xl font-bold mb-4">Välj rätt plan för er restaurang</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Ingen provision – ni behåller hela intäkten från maten.
+              Ingen provision – ni behåller hela intäkten från maten. Fast månadsavgift anpassad efter er storlek.
             </p>
           </div>
-          
-          <div className="max-w-lg mx-auto">
-            <Card className="border-2 border-primary/20 shadow-lg overflow-hidden">
-              <div className="bg-gradient-to-r from-primary to-accent p-6 text-center text-white">
-                <p className="text-sm font-medium opacity-90 mb-1">Fast månadsavgift</p>
-                <div className="flex items-baseline justify-center gap-1">
-                  <span className="text-5xl font-bold">3 999</span>
-                  <span className="text-xl">kr/mån</span>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+            {/* Plan 1: Liten */}
+            <Card className="relative border border-border hover:shadow-lg transition-all duration-300">
+              <CardHeader className="text-center pb-2">
+                <CardTitle className="text-2xl">Liten</CardTitle>
+                <p className="text-sm text-muted-foreground">Perfekt för små restauranger och food trucks</p>
+                <div className="mt-4">
+                  <span className="text-5xl font-bold text-primary">3 999</span>
+                  <span className="text-base font-normal text-muted-foreground"> kr/mån</span>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3 mb-6">
+                  {[
+                    "Upp till 50 beställningar/dag",
+                    "Grundläggande profilsida",
+                    "Orderhantering i appen",
+                    "Kort, Swish & Klarna",
+                    "E-postsupport",
+                    "Månadsrapport"
+                  ].map((f, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button asChild className="w-full" variant="outline">
+                  <Link to="/restaurant/apply">Välj Liten</Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Plan 2: Medelstor – Popular */}
+            <Card className="relative border-2 border-primary shadow-xl">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <div className="bg-primary text-primary-foreground px-4 py-2 rounded-full flex items-center gap-2 text-sm font-semibold">
+                  ⭐ Populärast
                 </div>
               </div>
-              <CardContent className="p-6">
-                <p className="text-center text-muted-foreground mb-6">
-                  Allt ni behöver för att sälja via Homechef
-                </p>
-                <ul className="space-y-4">
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <span className="font-medium">Tillgång till appen</span>
-                      <p className="text-sm text-muted-foreground">Komplett orderhantering och menyhantering</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <span className="font-medium">Betalningslösning</span>
-                      <p className="text-sm text-muted-foreground">Kort, Swish och Klarna – säkert via Stripe</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <span className="font-medium">Synlighet & marknadsföring</span>
-                      <p className="text-sm text-muted-foreground">Er restaurang visas för tusentals hungriga kunder</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <span className="font-medium">Support dygnet runt</span>
-                      <p className="text-sm text-muted-foreground">Vi finns här när ni behöver hjälp</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                    <div>
-                      <span className="font-medium">Statistik & rapporter</span>
-                      <p className="text-sm text-muted-foreground">Se försäljning, populära rätter och trender</p>
-                    </div>
-                  </li>
-                </ul>
-                
-                <div className="mt-6 pt-6 border-t">
-                  <div className="bg-secondary/50 rounded-lg p-4 text-center">
-                    <p className="text-sm font-medium mb-1">Leverans betalas av kunden</p>
-                    <p className="text-xs text-muted-foreground">
-                      Fast leveransavgift som går direkt till budet – ingår ej i er månadsavgift
-                    </p>
-                  </div>
+              <CardHeader className="text-center pb-2">
+                <CardTitle className="text-2xl">Medelstor</CardTitle>
+                <p className="text-sm text-muted-foreground">För restauranger som vill växa snabbt</p>
+                <div className="mt-4">
+                  <span className="text-5xl font-bold text-primary">5 999</span>
+                  <span className="text-base font-normal text-muted-foreground"> kr/mån</span>
                 </div>
-                
-                <Button asChild size="lg" className="w-full mt-6 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
-                  <Link to="/restaurant/apply">
-                    Kom igång nu
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Link>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3 mb-6">
+                  {[
+                    "Upp till 150 beställningar/dag",
+                    "Premium profilsida med foton",
+                    "Orderhantering i appen",
+                    "Kort, Swish & Klarna",
+                    "Prioriterad support (chatt)",
+                    "Detaljerade analysrapporter",
+                    "Marknadsföring i appen",
+                    "Synlighet på startsidan"
+                  ].map((f, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button asChild className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
+                  <Link to="/restaurant/apply">Välj Medelstor</Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Plan 3: Stor / Företag */}
+            <Card className="relative border border-border hover:shadow-lg transition-all duration-300">
+              <CardHeader className="text-center pb-2">
+                <CardTitle className="text-2xl">Stor / Företag</CardTitle>
+                <p className="text-sm text-muted-foreground">För kedjor och större restauranggrupper</p>
+                <div className="mt-4">
+                  <span className="text-4xl font-bold text-primary">Anpassat</span>
+                  <p className="text-sm text-muted-foreground mt-1">Kontakta oss för offert</p>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-3 mb-6">
+                  {[
+                    "Obegränsat antal beställningar",
+                    "Anpassad profilsida & varumärke",
+                    "Dedikerad kontaktperson",
+                    "API-integration mot ert kassasystem",
+                    "Support dygnet runt",
+                    "Avancerad rapportering & export",
+                    "Volymrabatter",
+                    "Skräddarsydda kampanjer"
+                  ].map((f, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button asChild className="w-full" variant="outline">
+                  <Link to="/restaurant/apply">Kontakta oss</Link>
                 </Button>
               </CardContent>
             </Card>
           </div>
-          
-          <div className="mt-8 text-center">
+
+          <div className="text-center">
             <p className="text-sm text-muted-foreground">
-              Jämför med 20-30% provision på andra plattformar – hos oss blir det billigare ju mer ni säljer!
+              Inga uppsägningsavgifter · Ingen provision · Leveransavgift betalas av kunden
             </p>
           </div>
         </div>
