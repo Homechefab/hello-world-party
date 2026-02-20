@@ -674,11 +674,11 @@ const RestaurantApplicationForm = () => {
               <CardContent className="space-y-3">
                 <div className="flex items-center gap-2 text-sm">
                   <Phone className="w-4 h-4 text-primary" />
-                  <span>08-123 45 67</span>
+                  <span>0734-23 46 86</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Mail className="w-4 h-4 text-primary" />
-                  <span>restaurants@homechef.se</span>
+                  <span>info@homechef.nu</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
                   Vi svarar på ansökningar inom 2-3 arbetsdagar
