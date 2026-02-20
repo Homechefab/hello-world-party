@@ -13,6 +13,7 @@ import { CommissionReports } from '@/components/admin/CommissionReports';
 import { PaymentOverview } from '@/components/admin/PaymentOverview';
 import { EarlyAccessSignups } from '@/components/admin/EarlyAccessSignups';
 import { OnboardingMaterials } from '@/components/admin/OnboardingMaterials';
+import { ChefOnboardingGuide } from '@/components/admin/ChefOnboardingGuide';
 import Visitors from '@/pages/admin/Visitors';
 import { supabase } from '@/integrations/supabase/client';
 import { 
@@ -26,7 +27,8 @@ import {
   Bell,
   Building2,
   FileText,
-  Eye
+  Eye,
+  ChefHat
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
@@ -224,6 +226,11 @@ export const AdminDashboard = () => {
             <span className="hidden sm:inline">Onboarding</span>
             <span className="sm:hidden">Onb.</span>
           </TabsTrigger>
+          <TabsTrigger value="chef-guide" className="whitespace-nowrap">
+            <ChefHat className="h-4 w-4 mr-1 hidden sm:inline" />
+            <span className="hidden sm:inline">Kock-guide</span>
+            <span className="sm:hidden">Guide</span>
+          </TabsTrigger>
           <TabsTrigger value="complaints" className="whitespace-nowrap">Klagomål</TabsTrigger>
           <TabsTrigger value="visitors" className="whitespace-nowrap">
             <Eye className="h-4 w-4 mr-1 hidden sm:inline" />
@@ -286,6 +293,10 @@ export const AdminDashboard = () => {
 
         <TabsContent value="onboarding">
           <OnboardingMaterials />
+        </TabsContent>
+
+        <TabsContent value="chef-guide">
+          <ChefOnboardingGuide />
         </TabsContent>
 
         <TabsContent value="complaints">
