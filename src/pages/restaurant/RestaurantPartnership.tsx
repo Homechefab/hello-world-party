@@ -201,7 +201,7 @@ const RestaurantPartnership = () => {
             <Card className="relative border border-border hover:shadow-lg transition-all duration-300">
               <CardHeader className="text-center pb-2">
                 <CardTitle className="text-2xl">Liten</CardTitle>
-                <p className="text-sm text-muted-foreground">Perfekt för små restauranger och food trucks</p>
+                <p className="text-sm text-muted-foreground">Upp till 30 beställningar/dag</p>
                 <div className="mt-4">
                   <span className="text-5xl font-bold text-primary">3 999</span>
                   <span className="text-base font-normal text-muted-foreground"> kr/mån</span>
@@ -210,7 +210,7 @@ const RestaurantPartnership = () => {
               <CardContent>
                 <ul className="space-y-3 mb-6">
                   {[
-                    "Upp till 50 beställningar/dag",
+                    "Upp till 30 beställningar/dag",
                     "Grundläggande profilsida",
                     "Orderhantering i appen",
                     "Kort, Swish & Klarna",
@@ -238,7 +238,7 @@ const RestaurantPartnership = () => {
               </div>
               <CardHeader className="text-center pb-2">
                 <CardTitle className="text-2xl">Medelstor</CardTitle>
-                <p className="text-sm text-muted-foreground">För restauranger som vill växa snabbt</p>
+                <p className="text-sm text-muted-foreground">30–60 beställningar/dag</p>
                 <div className="mt-4">
                   <span className="text-5xl font-bold text-primary">5 999</span>
                   <span className="text-base font-normal text-muted-foreground"> kr/mån</span>
@@ -247,7 +247,7 @@ const RestaurantPartnership = () => {
               <CardContent>
                 <ul className="space-y-3 mb-6">
                   {[
-                    "Upp till 150 beställningar/dag",
+                    "30–60 beställningar/dag",
                     "Premium profilsida med foton",
                     "Orderhantering i appen",
                     "Kort, Swish & Klarna",
