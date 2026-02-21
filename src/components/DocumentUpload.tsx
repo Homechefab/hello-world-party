@@ -72,87 +72,83 @@ export const DocumentUpload = ({
 
     try {
       setUploading(true);
-      setProgress(20);
-
-      console.log('DocumentUpload: Starting upload with props:', { chefId, restaurantId, documentType });
+      setProgress(10);
 
       // Get current user (optional for chef/restaurant applications)
       const { data: { user } } = await supabase.auth.getUser();
-      console.log('DocumentUpload: User:', user?.id || 'anonymous');
 
-      // For anonymous uploads (chef/restaurant applications), use the provided ID
-      // For authenticated users, use their user ID
+      // Determine folder path and user_id for the submission
       let folderPath: string;
       let userId: string;
 
       if (chefId) {
-        // Anonymous chef application upload
         folderPath = `chef-applications/${chefId}`;
-        userId = chefId; // Use chefId as pseudo-user for document_submissions
+        // Use auth user id if logged in, otherwise use chefId
+        userId = user?.id || chefId;
       } else if (restaurantId) {
-        // Anonymous restaurant application upload
         folderPath = `restaurant-applications/${restaurantId}`;
-        userId = restaurantId; // Use restaurantId as pseudo-user for document_submissions
+        userId = user?.id || restaurantId;
       } else if (user) {
-        // Authenticated user upload
         folderPath = user.id;
         userId = user.id;
       } else {
         throw new Error("Du måste vara inloggad eller ha en giltig ansökan för att ladda upp dokument");
       }
 
-      setProgress(40);
+      setProgress(30);
+
+      // Sanitize filename - remove spaces and special characters
+      const sanitizedName = file.name
+        .replace(/\s+/g, '_')
+        .replace(/[^a-zA-Z0-9._-]/g, '');
+      const fileName = `${folderPath}/${Date.now()}_${sanitizedName}`;
 
       // Upload file to Supabase Storage
-      const fileName = `${folderPath}/${Date.now()}_${file.name}`;
-      console.log('DocumentUpload: Uploading to storage path:', fileName);
-      const { error: uploadError, data: uploadData } = await supabase.storage
+      console.log('DocumentUpload: Uploading to:', fileName, 'bucket: documents');
+      const { error: uploadError } = await supabase.storage
         .from('documents')
-        .upload(fileName, file);
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false,
+        });
 
       if (uploadError) {
-        console.error('DocumentUpload: Storage upload error:', uploadError);
-        throw uploadError;
+        console.error('DocumentUpload: Storage error:', JSON.stringify(uploadError));
+        throw new Error(`Fil-uppladdning misslyckades: ${uploadError.message}`);
       }
-      console.log('DocumentUpload: Storage upload success:', uploadData);
 
       setProgress(60);
 
-      // Get public URL
-      const { data: urlData } = supabase.storage
-        .from('documents')
-        .getPublicUrl(fileName);
+      // Get the file path for storage reference (not public URL since bucket is private)
+      const documentUrl = fileName;
 
-      setProgress(80);
+      setProgress(75);
 
       // Create document submission record
       const submissionData: any = {
         user_id: userId,
         document_type: documentType,
-        document_url: urlData.publicUrl,
+        document_url: documentUrl,
         municipality: municipality.trim(),
         permit_number: permitNumber.trim() || null,
         status: 'pending'
       };
 
-      // Link to chef application if chefId is provided
       if (chefId) {
         submissionData.chef_id = chefId;
       }
-
-      // Link to restaurant application if restaurantId is provided
       if (restaurantId) {
         submissionData.restaurant_id = restaurantId;
       }
 
-      console.log('DocumentUpload: Inserting document_submissions:', submissionData);
+      console.log('DocumentUpload: Inserting submission:', JSON.stringify(submissionData));
       const { error: dbError } = await supabase
         .from('document_submissions')
         .insert(submissionData);
 
       if (dbError) {
-        console.error('DocumentUpload: DB insert error:', dbError);
-        throw dbError;
+        console.error('DocumentUpload: DB error:', JSON.stringify(dbError));
+        throw new Error(`Databasfel: ${dbError.message}`);
       }
 
       setProgress(100);
@@ -180,7 +176,7 @@ export const DocumentUpload = ({
         : typeof error === 'object' && error !== null && 'message' in error
           ? String((error as any).message)
           : "Något gick fel vid uppladdning av dokumentet.";
-      console.error('Upload error details:', JSON.stringify(error));
+      console.error('Upload error full:', JSON.stringify(error));
       toast({
         title: "Uppladdning misslyckades",
         description: errorMessage,
