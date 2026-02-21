@@ -92,20 +92,24 @@ const ChefApplication = () => {
         }
 
         // Kolla om det redan finns en ansökan med samma contact_email
-        const { data: existingApplication } = await supabase
+        // Använd service-level check via RPC eller hantera 401 graciöst
+        const { data: existingApplication, error: checkError } = await supabase
           .from('chefs')
           .select('id, application_status')
           .eq('contact_email', formData.contactEmail)
           .maybeSingle();
 
-        // Om det finns en aktiv eller godkänd ansökan, blockera ny ansökan
-        if (existingApplication && ['pending', 'under_review', 'approved'].includes(existingApplication.application_status || '')) {
-          toast({
-            title: "Ansökan finns redan",
-            description: `Det finns redan en ${existingApplication.application_status === 'approved' ? 'godkänd' : 'pågående'} ansökan för denna email.`,
-            variant: "destructive"
-          });
-          return;
+        // Om vi får auth-error, hoppa över duplicate-check (RLS blockerar anon SELECT)
+        if (!checkError) {
+          // Om det finns en aktiv eller godkänd ansökan, blockera ny ansökan
+          if (existingApplication && ['pending', 'under_review', 'approved'].includes(existingApplication.application_status || '')) {
+            toast({
+              title: "Ansökan finns redan",
+              description: `Det finns redan en ${existingApplication.application_status === 'approved' ? 'godkänd' : 'pågående'} ansökan för denna email.`,
+              variant: "destructive"
+            });
+            return;
+          }
         }
 
         // Om det finns en nekad ansökan, ta bort den först
