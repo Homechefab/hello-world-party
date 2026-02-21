@@ -1,0 +1,1 @@
+ALTER TABLE public.document_submissions DROP CONSTRAINT IF EXISTS document_submissions_user_id_fkey;
