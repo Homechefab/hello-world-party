@@ -122,7 +122,7 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
         return {
           id: chef.id,
           applicantName: chef.full_name || profile?.full_name || 'Okänd',
-          email: profile?.email || '',
+          email: chef.contact_email || profile?.email || '',
           phone: chef.phone || profile?.phone || 'Ej angivet',
           businessName: chef.business_name || 'Inget företagsnamn angivet',
           municipality: latestDoc?.municipality || chef.city || profile?.address || 'Ej angivet',
