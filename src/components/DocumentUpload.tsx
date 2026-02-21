@@ -74,8 +74,11 @@ export const DocumentUpload = ({
       setUploading(true);
       setProgress(20);
 
+      console.log('DocumentUpload: Starting upload with props:', { chefId, restaurantId, documentType });
+
       // Get current user (optional for chef/restaurant applications)
       const { data: { user } } = await supabase.auth.getUser();
+      console.log('DocumentUpload: User:', user?.id || 'anonymous');
 
       // For anonymous uploads (chef/restaurant applications), use the provided ID
       // For authenticated users, use their user ID
@@ -102,11 +105,16 @@ export const DocumentUpload = ({
 
       // Upload file to Supabase Storage
       const fileName = `${folderPath}/${Date.now()}_${file.name}`;
-      const { error: uploadError } = await supabase.storage
+      console.log('DocumentUpload: Uploading to storage path:', fileName);
+      const { error: uploadError, data: uploadData } = await supabase.storage
         .from('documents')
         .upload(fileName, file);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error('DocumentUpload: Storage upload error:', uploadError);
+        throw uploadError;
+      }
+      console.log('DocumentUpload: Storage upload success:', uploadData);
 
       setProgress(60);
 
@@ -137,11 +145,15 @@ export const DocumentUpload = ({
         submissionData.restaurant_id = restaurantId;
       }
 
+      console.log('DocumentUpload: Inserting document_submissions:', submissionData);
       const { error: dbError } = await supabase
         .from('document_submissions')
         .insert(submissionData);
 
-      if (dbError) throw dbError;
+      if (dbError) {
+        console.error('DocumentUpload: DB insert error:', dbError);
+        throw dbError;
+      }
 
       setProgress(100);
       setUploading(false);
@@ -163,9 +175,15 @@ export const DocumentUpload = ({
 
     } catch (error: unknown) {
       console.error('Upload error:', error);
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : typeof error === 'object' && error !== null && 'message' in error
+          ? String((error as any).message)
+          : "Något gick fel vid uppladdning av dokumentet.";
+      console.error('Upload error details:', JSON.stringify(error));
       toast({
         title: "Uppladdning misslyckades",
-        description: error instanceof Error ? error.message : "Något gick fel vid uppladdning av dokumentet.",
+        description: errorMessage,
         variant: "destructive",
       });
       setUploading(false);
