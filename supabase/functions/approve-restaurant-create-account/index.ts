@@ -188,7 +188,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Send welcome email
     try {
       const { data: emailResponse, error: emailError } = await resend.emails.send({
-        from: "Homechef <onboarding@resend.dev>",
+        from: "Homechef <info@homechef.nu>",
         to: [restaurant.contact_email],
         subject: "Välkommen till Homechef! 🎉",
         html: `

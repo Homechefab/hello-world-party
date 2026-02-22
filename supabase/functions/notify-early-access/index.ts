@@ -62,7 +62,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailPromises = matchingSignups.map(async (signup) => {
       try {
         const result = await resend.emails.send({
-          from: "HomeChef <noreply@resend.dev>",
+          from: "HomeChef <info@homechef.nu>",
           to: [signup.email],
           subject: "🎉 En ny kock har registrerat sig i ditt område!",
           html: `

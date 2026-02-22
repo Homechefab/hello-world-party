@@ -132,7 +132,7 @@ serve(async (req) => {
     let emailSent = false;
     try {
       const { error: emailError } = await resend.emails.send({
-        from: "Homechef <onboarding@resend.dev>",
+        from: "Homechef <info@homechef.nu>",
         to: [chef.contact_email],
         subject: "Ditt lösenord har återställts - Homechef",
         html: `

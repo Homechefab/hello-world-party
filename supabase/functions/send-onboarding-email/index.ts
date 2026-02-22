@@ -493,7 +493,7 @@ const handler = async (req: Request): Promise<Response> => {
     const htmlContent = generateOnboardingHTML(content, applicant_name, business_name);
 
     const emailResponse = await resend.emails.send({
-      from: "Homechef <onboarding@resend.dev>",
+      from: "Homechef <info@homechef.nu>",
       to: [applicant_email],
       subject: `🎉 Tack för din ansökan, ${applicant_name}! - Onboarding-guide`,
       html: htmlContent,

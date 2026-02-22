@@ -225,7 +225,7 @@ const handler = async (req: Request): Promise<Response> => {
       const emailHtml = generateWelcomeEmail(chef.full_name, homechefEmail, password);
       
       const { error: emailError } = await resend.emails.send({
-        from: "Homechef <onboarding@resend.dev>",
+        from: "Homechef <info@homechef.nu>",
         to: [chef.contact_email],
         subject: "Välkommen till Homechef! Dina inloggningsuppgifter",
         html: emailHtml,
