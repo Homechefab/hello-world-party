@@ -203,7 +203,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Add chef role (use upsert to avoid duplicate key errors)
-    const { error: roleError } = await supabase
+    const { error: roleInsertError } = await supabase
       .from("user_roles")
       .upsert({
         user_id: userId,
@@ -212,8 +212,8 @@ const handler = async (req: Request): Promise<Response> => {
         onConflict: 'user_id,role'
       });
 
-    if (roleError) {
-      console.error("Role assignment error:", roleError);
+    if (roleInsertError) {
+      console.error("Role assignment error:", roleInsertError);
       // Continue even if role assignment fails
     }
 
