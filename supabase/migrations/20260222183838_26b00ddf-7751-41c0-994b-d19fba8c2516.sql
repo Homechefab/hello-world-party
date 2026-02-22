@@ -1,0 +1,1 @@
+DROP FUNCTION IF EXISTS public.notify_early_access_on_chef_approval() CASCADE;
