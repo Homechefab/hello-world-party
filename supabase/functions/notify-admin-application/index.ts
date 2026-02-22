@@ -87,7 +87,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Handle rejection notification
     if (type === 'chef_rejection') {
       const emailResponse = await resend.emails.send({
-        from: "HomeChef <onboarding@resend.dev>",
+        from: "HomeChef <info@homechef.nu>",
         to: [applicant_email],
         subject: "Angående din kockansökan hos HomeChef",
         html: `
@@ -151,7 +151,7 @@ const handler = async (req: Request): Promise<Response> => {
     const adminEmail = "info@homechef.nu";
     
     const emailResponse = await resend.emails.send({
-      from: "HomeChef <onboarding@resend.dev>",
+      from: "HomeChef <info@homechef.nu>",
       to: [adminEmail],
       subject: `Ny ${typeLabel}-ansökan från ${applicant_name}`,
       html: `
