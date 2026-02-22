@@ -157,7 +157,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const emailResponse = await resend.emails.send({
-      from: "Homechef <onboarding@resend.dev>",
+      from: "Homechef <info@homechef.nu>",
       to: [data.contactEmail],
       subject,
       html: htmlContent,

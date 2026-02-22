@@ -50,7 +50,7 @@ const handler = async (req: Request): Promise<Response> => {
     const businessTypeLabel = businessTypeLabels[businessType] || businessType;
 
     const emailResponse = await resend.emails.send({
-      from: "Homechef <onboarding@resend.dev>",
+      from: "Homechef <info@homechef.nu>",
       to: [contactEmail],
       subject: "Tack för din ansökan till Homechef!",
       html: `
