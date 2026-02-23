@@ -237,41 +237,26 @@ export const KitchenPartnerOnboarding = () => {
         }
       }
 
-      // Send notification to admin
+      // Send unified notification (admin + applicant confirmation)
       try {
-        await supabase.functions.invoke('notify-admin-kitchen-partner', {
-          body: {
-            businessName: formData.businessName,
-            contactPerson: formData.contactPerson,
-            email: formData.email,
-            phone: formData.phone,
-            address: `${formData.address}, ${formData.city}`,
-            municipality: formData.city,
-            hourlyRate: parseFloat(formData.hourlyRate) || 0,
-            applicationId: insertedData?.id || 'unknown'
-          }
-        });
-        console.log('Admin notification sent successfully');
-      } catch (notificationError) {
-        console.error('Failed to send admin notification:', notificationError);
-        // Don't fail the whole process if notification fails
-      }
-
-      // Send onboarding guide to applicant
-      try {
-        await supabase.functions.invoke('send-onboarding-email', {
+        await supabase.functions.invoke('send-application-notification', {
           body: {
             type: 'kitchen_partner',
             applicant_name: formData.contactPerson,
             applicant_email: formData.email,
-            business_name: formData.businessName
+            business_name: formData.businessName,
+            phone: formData.phone,
+            address: formData.address,
+            city: formData.city,
+            application_id: insertedData?.id || 'unknown'
           }
         });
-        console.log('Onboarding email sent successfully');
-      } catch (onboardingError) {
-        console.error('Failed to send onboarding email:', onboardingError);
-        // Don't fail the whole process if onboarding email fails
+        console.log('Notification emails sent successfully');
+      } catch (notificationError) {
+        console.error('Failed to send notification:', notificationError);
       }
+
+        // Onboarding-guide skickas inte separat - bekräftelsemejlet räcker
 
       toast({
         title: "Ansökan skickad!",
