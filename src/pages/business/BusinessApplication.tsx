@@ -143,7 +143,7 @@ const BusinessApplication = () => {
       const { data: { user } } = await supabase.auth.getUser();
       
       // Insert application - user_id can be null for non-logged-in users
-      const { error } = await supabase.from("business_partners").insert({
+      const { data: insertResult, error } = await supabase.from("business_partners").insert({
         user_id: user?.id || null,
         business_name: data.businessName,
         organization_number: data.organizationNumber,
@@ -160,61 +160,31 @@ const BusinessApplication = () => {
         has_insurance: data.hasInsurance,
         application_status: "pending",
         food_registration_document_url: documentUrl
-      });
+      }).select('id').single();
 
       if (error) throw error;
 
-      // Send confirmation email to business (don't wait for it)
-      supabase.functions.invoke('send-business-confirmation', {
-        body: {
-          businessName: data.businessName,
-          contactName: data.contactName,
-          contactEmail: data.contactEmail,
-          businessType: data.businessType
-        }
-      }).then(({ error: emailError }) => {
-        if (emailError) {
-          console.error("Error sending confirmation email:", emailError);
-        } else {
-          console.log("Confirmation email sent successfully");
-        }
-      });
-
-      // Send onboarding guide to applicant
-      supabase.functions.invoke('send-onboarding-email', {
+      // Send unified notification (admin + applicant confirmation)
+      supabase.functions.invoke('send-application-notification', {
         body: {
           type: 'business',
           applicant_name: data.contactName,
           applicant_email: data.contactEmail,
-          business_name: data.businessName
+          business_name: data.businessName,
+          phone: data.contactPhone,
+          address: data.address,
+          city: data.city,
+          application_id: insertResult?.id
         }
-      }).then(({ error: onboardingError }) => {
-        if (onboardingError) {
-          console.error("Error sending onboarding email:", onboardingError);
+      }).then(({ error: notifyError }) => {
+        if (notifyError) {
+          console.error("Error sending notification:", notifyError);
         } else {
-          console.log("Onboarding email sent successfully");
+          console.log("Notification emails sent successfully");
         }
       });
 
-      // Notify admin about new application (don't wait for it)
-      supabase.functions.invoke('notify-admin-business-application', {
-        body: {
-          businessName: data.businessName,
-          contactName: data.contactName,
-          contactEmail: data.contactEmail,
-          contactPhone: data.contactPhone,
-          businessType: data.businessType,
-          organizationNumber: data.organizationNumber,
-          city: data.city,
-          hasDocument: !!documentUrl
-        }
-      }).then(({ error: adminError }) => {
-        if (adminError) {
-          console.error("Error notifying admin:", adminError);
-        } else {
-          console.log("Admin notification sent successfully");
-        }
-      });
+      // Admin-notis skickas redan via send-application-notification ovan
 
       toast({
         title: "Ansökan skickad!",

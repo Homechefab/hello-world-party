@@ -10,7 +10,7 @@ const corsHeaders = {
 };
 
 interface NotificationRequest {
-  type: 'chef' | 'kitchen_partner' | 'restaurant';
+  type: 'chef' | 'kitchen_partner' | 'restaurant' | 'business';
   applicant_name: string;
   applicant_email: string;
   business_name: string;
@@ -20,8 +20,63 @@ interface NotificationRequest {
   application_id?: string;
 }
 
+// Role-specific content for applicant confirmation email
+const getRoleContent = (type: string, typeLabel: string) => {
+  switch (type) {
+    case 'chef':
+      return {
+        intro: 'Vi har tagit emot din ansökan om att bli kock på Homechef. Vi är glada att du vill vara en del av Sveriges första marknadsplats för hemlagad och lokalt producerad mat!',
+        nameLabel: 'Namn',
+        steps: [
+          { title: 'Granskning', desc: 'Vi verifierar dina uppgifter och granskar din ansökan (2-3 arbetsdagar)' },
+          { title: 'Bekräftelse', desc: 'Du får ett e-postmeddelande med besked om din ansökan' },
+          { title: 'Kom igång', desc: 'Vid godkännande får du dina inloggningsuppgifter och kan börja använda plattformen' },
+        ],
+      };
+    case 'restaurant':
+      return {
+        intro: 'Vi har tagit emot din ansökan om att registrera din restaurang på Homechef. Vi ser fram emot att hjälpa er nå fler kunder genom vår plattform!',
+        nameLabel: 'Restaurangnamn',
+        steps: [
+          { title: 'Granskning', desc: 'Vi verifierar era uppgifter och granskar er ansökan (3-5 arbetsdagar)' },
+          { title: 'Bekräftelse', desc: 'Ni får ett e-postmeddelande med besked om er ansökan' },
+          { title: 'Kom igång', desc: 'Vid godkännande får ni inloggningsuppgifter och kan börja lägga upp er meny på plattformen' },
+        ],
+      };
+    case 'kitchen_partner':
+      return {
+        intro: 'Vi har tagit emot din ansökan om att bli kökspartner på Homechef. Som kökspartner hyr du ut ditt kök till kockar som behöver en professionell arbetsplats!',
+        nameLabel: 'Företagsnamn',
+        steps: [
+          { title: 'Granskning', desc: 'Vi verifierar dina uppgifter och granskar din ansökan (3-7 arbetsdagar)' },
+          { title: 'Bekräftelse', desc: 'Du får ett e-postmeddelande med besked om din ansökan' },
+          { title: 'Kom igång', desc: 'Vid godkännande aktiveras ditt kök och blir synligt för kockar som söker arbetsplats' },
+        ],
+      };
+    case 'business':
+      return {
+        intro: 'Vi har tagit emot er ansökan om att bli företagspartner på Homechef. Vi ser fram emot att hjälpa ert företag erbjuda hemlagad mat till era anställda och kunder!',
+        nameLabel: 'Företagsnamn',
+        steps: [
+          { title: 'Granskning', desc: 'Vi granskar er ansökan och kontaktar er för att diskutera samarbetet (3-5 arbetsdagar)' },
+          { title: 'Avtal', desc: 'Vi skapar ett skräddarsytt avtal baserat på era behov och volymer' },
+          { title: 'Kom igång', desc: 'Vid godkännande får ni tillgång till plattformen och kan börja beställa' },
+        ],
+      };
+    default:
+      return {
+        intro: `Vi har tagit emot din ansökan om att bli ${typeLabel.toLowerCase()} på Homechef.`,
+        nameLabel: 'Namn',
+        steps: [
+          { title: 'Granskning', desc: 'Vi verifierar dina uppgifter och granskar din ansökan (2-5 arbetsdagar)' },
+          { title: 'Bekräftelse', desc: 'Du får ett e-postmeddelande med besked om din ansökan' },
+          { title: 'Kom igång', desc: 'Vid godkännande får du tillgång till plattformen' },
+        ],
+      };
+  }
+};
+
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -31,21 +86,26 @@ const handler = async (req: Request): Promise<Response> => {
     const { type, applicant_name, applicant_email, business_name, phone, address, city, application_id } = data;
 
     console.log(`Sending notification for ${type} application:`, {
-      applicant_name,
-      applicant_email,
-      business_name,
-      application_id
+      applicant_name, applicant_email, business_name, application_id
     });
 
-    // Determine application type label in Swedish
     const typeLabels: Record<string, string> = {
       'chef': 'Kock',
       'kitchen_partner': 'Kökspartner',
-      'restaurant': 'Restaurang'
+      'restaurant': 'Restaurang',
+      'business': 'Företagspartner',
     };
     const typeLabel = typeLabels[type] || type;
+    const roleContent = getRoleContent(type, typeLabel);
 
-    // 1. Send email to admin at info@homechef.nu
+    const stepsHtml = roleContent.steps.map((step, i) => `
+      <div class="step">
+        <div class="step-number">${i + 1}</div>
+        <div class="step-text"><strong>${step.title}</strong> - ${step.desc}</div>
+      </div>
+    `).join('');
+
+    // 1. Send email to admin
     const adminEmailPromise = resend.emails.send({
       from: "Homechef <info@homechef.nu>",
       to: ["info@homechef.nu"],
@@ -111,7 +171,7 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    // Send confirmation email to the applicant
+    // 2. Send role-specific confirmation email to applicant
     const applicantEmailPromise = resend.emails.send({
       from: "Homechef <info@homechef.nu>",
       to: [applicant_email],
@@ -147,12 +207,12 @@ const handler = async (req: Request): Promise<Response> => {
             <div class="content">
               <p>Hej <strong>${applicant_name}</strong>,</p>
               
-              <p>Vi har tagit emot din ansökan om att bli ${typeLabel.toLowerCase()} på Homechef. Vi är glada att du vill vara en del av Sveriges första marknadsplats för hemlagad och lokalt producerad mat!</p>
+              <p>${roleContent.intro}</p>
               
               <div class="info-box">
                 <h3 style="margin-top: 0; color: #F97316;">Din ansökan</h3>
                 <div class="info-row">
-                  <span class="info-label">${type === 'chef' ? 'Namn' : 'Företagsnamn'}:</span>
+                  <span class="info-label">${roleContent.nameLabel}:</span>
                   <span class="info-value">${business_name}</span>
                 </div>
                 <div class="info-row">
@@ -167,18 +227,7 @@ const handler = async (req: Request): Promise<Response> => {
               
               <h3>Vad händer nu?</h3>
               <div class="steps">
-                <div class="step">
-                  <div class="step-number">1</div>
-                  <div class="step-text"><strong>Granskning</strong> - Vi verifierar dina uppgifter och granskar din ansökan (2-3 arbetsdagar)</div>
-                </div>
-                <div class="step">
-                  <div class="step-number">2</div>
-                  <div class="step-text"><strong>Bekräftelse</strong> - Du får ett e-postmeddelande med besked om din ansökan</div>
-                </div>
-                <div class="step">
-                  <div class="step-number">3</div>
-                  <div class="step-text"><strong>Kom igång</strong> - Vid godkännande får du dina inloggningsuppgifter och kan börja använda plattformen</div>
-                </div>
+                ${stepsHtml}
               </div>
               
               <p>Har du frågor under tiden? Kontakta oss gärna på <a href="mailto:info@homechef.nu" style="color: #F97316;">info@homechef.nu</a></p>
@@ -197,7 +246,6 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    // Send both emails in parallel
     const [adminResult, applicantResult] = await Promise.allSettled([adminEmailPromise, applicantEmailPromise]);
 
     console.log("Admin email result:", adminResult.status === 'fulfilled' ? 'sent' : adminResult.reason);
@@ -209,10 +257,7 @@ const handler = async (req: Request): Promise<Response> => {
       applicantEmailSent: applicantResult.status === 'fulfilled',
     }), {
       status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        ...corsHeaders,
-      },
+      headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   } catch (error: any) {
     console.error("Error in send-application-notification function:", error);
