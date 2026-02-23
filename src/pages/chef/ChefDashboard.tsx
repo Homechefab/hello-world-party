@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -26,6 +26,7 @@ import { useToast } from '@/hooks/use-toast';
 // Chef Dashboard Component
 export const ChefDashboard = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const tabFromUrl = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState(tabFromUrl || 'overview');
   type Dish = {
@@ -177,7 +178,7 @@ export const ChefDashboard = () => {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
                   <Button 
-                    onClick={() => window.location.href = '/chef/welcome'}
+                    onClick={() => navigate('/chef/welcome')}
                     className="gap-2"
                   >
                     <CheckCircle className="w-4 h-4" />
