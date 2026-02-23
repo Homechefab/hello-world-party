@@ -138,7 +138,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
       </div>
 
       <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="flex flex-wrap gap-1 h-auto">
           {categories.map((category) => (
             <TabsTrigger key={category} value={category} className="text-xs">
               {category}
