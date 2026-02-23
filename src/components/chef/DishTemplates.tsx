@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Clock, Check } from "lucide-react";
+import { Clock, Check, Upload, X } from "lucide-react";
 import DishCard from "@/components/shared/DishCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -33,6 +33,9 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
   const [selectedTemplate, setSelectedTemplate] = useState<DishTemplate | null>(null);
   const [customPrice, setCustomPrice] = useState<string>("");
   const [customDescription, setCustomDescription] = useState<string>("");
+  const [customName, setCustomName] = useState<string>("");
+  const [customImage, setCustomImage] = useState<File | null>(null);
+  const [customImagePreview, setCustomImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>("Alla");
@@ -70,9 +73,27 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
 
   const handleSelectTemplate = (template: DishTemplate) => {
     setSelectedTemplate(template);
+    setCustomName(template.name);
     setCustomPrice(template.suggested_price?.toString() || "");
     setCustomDescription(template.description || "");
+    setCustomImage(null);
+    setCustomImagePreview(null);
     setIsDialogOpen(true);
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setCustomImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => setCustomImagePreview(reader.result as string);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setCustomImage(null);
+    setCustomImagePreview(null);
   };
 
   const handleAddDish = async () => {
@@ -91,30 +112,54 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
         throw new Error('Chef profile not found');
       }
 
+      // Upload image if provided
+      let imageUrl: string | null = null;
+      if (customImage) {
+        const fileExt = customImage.name.split('.').pop();
+        const fileName = `${chefData.id}/${Date.now()}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage
+          .from('chef-profiles')
+          .upload(fileName, customImage);
+
+        if (uploadError) {
+          console.error('Image upload error:', uploadError);
+        } else {
+          const { data: urlData } = supabase.storage
+            .from('chef-profiles')
+            .getPublicUrl(fileName);
+          imageUrl = urlData.publicUrl;
+        }
+      }
+
+      const dishName = customName.trim() || selectedTemplate.name;
+
       // Add the dish using the template data
       const { error } = await supabase
         .from('dishes')
         .insert({
           chef_id: chefData.id,
-          name: selectedTemplate.name,
+          name: dishName,
           description: customDescription,
           category: selectedTemplate.category,
           ingredients: selectedTemplate.ingredients || [],
           allergens: selectedTemplate.allergens || [],
           preparation_time: selectedTemplate.preparation_time || 30,
           price: parseFloat(customPrice),
-          available: true
+          available: true,
+          image_url: imageUrl
         });
 
       if (error) throw error;
 
       toast({
         title: "Rätt tillagd!",
-        description: `${selectedTemplate.name} har lagts till i din meny`,
+        description: `${dishName} har lagts till i din meny`,
       });
 
       setIsDialogOpen(false);
       setSelectedTemplate(null);
+      setCustomImage(null);
+      setCustomImagePreview(null);
       onDishAdded?.();
     } catch (error) {
       console.error('Error adding dish:', error);
@@ -173,6 +218,19 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
 
           {selectedTemplate && (
             <div className="space-y-4">
+              <div>
+                <Label htmlFor="dish-name">Namn på rätten</Label>
+                <Input
+                  id="dish-name"
+                  value={customName}
+                  onChange={(e) => setCustomName(e.target.value)}
+                  placeholder="Ange eget namn eller behåll mallens"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Ändra till eget namn eller behåll mallens: {selectedTemplate.name}
+                </p>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="price">Pris (kr)</Label>
@@ -202,6 +260,39 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
                   placeholder="Beskriv din rätt..."
                   rows={3}
                 />
+              </div>
+
+              {/* Image upload */}
+              <div>
+                <Label>Bild på rätten</Label>
+                {customImagePreview ? (
+                  <div className="relative mt-2">
+                    <img
+                      src={customImagePreview}
+                      alt="Förhandsgranskning"
+                      className="w-full h-48 object-cover rounded-lg border"
+                    />
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-2 right-2 h-8 w-8"
+                      onClick={removeImage}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                ) : (
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors mt-2">
+                    <Upload className="w-8 h-8 text-muted-foreground mb-2" />
+                    <span className="text-sm text-muted-foreground">Klicka för att ladda upp bild</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleImageChange}
+                    />
+                  </label>
+                )}
               </div>
 
               <div>
