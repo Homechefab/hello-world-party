@@ -116,7 +116,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
       let imageUrl: string | null = null;
       if (customImage) {
         const fileExt = customImage.name.split('.').pop();
-        const fileName = `${chefData.id}/${Date.now()}.${fileExt}`;
+        const fileName = `${user.id}/${Date.now()}-dish.${fileExt}`;
         const { error: uploadError } = await supabase.storage
           .from('chef-profiles')
           .upload(fileName, customImage);
@@ -285,6 +285,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
                   <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors mt-2">
                     <Upload className="w-8 h-8 text-muted-foreground mb-2" />
                     <span className="text-sm text-muted-foreground">Klicka för att ladda upp bild</span>
+                    <span className="text-xs text-muted-foreground mt-1">Rekommenderad storlek: 800×600px, max 2MB</span>
                     <input
                       type="file"
                       accept="image/*"
