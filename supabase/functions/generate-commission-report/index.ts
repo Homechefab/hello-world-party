@@ -112,7 +112,7 @@ serve(async (req) => {
       background: white;
       border: 1px solid #e1e4e8;
       border-radius: 8px;
-      overflow: hidden;
+      overflow: visible;
     }
     
     .header {
