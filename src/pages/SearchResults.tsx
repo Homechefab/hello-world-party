@@ -112,6 +112,9 @@ const SearchResults = () => {
           .select(`
             id,
             business_name,
+            full_name,
+            city,
+            address,
             user_id
           `)
           .eq('kitchen_approved', true);
@@ -165,15 +168,15 @@ const SearchResults = () => {
             const chefData: Chef = {
               id: chef.id,
               business_name: chef.business_name,
-              full_name: profile?.full_name || '',
-              address: profile?.address || '',
+              full_name: chef.full_name || profile?.full_name || '',
+              address: chef.address || profile?.address || '',
               dish_count: dishCount,
-              city: profile?.address?.split(',')[1]?.trim() || profile?.address || ''
+              city: chef.city || ''
             };
 
             // Calculate distance if there's a location query
-            if (query && chefData.address) {
-              chefData.distance = calculateDistance(query, chefData.address);
+            if (query && (chefData.city || chefData.address)) {
+              chefData.distance = calculateDistance(query, chefData.city || chefData.address);
             }
 
             return chefData;
