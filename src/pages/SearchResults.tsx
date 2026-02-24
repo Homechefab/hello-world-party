@@ -14,6 +14,7 @@ interface Chef {
   dish_count: number;
   distance?: number;
   city?: string;
+  profile_image_url?: string;
 }
 
 interface Dish {
@@ -115,6 +116,7 @@ const SearchResults = () => {
             full_name,
             city,
             address,
+            profile_image_url,
             user_id
           `)
           .eq('kitchen_approved', true);
@@ -171,7 +173,8 @@ const SearchResults = () => {
               full_name: chef.full_name || profile?.full_name || '',
               address: chef.address || profile?.address || '',
               dish_count: dishCount,
-              city: chef.city || ''
+              city: chef.city || '',
+              profile_image_url: chef.profile_image_url || undefined
             };
 
             // Calculate distance if there's a location query
@@ -455,9 +458,17 @@ const SearchResults = () => {
                         <Card className="group hover:shadow-warm transition-all duration-300 hover:scale-105 cursor-pointer">
                           <CardContent className="p-6">
                             <div className="flex items-center mb-4">
-                              <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mr-4">
-                                <ChefHat className="w-6 h-6 text-white" />
-                              </div>
+                              {chef.profile_image_url ? (
+                                <img 
+                                  src={chef.profile_image_url} 
+                                  alt={chef.business_name || chef.full_name}
+                                  className="w-12 h-12 rounded-full object-cover mr-4"
+                                />
+                              ) : (
+                                <div className="w-12 h-12 bg-gradient-primary rounded-full flex items-center justify-center mr-4">
+                                  <ChefHat className="w-6 h-6 text-white" />
+                                </div>
+                              )}
                               <div>
                                 <h3 className="font-semibold text-lg">
                                   {chef.business_name || chef.full_name}
