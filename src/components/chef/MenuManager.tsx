@@ -146,6 +146,33 @@ const MenuManager = () => {
     }
   };
 
+  const handleDeleteDish = async (dishId: string) => {
+    if (!confirm("Är du säker på att du vill ta bort denna rätt?")) return;
+
+    try {
+      const { error } = await supabase
+        .from('dishes')
+        .delete()
+        .eq('id', dishId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Rätt borttagen",
+        description: "Rätten har tagits bort från din meny",
+      });
+
+      fetchMyDishes();
+    } catch (error) {
+      console.error('Error deleting dish:', error);
+      toast({
+        title: "Fel",
+        description: "Kunde inte ta bort rätten",
+        variant: "destructive",
+      });
+    }
+  };
+
   const categories = ["Alla", ...Array.from(new Set(dishes.map(d => d.category)))];
   const [activeCategory, setActiveCategory] = useState("Alla");
   const filteredDishes = activeCategory === "Alla" 
@@ -222,6 +249,7 @@ const MenuManager = () => {
                         available={dish.available ?? true}
                         onEdit={() => handleEditDish(dish)}
                         onToggleAvailability={() => toggleDishAvailability(dish.id, !dish.available)}
+                        onDelete={() => handleDeleteDish(dish.id)}
                       />
                     ))}
                   </div>
