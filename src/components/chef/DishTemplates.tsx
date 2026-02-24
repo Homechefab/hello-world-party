@@ -208,7 +208,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
       </Tabs>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Anpassa och lägg till</DialogTitle>
             <DialogDescription>
@@ -217,7 +217,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
           </DialogHeader>
 
           {selectedTemplate && (
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div>
                 <Label htmlFor="dish-name">Namn på rätten</Label>
                 <Input
@@ -258,7 +258,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
                   value={customDescription}
                   onChange={(e) => setCustomDescription(e.target.value)}
                   placeholder="Beskriv din rätt..."
-                  rows={3}
+                  rows={2}
                 />
               </div>
 
@@ -282,7 +282,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
                     </Button>
                   </div>
                 ) : (
-                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors mt-2">
+                  <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors mt-1">
                     <Upload className="w-8 h-8 text-muted-foreground mb-2" />
                     <span className="text-sm text-muted-foreground">Klicka för att ladda upp bild</span>
                     <span className="text-xs text-muted-foreground mt-1">Rekommenderad storlek: 800×600px, max 2MB</span>
