@@ -36,10 +36,9 @@ export const Cart = () => {
     try {
       // Skapa line items för Stripe
       const lineItems = state.items.map(item => ({
-        // Här kan du antingen använda en fast price_id eller skapa en dynamisk price
-        // För demo använder vi priset direkt (kräver att create-checkout stödjer price_data)
+        dishId: item.dishId,
         name: item.name,
-        price: item.price * 100, // Stripe använder öre
+        price: item.price * 100,
         quantity: item.quantity
       }));
 
