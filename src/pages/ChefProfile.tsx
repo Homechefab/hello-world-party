@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Star, Clock, MapPin, ChefHat, Instagram, Facebook } from "lucide-react";
+import { Star, Clock, MapPin, ChefHat, Instagram, Facebook, Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
@@ -36,6 +36,7 @@ interface Chef {
   facebook_url?: string | null;
   instagram_url?: string | null;
   snapchat_url?: string | null;
+  phone?: string | null;
 }
 
 interface Dish {
@@ -94,7 +95,8 @@ const ChefProfile = () => {
             tiktok_url,
             facebook_url,
             instagram_url,
-            snapchat_url
+            snapchat_url,
+            phone
           `)
           .eq('id', chefId)
           .eq('kitchen_approved', true)
@@ -131,7 +133,8 @@ const ChefProfile = () => {
           tiktok_url: chefData.tiktok_url,
           facebook_url: chefData.facebook_url,
           instagram_url: chefData.instagram_url,
-          snapchat_url: chefData.snapchat_url
+          snapchat_url: chefData.snapchat_url,
+          phone: chefData.phone
         });
 
         // Fetch chef's dishes
@@ -258,9 +261,17 @@ const ChefProfile = () => {
                 {chef.business_name || chef.full_name}
               </h1>
               {chef.address && (
-                <div className="flex items-center justify-center text-white/90 mb-6">
+                <div className="flex items-center justify-center text-white/90 mb-2">
                   <MapPin className="w-5 h-5 mr-2" />
                   <span>{chef.address}</span>
+                </div>
+              )}
+              {chef.phone && (
+                <div className="flex items-center justify-center text-white/90 mb-6">
+                  <Phone className="w-5 h-5 mr-2" />
+                  <a href={`tel:${chef.phone}`} className="underline hover:text-white transition-colors">
+                    {chef.phone}
+                  </a>
                 </div>
               )}
               <div className="flex items-center justify-center gap-4 text-white/90">
