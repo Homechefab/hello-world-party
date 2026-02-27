@@ -8,9 +8,12 @@ import RoleBasedServices from "@/components/services/RoleBasedServices";
 import { useRole } from "@/hooks/useRole";
 import SEOHead from "@/components/SEOHead";
 import NotificationSignupDialog from "@/components/NotificationSignupDialog";
+import { ActiveOrdersBanner } from "@/components/order/ActiveOrdersBanner";
+import { useOrderNotifications } from "@/hooks/useOrderNotifications";
 
 const Index = () => {
   const { role } = useRole();
+  useOrderNotifications();
   console.log('Index component rendering');
   
   return (
@@ -24,6 +27,7 @@ const Index = () => {
       
       <div className="min-h-screen bg-background overflow-x-hidden">
         <Hero />
+        <ActiveOrdersBanner />
         <RoleBasedServices />
         {role !== 'chef' && (
           <>
