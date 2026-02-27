@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { OrderTrackingCard } from "@/components/order/OrderTrackingCard";
 
 interface Order {
   id: string;
@@ -20,6 +21,8 @@ interface Order {
   delivery_address: string;
   delivery_time: string | null;
   created_at: string;
+  estimated_ready_at: string | null;
+  preparation_started_at: string | null;
   items: Array<{
     dish_name: string;
     quantity: number;
@@ -89,6 +92,8 @@ const MyOrders = () => {
             delivery_address: order.delivery_address,
             delivery_time: order.delivery_time,
             created_at: order.created_at,
+            estimated_ready_at: (order as any).estimated_ready_at,
+            preparation_started_at: (order as any).preparation_started_at,
             items: transformedItems
           };
         })
@@ -292,10 +297,29 @@ const MyOrders = () => {
                         </div>
                       </div>
 
+                      {/* Tracking for active orders */}
+                      {['pending', 'confirmed', 'preparing', 'ready'].includes(order.status) && (
+                        <div className="space-y-2">
+                          <OrderTrackingCard
+                            status={order.status}
+                            estimatedReadyAt={order.estimated_ready_at}
+                            preparationStartedAt={order.preparation_started_at}
+                            compact
+                          />
+                          <Button variant="default" size="sm" asChild>
+                            <Link to={`/order-tracking/${order.id}`}>
+                              Spåra beställning
+                            </Link>
+                          </Button>
+                        </div>
+                      )}
+
                       {/* Action Buttons */}
                       <div className="flex gap-2 pt-2">
-                        <Button variant="outline" size="sm">
-                          Se detaljer
+                        <Button variant="outline" size="sm" asChild>
+                          <Link to={`/order-tracking/${order.id}`}>
+                            Se detaljer
+                          </Link>
                         </Button>
                         
                         {order.status === 'delivered' && (
