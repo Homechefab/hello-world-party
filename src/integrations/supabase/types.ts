@@ -677,7 +677,9 @@ export type Database = {
           customer_id: string
           delivery_address: string
           delivery_time: string | null
+          estimated_ready_at: string | null
           id: string
+          preparation_started_at: string | null
           special_instructions: string | null
           status: string
           total_amount: number
@@ -689,7 +691,9 @@ export type Database = {
           customer_id: string
           delivery_address: string
           delivery_time?: string | null
+          estimated_ready_at?: string | null
           id?: string
+          preparation_started_at?: string | null
           special_instructions?: string | null
           status?: string
           total_amount: number
@@ -701,7 +705,9 @@ export type Database = {
           customer_id?: string
           delivery_address?: string
           delivery_time?: string | null
+          estimated_ready_at?: string | null
           id?: string
+          preparation_started_at?: string | null
           special_instructions?: string | null
           status?: string
           total_amount?: number
