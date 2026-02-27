@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, MapPin, Calendar, Phone } from 'lucide-react';
+import { ArrowLeft, MapPin, Calendar, Phone, XCircle } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
@@ -14,6 +15,7 @@ const OrderTracking = () => {
   const { user } = useAuth();
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [cancelling, setCancelling] = useState(false);
 
   const fetchOrder = useCallback(async () => {
     if (!user?.id || !orderId) return;
@@ -90,6 +92,43 @@ const OrderTracking = () => {
   const chefName = order.chefs?.business_name || order.chefs?.full_name || 'Kock';
   const isActive = ['pending', 'confirmed', 'preparing', 'ready'].includes(order.status);
 
+  // Cancellation allowed if delivery_time is at least 7 days from now
+  const canCancel = (() => {
+    if (!isActive || order.status === 'ready') return false;
+    if (!order.delivery_time) {
+      // If no delivery_time, allow cancel only for pending/confirmed (not preparing)
+      return ['pending', 'confirmed'].includes(order.status);
+    }
+    const deliveryDate = new Date(order.delivery_time).getTime();
+    const now = Date.now();
+    const sevenDays = 7 * 24 * 60 * 60 * 1000;
+    return (deliveryDate - now) >= sevenDays;
+  })();
+
+  const handleCancel = async () => {
+    if (!canCancel || cancelling) return;
+    const confirmed = window.confirm('Är du säker på att du vill avboka beställningen?');
+    if (!confirmed) return;
+
+    setCancelling(true);
+    try {
+      const { error } = await supabase
+        .from('orders')
+        .update({ status: 'cancelled' })
+        .eq('id', order.id)
+        .eq('customer_id', user?.id ?? '');
+
+      if (error) throw error;
+      toast.success('Beställningen har avbokats');
+      fetchOrder();
+    } catch (error) {
+      console.error('Error cancelling order:', error);
+      toast.error('Kunde inte avboka beställningen');
+    } finally {
+      setCancelling(false);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-2xl">
       <Button variant="ghost" asChild className="mb-4">
@@ -135,7 +174,7 @@ const OrderTracking = () => {
       </Card>
 
       {/* Info */}
-      <Card>
+      <Card className="mb-4">
         <CardContent className="p-4 space-y-2 text-sm">
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 text-muted-foreground" />
@@ -161,6 +200,39 @@ const OrderTracking = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Cancel button */}
+      {isActive && (
+        <Card className={canCancel ? 'border-destructive/20' : 'border-muted'}>
+          <CardContent className="p-4">
+            {canCancel ? (
+              <Button
+                variant="destructive"
+                className="w-full"
+                onClick={handleCancel}
+                disabled={cancelling}
+              >
+                <XCircle className="w-4 h-4 mr-2" />
+                {cancelling ? 'Avbokar...' : 'Avboka beställning'}
+              </Button>
+            ) : (
+              <p className="text-sm text-muted-foreground text-center">
+                {order.status === 'ready'
+                  ? 'Kan inte avbokas – beställningen är redan klar.'
+                  : 'Avbokning är möjlig senast 7 dagar före leveranstiden.'}
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {order.status === 'cancelled' && (
+        <Card className="border-destructive/20 bg-destructive/5">
+          <CardContent className="p-4 text-center text-sm text-destructive font-medium">
+            Denna beställning har avbokats.
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
