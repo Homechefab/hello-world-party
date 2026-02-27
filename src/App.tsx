@@ -89,6 +89,7 @@ import Referral from "./pages/Referral";
 import BusinessServicesPage from "./pages/business/BusinessServices";
 import BusinessApplication from "./pages/business/BusinessApplication";
 import BusinessApplicationPending from "./pages/business/BusinessApplicationPending";
+import OrderTracking from "./pages/OrderTracking";
 
 const queryClient = new QueryClient();
 
@@ -203,6 +204,7 @@ const App = () => {
             <Route path="/admin/dashboard" element={<RoleBasedLayout><AdminDashboard /></RoleBasedLayout>} />
             <Route path="/profile" element={<RoleBasedLayout><Profile /></RoleBasedLayout>} />
             <Route path="/my-orders" element={<RoleBasedLayout><MyOrders /></RoleBasedLayout>} />
+            <Route path="/order-tracking/:orderId" element={<RoleBasedLayout><OrderTracking /></RoleBasedLayout>} />
             <Route path="/my-points" element={<RoleBasedLayout><MyPoints /></RoleBasedLayout>} />
             <Route path="/settings" element={<RoleBasedLayout><SettingsPage /></RoleBasedLayout>} />
             <Route path="/settings/addresses" element={<RoleBasedLayout><DeliveryAddresses /></RoleBasedLayout>} />
