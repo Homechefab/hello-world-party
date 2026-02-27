@@ -40,6 +40,11 @@ export const useProviders = (filters?: {
         chefsQuery = chefsQuery.ilike("city", `%${filters.location}%`);
       }
 
+      // Apply event/service type filter on specialties
+      if (filters?.eventType) {
+        chefsQuery = chefsQuery.ilike("specialties", `%${filters.eventType}%`);
+      }
+
       const { data: chefs, error: chefsError } = await chefsQuery;
 
       if (chefsError) {
