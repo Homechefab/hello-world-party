@@ -6,8 +6,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { OrderTrackingCard } from '@/components/order/OrderTrackingCard';
+import { useOrderNotifications } from '@/hooks/useOrderNotifications';
 
 const OrderTracking = () => {
+  useOrderNotifications();
   const { orderId } = useParams();
   const { user } = useAuth();
   const [order, setOrder] = useState<any>(null);
