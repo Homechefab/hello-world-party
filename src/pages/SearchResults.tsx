@@ -15,6 +15,7 @@ interface Chef {
   distance?: number;
   city?: string;
   profile_image_url?: string;
+  specialties?: string;
 }
 
 interface Dish {
@@ -177,6 +178,7 @@ const SearchResults = () => {
             city,
             address,
             profile_image_url,
+            specialties,
             user_id
           `)
           .eq('kitchen_approved', true);
@@ -234,7 +236,8 @@ const SearchResults = () => {
               address: chef.address || profile?.address || '',
               dish_count: dishCount,
               city: chef.city || '',
-              profile_image_url: chef.profile_image_url || undefined
+              profile_image_url: chef.profile_image_url || undefined,
+              specialties: chef.specialties || undefined
             };
 
             // Calculate distance if there's a location query
@@ -283,7 +286,8 @@ const SearchResults = () => {
             chef.business_name?.toLowerCase().includes(searchLower) ||
             chef.full_name?.toLowerCase().includes(searchLower) ||
             chef.address?.toLowerCase().includes(searchLower) ||
-            chef.city?.toLowerCase().includes(searchLower)
+            chef.city?.toLowerCase().includes(searchLower) ||
+            chef.specialties?.toLowerCase().includes(searchLower)
           );
 
           // Filter dishes by search query
