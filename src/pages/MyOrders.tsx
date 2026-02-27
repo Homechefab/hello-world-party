@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { OrderTrackingCard } from "@/components/order/OrderTrackingCard";
+import { useOrderNotifications } from "@/hooks/useOrderNotifications";
 
 interface Order {
   id: string;
@@ -31,6 +32,7 @@ interface Order {
 }
 
 const MyOrders = () => {
+  useOrderNotifications();
   const { user } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
