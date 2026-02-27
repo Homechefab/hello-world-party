@@ -42,9 +42,40 @@ export function useOrderNotifications() {
           const label = STATUS_LABELS[newStatus];
           const orderId = (payload.new?.id as string)?.slice(0, 8);
 
+          const isReady = newStatus === 'ready';
+
+          // Vibration when ready
+          if (isReady && 'vibrate' in navigator) {
+            navigator.vibrate([200, 100, 200, 100, 300]);
+          }
+
+          // Sound when ready
+          if (isReady) {
+            try {
+              const ctx = new AudioContext();
+              const playTone = (freq: number, start: number, dur: number) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = freq;
+                osc.type = 'sine';
+                gain.gain.setValueAtTime(0.3, ctx.currentTime + start);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + start + dur);
+                osc.start(ctx.currentTime + start);
+                osc.stop(ctx.currentTime + start + dur);
+              };
+              playTone(523, 0, 0.15);
+              playTone(659, 0.18, 0.15);
+              playTone(784, 0.36, 0.25);
+            } catch (e) {
+              // AudioContext may not be available
+            }
+          }
+
           // Sonner toast (always)
           toast.info(`Beställning #${orderId}: ${label}`, {
-            duration: 5000,
+            duration: isReady ? 8000 : 5000,
           });
 
           // Browser notification (if permitted and tab not focused)
