@@ -37,6 +37,7 @@ interface Chef {
   instagram_url?: string | null;
   snapchat_url?: string | null;
   phone?: string | null;
+  bio?: string | null;
 }
 
 interface Dish {
@@ -96,7 +97,8 @@ const ChefProfile = () => {
             facebook_url,
             instagram_url,
             snapchat_url,
-            phone
+            phone,
+            bio
           `)
           .eq('id', chefId)
           .eq('kitchen_approved', true)
@@ -134,7 +136,8 @@ const ChefProfile = () => {
           facebook_url: chefData.facebook_url,
           instagram_url: chefData.instagram_url,
           snapchat_url: chefData.snapchat_url,
-          phone: chefData.phone
+          phone: chefData.phone,
+          bio: chefData.bio
         });
 
         // Fetch chef's dishes
@@ -343,6 +346,16 @@ const ChefProfile = () => {
           <section className="py-12 bg-secondary/30">
             <div className="container mx-auto px-4">
               <VideoDisplay videos={videos} showAll className="mb-0" />
+            </div>
+          </section>
+        )}
+
+        {/* Bio Section */}
+        {chef.bio && (
+          <section className="py-10 bg-secondary/20">
+            <div className="container mx-auto px-4 max-w-3xl text-center">
+              <h2 className="text-2xl font-bold mb-4">Om {chef.business_name || chef.full_name}</h2>
+              <p className="text-muted-foreground leading-relaxed">{chef.bio}</p>
             </div>
           </section>
         )}
