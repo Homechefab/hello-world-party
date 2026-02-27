@@ -8,7 +8,8 @@ import {
   CheckCircle, 
   Package, 
   Phone, 
-  Calendar
+  Calendar,
+  Timer
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -27,6 +28,7 @@ interface Order {
     title: string;
     quantity: number;
     price: number;
+    preparation_time?: number;
   }[];
 }
 
@@ -65,7 +67,7 @@ export const OrderManagement = () => {
           order_items (
             quantity,
             unit_price,
-            dishes (name)
+            dishes (name, preparation_time)
           )
         `)
         .eq('chef_id', chefData.id)
@@ -83,10 +85,11 @@ export const OrderManagement = () => {
         customer_name: 'Kund', // Customer name not stored in orders table
         customer_phone: '', // Phone not stored in orders table
         pickup_instructions: order.special_instructions,
-        dishes: (order.order_items || []).map((item: { dishes?: { name?: string } | null; quantity: number; unit_price: number }) => ({
+        dishes: (order.order_items || []).map((item: any) => ({
           title: item.dishes?.name || 'Okänd rätt',
           quantity: item.quantity,
-          price: item.unit_price
+          price: item.unit_price,
+          preparation_time: item.dishes?.preparation_time || 30
         }))
       })) || [];
 
@@ -107,11 +110,35 @@ export const OrderManagement = () => {
     loadOrders();
   }, [loadOrders]);
 
+  const [estimatedMinutes, setEstimatedMinutes] = useState<Record<string, number>>({});
+
+  // Calculate default estimated minutes from dish preparation times
+  const getDefaultMinutes = (order: Order) => {
+    const totalPrepTime = order.dishes.reduce((sum, dish) => sum + (dish.preparation_time || 30), 0);
+    return Math.max(totalPrepTime, 15);
+  };
+
   const updateOrderStatus = async (orderId: string, newStatus: Order['status']) => {
     try {
+      const updateData: Record<string, unknown> = { status: newStatus };
+
+      // When starting preparation, set estimated_ready_at and preparation_started_at
+      if (newStatus === 'preparing') {
+        const minutes = estimatedMinutes[orderId] || getDefaultMinutes(orders.find(o => o.id === orderId)!);
+        const now = new Date();
+        updateData.preparation_started_at = now.toISOString();
+        updateData.estimated_ready_at = new Date(now.getTime() + minutes * 60000).toISOString();
+      }
+
+      // When confirming, set a rough estimated_ready_at
+      if (newStatus === 'confirmed') {
+        const minutes = estimatedMinutes[orderId] || getDefaultMinutes(orders.find(o => o.id === orderId)!);
+        updateData.estimated_ready_at = new Date(Date.now() + minutes * 60000).toISOString();
+      }
+
       const { error } = await supabase
         .from('orders')
-        .update({ status: newStatus })
+        .update(updateData)
         .eq('id', orderId);
 
       if (error) throw error;
@@ -291,7 +318,24 @@ export const OrderManagement = () => {
                     )}
 
                     {['pending', 'confirmed', 'preparing', 'ready'].includes(order.status) && (
-                      <div className="flex gap-2 pt-4 border-t">
+                      <div className="space-y-3 pt-4 border-t">
+                        {/* Time estimate input for pending/confirmed */}
+                        {['pending', 'confirmed'].includes(order.status) && (
+                          <div className="flex items-center gap-2">
+                            <Timer className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm text-muted-foreground">Uppskattad tid:</span>
+                            <input
+                              type="number"
+                              min="5"
+                              max="180"
+                              value={estimatedMinutes[order.id] || getDefaultMinutes(order)}
+                              onChange={(e) => setEstimatedMinutes(prev => ({ ...prev, [order.id]: Number(e.target.value) }))}
+                              className="w-20 h-8 px-2 text-sm border rounded-md bg-background"
+                            />
+                            <span className="text-sm text-muted-foreground">min</span>
+                          </div>
+                        )}
+                        <div className="flex gap-2">
                         {order.status === 'pending' && (
                           <>
                             <Button
@@ -336,6 +380,7 @@ export const OrderManagement = () => {
                             Slutför beställning
                           </Button>
                         )}
+                        </div>
                       </div>
                     )}
                   </CardContent>

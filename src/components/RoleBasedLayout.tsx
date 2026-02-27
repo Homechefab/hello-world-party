@@ -28,6 +28,7 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
       '/profile', 
       '/settings', 
       '/my-orders', 
+      '/order-tracking',
       '/my-points',
       '/dashboard',
       '/chef/dashboard',
