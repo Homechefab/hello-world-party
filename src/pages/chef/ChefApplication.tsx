@@ -71,6 +71,7 @@ const ChefApplication = () => {
     postalCode: "",
     experience: "",
     specialties: "",
+    services: [] as string[],
     businessName: "",
     hasMunicipalPermit: false,
     agreesToTerms: false,
@@ -125,11 +126,21 @@ const ChefApplication = () => {
           });
         }
 
+        const serviceLabels: Record<string, string> = {
+          sell_food: "Sälj din mat",
+          private_chef: "Privatkock-tjänster",
+          experiences: "Matupplevelser",
+          catering: "Catering",
+          meal_boxes: "Sälj färdiglagade matlådor",
+        };
+        const servicesText = formData.services.map(s => serviceLabels[s] || s).join(', ');
+        const combinedSpecialties = [servicesText, formData.specialties].filter(Boolean).join(' | ');
+
         // Skapa ny chef-ansökan UTAN user_id - kontot skapas vid godkännande
         const { data: newChef, error } = await supabase
           .from('chefs')
           .insert({
-            user_id: null, // Explicit null - kontot skapas vid godkännande
+            user_id: null,
             business_name: formData.businessName || 'Mitt kök',
             kitchen_approved: false,
             application_status: 'pending',
@@ -140,7 +151,7 @@ const ChefApplication = () => {
             city: formData.city,
             postal_code: formData.postalCode,
             experience: formData.experience,
-            specialties: formData.specialties
+            specialties: combinedSpecialties
           })
           .select()
           .single();
@@ -174,6 +185,16 @@ const ChefApplication = () => {
           return;
         }
 
+        const serviceLabels2: Record<string, string> = {
+          sell_food: "Sälj din mat",
+          private_chef: "Privatkock-tjänster",
+          experiences: "Matupplevelser",
+          catering: "Catering",
+          meal_boxes: "Sälj färdiglagade matlådor",
+        };
+        const servicesText2 = formData.services.map(s => serviceLabels2[s] || s).join(', ');
+        const combinedSpecialties2 = [servicesText2, formData.specialties].filter(Boolean).join(' | ');
+
         // Uppdatera chef-ansökan till "under review"
         const { error } = await supabase
           .from('chefs')
@@ -187,7 +208,7 @@ const ChefApplication = () => {
             city: formData.city,
             postal_code: formData.postalCode,
             experience: formData.experience,
-            specialties: formData.specialties
+            specialties: combinedSpecialties2
           })
           .eq('id', chefId);
 
@@ -241,7 +262,7 @@ const ChefApplication = () => {
     }
   };
 
-  const updateFormData = (field: string, value: string | boolean) => {
+  const updateFormData = (field: string, value: string | boolean | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -460,6 +481,39 @@ const ChefApplication = () => {
                       value={formData.experience}
                       onChange={(e) => updateFormData('experience', e.target.value)}
                     />
+                  </div>
+
+                  <div>
+                    <Label className="text-base font-medium">Vilka tjänster vill du erbjuda? *</Label>
+                    <p className="text-sm text-muted-foreground mb-3">Välj en eller flera tjänster du vill erbjuda via Homechef</p>
+                    <div className="space-y-3">
+                      {[
+                        { value: "sell_food", label: "Sälj din mat", description: "Lägg upp din meny och nå kunder i ditt område" },
+                        { value: "private_chef", label: "Privatkock-tjänster", description: "Laga mat hemma hos kunder för speciella tillfällen" },
+                        { value: "experiences", label: "Matupplevelser", description: "Bjud in kunder till matlagningskurser och middagar" },
+                        { value: "catering", label: "Catering", description: "Ta cateringuppdrag för event och firmafester" },
+                        { value: "meal_boxes", label: "Sälj färdiglagade matlådor", description: "Erbjud färdiga måltider för upphämtning eller leverans" },
+                      ].map((service) => (
+                        <div key={service.value} className="flex items-start space-x-3 p-3 rounded-lg border border-border hover:bg-secondary/50 transition-colors">
+                          <Checkbox
+                            id={`service-${service.value}`}
+                            checked={formData.services.includes(service.value)}
+                            onCheckedChange={(checked) => {
+                              const newServices = checked
+                                ? [...formData.services, service.value]
+                                : formData.services.filter(s => s !== service.value);
+                              updateFormData('services', newServices);
+                            }}
+                          />
+                          <div className="flex-1">
+                            <Label htmlFor={`service-${service.value}`} className="text-sm font-medium cursor-pointer">
+                              {service.label}
+                            </Label>
+                            <p className="text-xs text-muted-foreground">{service.description}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
                   <div>
