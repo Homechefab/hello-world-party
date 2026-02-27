@@ -33,7 +33,7 @@ interface Dish {
 }
 
 // Simple distance calculation for Swedish cities/areas
-const calculateDistance = (searchLocation: string, chefAddress: string): number => {
+const calculateDistance = (searchLocation: string, chefAddress: string): number | null => {
   const locations: { [key: string]: { lat: number; lon: number } } = {
     // Stockholm areas
     'stockholm': { lat: 59.3293, lon: 18.0686 },
@@ -42,16 +42,71 @@ const calculateDistance = (searchLocation: string, chefAddress: string): number 
     'östermalm': { lat: 59.3364, lon: 18.0864 },
     'vasastan': { lat: 59.3467, lon: 18.0582 },
     'norrmalm': { lat: 59.3326, lon: 18.0649 },
+    'kungsholmen': { lat: 59.3326, lon: 18.0350 },
+    'hägersten': { lat: 59.2960, lon: 18.0078 },
+    'bromma': { lat: 59.3383, lon: 17.9388 },
+    'solna': { lat: 59.3600, lon: 18.0000 },
+    'sundbyberg': { lat: 59.3612, lon: 17.9719 },
+    'nacka': { lat: 59.3108, lon: 18.1636 },
+    'lidingö': { lat: 59.3667, lon: 18.1333 },
+    'huddinge': { lat: 59.2372, lon: 17.9817 },
+    'täby': { lat: 59.4439, lon: 18.0687 },
+    'sollentuna': { lat: 59.4281, lon: 17.9508 },
+    
+    // Gothenburg areas
+    'göteborg': { lat: 57.7089, lon: 11.9746 },
+    'gothenburg': { lat: 57.7089, lon: 11.9746 },
+    'mölndal': { lat: 57.6554, lon: 12.0134 },
+    'partille': { lat: 57.7394, lon: 12.1064 },
+    
+    // Malmö / Skåne
+    'malmö': { lat: 55.6050, lon: 13.0038 },
+    'lund': { lat: 55.7047, lon: 13.1910 },
+    'helsingborg': { lat: 56.0465, lon: 12.6945 },
+    'kristianstad': { lat: 56.0294, lon: 14.1567 },
+    'landskrona': { lat: 55.8708, lon: 12.8302 },
+    'ängelholm': { lat: 56.2428, lon: 12.8622 },
+    'hässleholm': { lat: 56.1591, lon: 13.7664 },
+    
+    // Halland / Västra Götaland kust
+    'båstad': { lat: 56.4267, lon: 12.8514 },
+    'bastad': { lat: 56.4267, lon: 12.8514 },
+    'laholm': { lat: 56.5117, lon: 13.0433 },
+    'halmstad': { lat: 56.6745, lon: 12.8578 },
+    'falkenberg': { lat: 56.9053, lon: 12.4914 },
+    'varberg': { lat: 57.1058, lon: 12.2508 },
+    'kungsbacka': { lat: 57.4872, lon: 12.0761 },
+    
+    // Nearby Båstad municipalities
+    'östra karup': { lat: 56.4100, lon: 12.9200 },
+    'torekov': { lat: 56.4228, lon: 12.6264 },
+    'förslöv': { lat: 56.3833, lon: 12.9167 },
     
     // Other major cities
-    'göteborg': { lat: 57.7089, lon: 11.9746 },
-    'malmö': { lat: 55.6050, lon: 13.0038 },
     'uppsala': { lat: 59.8586, lon: 17.6389 },
     'linköping': { lat: 58.4108, lon: 15.6214 },
-    'örebro': { lat: 59.2753, lon: 15.2134 }
+    'örebro': { lat: 59.2753, lon: 15.2134 },
+    'västerås': { lat: 59.6099, lon: 16.5448 },
+    'norrköping': { lat: 58.5942, lon: 16.1826 },
+    'jönköping': { lat: 57.7826, lon: 14.1618 },
+    'umeå': { lat: 63.8258, lon: 20.2630 },
+    'luleå': { lat: 65.5848, lon: 22.1547 },
+    'gävle': { lat: 60.6749, lon: 17.1413 },
+    'borås': { lat: 57.7210, lon: 12.9401 },
+    'eskilstuna': { lat: 59.3666, lon: 16.5077 },
+    'karlstad': { lat: 59.3793, lon: 13.5036 },
+    'växjö': { lat: 56.8777, lon: 14.8091 },
+    'kalmar': { lat: 56.6634, lon: 16.3566 },
+    'sundsvall': { lat: 62.3908, lon: 17.3069 },
+    'östersund': { lat: 63.1792, lon: 14.6357 },
+    'trollhättan': { lat: 58.2836, lon: 12.2886 },
+    'uddevalla': { lat: 58.3489, lon: 11.9383 },
+    'skövde': { lat: 58.3906, lon: 13.8453 },
+    'karlskrona': { lat: 56.1612, lon: 15.5869 },
+    'visby': { lat: 57.6348, lon: 18.2948 },
   };
 
-  const getLocationCoords = (location: string) => {
+  const getLocationCoords = (location: string): { lat: number; lon: number } | null => {
     const normalized = location.toLowerCase().trim();
     
     // Try exact match first
@@ -66,14 +121,19 @@ const calculateDistance = (searchLocation: string, chefAddress: string): number 
       }
     }
     
-    // Default to Stockholm if not found
-    return locations['stockholm'];
+    // Return null if location is not found - don't guess
+    return null;
   };
 
   const searchCoords = getLocationCoords(searchLocation);
   const chefCoords = getLocationCoords(chefAddress);
 
-  // Calculate distance using Haversine formula (simplified)
+  // If either location is unknown, we can't calculate distance
+  if (!searchCoords || !chefCoords) {
+    return null;
+  }
+
+  // Calculate distance using Haversine formula
   const R = 6371; // Earth's radius in km
   const dLat = (chefCoords.lat - searchCoords.lat) * Math.PI / 180;
   const dLon = (chefCoords.lon - searchCoords.lon) * Math.PI / 180;
@@ -83,7 +143,7 @@ const calculateDistance = (searchLocation: string, chefAddress: string): number 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   const distance = R * c;
 
-  return Math.round(distance * 10) / 10; // Round to 1 decimal
+  return Math.round(distance * 10) / 10;
 };
 
 const SearchResults = () => {
@@ -179,7 +239,8 @@ const SearchResults = () => {
 
             // Calculate distance if there's a location query
             if (query && (chefData.city || chefData.address)) {
-              chefData.distance = calculateDistance(query, chefData.city || chefData.address);
+              const dist = calculateDistance(query, chefData.city || chefData.address);
+              chefData.distance = dist !== null ? dist : undefined;
             }
 
             return chefData;
