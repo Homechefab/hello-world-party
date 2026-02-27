@@ -120,7 +120,7 @@ const PopularChefs = () => {
               ))}
             </div>
             <div className="text-center mt-6">
-              <Link to="/chef-search">
+              <Link to="/search-chefs">
                 <Button variant="outline">
                   Visa alla kockar
                 </Button>
