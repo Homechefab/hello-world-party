@@ -48,36 +48,73 @@ const KitchenRequirements = () => {
 
     const sections = [
       {
-        title: "1. Personlig hygien",
+        title: "1. Registrering och ans\u00f6kan",
+        items: [
+          "Verksamheten \u00e4r registrerad hos kommunen innan start",
+          "Organisationsnummer eller F-skatt finns",
+          "Eventuella ytterligare tillst\u00e5nd \u00e4r s\u00f6kta (t.ex. dricksvatten vid egen brunn)",
+        ]
+      },
+      {
+        title: "2. Personlig hygien",
         items: [
           "Handtv\u00e4tt utf\u00f6rs f\u00f6re hantering av livsmedel",
-          "Rena arbetskl\u00e4der/f\u00f6rkl\u00e4de anv\u00e4nds",
-          "Sjukdomsrutiner finns och f\u00f6ljs (magsjuka, s\u00e5r, infektioner)",
+          "Handtv\u00e4tt utf\u00f6rs efter toalettbes\u00f6k, bl\u00f6jbyten, hantering av avfall m.m.",
+          "M\u00f6jlighet att tv\u00e4tta h\u00e4nderna ordentligt mellan olika moment finns",
           "H\u00e5rn\u00e4t/huvudbonad anv\u00e4nds vid tillagning",
         ]
       },
       {
-        title: "2. Lokaler och utrustning",
+        title: "3. Arbetskl\u00e4der och st\u00e4dmaterial",
         items: [
-          "K\u00f6ket \u00e4r separerat fr\u00e5n \u00f6vriga bostaden under tillagning",
-          "Ytor och utrustning \u00e4r rena och i gott skick",
-          "Handtv\u00e4ttst\u00e4ll med varmt vatten och tv\u00e5l finns",
-          "Husdjur h\u00e5lls borta fr\u00e5n k\u00f6ket under tillagning",
+          "Rena arbetskl\u00e4der/f\u00f6rkl\u00e4de anv\u00e4nds",
+          "Rutiner f\u00f6r hantering och reng\u00f6ring av arbetskl\u00e4der finns",
+          "K\u00f6kshanddukar byts och tv\u00e4ttas regelbundet",
+          "St\u00e4dmaterial h\u00e5lls rent och byts vid behov",
         ]
       },
       {
-        title: "3. Temperaturkontroll",
+        title: "4. Smitta och sjukdom",
+        items: [
+          "Rutiner finns f\u00f6r vad du g\u00f6r om du eller n\u00e5gon i hemmet \u00e4r sjuk",
+          "S\u00e4rskilda rutiner vid kr\u00e4kningar/diarr\u00e9",
+          "Rutiner vid infekterade huds\u00e5r, influensa, hosta",
+          "Rutiner vid infektioner i mun, hals, \u00f6gon eller \u00f6ron",
+        ]
+      },
+      {
+        title: "5. Lokaler och utrustning",
+        items: [
+          "Ordentlig separation mellan livsmedelsverksamhet och normala hush\u00e5llsaktiviteter",
+          "Separering kan ske i tid med goda rutiner d\u00e4r fysisk separering ej \u00e4r m\u00f6jlig",
+          "Tillr\u00e4ckligt med ytor och utrymmen f\u00f6r den m\u00e4ngd livsmedel som hanteras",
+          "Utrymme f\u00f6r att f\u00f6rvara och separera r\u00e5varor och f\u00e4rdiga produkter fr\u00e5n privata livsmedel",
+          "Utrustning \u00e4r l\u00e4mplig f\u00f6r \u00e4ndam\u00e5let (ytor g\u00e5r att h\u00e5lla rena, kyl h\u00e5ller temp)",
+          "Handtv\u00e4ttst\u00e4ll med varmt vatten och tv\u00e5l finns i n\u00e4rheten av livsmedelshanteringen",
+        ]
+      },
+      {
+        title: "6. Familjemedlemmar och husdjur",
+        items: [
+          "Rutiner f\u00f6r hur familjemedlemmar f\u00e5r vistas i utrymmen d\u00e4r verksamheten p\u00e5g\u00e5r",
+          "Husdjur h\u00e5lls borta fr\u00e5n k\u00f6ket under livsmedelshantering",
+        ]
+      },
+      {
+        title: "7. Temperaturkontroll",
         items: [
           "Kylvaror f\u00f6rvaras vid +8\u00b0C eller l\u00e4gre",
           "Frysvaror f\u00f6rvaras vid -18\u00b0C eller l\u00e4gre",
           "Varmh\u00e5llning sker vid minst +60\u00b0C",
           "Tillagningstemperatur kontrolleras (k\u00e4rntemp minst +72\u00b0C)",
           "Termometer finns och anv\u00e4nds regelbundet",
+          "Kylsk\u00e5pet kan h\u00e5lla l\u00e4mplig temperatur",
         ]
       },
       {
-        title: "4. Reng\u00f6ring och desinfektion",
+        title: "8. Reng\u00f6ring och desinfektion",
         items: [
+          "Reng\u00f6ringsrutiner f\u00f6r redskap, arbetsytor, utrustning och utrymmen finns",
           "Daglig reng\u00f6ring av arbetsytor och utrustning",
           "Reng\u00f6ringsschema finns och f\u00f6ljs",
           "Reng\u00f6ringsmedel f\u00f6rvaras \u00e5tskilt fr\u00e5n livsmedel",
@@ -85,39 +122,63 @@ const KitchenRequirements = () => {
         ]
       },
       {
-        title: "5. R\u00e5a och f\u00e4rdiga livsmedel",
+        title: "9. R\u00e5a och f\u00e4rdiga livsmedel",
         items: [
           "R\u00e5a och f\u00e4rdiga livsmedel f\u00f6rvaras \u00e5tskilt",
-          "Separata sk\u00e4rbr\u00e4dor f\u00f6r r\u00e5tt och k\u00f6tt/gr\u00f6nt",
+          "Separata sk\u00e4rbr\u00e4dor f\u00f6r r\u00e5tt och tillagat",
           "Korskontaminering f\u00f6rebyggs vid hantering",
         ]
       },
       {
-        title: "6. Faroanalys (HACCP-baserat)",
+        title: "10. Faroanalys (HACCP-baserat)",
         items: [
+          "Verksamheten \u00e4r analyserad utifr\u00e5n HACCP-principerna",
           "Kritiska styrpunkter \u00e4r identifierade",
+          "Faror \u00e4r identifierade (biologiska, kemiska, fysiska)",
+          "K\u00e4nsliga livsmedel (fisk, skaldjur, k\u00f6ttf\u00e4rs) har extra noggranna rutiner",
           "Rutiner finns f\u00f6r att f\u00f6rebygga faror",
           "Avvikelser dokumenteras och \u00e5tg\u00e4rdas",
         ]
       },
       {
-        title: "7. M\u00e4rkning och sp\u00e5rbarhet",
+        title: "11. K\u00e4nsliga m\u00e5lgrupper",
         items: [
-          "Ingredienser och allergener anges f\u00f6r varje r\u00e4tt",
-          "B\u00e4st-f\u00f6re/sista f\u00f6rbrukningsdag f\u00f6ljs",
-          "Sp\u00e5rbarhet finns f\u00f6r ink\u00f6pt r\u00e5varor",
+          "H\u00e4nsyn tas till k\u00e4nsliga konsumenter (allergier, sjukdomar)",
+          "Allergener identifieras och kommuniceras tydligt",
+          "Rutiner f\u00f6r att hantera specialkost finns vid behov",
         ]
       },
       {
-        title: "8. Vatten och avfall",
+        title: "12. Livsmedelsinformation och m\u00e4rkning",
+        items: [
+          "Obligatorisk information finns p\u00e5 eller i anslutning till produkten",
+          "Ingredienser och allergener anges f\u00f6r varje r\u00e4tt",
+          "Korrekt m\u00e4rkning beroende p\u00e5 f\u00f6rpackad/of\u00f6rpackad produkt",
+          "B\u00e4st-f\u00f6re/sista f\u00f6rbrukningsdag anges d\u00e4r det kr\u00e4vs",
+          "Information kan ges vid f\u00f6rfr\u00e5gan d\u00e4r s\u00e5 kr\u00e4vs",
+        ]
+      },
+      {
+        title: "13. Sp\u00e5rbarhet",
+        items: [
+          "Kan visa fr\u00e5n vem livsmedel/r\u00e5varor \u00e4r ink\u00f6pta",
+          "Kan visa till vilka f\u00f6retag livsmedel har s\u00e5lts (ej privatpersoner)",
+          "Sp\u00e5rbarhet m\u00f6jligg\u00f6r snabb \u00e5terkallning vid fara",
+          "Ink\u00f6pta ingredienser kan tas bort fr\u00e5n lager vid \u00e5terkallning",
+        ]
+      },
+      {
+        title: "14. Vatten och avfall",
         items: [
           "Dricksvatten fr\u00e5n godk\u00e4nd k\u00e4lla anv\u00e4nds",
+          "Vid egen brunn: extra rutiner f\u00f6r att visa att vattnet \u00e4r l\u00e4mpligt",
+          "Vatten finns tillg\u00e4ngligt i n\u00e4rheten av livsmedelshanteringen",
           "Avfall hanteras och sorteras korrekt",
           "Avfall f\u00f6rvaras \u00e5tskilt fr\u00e5n livsmedel",
         ]
       },
       {
-        title: "9. Skadedjurskontroll",
+        title: "15. Skadedjurskontroll",
         items: [
           "F\u00f6rebyggande \u00e5tg\u00e4rder mot skadedjur vidtas",
           "Livsmedel f\u00f6rvaras i slutna beh\u00e5llare",
@@ -125,10 +186,12 @@ const KitchenRequirements = () => {
         ]
       },
       {
-        title: "10. Utbildning",
+        title: "16. Utbildning och kunskap",
         items: [
-          "Grundl\u00e4ggande livsmedelshygien-kunskap finns",
+          "Grundl\u00e4ggande kunskap om livsmedelshygien finns",
+          "Kunskap om vad bristande hygien kan leda till",
           "Rutiner \u00e4r k\u00e4nda och f\u00f6ljs av alla som hanterar mat",
+          "R\u00e4ttsligt ansvar f\u00f6r s\u00e4kerhet och korrekt information \u00e4r k\u00e4nt",
         ]
       },
     ];
