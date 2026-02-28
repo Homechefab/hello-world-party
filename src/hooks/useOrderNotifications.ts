@@ -37,6 +37,7 @@ export function useOrderNotifications() {
       }, (payload) => {
         const newStatus = payload.new?.status as string;
         const oldStatus = payload.old?.status as string;
+        const pickupInstructions = payload.new?.pickup_instructions as string | null;
 
         if (newStatus && newStatus !== oldStatus && STATUS_LABELS[newStatus]) {
           const label = STATUS_LABELS[newStatus];
@@ -74,7 +75,10 @@ export function useOrderNotifications() {
           }
 
           // Sonner toast (always)
-          toast.info(`Beställning #${orderId}: ${label}`, {
+          const toastMessage = isReady && pickupInstructions
+            ? `Beställning #${orderId}: ${label}\n📍 ${pickupInstructions}`
+            : `Beställning #${orderId}: ${label}`;
+          toast.info(toastMessage, {
             duration: isReady ? 8000 : 5000,
           });
 
@@ -84,8 +88,11 @@ export function useOrderNotifications() {
             Notification.permission === 'granted' &&
             document.hidden
           ) {
+            const notifBody = isReady && pickupInstructions
+              ? `Beställning #${orderId}: ${label}\n📍 ${pickupInstructions}`
+              : `Beställning #${orderId}: ${label}`;
             new Notification('Homechef - Orderuppdatering', {
-              body: `Beställning #${orderId}: ${label}`,
+              body: notifBody,
               icon: '/favicon.ico',
             });
           }
