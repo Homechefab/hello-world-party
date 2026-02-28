@@ -39,7 +39,7 @@ const KitchenRequirements = () => {
     doc.setFontSize(18);
     doc.text("Egenkontroll - Checklista", 20, 20);
     doc.setFontSize(11);
-    doc.text("Baserad pa Livsmedelsverkets riktlinjer for livsmedelsverksamhet", 20, 28);
+    doc.text("Baserad p\u00e5 Livsmedelsverkets riktlinjer f\u00f6r livsmedelsverksamhet", 20, 28);
     doc.setFontSize(9);
     doc.text("HomeChef.nu | Datum: _______________  Signatur: _______________", 20, 36);
     
@@ -50,85 +50,85 @@ const KitchenRequirements = () => {
       {
         title: "1. Personlig hygien",
         items: [
-          "Handtvatt utfors fore hantering av livsmedel",
-          "Rena arbetsklder/forklade anvands",
-          "Sjukdomsrutiner finns och foljs (magsjuka, sar, infektioner)",
-          "Harnat/huvudbonad anvands vid tillagning",
+          "Handtv\u00e4tt utf\u00f6rs f\u00f6re hantering av livsmedel",
+          "Rena arbetskl\u00e4der/f\u00f6rkl\u00e4de anv\u00e4nds",
+          "Sjukdomsrutiner finns och f\u00f6ljs (magsjuka, s\u00e5r, infektioner)",
+          "H\u00e5rn\u00e4t/huvudbonad anv\u00e4nds vid tillagning",
         ]
       },
       {
         title: "2. Lokaler och utrustning",
         items: [
-          "Koket ar separerat fran ovriga bostaden under tillagning",
-          "Ytor och utrustning ar rena och i gott skick",
-          "Handtvttstall med varmt vatten och tval finns",
-          "Husdjur halls borta fran koket under tillagning",
+          "K\u00f6ket \u00e4r separerat fr\u00e5n \u00f6vriga bostaden under tillagning",
+          "Ytor och utrustning \u00e4r rena och i gott skick",
+          "Handtv\u00e4ttst\u00e4ll med varmt vatten och tv\u00e5l finns",
+          "Husdjur h\u00e5lls borta fr\u00e5n k\u00f6ket under tillagning",
         ]
       },
       {
         title: "3. Temperaturkontroll",
         items: [
-          "Kylvaror forvaras vid +8 grader C eller lagre",
-          "Frysvaror forvaras vid -18 grader C eller lagre",
-          "Varmhallning sker vid minst +60 grader C",
-          "Tillagningstemperatur kontrolleras (karntemp minst +72 grader C)",
-          "Termometer finns och anvands regelbundet",
+          "Kylvaror f\u00f6rvaras vid +8\u00b0C eller l\u00e4gre",
+          "Frysvaror f\u00f6rvaras vid -18\u00b0C eller l\u00e4gre",
+          "Varmh\u00e5llning sker vid minst +60\u00b0C",
+          "Tillagningstemperatur kontrolleras (k\u00e4rntemp minst +72\u00b0C)",
+          "Termometer finns och anv\u00e4nds regelbundet",
         ]
       },
       {
-        title: "4. Rengoring och desinfektion",
+        title: "4. Reng\u00f6ring och desinfektion",
         items: [
-          "Daglig rengoring av arbetsytor och utrustning",
-          "Rengoringsschema finns och foljs",
-          "Rengoringsmedel forvaras atskilt fran livsmedel",
+          "Daglig reng\u00f6ring av arbetsytor och utrustning",
+          "Reng\u00f6ringsschema finns och f\u00f6ljs",
+          "Reng\u00f6ringsmedel f\u00f6rvaras \u00e5tskilt fr\u00e5n livsmedel",
           "Disktrasor/svampar byts regelbundet",
         ]
       },
       {
-        title: "5. Ra och fardiga livsmedel",
+        title: "5. R\u00e5a och f\u00e4rdiga livsmedel",
         items: [
-          "Ra och fardiga livsmedel forvaras atskilt",
-          "Separata skarbrdar for ratt och kott/gront",
-          "Korscontaminering forebyggs vid hantering",
+          "R\u00e5a och f\u00e4rdiga livsmedel f\u00f6rvaras \u00e5tskilt",
+          "Separata sk\u00e4rbr\u00e4dor f\u00f6r r\u00e5tt och k\u00f6tt/gr\u00f6nt",
+          "Korskontaminering f\u00f6rebyggs vid hantering",
         ]
       },
       {
         title: "6. Faroanalys (HACCP-baserat)",
         items: [
-          "Kritiska styrpunkter ar identifierade",
-          "Rutiner finns for att forebygga faror",
-          "Avvikelser dokumenteras och atgardas",
+          "Kritiska styrpunkter \u00e4r identifierade",
+          "Rutiner finns f\u00f6r att f\u00f6rebygga faror",
+          "Avvikelser dokumenteras och \u00e5tg\u00e4rdas",
         ]
       },
       {
-        title: "7. Markning och sparbarhet",
+        title: "7. M\u00e4rkning och sp\u00e5rbarhet",
         items: [
-          "Ingredienser och allergener anges for varje ratt",
-          "Bast-fore/sista forbrukningsdag foljs",
-          "Sparbarhet finns for inkopt ravaror",
+          "Ingredienser och allergener anges f\u00f6r varje r\u00e4tt",
+          "B\u00e4st-f\u00f6re/sista f\u00f6rbrukningsdag f\u00f6ljs",
+          "Sp\u00e5rbarhet finns f\u00f6r ink\u00f6pt r\u00e5varor",
         ]
       },
       {
         title: "8. Vatten och avfall",
         items: [
-          "Dricksvatten fran godkand klla anvands",
+          "Dricksvatten fr\u00e5n godk\u00e4nd k\u00e4lla anv\u00e4nds",
           "Avfall hanteras och sorteras korrekt",
-          "Avfall forvaras atskilt fran livsmedel",
+          "Avfall f\u00f6rvaras \u00e5tskilt fr\u00e5n livsmedel",
         ]
       },
       {
         title: "9. Skadedjurskontroll",
         items: [
-          "Forebyggande atgarder mot skadedjur vidtas",
-          "Livsmedel forvaras i slutna behallare",
-          "Eventuella problem dokumenteras och atgardas",
+          "F\u00f6rebyggande \u00e5tg\u00e4rder mot skadedjur vidtas",
+          "Livsmedel f\u00f6rvaras i slutna beh\u00e5llare",
+          "Eventuella problem dokumenteras och \u00e5tg\u00e4rdas",
         ]
       },
       {
         title: "10. Utbildning",
         items: [
-          "Grundlaggande livsmedelshygien-kunskap finns",
-          "Rutiner ar kanda och foljs av alla som hanterar mat",
+          "Grundl\u00e4ggande livsmedelshygien-kunskap finns",
+          "Rutiner \u00e4r k\u00e4nda och f\u00f6ljs av alla som hanterar mat",
         ]
       },
     ];
@@ -169,7 +169,7 @@ const KitchenRequirements = () => {
     doc.line(20, y, pageWidth - 20, y);
     y += 8;
     doc.setFontSize(8);
-    doc.text("Denna checklista ar baserad pa Livsmedelsverkets riktlinjer for egenkontroll.", 20, y);
+    doc.text("Denna checklista \u00e4r baserad p\u00e5 Livsmedelsverkets riktlinjer f\u00f6r egenkontroll.", 20, y);
     doc.text("Mer info: www.livsmedelsverket.se | Kontakt: info@homechef.nu", 20, y + 5);
 
     doc.save("egenkontroll-checklista.pdf");
