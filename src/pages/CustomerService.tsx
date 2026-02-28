@@ -178,9 +178,16 @@ const CustomerService = () => {
                 <p className="text-muted-foreground">
                   Vardagar 08:00-17:00 | Helger: Endast akuta ärenden
                 </p>
-                <Button size="lg" className="mt-4">
-                  Ring nu
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Button size="lg" className="mt-4">
+                    Ring nu
+                  </Button>
+                  <Button asChild size="lg" variant="outline" className="mt-4">
+                    <a href="https://calendly.com/farhan_javanmiri/30min" target="_blank" rel="noopener noreferrer">
+                      Boka gratis konsultation
+                    </a>
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
