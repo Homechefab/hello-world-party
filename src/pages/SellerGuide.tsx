@@ -93,22 +93,22 @@ const SellerGuide = () => {
   const pricingTips = [
     {
       category: "Förrätter",
-      priceRange: "49-89 kr",
+      priceRange: "39-49 kr",
       tips: "Perfekt som aptitretare. Räkna med mindre portioner men högre marginaler."
     },
     {
       category: "Huvudrätter",
-      priceRange: "99-199 kr",
+      priceRange: "69-89 kr",
       tips: "Din huvudinkomst. Sätt pris baserat på ingredienser + tid + 30-50% vinst."
     },
     {
       category: "Efterrätter",
-      priceRange: "39-79 kr",
+      priceRange: "39-49 kr",
       tips: "Populära tilläggsköp. Ofta högre marginaler än huvudrätter."
     },
     {
       category: "Vegetariskt/Veganskt",
-      priceRange: "79-149 kr",
+      priceRange: "69-89 kr",
       tips: "Växande marknad. Premiumprissättning för specialkost är accepterat."
     }
   ];
