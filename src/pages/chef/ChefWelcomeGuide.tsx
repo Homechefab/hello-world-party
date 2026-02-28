@@ -113,7 +113,7 @@ const ChefWelcomeGuide = () => {
         },
         {
           title: "Få utbetalningar",
-          description: "Vi betalar ut dina intäkter varje vecka till ditt bankkonto",
+          description: "Dina intäkter betalas ut inom 2–7 arbetsdagar via Stripe till ditt bankkonto. Första utbetalningen kan ta 7–14 dagar.",
           actionText: "Ställ in bankuppgifter",
           actionLink: "/chef/dashboard"
         }

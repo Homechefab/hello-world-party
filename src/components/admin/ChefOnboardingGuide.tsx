@@ -129,7 +129,7 @@ export const ChefOnboardingGuide = () => {
     sectionTitle('Vad vi gör för dig', '01');
     body('Homechef hanterar marknadsföring, betalningar, kundservice och logistik. Du fokuserar på det du ar bast pa – maten.');
     space(3);
-    const perks = ['Gratis marknadsföring', 'Betalningsskydd', 'Kundservice', 'Veckovis utbetalning'];
+    const perks = ['Gratis marknadsföring', 'Betalningsskydd', 'Kundservice', 'Utbetalning inom 2-7 dagar'];
     const pw = (contentWidth - 9) / 4;
     perks.forEach((p, i) => pill(p, margin + i * (pw + 3), y + 5, pw));
     y += 16;
@@ -229,7 +229,7 @@ export const ChefOnboardingGuide = () => {
     statBox('19%', 'Homechefs provision', 'av ditt pris', margin + 58, 55);
     statBox('6%', 'Serviceavgift', 'betalas av kunden', margin + 116, 55);
     y += 36;
-    body('Utbetalning sker varje vecka direkt till ditt konto. Vi hanterar Kort, Swish och Klarna.');
+    body('Utbetalning sker inom 2-7 arbetsdagar via Stripe till ditt bankkonto. For din allra forsta forsaljning kan det ta upp till 7-14 dagar. Vi hanterar Kort, Swish och Klarna.');
     space(8);
 
     // ── 8. MARKNADSFÖRING ──
