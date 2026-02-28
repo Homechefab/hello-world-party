@@ -12,9 +12,11 @@ import {
   Phone,
   Mail,
   FileText,
-  Play
+  Play,
+  Download
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import jsPDF from "jspdf";
 
 import separationZonesImage from "@/assets/kitchen-separation-zones.jpg";
 import handHygieneImage from "@/assets/kitchen-hand-hygiene.jpg";
@@ -29,6 +31,35 @@ import workClothesImage from "@/assets/kitchen-work-clothes.jpg";
 import waterQualityImage from "@/assets/kitchen-water-quality.jpg";
 
 const KitchenRequirements = () => {
+  const downloadChecklist = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(20);
+    doc.text("Kökskrav - Checklista", 20, 20);
+    doc.setFontSize(12);
+    doc.text("HomeChef.nu", 20, 30);
+    doc.setFontSize(10);
+    const items = [
+      "1. Separationszon - Separera köket från övriga bostaden",
+      "2. Handhygien - Handtvättställe med varmt vatten och tvål",
+      "3. Sjukdomsrutiner - Rutin vid sjukdom/magbesvär",
+      "4. Rengöringsrutiner - Daglig och veckovis rengöring",
+      "5. Husdjursregler - Husdjur ska hållas borta från köket",
+      "6. Rå/färdig mat - Separera rå och färdig mat",
+      "7. Temperaturkontroll - Korrekt förvaring och tillagning",
+      "8. HACCP-analys - Identifiera och hantera risker",
+      "9. Animaliska produkter - Särskilda krav för kött/fisk",
+      "10. Arbetskläder - Rena kläder och förkläde",
+      "11. Vattenkvalitet - Kontroll av dricksvatten",
+    ];
+    let y = 45;
+    items.forEach((item) => {
+      doc.rect(20, y - 3, 4, 4);
+      doc.text(item, 28, y);
+      y += 10;
+    });
+    doc.save("kokskrav-checklista.pdf");
+  };
+
   const equipmentNeeds = [
     {
       icon: Thermometer,
@@ -99,7 +130,8 @@ const KitchenRequirements = () => {
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
-              <Button variant="outline" size="lg">
+              <Button variant="outline" size="lg" onClick={downloadChecklist}>
+                <Download className="w-4 h-4 mr-2" />
                 Ladda ner checklista
               </Button>
             </div>
