@@ -63,7 +63,7 @@ serve(async (req) => {
 
     // Try to get authenticated user
     let user = null;
-    let customerEmail = userEmail || "guest@homechef.se";
+    let customerEmail = userEmail || "guest@homechef.nu";
 
     try {
       const authHeader = req.headers.get("Authorization");

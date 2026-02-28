@@ -83,8 +83,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Chef found:", chef.full_name);
 
-    // Always create a new @homechef.se account for approved chefs
-    // Generate @homechef.se email with unique suffix if needed
+    // Always create a new @homechef.nu account for approved chefs
+    // Generate @homechef.nu email with unique suffix if needed
     const nameParts = chef.full_name?.toLowerCase().split(" ") || [];
     const firstName = nameParts[0] || "chef";
     const lastName = nameParts[nameParts.length - 1] || "unknown";
@@ -92,7 +92,7 @@ const handler = async (req: Request): Promise<Response> => {
     
     // Check if user already exists and find unique email
     const { data: existingUsers } = await supabase.auth.admin.listUsers();
-    let homechefEmail = `${baseEmail}@homechef.se`;
+    let homechefEmail = `${baseEmail}@homechef.nu`;
     let counter = 1;
     
     // Check if email is already taken by another user linked to a different chef
@@ -113,7 +113,7 @@ const handler = async (req: Request): Promise<Response> => {
       if (linkedChef && linkedChef.id !== chefId) {
         // User is linked to another chef, generate unique email
         counter++;
-        homechefEmail = `${baseEmail}${counter}@homechef.se`;
+        homechefEmail = `${baseEmail}${counter}@homechef.nu`;
         console.log("Email taken, trying:", homechefEmail);
       } else {
         // User exists but not linked to any chef, or linked to this chef - can reuse
