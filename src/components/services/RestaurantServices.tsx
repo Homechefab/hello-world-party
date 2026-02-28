@@ -195,7 +195,12 @@ const RestaurantServices = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center flex-wrap">
+              <Button asChild className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white">
+                <a href="https://calendly.com/farhan_javanmiri/30min" target="_blank" rel="noopener noreferrer">
+                  Boka gratis konsultation
+                </a>
+              </Button>
               <Button variant="outline" className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
                 Ring oss: 0734-23 46 86
