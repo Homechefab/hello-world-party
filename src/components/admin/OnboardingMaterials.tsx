@@ -118,7 +118,7 @@ const onboardingData: OnboardingContent[] = [
       },
       {
         question: 'Hur far jag betalt?',
-        answer: 'Utbetalningar sker veckovis till ditt angivna bankkonto.'
+        answer: 'Betalningar fran kunder behandlas via Stripe. Pengarna landar pa ditt Stripe-konto direkt efter kop och betalas sedan ut till ditt bankkonto inom 2-7 arbetsdagar. For ditt allra forsta kop kan det ta upp till 7-14 dagar.'
       }
     ],
     contact: {
@@ -272,7 +272,7 @@ const onboardingData: OnboardingContent[] = [
       },
       {
         question: 'Hur ofta far jag betalt?',
-        answer: 'Utbetalningar sker manadsvis till ditt angivna bankkonto.'
+        answer: 'Betalningar behandlas via Stripe och betalas ut till ditt bankkonto inom 2-7 arbetsdagar efter genomfort kop. For forsta utbetalningen kan det ta upp till 7-14 dagar.'
       }
     ],
     contact: {
@@ -359,7 +359,7 @@ const onboardingData: OnboardingContent[] = [
       },
       {
         question: 'Hur ofta far jag betalt?',
-        answer: 'Utbetalningar sker varje vecka till ert angivna bankkonto for bestallningar som levererats.'
+        answer: 'Betalningar behandlas via Stripe och betalas ut till ert bankkonto inom 2-7 arbetsdagar efter genomfort kop. For forsta utbetalningen kan det ta upp till 7-14 dagar.'
       },
       {
         question: 'Kan jag satta egna priser?',
