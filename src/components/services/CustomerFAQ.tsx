@@ -41,10 +41,6 @@ const CustomerFAQ = () => {
       answer: "Ja, du kan enkelt skicka mat som present till vänner eller familj. Ange bara en annan leveransadress när du beställer och lägg gärna till ett personligt meddelande. Kvittot skickas bara till dig som beställare."
     },
     {
-      question: "Finns det några minimumbelopp för beställning?",
-      answer: "Vissa kockar har ett minimibeställningsvärde, vanligtvis 100-150 kr. Detta ser du tydligt på varje kocks profil innan du beställer. Många kockar erbjuder också paketpriser för större beställningar."
-    },
-    {
       question: "Hur fungerar poängsystemet?",
       answer: "Du samlar poäng på varje beställning som du kan använda för rabatt på framtida köp. 1 poäng = 1 krona. Du får poäng baserat på din beställningssumma och extra poäng vid särskilda kampanjer. Kolla ditt saldo i din profil."
     },
