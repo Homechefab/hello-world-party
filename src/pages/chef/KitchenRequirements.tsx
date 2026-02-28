@@ -238,6 +238,131 @@ const KitchenRequirements = () => {
     doc.save("egenkontroll-checklista.pdf");
   };
 
+  const downloadHaccpTemplate = () => {
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    
+    doc.setFontSize(18);
+    doc.text("HACCP-analysplan", 20, 20);
+    doc.setFontSize(11);
+    doc.text("Hazard Analysis and Critical Control Points", 20, 28);
+    doc.setFontSize(9);
+    doc.text("HomeChef.nu | Verksamhet: _________________  Datum: _______________", 20, 36);
+    
+    doc.setLineWidth(0.5);
+    doc.line(20, 40, pageWidth - 20, 40);
+
+    let yH = 48;
+
+    const templateSections = [
+      {
+        title: "1. Verksamhetsbeskrivning",
+        items: [
+          "Typ av livsmedel som hanteras: ___________________________________",
+          "M\u00e5lgrupp/kunder: _______________________________________________",
+          "Antal portioner/produkter per dag: _________________________________",
+          "F\u00f6rs\u00e4ljningss\u00e4tt (direkt, n\u00e4t, butik): ______________________________",
+        ]
+      },
+      {
+        title: "2. Processteg i min verksamhet",
+        items: [
+          "Steg 1: ________________________________________________________",
+          "Steg 2: ________________________________________________________",
+          "Steg 3: ________________________________________________________",
+          "Steg 4: ________________________________________________________",
+          "Steg 5: ________________________________________________________",
+          "Steg 6: ________________________________________________________",
+        ]
+      },
+      {
+        title: "3. Identifierade faror",
+        items: [
+          "Biologiska: _____________________________________________________",
+          "Kemiska: _______________________________________________________",
+          "Fysiska: ________________________________________________________",
+        ]
+      },
+      {
+        title: "4. Kritiska styrpunkter (CCP)",
+        items: [
+          "CCP 1: _________________ Gr\u00e4nsv\u00e4rde: _________ \u00d6vervakning: _________",
+          "CCP 2: _________________ Gr\u00e4nsv\u00e4rde: _________ \u00d6vervakning: _________",
+          "CCP 3: _________________ Gr\u00e4nsv\u00e4rde: _________ \u00d6vervakning: _________",
+          "CCP 4: _________________ Gr\u00e4nsv\u00e4rde: _________ \u00d6vervakning: _________",
+        ]
+      },
+      {
+        title: "5. Korrigerande \u00e5tg\u00e4rder",
+        items: [
+          "Om CCP 1 \u00f6verskrids: ___________________________________________",
+          "Om CCP 2 \u00f6verskrids: ___________________________________________",
+          "Om CCP 3 \u00f6verskrids: ___________________________________________",
+          "Om CCP 4 \u00f6verskrids: ___________________________________________",
+        ]
+      },
+      {
+        title: "6. Temperaturlogg (daglig)",
+        items: [
+          "Kylsk\u00e5p: Morgon ____\u00b0C  Kv\u00e4ll ____\u00b0C  OK/Avvikelse: _____________",
+          "Frys: Morgon ____\u00b0C  Kv\u00e4ll ____\u00b0C  OK/Avvikelse: _________________",
+          "Tillagning r\u00e4tt 1: K\u00e4rntemp ____\u00b0C  OK/Avvikelse: _________________",
+          "Tillagning r\u00e4tt 2: K\u00e4rntemp ____\u00b0C  OK/Avvikelse: _________________",
+          "Varmh\u00e5llning: Temp ____\u00b0C  Tid: ______  OK/Avvikelse: _____________",
+        ]
+      },
+      {
+        title: "7. Avvikelselogg",
+        items: [
+          "Datum: ______ Avvikelse: _________________ \u00c5tg\u00e4rd: ________________",
+          "Datum: ______ Avvikelse: _________________ \u00c5tg\u00e4rd: ________________",
+          "Datum: ______ Avvikelse: _________________ \u00c5tg\u00e4rd: ________________",
+        ]
+      },
+    ];
+
+    doc.setFontSize(10);
+
+    templateSections.forEach((section) => {
+      const sectionHeight = 10 + section.items.length * 8;
+      if (yH + sectionHeight > 280) {
+        doc.addPage();
+        yH = 20;
+      }
+
+      doc.setFont("helvetica", "bold");
+      doc.text(section.title, 20, yH);
+      yH += 7;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+
+      section.items.forEach((item) => {
+        if (yH + 8 > 280) {
+          doc.addPage();
+          yH = 20;
+        }
+        doc.text(item, 22, yH);
+        yH += 8;
+      });
+
+      yH += 4;
+      doc.setFontSize(10);
+    });
+
+    if (yH + 20 > 280) {
+      doc.addPage();
+      yH = 20;
+    }
+    doc.setLineWidth(0.5);
+    doc.line(20, yH, pageWidth - 20, yH);
+    yH += 8;
+    doc.setFontSize(8);
+    doc.text("Denna mall \u00e4r baserad p\u00e5 Livsmedelsverkets HACCP-principer.", 20, yH);
+    doc.text("Uppdatera planen vid meny\u00e4ndringar. | Kontakt: info@homechef.nu", 20, yH + 5);
+
+    doc.save("haccp-analysplan.pdf");
+  };
+
   const equipmentNeeds = [
     {
       icon: Thermometer,
@@ -302,12 +427,10 @@ const KitchenRequirements = () => {
               Här hittar du all information du behöver.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/chef/haccp-analysis-tool">
-                <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
-                  HACCP-analysverktyg
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
+              <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90" onClick={downloadHaccpTemplate}>
+                <Download className="w-5 h-5 mr-2" />
+                HACCP-analysverktyg
+              </Button>
               <Button variant="outline" size="lg" onClick={downloadChecklist}>
                 <Download className="w-4 h-4 mr-2" />
                 Ladda ner egenkontroll
