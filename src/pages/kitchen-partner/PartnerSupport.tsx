@@ -162,6 +162,11 @@ const PartnerSupport = () => {
                   Bli partner idag
                 </Link>
               </Button>
+              <Button asChild variant="outline" className="w-full border-white/30 text-white hover:bg-white/10">
+                <a href="https://calendly.com/farhan_javanmiri/30min" target="_blank" rel="noopener noreferrer">
+                  Boka gratis konsultation
+                </a>
+              </Button>
             </CardContent>
           </Card>
         </div>
