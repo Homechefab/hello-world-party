@@ -11,7 +11,7 @@ import {
   ArrowRight,
   CheckCircle,
   Phone,
-  Mail,
+  
   Truck,
   CreditCard,
   Target
@@ -360,20 +360,21 @@ const RestaurantPartnership = () => {
           <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
             Ansök idag så hör vi av oss inom kort.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center flex-wrap">
             <Button asChild size="lg" className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90">
               <Link to="/restaurant/apply">
                 Ansök som restaurangpartner
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Link>
             </Button>
+            <a href="https://calendly.com/farhan_javanmiri/30min" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" size="lg" className="flex items-center gap-2">
+                Boka gratis konsultation
+              </Button>
+            </a>
             <Button variant="outline" size="lg" className="flex items-center gap-2">
               <Phone className="w-4 h-4" />
               Ring oss: 0734-23 46 86
-            </Button>
-            <Button variant="outline" size="lg" className="flex items-center gap-2">
-              <Mail className="w-4 h-4" />
-              Mejla oss
             </Button>
           </div>
         </div>
