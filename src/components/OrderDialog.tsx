@@ -4,9 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Minus, Plus, ShoppingBag } from "lucide-react";
+import { Minus, Plus, ShoppingBag, MapPin, Truck } from "lucide-react";
 import PaymentSelector from "./PaymentSelector";
 import { useToast } from "@/hooks/use-toast";
+
+type DeliveryMethod = "pickup" | "delivery";
+
 interface OrderDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -19,11 +22,13 @@ interface OrderDialogProps {
     seller: string;
   };
   stripePriceId: string;
+  offersDelivery?: boolean;
 }
 
-const OrderDialog = ({ open, onOpenChange, dish, stripePriceId }: OrderDialogProps) => {
+const OrderDialog = ({ open, onOpenChange, dish, stripePriceId, offersDelivery = false }: OrderDialogProps) => {
   const [quantity, setQuantity] = useState(1);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("pickup");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [specialInstructions, setSpecialInstructions] = useState("");
 
@@ -37,7 +42,7 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId }: OrderDialogPro
   const { toast } = useToast();
 
   const handleProceedToPayment = () => {
-    if (!deliveryAddress.trim()) {
+    if (deliveryMethod === "delivery" && !deliveryAddress.trim()) {
       toast({ title: "Vänligen ange en leveransadress", variant: "destructive" });
       return;
     }
@@ -45,6 +50,7 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId }: OrderDialogPro
   };
 
   const totalPrice = dish.price * quantity;
+  
 
   if (showCheckout) {
     return (
@@ -58,7 +64,10 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId }: OrderDialogPro
           </DialogHeader>
           <div className="space-y-4">
             <div className="bg-muted p-4 rounded-lg space-y-2">
-              <p><strong>Leveransadress:</strong> {deliveryAddress}</p>
+              <p><strong>Leveranssätt:</strong> {deliveryMethod === "delivery" ? "Hemleverans" : "Upphämtning"}</p>
+              {deliveryAddress && (
+                <p><strong>{deliveryMethod === "delivery" ? "Leveransadress" : "Adress"}:</strong> {deliveryAddress}</p>
+              )}
               {specialInstructions && (
                 <p><strong>Specialinstruktioner:</strong> {specialInstructions}</p>
               )}
@@ -138,16 +147,65 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId }: OrderDialogPro
             </div>
           </div>
 
-          {/* Delivery Address */}
+          {/* Delivery Method Selector */}
+          <div className="space-y-3">
+            <Label>Leveranssätt</Label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setDeliveryMethod("pickup")}
+                className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all text-left ${
+                  deliveryMethod === "pickup"
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:border-muted-foreground/30"
+                }`}
+              >
+                <MapPin className={`w-5 h-5 flex-shrink-0 ${deliveryMethod === "pickup" ? "text-primary" : "text-muted-foreground"}`} />
+                <div>
+                  <p className="font-medium text-sm">Upphämtning</p>
+                  <p className="text-xs text-muted-foreground">Hämta hos kocken</p>
+                </div>
+              </button>
+              <button
+                type="button"
+                onClick={() => offersDelivery && setDeliveryMethod("delivery")}
+                disabled={!offersDelivery}
+                className={`flex items-center gap-3 p-4 rounded-lg border-2 transition-all text-left ${
+                  deliveryMethod === "delivery"
+                    ? "border-primary bg-primary/5"
+                    : offersDelivery
+                      ? "border-border hover:border-muted-foreground/30"
+                      : "border-border opacity-50 cursor-not-allowed"
+                }`}
+              >
+                <Truck className={`w-5 h-5 flex-shrink-0 ${deliveryMethod === "delivery" ? "text-primary" : "text-muted-foreground"}`} />
+                <div>
+                  <p className="font-medium text-sm">Hemleverans</p>
+                  <p className="text-xs text-muted-foreground">
+                    {offersDelivery ? "Leverans till din dörr" : "Ej tillgängligt"}
+                  </p>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          {/* Address */}
           <div className="space-y-2">
-            <Label htmlFor="address">Leveransadress *</Label>
+            <Label htmlFor="address">
+              {deliveryMethod === "delivery" ? "Leveransadress *" : "Leveransadress (valfritt)"}
+            </Label>
             <Input
               id="address"
               placeholder="T.ex. Storgatan 1, 123 45 Stockholm"
               value={deliveryAddress}
               onChange={(e) => setDeliveryAddress(e.target.value)}
-              required
+              required={deliveryMethod === "delivery"}
             />
+            {deliveryMethod === "pickup" && (
+              <p className="text-xs text-muted-foreground">
+                Du får upphämtningsinstruktioner från kocken när maten är klar
+              </p>
+            )}
           </div>
 
           {/* Special Instructions */}
@@ -171,6 +229,10 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId }: OrderDialogPro
             <div className="flex justify-between text-sm">
               <span>Antal:</span>
               <span>{quantity}</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span>Leveranssätt:</span>
+              <span>{deliveryMethod === "delivery" ? "Hemleverans" : "Upphämtning"}</span>
             </div>
             <div className="h-px bg-border my-2" />
             <div className="flex justify-between font-semibold text-lg">
