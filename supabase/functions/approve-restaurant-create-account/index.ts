@@ -83,12 +83,12 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Restaurant found:", restaurant.business_name);
 
-    // Generate @homechef.se email
+    // Generate @homechef.nu email
     const businessNameSlug = restaurant.business_name
       ?.toLowerCase()
       .replace(/[^a-z0-9]/g, "")
       .substring(0, 20) || "restaurant";
-    const homechefEmail = `${businessNameSlug}@homechef.se`;
+    const homechefEmail = `${businessNameSlug}@homechef.nu`;
     
     console.log("Generated email:", homechefEmail);
 

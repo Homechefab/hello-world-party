@@ -62,7 +62,7 @@ const handler = async (req: Request): Promise<Response> => {
           </div>
 
           <div style="margin: 30px 0;">
-            <a href="https://homechef.se/admin/dashboard" 
+            <a href="https://homechef.nu/admin/dashboard" 
                style="background-color: #ff6b35; color: white; padding: 12px 24px; 
                       text-decoration: none; border-radius: 6px; display: inline-block;">
               Granska ansökan

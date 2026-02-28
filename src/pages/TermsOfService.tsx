@@ -172,7 +172,7 @@ const TermsOfService = () => {
             <h2 className="text-2xl font-semibold text-foreground mb-4">13. Klagomål och tvister</h2>
             <p>
               Vid problem, kontakta först kocken direkt. Om det inte löser sig, kontakta vår kundsupport på 
-              support@homechef.se. Vi strävar efter att lösa alla klagomål inom 14 dagar.
+              support@homechef.nu. Vi strävar efter att lösa alla klagomål inom 14 dagar.
             </p>
             <p className="mt-3">
               Tvister ska i första hand lösas genom förhandling. Vid oenighet gäller svensk lag och 

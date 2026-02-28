@@ -247,7 +247,7 @@ const PartnershipPage = () => {
                     E-post
                   </h3>
                   <p className="text-muted-foreground">
-                    partners@homechef.se
+                    partners@homechef.nu
                   </p>
                 </CardContent>
               </Card>
