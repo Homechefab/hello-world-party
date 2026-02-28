@@ -145,6 +145,7 @@ export type Database = {
           instagram_url: string | null
           kitchen_approved: boolean | null
           municipality_approval_date: string | null
+          offers_delivery: boolean | null
           phone: string | null
           postal_code: string | null
           profile_image_url: string | null
@@ -171,6 +172,7 @@ export type Database = {
           instagram_url?: string | null
           kitchen_approved?: boolean | null
           municipality_approval_date?: string | null
+          offers_delivery?: boolean | null
           phone?: string | null
           postal_code?: string | null
           profile_image_url?: string | null
@@ -197,6 +199,7 @@ export type Database = {
           instagram_url?: string | null
           kitchen_approved?: boolean | null
           municipality_approval_date?: string | null
+          offers_delivery?: boolean | null
           phone?: string | null
           postal_code?: string | null
           profile_image_url?: string | null
@@ -679,6 +682,7 @@ export type Database = {
           delivery_time: string | null
           estimated_ready_at: string | null
           id: string
+          pickup_instructions: string | null
           preparation_started_at: string | null
           special_instructions: string | null
           status: string
@@ -693,6 +697,7 @@ export type Database = {
           delivery_time?: string | null
           estimated_ready_at?: string | null
           id?: string
+          pickup_instructions?: string | null
           preparation_started_at?: string | null
           special_instructions?: string | null
           status?: string
@@ -707,6 +712,7 @@ export type Database = {
           delivery_time?: string | null
           estimated_ready_at?: string | null
           id?: string
+          pickup_instructions?: string | null
           preparation_started_at?: string | null
           special_instructions?: string | null
           status?: string

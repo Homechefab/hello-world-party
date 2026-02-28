@@ -23,6 +23,7 @@ export const useProviders = (filters?: {
     queryKey: ["providers", filters],
     queryFn: async (): Promise<Provider[]> => {
       // Fetch approved chefs from public view
+      // We need chefs table for offers_delivery, join via id
       let chefsQuery = supabase
         .from("public_chef_profiles")
         .select(`
@@ -52,7 +53,7 @@ export const useProviders = (filters?: {
         throw chefsError;
       }
 
-      // Fetch dishes count and reviews for each chef
+      // Fetch dishes count, reviews, and delivery info for each chef
       const providerPromises = (chefs || []).map(async (chef) => {
         if (!chef.id) return null;
 
@@ -68,6 +69,13 @@ export const useProviders = (filters?: {
           .from("reviews")
           .select("rating")
           .eq("chef_id", chef.id);
+
+        // Get delivery option from chefs table
+        const { data: chefRecord } = await supabase
+          .from("chefs")
+          .select("offers_delivery")
+          .eq("id", chef.id)
+          .maybeSingle();
 
         const totalRating = reviews?.reduce((sum, r) => sum + r.rating, 0) || 0;
         const avgRating = reviews?.length ? totalRating / reviews.length : 0;
@@ -86,7 +94,7 @@ export const useProviders = (filters?: {
           reviewCount: reviews?.length || 0,
           description: chef.bio || "Passionerad hemlagad mat med kärlek",
           itemCount: dishCount || 0,
-          hasDelivery: true,
+          hasDelivery: chefRecord?.offers_delivery ?? false,
           specialties: specialtiesArray,
           imageUrl: chef.profile_image_url,
         } as Provider;
