@@ -3,13 +3,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { 
   Clock, 
   CheckCircle, 
   Package, 
   Phone, 
   Calendar,
-  Timer
+  Timer,
+  MapPin
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -111,6 +114,7 @@ export const OrderManagement = () => {
   }, [loadOrders]);
 
   const [estimatedMinutes, setEstimatedMinutes] = useState<Record<string, number>>({});
+  const [pickupInstructions, setPickupInstructions] = useState<Record<string, string>>({});
 
   // Calculate default estimated minutes from dish preparation times
   const getDefaultMinutes = (order: Order) => {
@@ -134,6 +138,11 @@ export const OrderManagement = () => {
       if (newStatus === 'confirmed') {
         const minutes = estimatedMinutes[orderId] || getDefaultMinutes(orders.find(o => o.id === orderId)!);
         updateData.estimated_ready_at = new Date(Date.now() + minutes * 60000).toISOString();
+      }
+
+      // When marking as ready, include pickup instructions
+      if (newStatus === 'ready' && pickupInstructions[orderId]) {
+        updateData.pickup_instructions = pickupInstructions[orderId];
       }
 
       const { error } = await supabase
@@ -363,13 +372,29 @@ export const OrderManagement = () => {
                           </Button>
                         )}
                         {order.status === 'preparing' && (
-                          <Button
-                            onClick={() => updateOrderStatus(order.id, 'ready')}
-                            className="flex-1"
-                          >
-                            <Package className="w-4 h-4 mr-2" />
-                            Markera som klar
-                          </Button>
+                          <div className="w-full space-y-3">
+                            <div className="space-y-2">
+                              <Label htmlFor={`pickup-${order.id}`} className="text-sm font-medium flex items-center gap-1">
+                                <MapPin className="w-3.5 h-3.5" />
+                                Upphämtningsinstruktioner till kunden
+                              </Label>
+                              <Textarea
+                                id={`pickup-${order.id}`}
+                                placeholder="T.ex. Hämtas på Storgatan 5, port 3B. Ring på klockan 'Nilsson'. Stå vid porten så kommer jag ut."
+                                value={pickupInstructions[order.id] || ''}
+                                onChange={(e) => setPickupInstructions(prev => ({ ...prev, [order.id]: e.target.value }))}
+                                rows={2}
+                                className="text-sm"
+                              />
+                            </div>
+                            <Button
+                              onClick={() => updateOrderStatus(order.id, 'ready')}
+                              className="flex-1 w-full"
+                            >
+                              <Package className="w-4 h-4 mr-2" />
+                              Markera som klar
+                            </Button>
+                          </div>
                         )}
                         {order.status === 'ready' && (
                           <Button
