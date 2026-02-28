@@ -173,6 +173,21 @@ const OrderTracking = () => {
         </CardContent>
       </Card>
 
+      {/* Pickup instructions from chef - shown prominently when ready */}
+      {order.pickup_instructions && ['ready', 'completed', 'delivered'].includes(order.status) && (
+        <Card className="mb-4 border-primary/30 bg-primary/5">
+          <CardContent className="p-4">
+            <div className="flex items-start gap-3">
+              <MapPin className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+              <div>
+                <h3 className="font-semibold text-sm mb-1">Upphämtningsinstruktioner</h3>
+                <p className="text-sm text-foreground">{order.pickup_instructions}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Info */}
       <Card className="mb-4">
         <CardContent className="p-4 space-y-2 text-sm">
@@ -194,7 +209,7 @@ const OrderTracking = () => {
           )}
           {order.special_instructions && (
             <div className="p-3 bg-secondary/50 rounded-lg mt-2">
-              <p className="text-xs font-medium mb-1">Instruktioner</p>
+              <p className="text-xs font-medium mb-1">Dina instruktioner</p>
               <p>{order.special_instructions}</p>
             </div>
           )}
