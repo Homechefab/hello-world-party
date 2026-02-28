@@ -270,7 +270,7 @@ const Privacy = () => {
 
               <Alert className="mt-4">
                 <AlertDescription>
-                  För att utöva dina rättigheter, kontakta oss på <strong>privacy@homechef.se</strong>. 
+                  För att utöva dina rättigheter, kontakta oss på <strong>privacy@homechef.nu</strong>. 
                   Vi kommer att besvara din begäran inom 30 dagar.
                 </AlertDescription>
               </Alert>

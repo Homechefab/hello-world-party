@@ -123,7 +123,7 @@ const onboardingData: OnboardingContent[] = [
     ],
     contact: {
       phone: '0734234686',
-      email: 'support@homechef.se',
+      email: 'support@homechef.nu',
       hours: 'Vardagar 09-18, Helger 10-16'
     }
   },
@@ -200,7 +200,7 @@ const onboardingData: OnboardingContent[] = [
     ],
     contact: {
       phone: '0734234686',
-      email: 'support@homechef.se',
+      email: 'support@homechef.nu',
       hours: 'Vardagar 09-18, Helger 10-16'
     }
   },
@@ -277,7 +277,7 @@ const onboardingData: OnboardingContent[] = [
     ],
     contact: {
       phone: '0734234686',
-      email: 'support@homechef.se',
+      email: 'support@homechef.nu',
       hours: 'Vardagar 09-18, Helger 10-16'
     }
   },
@@ -372,7 +372,7 @@ const onboardingData: OnboardingContent[] = [
     ],
     contact: {
       phone: '0734234686',
-      email: 'support@homechef.se',
+      email: 'support@homechef.nu',
       hours: 'Vardagar 09-18, Helger 10-16'
     }
   }
