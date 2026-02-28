@@ -398,8 +398,8 @@ const Terms = () => {
               <div>
                 <h3 className="text-lg font-medium mb-2">11.3 Serviceavgift</h3>
                 <p className="text-muted-foreground">
-                  Homechef lägger på en serviceavgift på 20% som betalas av kunden. Hemmakockar får 100% av 
-                  sitt angivna pris. Utbetalning sker veckovis till registrerat bankkonto.
+                  Kunden betalar en serviceavgift på 6% och Homechef tar 19% provision från ditt pris. Du får 81% av ditt angivna pris. 
+                  Utbetalning sker inom 2–7 arbetsdagar via Stripe till ditt registrerade bankkonto. Vid din allra första försäljning kan det ta upp till 7–14 dagar.
                 </p>
               </div>
             </section>
@@ -422,8 +422,8 @@ const Terms = () => {
               <div>
                 <h3 className="text-lg font-medium mb-2">12.2 Serviceavgift</h3>
                 <p className="text-muted-foreground">
-                  Homechef lägger på en serviceavgift på 20% som betalas av kunden vid köksuthyrning. 
-                  Kökspartners får 100% av sin angivna hyra. Utbetalning sker månadsvis.
+                  Kunden betalar en serviceavgift på 6% och Homechef tar 19% provision från hyran vid köksuthyrning. 
+                  Kökspartners får 81% av sin angivna hyra. Utbetalning sker inom 2–7 arbetsdagar via Stripe till registrerat bankkonto.
                 </p>
               </div>
             </section>
