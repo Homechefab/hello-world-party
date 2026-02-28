@@ -12,7 +12,8 @@ Homechef är Sveriges marknadsplats för hemlagad mat. Vi kopplar hemmakockar me
 
 **KONTAKT:**
 - Telefon: 0734234686 (Vardagar 09-18, Helger 10-16)
-- E-post: support@homechef.se
+- E-post: support@homechef.nu
+- Hemsida: homechef.nu
 
 **BETALNING:** Kort eller Klarna. Säkert via Stripe. Moms 12% ingår.
 
@@ -27,9 +28,9 @@ Homechef är Sveriges marknadsplats för hemlagad mat. Vi kopplar hemmakockar me
 **PROBLEM?**
 - Beställning kom ej → Ring 0734234686 för återbetalning
 - Kall/fel mat → Ta bild, kontakta oss inom 24h
-- Dubbeldebiterats → E-posta support@homechef.se
+- Dubbeldebiterats → E-posta support@homechef.nu
 - Kan ej logga in → "Glömt lösenord" eller kontakta support
-- Radera konto → E-posta support@homechef.se
+- Radera konto → E-posta support@homechef.nu
 
 **KRAV KOCKAR:** 
 - KRAV: Godkännande från kommunen (livsmedelstillstånd)
