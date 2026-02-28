@@ -33,31 +33,146 @@ import waterQualityImage from "@/assets/kitchen-water-quality.jpg";
 const KitchenRequirements = () => {
   const downloadChecklist = () => {
     const doc = new jsPDF();
-    doc.setFontSize(20);
-    doc.text("Kökskrav - Checklista", 20, 20);
-    doc.setFontSize(12);
-    doc.text("HomeChef.nu", 20, 30);
-    doc.setFontSize(10);
-    const items = [
-      "1. Separationszon - Separera köket från övriga bostaden",
-      "2. Handhygien - Handtvättställe med varmt vatten och tvål",
-      "3. Sjukdomsrutiner - Rutin vid sjukdom/magbesvär",
-      "4. Rengöringsrutiner - Daglig och veckovis rengöring",
-      "5. Husdjursregler - Husdjur ska hållas borta från köket",
-      "6. Rå/färdig mat - Separera rå och färdig mat",
-      "7. Temperaturkontroll - Korrekt förvaring och tillagning",
-      "8. HACCP-analys - Identifiera och hantera risker",
-      "9. Animaliska produkter - Särskilda krav för kött/fisk",
-      "10. Arbetskläder - Rena kläder och förkläde",
-      "11. Vattenkvalitet - Kontroll av dricksvatten",
+    const pageWidth = doc.internal.pageSize.getWidth();
+    
+    // Title
+    doc.setFontSize(18);
+    doc.text("Egenkontroll - Checklista", 20, 20);
+    doc.setFontSize(11);
+    doc.text("Baserad pa Livsmedelsverkets riktlinjer for livsmedelsverksamhet", 20, 28);
+    doc.setFontSize(9);
+    doc.text("HomeChef.nu | Datum: _______________  Signatur: _______________", 20, 36);
+    
+    doc.setLineWidth(0.5);
+    doc.line(20, 40, pageWidth - 20, 40);
+
+    const sections = [
+      {
+        title: "1. Personlig hygien",
+        items: [
+          "Handtvatt utfors fore hantering av livsmedel",
+          "Rena arbetsklder/forklade anvands",
+          "Sjukdomsrutiner finns och foljs (magsjuka, sar, infektioner)",
+          "Harnat/huvudbonad anvands vid tillagning",
+        ]
+      },
+      {
+        title: "2. Lokaler och utrustning",
+        items: [
+          "Koket ar separerat fran ovriga bostaden under tillagning",
+          "Ytor och utrustning ar rena och i gott skick",
+          "Handtvttstall med varmt vatten och tval finns",
+          "Husdjur halls borta fran koket under tillagning",
+        ]
+      },
+      {
+        title: "3. Temperaturkontroll",
+        items: [
+          "Kylvaror forvaras vid +8 grader C eller lagre",
+          "Frysvaror forvaras vid -18 grader C eller lagre",
+          "Varmhallning sker vid minst +60 grader C",
+          "Tillagningstemperatur kontrolleras (karntemp minst +72 grader C)",
+          "Termometer finns och anvands regelbundet",
+        ]
+      },
+      {
+        title: "4. Rengoring och desinfektion",
+        items: [
+          "Daglig rengoring av arbetsytor och utrustning",
+          "Rengoringsschema finns och foljs",
+          "Rengoringsmedel forvaras atskilt fran livsmedel",
+          "Disktrasor/svampar byts regelbundet",
+        ]
+      },
+      {
+        title: "5. Ra och fardiga livsmedel",
+        items: [
+          "Ra och fardiga livsmedel forvaras atskilt",
+          "Separata skarbrdar for ratt och kott/gront",
+          "Korscontaminering forebyggs vid hantering",
+        ]
+      },
+      {
+        title: "6. Faroanalys (HACCP-baserat)",
+        items: [
+          "Kritiska styrpunkter ar identifierade",
+          "Rutiner finns for att forebygga faror",
+          "Avvikelser dokumenteras och atgardas",
+        ]
+      },
+      {
+        title: "7. Markning och sparbarhet",
+        items: [
+          "Ingredienser och allergener anges for varje ratt",
+          "Bast-fore/sista forbrukningsdag foljs",
+          "Sparbarhet finns for inkopt ravaror",
+        ]
+      },
+      {
+        title: "8. Vatten och avfall",
+        items: [
+          "Dricksvatten fran godkand klla anvands",
+          "Avfall hanteras och sorteras korrekt",
+          "Avfall forvaras atskilt fran livsmedel",
+        ]
+      },
+      {
+        title: "9. Skadedjurskontroll",
+        items: [
+          "Forebyggande atgarder mot skadedjur vidtas",
+          "Livsmedel forvaras i slutna behallare",
+          "Eventuella problem dokumenteras och atgardas",
+        ]
+      },
+      {
+        title: "10. Utbildning",
+        items: [
+          "Grundlaggande livsmedelshygien-kunskap finns",
+          "Rutiner ar kanda och foljs av alla som hanterar mat",
+        ]
+      },
     ];
-    let y = 45;
-    items.forEach((item) => {
-      doc.rect(20, y - 3, 4, 4);
-      doc.text(item, 28, y);
-      y += 10;
+
+    let y = 48;
+    doc.setFontSize(10);
+
+    sections.forEach((section) => {
+      // Check if section fits on page, otherwise add new page
+      const sectionHeight = 8 + section.items.length * 7;
+      if (y + sectionHeight > 280) {
+        doc.addPage();
+        y = 20;
+      }
+
+      doc.setFont("helvetica", "bold");
+      doc.text(section.title, 20, y);
+      y += 6;
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(9);
+
+      section.items.forEach((item) => {
+        doc.rect(22, y - 3, 3.5, 3.5);
+        doc.text(item, 28, y);
+        y += 7;
+      });
+
+      y += 4;
+      doc.setFontSize(10);
     });
-    doc.save("kokskrav-checklista.pdf");
+
+    // Footer
+    if (y + 20 > 280) {
+      doc.addPage();
+      y = 20;
+    }
+    doc.setLineWidth(0.5);
+    doc.line(20, y, pageWidth - 20, y);
+    y += 8;
+    doc.setFontSize(8);
+    doc.text("Denna checklista ar baserad pa Livsmedelsverkets riktlinjer for egenkontroll.", 20, y);
+    doc.text("Mer info: www.livsmedelsverket.se | Kontakt: info@homechef.nu", 20, y + 5);
+
+    doc.save("egenkontroll-checklista.pdf");
   };
 
   const equipmentNeeds = [
