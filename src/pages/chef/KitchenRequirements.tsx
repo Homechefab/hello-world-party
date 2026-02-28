@@ -310,7 +310,7 @@ const KitchenRequirements = () => {
               </Link>
               <Button variant="outline" size="lg" onClick={downloadChecklist}>
                 <Download className="w-4 h-4 mr-2" />
-                Ladda ner egenkontroller
+                Ladda ner egenkontroll
               </Button>
             </div>
           </div>
