@@ -55,6 +55,7 @@ import HaccpAnalysis from "./pages/chef/requirements/HaccpAnalysis";
 import AnimalProducts from "./pages/chef/requirements/AnimalProducts";
 import WorkClothes from "./pages/chef/requirements/WorkClothes";
 import WaterQuality from "./pages/chef/requirements/WaterQuality";
+import HaccpAnalysisTool from "./pages/chef/HaccpAnalysisTool";
 import Mentorship from "./pages/chef/Mentorship";
 import { KitchenPartnerDashboard } from "./pages/kitchen-partner/KitchenPartnerDashboard";
 import { KitchenPartnerOnboarding } from "./pages/kitchen-partner/KitchenPartnerOnboarding";
@@ -177,6 +178,7 @@ const App = () => {
             <Route path="/chef/requirements/water-quality" element={<PublicLayout><WaterQuality /></PublicLayout>} />
             <Route path="/chef/municipality-requirements" element={<PublicLayout><MunicipalityRequirements /></PublicLayout>} />
             <Route path="/chef/kitchen-assessment" element={<PublicLayout><KitchenAssessment /></PublicLayout>} />
+            <Route path="/chef/haccp-analysis-tool" element={<PublicLayout><HaccpAnalysisTool /></PublicLayout>} />
             <Route path="/chef/business-registration" element={<PublicLayout><BusinessRegistration /></PublicLayout>} />
             <Route path="/chef/kockforum" element={<PublicLayout><ChefForum /></PublicLayout>} />
             <Route path="/chef/manadens-kock" element={<PublicLayout><ChefOfTheMonth /></PublicLayout>} />
