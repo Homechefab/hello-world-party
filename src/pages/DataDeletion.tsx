@@ -61,7 +61,7 @@ const DataDeletion = () => {
                   <Mail className="w-5 h-5 mt-1 text-primary" />
                   <div>
                     <h3 className="font-semibold mb-1">E-post</h3>
-                    <p className="text-muted-foreground">support@homechef.se</p>
+                    <p className="text-muted-foreground">support@homechef.nu</p>
                     <p className="text-sm text-muted-foreground mt-1">
                       Ange "Radera mitt konto" i ämnesraden och inkludera din e-postadress 
                       som är kopplad till kontot.
@@ -71,7 +71,7 @@ const DataDeletion = () => {
 
                 <div className="pt-4 border-t">
                   <Button 
-                    onClick={() => window.location.href = 'mailto:support@homechef.se?subject=Radera mitt konto'}
+                    onClick={() => window.location.href = 'mailto:support@homechef.nu?subject=Radera mitt konto'}
                     className="w-full sm:w-auto"
                   >
                     <Mail className="w-4 h-4 mr-2" />
@@ -134,7 +134,7 @@ const DataDeletion = () => {
                 Om du har frågor om raderingsprocessen eller vill diskutera alternativ, tveka inte att kontakta oss:
               </p>
               <div className="space-y-2 text-muted-foreground">
-                <p><strong>E-post:</strong> support@homechef.se</p>
+                <p><strong>E-post:</strong> support@homechef.nu</p>
                 <p><strong>Svarstid:</strong> Inom 48 timmar</p>
               </div>
             </section>

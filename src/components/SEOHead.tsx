@@ -85,11 +85,11 @@ const SEOHead = ({
       "@type": "Organization",
       name: "Homechef",
       description: "Sveriges första marknadsplats för hemlagad mat",
-      url: "https://homechef.se",
-      logo: "https://homechef.se/app-icon.png",
+      url: "https://homechef.nu",
+      logo: "https://homechef.nu/app-icon.png",
       sameAs: [
-        "https://instagram.com/homechef.se",
-        "https://facebook.com/homechef.se",
+        "https://instagram.com/homechef.nu",
+        "https://facebook.com/homechef.nu",
       ],
     });
 

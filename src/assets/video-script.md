@@ -62,7 +62,7 @@
 
 **Visuell fokus:** Panorering över det färdiga, godkända köket
 
-**Text-overlay:** "Besök Homechef.se"
+**Text-overlay:** "Besök Homechef.nu"
 
 ---
 
@@ -103,7 +103,7 @@
 - Tydliga ikoner för varje kategori
 
 ### Call-to-Action (sista 5 sekunderna):
-- "Besök Homechef.se för att börja din ansökan"
+- "Besök Homechef.nu för att börja din ansökan"
 - Logo och webbadress synlig
 
 ---

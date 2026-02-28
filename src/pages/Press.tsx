@@ -230,8 +230,8 @@ const Press = () => {
                   <Mail className="w-5 h-5 text-primary" />
                   <div>
                     <div className="font-medium">E-post</div>
-                    <a href="mailto:press@homechef.se" className="text-primary hover:underline">
-                      press@homechef.se
+                    <a href="mailto:press@homechef.nu" className="text-primary hover:underline">
+                      press@homechef.nu
                     </a>
                   </div>
                 </div>
