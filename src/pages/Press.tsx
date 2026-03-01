@@ -185,13 +185,6 @@ const Press = () => {
                         <div className="text-sm text-muted-foreground">Varm beige</div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-lg bg-foreground" />
-                      <div>
-                        <div className="font-medium">Text</div>
-                        <div className="text-sm text-muted-foreground">Mörk grå</div>
-                      </div>
-                    </div>
                   </div>
                 </CardContent>
               </Card>
