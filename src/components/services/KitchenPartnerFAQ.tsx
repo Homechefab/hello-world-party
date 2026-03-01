@@ -14,7 +14,7 @@ const KitchenPartnerFAQ = () => {
     },
     {
       question: "Vad händer om något går sönder under uthyrningen?",
-      answer: "Alla uthyrningar är försäkrade genom Homechef utan extra kostnad för dig. Om något går sönder eller skadas under hyrtiden täcks detta av försäkringen. Rapportera eventuella skador direkt till oss så hanterar vi ersättning och reparationer."
+      answer: "Vi rekommenderar att du har en hemförsäkring eller företagsförsäkring som täcker eventuella skador. Om något går sönder eller skadas under hyrtiden bör detta hanteras mellan dig och kocken. Rapportera eventuella skador via plattformen så hjälper vi till att medla vid behov."
     },
     {
       question: "Hur vet jag att kockarna är pålitliga?",
