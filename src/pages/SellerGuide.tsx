@@ -16,7 +16,7 @@ import {
   Camera,
   MapPin,
   Heart,
-  Award,
+  
   MessageCircle
 } from "lucide-react";
 import Header from "@/components/Header";
@@ -150,22 +150,6 @@ const SellerGuide = () => {
           "Diskutera utmaningar och lösningar",
           "Hitta samarbetspartners i din region",
           "Delta i veckovisa teman och diskussioner"
-        ]
-      }
-    },
-    {
-      id: "monthly-chef",
-      icon: <Award className="w-6 h-6" />,
-      title: "Månadens kock",
-      description: "Tävla om att bli månadens kock med extra exponering",
-      content: {
-        intro: "Varje månad utser vi en kock som utmärkt sig genom kvalitet, kreativitet och kundnöjdhet.",
-        features: [
-          "Extra synlighet på startsidan i en månad",
-          "Framhävd i vårt nyhetsbrev till 50 000+ kunder",
-          "Diplom och certifikat att visa upp",
-          "Intervju i vårt kockmagasin",
-          "Bonuspoäng och rabatt på plattformsavgifter"
         ]
       }
     },
@@ -351,7 +335,6 @@ const SellerGuide = () => {
               {communityFeatures.map((feature) => {
                 const linkMap: { [key: string]: string } = {
                   'forum': '/chef/kockforum',
-                  'monthly-chef': '/chef/månadens-kock',
                   'statistics': '/chef/försäljningsstatistik',
                   'mentorship': '/chef/mentorskap'
                 };
