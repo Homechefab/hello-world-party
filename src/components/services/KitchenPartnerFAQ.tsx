@@ -46,7 +46,7 @@ const KitchenPartnerFAQ = () => {
     },
     {
       question: "Vad händer om kocken inte dyker upp?",
-      answer: "Om en kock inte dyker upp till en bokad tid utan att avboka i förväg får hen en avgift och sämre betyg. Du får full ersättning för den bokade tiden. Vi tar no-shows på största allvar och upprepade överträdelser kan leda till att kocken stängs av från plattformen."
+      answer: "Om en kock inte dyker upp till en bokad tid utan att avboka i förväg är det något som löses direkt mellan dig och kocken. Vi rekommenderar att ni har tydliga avbokningsvillkor överenskomna i förväg. Vid upprepade problem kan du rapportera kocken via plattformen."
     },
     {
       question: "Hur lång tid tar godkännandeprocessen?",
