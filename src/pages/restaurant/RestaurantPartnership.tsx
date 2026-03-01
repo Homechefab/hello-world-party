@@ -101,8 +101,8 @@ const RestaurantPartnership = () => {
             Bli restaurangpartner
           </h1>
           <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Börja leverera er mat hem till kunder i hela stan. 
-            Öka omsättningen utan att utöka antalet bord.
+            Nå fler kunder, öka er omsättning och bygg ert varumärke online – 
+            utan extra personal eller fler bord.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/restaurant/apply">
