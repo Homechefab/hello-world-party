@@ -2,10 +2,6 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog";
 import { X, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -55,9 +51,27 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }
     }
   }, [autoOpen, triggerOnScroll]);
 
+  useEffect(() => {
+    if (!open) return;
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        handleClose();
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [open]);
+
   const handleClose = () => {
     setOpen(false);
     localStorage.setItem("notification_popup_seen", "true");
+  };
+
+  const handlePopupWheel = (event: React.WheelEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    window.scrollBy({ top: event.deltaY, behavior: "auto" });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -115,91 +129,95 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }
   };
 
   return (
-    <Dialog modal={false} open={open} onOpenChange={(isOpen) => !isOpen && handleClose()}>
+    <>
       {trigger && (
         <div onClick={() => setOpen(true)}>
           {trigger}
         </div>
       )}
-      <DialogContent 
-        className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-[300px] max-w-[calc(100vw-32px)] max-h-[calc(100vh-32px)] p-0 gap-0 border-0 overflow-hidden rounded-xl shadow-2xl"
-        hideCloseButton
-        hideOverlay
-      >
-        {/* Close button - positioned inside the dialog */}
-        <button
-          onClick={handleClose}
-          className="absolute right-2 top-2 z-20 rounded-full p-2 bg-black/30 hover:bg-black/50 transition-colors"
-          aria-label="Stäng"
-        >
-          <X className="h-5 w-5 text-white" />
-        </button>
 
-        {/* Header with background image and gradient overlay */}
-        <div className="relative p-4 pt-10 text-center text-white overflow-hidden">
-          {/* Background image */}
-          <div 
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${popupHeaderBg})` }}
-          />
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/85 via-primary/75 to-primary/65" />
-          
-          {/* Content */}
-          <div className="relative z-10">
-            <div className="flex justify-center mb-2">
-              <div className="p-2 bg-white/20 rounded-full backdrop-blur-sm">
-                <Sparkles className="w-5 h-5" />
+      {open && (
+        <div
+          role="dialog"
+          aria-modal="false"
+          onWheel={handlePopupWheel}
+          className="fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%] w-[300px] max-w-[calc(100vw-32px)] max-h-[calc(100vh-32px)] p-0 gap-0 border-0 overflow-hidden rounded-xl shadow-2xl bg-background"
+        >
+          {/* Close button - positioned inside the dialog */}
+          <button
+            onClick={handleClose}
+            className="absolute right-2 top-2 z-20 rounded-full p-2 bg-black/30 hover:bg-black/50 transition-colors"
+            aria-label="Stäng"
+          >
+            <X className="h-5 w-5 text-white" />
+          </button>
+
+          {/* Header with background image and gradient overlay */}
+          <div className="relative p-4 pt-10 text-center text-white overflow-hidden">
+            {/* Background image */}
+            <div 
+              className="absolute inset-0 bg-cover bg-center"
+              style={{ backgroundImage: `url(${popupHeaderBg})` }}
+            />
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/85 via-primary/75 to-primary/65" />
+            
+            {/* Content */}
+            <div className="relative z-10">
+              <div className="flex justify-center mb-2">
+                <div className="p-2 bg-white/20 rounded-full backdrop-blur-sm">
+                  <Sparkles className="w-5 h-5" />
+                </div>
               </div>
+              <h2 className="text-lg font-bold mb-0.5">Få Early Access</h2>
+              <p className="text-white/90 text-xs">
+                Bli först när vi lanserar i ditt område!
+              </p>
             </div>
-            <h2 className="text-lg font-bold mb-0.5">Få Early Access</h2>
-            <p className="text-white/90 text-xs">
-              Bli först när vi lanserar i ditt område!
+          </div>
+
+          {/* Form Section */}
+          <div className="p-4 bg-background">
+            <form onSubmit={handleSubmit} className="space-y-2.5">
+              <div className="space-y-1">
+                <Label htmlFor="signup-email" className="text-sm">E-postadress</Label>
+                <Input
+                  id="signup-email"
+                  type="email"
+                  placeholder="din@email.se"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="h-9"
+                />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="signup-postalcode" className="text-sm">Postnummer</Label>
+                <Input
+                  id="signup-postalcode"
+                  type="text"
+                  placeholder="123 45"
+                  value={postalCode}
+                  onChange={(e) => setPostalCode(e.target.value)}
+                  className="h-9"
+                  maxLength={6}
+                />
+              </div>
+              <Button 
+                type="submit" 
+                className="w-full h-9 font-semibold"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? "Registrerar..." : "Registrera dig"}
+              </Button>
+            </form>
+            
+            <p className="text-center text-xs text-muted-foreground mt-2">
+              Vi respekterar din integritet.
             </p>
           </div>
         </div>
-
-        {/* Form Section */}
-        <div className="p-4 bg-background">
-          <form onSubmit={handleSubmit} className="space-y-2.5">
-            <div className="space-y-1">
-              <Label htmlFor="signup-email" className="text-sm">E-postadress</Label>
-              <Input
-                id="signup-email"
-                type="email"
-                placeholder="din@email.se"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="h-9"
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="signup-postalcode" className="text-sm">Postnummer</Label>
-              <Input
-                id="signup-postalcode"
-                type="text"
-                placeholder="123 45"
-                value={postalCode}
-                onChange={(e) => setPostalCode(e.target.value)}
-                className="h-9"
-                maxLength={6}
-              />
-            </div>
-            <Button 
-              type="submit" 
-              className="w-full h-9 font-semibold"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Registrerar..." : "Registrera dig"}
-            </Button>
-          </form>
-          
-          <p className="text-center text-xs text-muted-foreground mt-2">
-            Vi respekterar din integritet.
-          </p>
-        </div>
-      </DialogContent>
-    </Dialog>
+      )}
+    </>
   );
 };
 
