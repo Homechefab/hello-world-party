@@ -59,11 +59,11 @@ const RestaurantPartnership = () => {
 
   const services = [
     {
-      icon: Truck,
-      title: "Leverans",
-      description: "Vi ser till att maten kommer fram snabbt och varm",
-      features: ["Snabb leverans", "Rätt temperatur", "Spårning för kunden"],
-      id: "hemkörning"
+      icon: TrendingUp,
+      title: "Ökad omsättning",
+      description: "Nå nya kunder och sälj mer – utan extra personal eller bord",
+      features: ["0% provision på matförsäljning", "Fasta månadspriser från 3 999 kr", "Behåll hela vinsten själva"],
+      id: "omsättning"
     },
     {
       icon: Target,
