@@ -257,9 +257,9 @@ const About = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  Med en bakgrund inom statsvetenskap och beteendevetenskap kombinerar Farhan 
-                  sju års branscherfarenhet med tre års entreprenörskap för att leda Homechef. 
-                  Hans vision är att demokratisera matbranschen och skapa nya möjligheter för hemmakockar.
+                  Driven av en genuin passion för mat och entreprenörskap har Farhan byggt 
+                  Homechef med visionen att göra hemlagad mat tillgänglig för alla. Med sju års 
+                  branscherfarenhet och tre års eget företagande brinner han för att skapa nya möjligheter för hemmakockar.
                 </p>
                 <a 
                   href="https://www.linkedin.com/in/farhan-javanmiri-a6426424a/" 
