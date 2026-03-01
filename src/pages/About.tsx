@@ -30,14 +30,14 @@ const About = () => {
       description: "Homechef startades med visionen att koppla samman matälskare"
     },
     {
-      year: "2025",
-      title: "Första kockarna",
-      description: "Våra första hemmakockar började sälja sin mat på plattformen"
-    },
-    {
-      year: "2025",
+      year: "2026",
       title: "Lansering",
       description: "Officiell lansering av Homechef i Sverige"
+    },
+    {
+      year: "2026",
+      title: "Första kockarna",
+      description: "Våra första hemmakockar började sälja sin mat på plattformen"
     },
     {
       year: "Framtid",
