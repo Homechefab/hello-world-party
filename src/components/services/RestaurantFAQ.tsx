@@ -25,10 +25,6 @@ const RestaurantFAQ = () => {
       answer: "Efter att ni skickat in er ansökan granskar vi den inom 2-3 arbetsdagar. Vi kontrollerar livsmedelstillstånd, F-skattsedel och övrig dokumentation. När ni är godkända kan ni direkt ladda upp er meny och börja ta emot beställningar. Den totala processen tar vanligtvis 3-5 arbetsdagar."
     },
     {
-      question: "Måste vi använda Homechefs leveranstjänst?",
-      answer: "Nej, ni kan välja att använda era egna förare om ni vill. Många restauranger föredrar detta då det ger bättre kontroll över kundupplevelsen. Om ni inte har egna förare fixar vi leveransen åt er mot en mindre avgift. Ni kan också blanda - använda egna förare för närområdet och vår tjänst för längre sträckor."
-    },
-    {
       question: "Hur fungerar betalningarna?",
       answer: "Alla betalningar hanteras genom vår säkra plattform. Kunder betalar när de beställer, och vi överför pengarna till ert konto två gånger per vecka. Ni får detaljerade rapporter över alla transaktioner och kan enkelt följa er försäljning i realtid via dashboarden."
     },
