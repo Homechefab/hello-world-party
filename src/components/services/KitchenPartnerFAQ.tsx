@@ -26,7 +26,7 @@ const KitchenPartnerFAQ = () => {
     },
     {
       question: "Hur får jag betalt?",
-      answer: "Betalningen sker automatiskt efter varje uthyrning. Pengarna överförs till ditt konto inom 1-3 bankdagar efter att hyrtiden är avslutad. Du får detaljerade rapporter på alla transaktioner och kan enkelt se din intjäning i dashboarden."
+      answer: "Betalningen sker automatiskt efter varje uthyrning. Pengarna överförs till ditt bankkonto inom 2–7 arbetsdagar via Stripe. För din allra första utbetalning kan det ta upp till 7–14 dagar. Du får detaljerade rapporter på alla transaktioner och kan enkelt se din intjäning i dashboarden."
     },
     {
       question: "Vad ingår i Homechefs avgifter?",
