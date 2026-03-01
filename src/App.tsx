@@ -42,7 +42,7 @@ import KitchenAssessment from "./pages/chef/KitchenAssessment";
 import ChefHome from "./pages/chef/ChefHome";
 import BusinessRegistration from "./pages/chef/BusinessRegistration";
 import ChefForum from "./pages/chef/ChefForum";
-import ChefOfTheMonth from "./pages/chef/ChefOfTheMonth";
+
 import SalesStatistics from "./pages/chef/SalesStatistics";
 import SeparationZones from "./pages/chef/requirements/SeparationZones";
 import HandHygiene from "./pages/chef/requirements/HandHygiene";
@@ -181,7 +181,7 @@ const App = () => {
             <Route path="/chef/haccp-analysis-tool" element={<PublicLayout><HaccpAnalysisTool /></PublicLayout>} />
             <Route path="/chef/business-registration" element={<PublicLayout><BusinessRegistration /></PublicLayout>} />
             <Route path="/chef/kockforum" element={<PublicLayout><ChefForum /></PublicLayout>} />
-            <Route path="/chef/manadens-kock" element={<PublicLayout><ChefOfTheMonth /></PublicLayout>} />
+            
             <Route path="/chef/forsaljningsstatistik" element={<PublicLayout><SalesStatistics /></PublicLayout>} />
             <Route path="/chef/mentorskap" element={<PublicLayout><Mentorship /></PublicLayout>} />
             
