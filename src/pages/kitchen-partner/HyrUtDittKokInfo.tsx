@@ -91,9 +91,6 @@ const HyrUtDittKokInfo = () => {
                 Kom igång nu
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="bg-white/10 border-white text-white hover:bg-white hover:text-black">
-              Läs mer nedan
-            </Button>
           </div>
         </div>
       </section>
