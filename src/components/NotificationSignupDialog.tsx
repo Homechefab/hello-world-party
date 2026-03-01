@@ -115,7 +115,7 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }
   };
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => !isOpen && handleClose()}>
+    <Dialog modal={false} open={open} onOpenChange={(isOpen) => !isOpen && handleClose()}>
       {trigger && (
         <div onClick={() => setOpen(true)}>
           {trigger}
@@ -124,6 +124,7 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }
       <DialogContent 
         className="fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-[300px] max-w-[calc(100vw-32px)] max-h-[calc(100vh-32px)] p-0 gap-0 border-0 overflow-hidden rounded-xl shadow-2xl"
         hideCloseButton
+        hideOverlay
       >
         {/* Close button - positioned inside the dialog */}
         <button
