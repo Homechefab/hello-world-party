@@ -111,7 +111,7 @@ const About = () => {
               Vår historia
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Tänk dig doften av hembakt bröd från din grannes kök. Smaken av mormors 
+              Föreställ dig doften av hembakat bröd från grannens kök. Smaken av mormors 
               köttbullar, perfekt kryddade med decennier av erfarenhet. Det är dessa magiska 
               måltider – fyllda med passion, tradition och kärlek – som vi vill göra tillgängliga 
               för alla. Homechef föddes ur övertygelsen att de bästa måltiderna kommer från 
