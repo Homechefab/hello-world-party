@@ -50,7 +50,7 @@ const Footer = () => {
               <li><Link to="/sell" className="hover:text-primary transition-colors">Prissättning</Link></li>
               <li><Link to="/chef/kitchen-requirements" className="hover:text-primary transition-colors">Säkerhetsregler</Link></li>
               <li><Link to="/chef/kockforum" className="hover:text-primary transition-colors">Säljarecommunity</Link></li>
-              <li><Link to="/chef/manadens-kock" className="hover:text-primary transition-colors">Månadens kock</Link></li>
+              
             </ul>
           </div>
 
