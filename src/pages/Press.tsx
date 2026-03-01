@@ -4,29 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Download, Mail, Phone, Calendar, Users, ChefHat, ShoppingBag, MapPin } from "lucide-react";
 import SEOHead from "@/components/SEOHead";
 
-const pressReleases = [
-  {
-    id: 1,
-    title: "Homechef lanserar Sveriges första marknadsplats för hemlagad mat",
-    date: "2025-01-15",
-    summary: "Homechef revolutionerar hur svenskar köper och säljer hemlagad mat genom en ny digital plattform som kopplar samman hemkockar med matälskare.",
-    category: "Lansering",
-  },
-  {
-    id: 2,
-    title: "Över 100 hemkockar anslutna till Homechef",
-    date: "2025-02-01",
-    summary: "Bara några veckor efter lansering har Homechef redan över 100 registrerade hemkockar som erbjuder allt från traditionell husmanskost till internationella specialiteter.",
-    category: "Milstolpe",
-  },
-  {
-    id: 3,
-    title: "Homechef expanderar med köksuthyrning",
-    date: "2025-03-01",
-    summary: "Ny funktion låter professionella kök hyras ut till hemkockar som vill skala upp sin verksamhet.",
-    category: "Produkt",
-  },
-];
+const pressReleases: { id: number; title: string; date: string; summary: string; category: string }[] = [];
 
 const statistics = [
   { label: "Registrerade hemkockar", value: "—", icon: ChefHat },
@@ -121,6 +99,9 @@ const Press = () => {
           {/* Press Releases */}
           <section>
             <h2 className="text-2xl font-bold mb-8">Pressmeddelanden</h2>
+            {pressReleases.length === 0 ? (
+              <p className="text-muted-foreground text-center py-8">Inga pressmeddelanden ännu.</p>
+            ) : (
             <div className="space-y-4">
               {pressReleases.map((release) => (
                 <Card key={release.id} className="hover:shadow-md transition-shadow">
@@ -142,6 +123,7 @@ const Press = () => {
                 </Card>
               ))}
             </div>
+            )}
           </section>
 
           {/* Brand Assets */}
