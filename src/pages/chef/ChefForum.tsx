@@ -64,7 +64,7 @@ const ChefForum = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full bg-gradient-primary" size="lg">
+              <Button className="w-full bg-gradient-primary" size="lg" onClick={() => navigate("/auth")}>
                 Anslut dig nu
               </Button>
             </CardContent>
