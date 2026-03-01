@@ -29,9 +29,9 @@ const pressReleases = [
 ];
 
 const statistics = [
-  { label: "Registrerade hemkockar", value: "100+", icon: ChefHat },
-  { label: "Genomförda beställningar", value: "1,000+", icon: ShoppingBag },
-  { label: "Nöjda kunder", value: "95%", icon: Users },
+  { label: "Registrerade hemkockar", value: "—", icon: ChefHat },
+  { label: "Genomförda beställningar", value: "—", icon: ShoppingBag },
+  { label: "Nöjda kunder", value: "—", icon: Users },
   { label: "Städer", value: "Stockholm", icon: MapPin },
 ];
 
