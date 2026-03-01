@@ -3,43 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 // Textarea import removed (not used)
-import { Badge } from "@/components/ui/badge";
-import { MessageCircle, ThumbsUp, Reply, Search } from "lucide-react";
+import { MessageCircle, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const ChefForum = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-
-  const forumTopics = [
-    {
-      id: 1,
-      title: "Bästa recepten för meal prep",
-      author: "Chef Anna",
-      replies: 15,
-      likes: 23,
-      category: "Recept",
-      preview: "Jag skulle vilja dela med mig av några av mina favorit meal prep-recept som kunderna älskar..."
-    },
-    {
-      id: 2,
-      title: "Tips för att hantera storleveranser",
-      author: "Chef Marcus",
-      replies: 8,
-      likes: 12,
-      category: "Logistik",
-      preview: "Hur planerar ni när ni får beställningar för 20+ portioner samtidigt?"
-    },
-    {
-      id: 3,
-      title: "Hygienrutiner i hemmaköket",
-      author: "Chef Sara",
-      replies: 22,
-      likes: 35,
-      category: "Hygien",
-      preview: "Här är mina bästa tips för att hålla hemmaköket i toppskick enligt kommunens krav..."
-    }
-  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
@@ -77,35 +46,12 @@ const ChefForum = () => {
                 <Button className="bg-gradient-primary">Nytt inlägg</Button>
               </div>
 
-              <div className="space-y-4">
-                {forumTopics.map((topic) => (
-                  <Card key={topic.id} className="hover:shadow-md transition-shadow cursor-pointer">
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <Badge variant="secondary">{topic.category}</Badge>
-                          </div>
-                          <CardTitle className="text-xl mb-2">{topic.title}</CardTitle>
-                          <CardDescription className="text-sm mb-3">
-                            {topic.preview}
-                          </CardDescription>
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            <span className="font-medium">{topic.author}</span>
-                            <div className="flex items-center gap-1">
-                              <Reply className="w-4 h-4" />
-                              <span>{topic.replies} svar</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <ThumbsUp className="w-4 h-4" />
-                              <span>{topic.likes} gilla</span>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </CardHeader>
-                  </Card>
-                ))}
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <MessageCircle className="w-12 h-12 text-muted-foreground/50 mb-4" />
+                <h3 className="text-lg font-semibold mb-2">Inga inlägg ännu</h3>
+                <p className="text-muted-foreground max-w-md">
+                  Forumet öppnar snart! Här kommer du kunna dela erfarenheter, ställa frågor och diskutera med andra kockar.
+                </p>
               </div>
             </CardContent>
           </Card>
