@@ -25,6 +25,9 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
+    // Don't show if already seen
+    const alreadySeen = localStorage.getItem("notification_popup_seen");
+    if (alreadySeen) return;
 
     if (triggerOnScroll) {
       const handleScroll = () => {
@@ -33,15 +36,15 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }
           const rect = element.getBoundingClientRect();
           const isVisible = rect.top <= window.innerHeight * 0.8;
           if (isVisible) {
-            setOpen(true);
+            // Delay so it doesn't block scrolling immediately
+            setTimeout(() => setOpen(true), 1500);
             window.removeEventListener("scroll", handleScroll);
           }
         }
       };
 
       window.addEventListener("scroll", handleScroll, { passive: true });
-      // Check immediately in case already scrolled
-      handleScroll();
+      // Don't check immediately - let user scroll first
       
       return () => window.removeEventListener("scroll", handleScroll);
     } else if (autoOpen) {
