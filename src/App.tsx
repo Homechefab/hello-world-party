@@ -86,7 +86,7 @@ import Privacy from "./pages/Privacy";
 import DataDeletion from "./pages/DataDeletion";
 import Terms from "./pages/Terms";
 import Press from "./pages/Press";
-import Referral from "./pages/Referral";
+
 import BusinessServicesPage from "./pages/business/BusinessServices";
 import BusinessApplication from "./pages/business/BusinessApplication";
 import BusinessApplicationPending from "./pages/business/BusinessApplicationPending";
@@ -145,8 +145,6 @@ const App = () => {
             <Route path="/terms-of-service" element={<PublicLayout><Terms /></PublicLayout>} />
             <Route path="/data-deletion" element={<PublicLayout><DataDeletion /></PublicLayout>} />
             <Route path="/press" element={<PublicLayout><Press /></PublicLayout>} />
-            <Route path="/referral" element={<PublicLayout><Referral /></PublicLayout>} />
-            <Route path="/bjud-in-vanner" element={<PublicLayout><Referral /></PublicLayout>} />
             <Route path="/business" element={<PublicLayout><BusinessServicesPage /></PublicLayout>} />
             <Route path="/business/services" element={<PublicLayout><BusinessServicesPage /></PublicLayout>} />
             <Route path="/business/application" element={<PublicLayout><BusinessApplication /></PublicLayout>} />
