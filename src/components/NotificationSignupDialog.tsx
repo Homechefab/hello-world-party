@@ -28,14 +28,20 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }
     if (triggerOnScroll) {
       const handleScroll = () => {
         const element = document.querySelector(triggerOnScroll);
+        let shouldTrigger = false;
+        
         if (element) {
           const rect = element.getBoundingClientRect();
-          const isVisible = rect.top <= window.innerHeight * 0.8;
-          if (isVisible) {
-            // Delay so it doesn't block scrolling immediately
-            setTimeout(() => setOpen(true), 1500);
-            window.removeEventListener("scroll", handleScroll);
-          }
+          shouldTrigger = rect.top <= window.innerHeight * 0.8;
+        } else {
+          // Fallback: trigger after scrolling 40% of the page
+          shouldTrigger = window.scrollY > document.documentElement.scrollHeight * 0.4;
+        }
+        
+        if (shouldTrigger) {
+          // Delay so it doesn't block scrolling immediately
+          setTimeout(() => setOpen(true), 1500);
+          window.removeEventListener("scroll", handleScroll);
         }
       };
 
