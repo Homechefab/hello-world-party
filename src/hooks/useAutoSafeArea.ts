@@ -53,8 +53,9 @@ export default function useAutoSafeArea() {
         if (rect.height === 0 && rect.width === 0) return;
         if (rect.top > threshold) return;
 
-        // avoid modifying elements that already opted out
+        // avoid modifying elements that already opted out or already adjusted
         if (el.hasAttribute("data-no-safe-adjust") || el.classList.contains("no-safe-adjust")) return;
+        if (el.hasAttribute("data-hc-safe-applied")) return;
 
         // compute current CSS top value (might be 'auto')
         const currentTop = parseFloat(style.top || "0") || 0;
@@ -63,7 +64,6 @@ export default function useAutoSafeArea() {
         if (style.top === "auto") {
           // but if the element visually overlaps the safe area, nudge it with transform instead
           if (rect.top < safeTopPx + 2) {
-            // apply translateY to push it down by the measured px value
             const existing = el.style.transform || "";
             if (!existing.includes("translateY")) {
               el.style.transform = `translateY(${safeTopPx}px) ${existing}`.trim();
@@ -74,7 +74,6 @@ export default function useAutoSafeArea() {
         }
 
         // set a calc top combining the safe-area env() and the original offset
-        // preserve existing inline style.top by basing on the numeric value
         const newTop = `calc(${safeTopCss} + ${currentTop}px)`;
         el.style.top = newTop;
         el.setAttribute("data-hc-safe-applied", "top");
