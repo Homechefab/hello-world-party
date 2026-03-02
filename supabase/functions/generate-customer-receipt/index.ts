@@ -56,9 +56,14 @@ serve(async (req) => {
     // VAT is 12% included in the base price
     const basePriceExclVat = basePriceInclVat / 1.12;
     const vatAmount = basePriceInclVat - basePriceExclVat;
+    
+    // Provision från säljare (19% av baspriset)
+    const sellerCommission = basePriceInclVat * 0.19;
+    const sellerEarnings = basePriceInclVat * 0.81;
+    const totalToHomechef = serviceFee + sellerCommission;
 
     console.log("[CUSTOMER-RECEIPT] Calculated amounts:", {
-      totalAmount, basePriceExclVat, vatAmount, serviceFee
+      totalAmount, basePriceExclVat, vatAmount, serviceFee, sellerCommission, sellerEarnings, totalToHomechef
     });
 
     // Generate clean customer receipt HTML
@@ -106,6 +111,17 @@ serve(async (req) => {
       border-top: 2px solid #1a1a1a; padding-top: 16px; margin-top: 12px;
       font-size: 18px; font-weight: 700;
     }
+    .commission-box {
+      background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+      border-left: 4px solid #F59E0B; padding: 20px; border-radius: 8px;
+      margin-top: 4px;
+    }
+    .commission-box .title { font-size: 14px; font-weight: 700; color: #92400E; margin-bottom: 12px; }
+    .commission-box .crow { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; color: #78350F; }
+    .commission-box .crow.border-top { border-top: 2px solid #F59E0B; padding-top: 12px; margin-top: 8px; }
+    .commission-box .crow strong { font-weight: 700; }
+    .platform-fee { color: #EA580C; }
+    .chef-earnings { color: #16A34A; }
     .footer {
       background: #f9fafb; padding: 24px 40px; text-align: center;
       font-size: 12px; color: #6b7280;
@@ -148,6 +164,27 @@ serve(async (req) => {
         <div class="row total">
           <span>Totalt</span>
           <span>${totalAmount.toFixed(2)} kr</span>
+        </div>
+      </div>
+      <div class="section">
+        <div class="commission-box">
+          <div class="title">📊 Avgiftsfördelning (Hybridmodell)</div>
+          <div class="crow">
+            <span>Serviceavgift från kund (6%)</span>
+            <span class="platform-fee"><strong>+${serviceFee.toFixed(2)} SEK</strong></span>
+          </div>
+          <div class="crow">
+            <span>Provision från säljare (19%)</span>
+            <span class="platform-fee"><strong>+${sellerCommission.toFixed(2)} SEK</strong></span>
+          </div>
+          <div class="crow border-top">
+            <span><strong>💰 Totalt till Homechef (inkl. moms)</strong></span>
+            <span><strong>${totalToHomechef.toFixed(2)} SEK</strong></span>
+          </div>
+          <div class="crow border-top">
+            <span><strong>🍳 Utbetalning till säljare (81%)</strong></span>
+            <span class="chef-earnings"><strong>${sellerEarnings.toFixed(2)} SEK</strong></span>
+          </div>
         </div>
       </div>
     </div>
