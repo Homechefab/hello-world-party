@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Routes, Route } from "react-router-dom";
 import useEdgeSwipeBack from "@/hooks/useEdgeSwipeBack";
-import useAutoSafeArea from "@/hooks/useAutoSafeArea";
+
 import { RoleBasedLayout } from "@/components/RoleBasedLayout";
 import { PublicLayout } from "@/components/PublicLayout";
 import Index from "./pages/Index";
@@ -98,8 +98,7 @@ const App = () => {
   console.log('App.tsx: App component rendering');
   // enable left-edge right-swipe to go back on mobile webviews
   useEdgeSwipeBack();
-  // auto-adjust fixed/absolute elements so they don't hide under notches / dynamic island
-  useAutoSafeArea();
+  // auto-adjust is handled by PublicLayout/RoleBasedLayout
   console.log('App.tsx: Hooks initialized, rendering routes');
   return (
     <QueryClientProvider client={queryClient}>
