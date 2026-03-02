@@ -339,7 +339,7 @@ serve(async (req) => {
     
     <div class="footer">
       <p><strong>Homechef AB</strong></p>
-      <p>Org.nr: XXXXXX-XXXX</p>
+      <p>Org.nr: 559547-7026</p>
       <p>support@homechef.nu</p>
       <p style="margin-top: 12px; font-size: 11px; color: #9ca3af;">
         Kvitto genererat: ${new Date().toLocaleString('sv-SE')}
