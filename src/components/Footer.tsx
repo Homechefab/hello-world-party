@@ -124,7 +124,7 @@ const Footer = () => {
           <div className="flex flex-wrap justify-center gap-4 mr-4">
             <Link to="/about" className="hover:text-primary transition-colors">Om oss</Link>
             <Link to="/press" className="hover:text-primary transition-colors">Press</Link>
-            <Link to="/referral" className="hover:text-primary transition-colors">Bjud in vänner</Link>
+            
             <Link to="/privacy-policy" className="hover:text-primary transition-colors">Sekretesspolicy</Link>
             <Link to="/terms" className="hover:text-primary transition-colors">Allmänna villkor</Link>
           </div>
