@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChefHat, MapPin, Star } from "lucide-react";
+import { ChefHat, MapPin, Star, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -111,6 +111,10 @@ const PopularChefs = () => {
                           <div className="flex items-center gap-1 mt-1">
                             <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                             <span className="text-xs text-muted-foreground">Ny kock</span>
+                          </div>
+                          <div className="inline-flex items-center gap-1 mt-1.5 bg-green-50 text-green-700 px-2 py-0.5 rounded-full">
+                            <ShieldCheck className="w-3 h-3" />
+                            <span className="text-[10px] font-medium">Verifierad kock</span>
                           </div>
                         </div>
                       </div>
