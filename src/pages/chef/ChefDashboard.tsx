@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
+
 import { ChefProfileAvatar } from '@/components/chef/ChefProfileAvatar';
 import { ChefBioEditor } from '@/components/chef/ChefBioEditor';
 import { Badge } from '@/components/ui/badge';
@@ -19,8 +19,7 @@ import {
   AlertCircle, 
   DollarSign, 
   TrendingUp,
-  Package,
-  Plus
+  Package
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useChefOrderNotifications } from '@/hooks/useChefOrderNotifications';
@@ -28,7 +27,7 @@ import { useChefOrderNotifications } from '@/hooks/useChefOrderNotifications';
 // Chef Dashboard Component
 export const ChefDashboard = () => {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
+  
   const tabFromUrl = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState(tabFromUrl || 'overview');
   type Dish = {
@@ -187,38 +186,7 @@ export const ChefDashboard = () => {
         <ChefBioEditor />
       </div>
 
-      {/* Welcome banner for new chefs */}
-      {stats.totalDishes === 0 && (
-        <Card className="mb-8 border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10">
-          <CardContent className="pt-6">
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              <ChefProfileAvatar size="md" className="flex-shrink-0" />
-              <div className="flex-1 text-center md:text-left">
-                <h3 className="text-xl font-bold mb-2">Välkommen som ny kock! 🎉</h3>
-                <p className="text-muted-foreground mb-4">
-                  Grattis till att du blivit godkänd! Låt oss hjälpa dig komma igång med en steg-för-steg guide.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
-                  <Button 
-                    onClick={() => navigate('/chef/welcome')}
-                    className="gap-2"
-                  >
-                    <CheckCircle className="w-4 h-4" />
-                    Visa guide för nybörjare
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    onClick={() => setActiveTab('menu')}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Lägg upp första rätten
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+
 
       <div className="grid gap-6 md:grid-cols-4 mb-8">
         <Card>
