@@ -53,6 +53,7 @@ export const ChefDashboard = () => {
 
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [pendingOrderCount, setPendingOrderCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   useChefOrderNotifications();
@@ -126,11 +127,16 @@ export const ChefDashboard = () => {
           id: order.id,
           status: order.status,
           total_amount: order.total_amount,
-          customer_name: 'Kund', // We don't have customer name in orders table
+          customer_name: 'Kund',
           created_at: order.created_at,
           dishes: order.order_items?.[0]?.dishes || { name: 'Okänd rätt', price: 0 }
         }));
         setOrders(transformedOrders);
+        
+        // Count active/pending orders
+        const activeStatuses = ['pending', 'confirmed', 'preparing', 'ready'];
+        const activeCount = transformedOrders.filter(o => activeStatuses.includes(o.status)).length;
+        setPendingOrderCount(activeCount);
       }
 
     } catch (error) {
@@ -149,6 +155,19 @@ export const ChefDashboard = () => {
     loadChefData();
   }, [loadChefData]);
 
+  // Realtime subscription to refresh order count
+  useEffect(() => {
+    const channel = supabase
+      .channel('chef-order-count')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
+        loadChefData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [loadChefData]);
 
 
 
@@ -250,7 +269,14 @@ export const ChefDashboard = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
         <TabsList className="grid w-full grid-cols-9">
           <TabsTrigger value="overview">Översikt</TabsTrigger>
-          <TabsTrigger value="orders">Beställningar</TabsTrigger>
+          <TabsTrigger value="orders" className="relative">
+            Beställningar
+            {pendingOrderCount > 0 && (
+              <span className="ml-1.5 inline-flex items-center justify-center rounded-full bg-orange-500 text-white text-[10px] font-bold min-w-[18px] h-[18px] px-1">
+                {pendingOrderCount}
+              </span>
+            )}
+          </TabsTrigger>
           <TabsTrigger value="menu">Meny</TabsTrigger>
           <TabsTrigger value="income">Intäkter</TabsTrigger>
           <TabsTrigger value="sales">Försäljning</TabsTrigger>
