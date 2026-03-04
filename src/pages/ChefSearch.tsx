@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Search, MapPin, Filter, ChefHat, Star } from "lucide-react";
+import { Search, MapPin, Filter, ChefHat, Star, ShieldCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -249,6 +249,10 @@ const ChefSearch = () => {
                           <div className="flex items-center gap-1 mt-2">
                             <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                             <span className="text-sm text-muted-foreground">Ny kock</span>
+                          </div>
+                          <div className="inline-flex items-center gap-1 mt-2 bg-green-50 text-green-700 px-2.5 py-0.5 rounded-full">
+                            <ShieldCheck className="w-3.5 h-3.5" />
+                            <span className="text-xs font-medium">Verifierad kock</span>
                           </div>
                           {chef.specialties && (
                             <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
