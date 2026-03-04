@@ -107,7 +107,7 @@ serve(async (req) => {
         charge_id: chargeId,
         receipt_url: receiptUrl,
         metadata: session.metadata,
-        line_items: items.data.map((i) => ({
+        line_items: items.data.map((i: any) => ({
           description: i.description,
           quantity: i.quantity,
           amount_subtotal: i.amount_subtotal,

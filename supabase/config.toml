@@ -123,3 +123,6 @@ verify_jwt = false
 
 [functions.generate-commission-report]
 verify_jwt = false
+
+[functions.notify-chef-new-order]
+verify_jwt = false
