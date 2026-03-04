@@ -76,7 +76,7 @@ serve(async (req) => {
     console.error('Error in phone-ai-token function:', error);
     return new Response(
       JSON.stringify({ 
-        error: error.message || 'Failed to generate token',
+        error: error instanceof Error ? error.message : 'Failed to generate token',
         message: 'Kunde inte starta röstsamtal. Försök igen senare.'
       }),
       {

@@ -92,7 +92,7 @@ serve(async (req) => {
       });
     } catch (tlsError) {
       console.error("TLS/mTLS error:", tlsError);
-      throw new Error(`Swish certificate authentication failed: ${tlsError.message}`);
+      throw new Error(`Swish certificate authentication failed: ${tlsError instanceof Error ? tlsError.message : "Unknown TLS error"}`);
     }
 
     if (!response.ok) {
@@ -141,7 +141,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error.message 
+        error: error instanceof Error ? error.message : "Unknown error" 
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
