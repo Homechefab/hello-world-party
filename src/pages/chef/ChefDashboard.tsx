@@ -23,6 +23,7 @@ import {
   Plus
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useChefOrderNotifications } from '@/hooks/useChefOrderNotifications';
 
 // Chef Dashboard Component
 export const ChefDashboard = () => {
@@ -54,6 +55,7 @@ export const ChefDashboard = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  useChefOrderNotifications();
 
   const stats = {
     totalSales: 15750,
