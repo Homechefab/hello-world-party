@@ -7,7 +7,7 @@ import FAQ from "@/components/FAQ";
 import RoleBasedServices from "@/components/services/RoleBasedServices";
 import { useRole } from "@/hooks/useRole";
 import SEOHead from "@/components/SEOHead";
-import NotificationSignupDialog from "@/components/NotificationSignupDialog";
+
 import { ActiveOrdersBanner } from "@/components/order/ActiveOrdersBanner";
 import { useOrderNotifications } from "@/hooks/useOrderNotifications";
 
@@ -38,7 +38,7 @@ const Index = () => {
         <Features />
         <FAQ />
         <Footer />
-        <NotificationSignupDialog triggerOnScroll="#popular-chefs" />
+        
       </div>
     </>
   );
