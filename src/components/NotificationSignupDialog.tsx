@@ -21,33 +21,47 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    // Don't show if already seen
-    const alreadySeen = localStorage.getItem("notification_popup_seen");
+    // Don't show if already seen this session
+    const alreadySeen = sessionStorage.getItem("notification_popup_seen");
     if (alreadySeen) return;
 
     if (triggerOnScroll) {
+      // Try IntersectionObserver first (more reliable)
+      const element = document.querySelector(triggerOnScroll);
+      
+      if (element && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            if (entries[0].isIntersecting) {
+              setTimeout(() => setOpen(true), 1500);
+              observer.disconnect();
+            }
+          },
+          { threshold: 0.2 }
+        );
+        observer.observe(element);
+        return () => observer.disconnect();
+      }
+      
+      // Fallback: scroll listener for when element doesn't exist yet
       const handleScroll = () => {
-        const element = document.querySelector(triggerOnScroll);
+        const el = document.querySelector(triggerOnScroll);
         let shouldTrigger = false;
         
-        if (element) {
-          const rect = element.getBoundingClientRect();
+        if (el) {
+          const rect = el.getBoundingClientRect();
           shouldTrigger = rect.top <= window.innerHeight * 0.8;
         } else {
-          // Fallback: trigger after scrolling 40% of the page
           shouldTrigger = window.scrollY > document.documentElement.scrollHeight * 0.4;
         }
         
         if (shouldTrigger) {
-          // Delay so it doesn't block scrolling immediately
           setTimeout(() => setOpen(true), 1500);
           window.removeEventListener("scroll", handleScroll);
         }
       };
 
       window.addEventListener("scroll", handleScroll, { passive: true });
-      // Don't check immediately - let user scroll first
-      
       return () => window.removeEventListener("scroll", handleScroll);
     } else if (autoOpen) {
       const timer = setTimeout(() => {
@@ -72,7 +86,7 @@ const NotificationSignupDialog = ({ trigger, autoOpen = false, triggerOnScroll }
 
   const handleClose = () => {
     setOpen(false);
-    localStorage.setItem("notification_popup_seen", "true");
+    sessionStorage.setItem("notification_popup_seen", "true");
   };
 
   const handlePopupWheel = (event: React.WheelEvent<HTMLDivElement>) => {
