@@ -36,7 +36,8 @@ const Header = () => {
     kitchen_partner: 'Kökspartner',
     restaurant: 'Restaurang',
     business: 'Företagare',
-    admin: 'Administratör'
+    admin: 'Administratör',
+    webshop: 'Webbshop'
   };
 
   const handleSearch = (e?: FormEvent<HTMLFormElement>) => {
