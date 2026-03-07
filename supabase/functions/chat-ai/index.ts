@@ -47,6 +47,12 @@ Homechef är Sveriges marknadsplats för hemlagad mat. Vi kopplar hemmakockar me
 - /my-points - Poäng
 `;
 
+const ESCALATION_INSTRUCTION = `
+
+**ESKALERINGSREGEL:**
+Om du INTE kan svara på kundens fråga med informationen ovan, eller om kunden uttryckligen ber att prata med en människa, MÅSTE du lägga till exakt denna tagg i BÖRJAN av ditt svar: [NEEDS_HUMAN]
+Använd denna tagg BARA när du verkligen inte kan hjälpa. Svara fortfarande hjälpsamt och berätta att du skickar frågan vidare till teamet.`;
+
 const KNOWLEDGE_BASE = {
   customer: `Du heter Emma och jobbar på Homechefs kundservice. Svara kort, vänligt och hjälpsamt på svenska.
 
@@ -58,7 +64,7 @@ ${GENERAL_KNOWLEDGE}
 - Leverans: Tid visas vid beställning
 - Missnöjd? Ring 0734234686
 
-Håll svar korta. Hänvisa till 0734234686 vid oklarheter.`,
+Håll svar korta. Hänvisa till 0734234686 vid oklarheter.${ESCALATION_INSTRUCTION}`,
 
   chef: `Du heter Emma och hjälper kockar på Homechef. Svara kort och vänligt på svenska.
 
@@ -73,7 +79,7 @@ ${GENERAL_KNOWLEDGE}
 - Lägg till rätter: Kock-panelen → Menyer
 - Fler kunder: Bra foton + recensioner!
 
-Hänvisa till 0734234686 vid komplicerade frågor.`,
+Hänvisa till 0734234686 vid komplicerade frågor.${ESCALATION_INSTRUCTION}`,
 
   kitchen_partner: `Du heter Emma och hjälper kökspartners på Homechef. Svara kort och vänligt på svenska.
 
@@ -87,7 +93,7 @@ ${GENERAL_KNOWLEDGE}
 - Utbetalning: Månadsvis
 - Bokningar: Godkänn manuellt via dashboard
 
-Ring 0734234686 vid frågor.`,
+Ring 0734234686 vid frågor.${ESCALATION_INSTRUCTION}`,
 
   restaurant: `Du heter Emma och hjälper restauranger på Homechef. Svara kort och vänligt på svenska.
 
@@ -101,7 +107,7 @@ ${GENERAL_KNOWLEDGE}
 - Meny: Lägg upp via restaurang-panelen
 - Fler kunder: Snabb leverans + bra foton!
 
-Ring 0734234686 vid frågor.`,
+Ring 0734234686 vid frågor.${ESCALATION_INSTRUCTION}`,
 
   admin: `Du heter Emma och hjälper administratörer på Homechef. Svara kort på svenska.
 
@@ -113,8 +119,73 @@ ${GENERAL_KNOWLEDGE}
 - Provisionsrapporter
 - Användarhantering
 
-Kontakta utvecklingsteamet vid tekniska problem.`
+Kontakta utvecklingsteamet vid tekniska problem.${ESCALATION_INSTRUCTION}`
 };
+
+async function sendEscalationEmail(userMessage: string, aiResponse: string, userRole: string, conversationHistory: Array<{role: string, content: string}>) {
+  const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
+  if (!RESEND_API_KEY) {
+    console.error('RESEND_API_KEY not configured, cannot send escalation email');
+    return;
+  }
+
+  const recentMessages = conversationHistory.slice(-6).map(m => 
+    `<p style="margin:4px 0;"><strong>${m.role === 'user' ? '👤 Kund' : '🤖 Emma'}:</strong> ${m.content}</p>`
+  ).join('');
+
+  const roleLabels: Record<string, string> = {
+    customer: 'Kund',
+    chef: 'Kock',
+    kitchen_partner: 'Kökspartner',
+    restaurant: 'Restaurang',
+    admin: 'Admin'
+  };
+
+  const html = `
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+      <div style="background:linear-gradient(135deg,#f97316,#ea580c);padding:20px;border-radius:12px 12px 0 0;">
+        <h1 style="color:white;margin:0;font-size:20px;">💬 Emma kunde inte svara – kundförfrågan</h1>
+      </div>
+      <div style="background:#fff;padding:20px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px;">
+        <div style="background:#fef3c7;padding:12px;border-radius:8px;margin-bottom:16px;">
+          <strong>Roll:</strong> ${roleLabels[userRole] || userRole}<br/>
+          <strong>Tid:</strong> ${new Date().toLocaleString('sv-SE', { timeZone: 'Europe/Stockholm' })}
+        </div>
+        <h3 style="margin:12px 0 8px;">Senaste konversationen:</h3>
+        <div style="background:#f9fafb;padding:12px;border-radius:8px;font-size:14px;">
+          ${recentMessages}
+        </div>
+        <p style="margin-top:16px;color:#6b7280;font-size:13px;">
+          Svara kunden genom att kontakta dem direkt, eller logga in på admin-dashboarden.
+        </p>
+      </div>
+    </div>
+  `;
+
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${RESEND_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        from: 'Homechef <info@homechef.nu>',
+        to: ['info@homechef.nu'],
+        subject: `💬 Kundförfrågan – Emma kunde inte svara (${roleLabels[userRole] || userRole})`,
+        html,
+      }),
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error('Resend error:', res.status, errText);
+    } else {
+      console.log('Escalation email sent successfully');
+    }
+  } catch (err) {
+    console.error('Failed to send escalation email:', err);
+  }
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -153,19 +224,14 @@ serve(async (req) => {
     if (!response.ok) {
       if (response.status === 429) {
         return new Response(
-          JSON.stringify({ 
-            error: 'För många förfrågningar. Försök igen!',
-            retryAfter: 60 
-          }), {
+          JSON.stringify({ error: 'För många förfrågningar. Försök igen!', retryAfter: 60 }), {
           status: 429,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
       if (response.status === 402) {
         return new Response(
-          JSON.stringify({ 
-            error: 'AI otillgänglig. Ring 0734234686!',
-          }), {
+          JSON.stringify({ error: 'AI otillgänglig. Ring 0734234686!' }), {
           status: 402,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
@@ -177,12 +243,21 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const aiMessage = data.choices[0]?.message?.content || 'Ring 0734234686 för hjälp!';
+    let aiMessage = data.choices[0]?.message?.content || 'Ring 0734234686 för hjälp!';
 
-    console.log('AI response generated successfully');
+    // Check if AI flagged this as needing human help
+    const needsHuman = aiMessage.includes('[NEEDS_HUMAN]');
+    if (needsHuman) {
+      aiMessage = aiMessage.replace('[NEEDS_HUMAN]', '').trim();
+      // Send email notification in the background (don't block response)
+      const lastUserMsg = messages[messages.length - 1]?.content || '';
+      sendEscalationEmail(lastUserMsg, aiMessage, userRole, messages).catch(console.error);
+    }
+
+    console.log('AI response generated successfully, needsHuman:', needsHuman);
 
     return new Response(
-      JSON.stringify({ message: aiMessage }),
+      JSON.stringify({ message: aiMessage, needsHuman }),
       { 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
