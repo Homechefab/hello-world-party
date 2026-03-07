@@ -122,7 +122,7 @@ ${GENERAL_KNOWLEDGE}
 Kontakta utvecklingsteamet vid tekniska problem.${ESCALATION_INSTRUCTION}`
 };
 
-async function sendEscalationEmail(userMessage: string, aiResponse: string, userRole: string, conversationHistory: Array<{role: string, content: string}>) {
+async function sendEscalationEmail(userMessage: string, aiResponse: string, userRole: string, conversationHistory: Array<{role: string, content: string}>, userInfo?: { email?: string; phone?: string; name?: string }) {
   const RESEND_API_KEY = Deno.env.get('RESEND_API_KEY');
   if (!RESEND_API_KEY) {
     console.error('RESEND_API_KEY not configured, cannot send escalation email');
@@ -150,6 +150,10 @@ async function sendEscalationEmail(userMessage: string, aiResponse: string, user
         <div style="background:#fef3c7;padding:12px;border-radius:8px;margin-bottom:16px;">
           <strong>Roll:</strong> ${roleLabels[userRole] || userRole}<br/>
           <strong>Tid:</strong> ${new Date().toLocaleString('sv-SE', { timeZone: 'Europe/Stockholm' })}
+          ${userInfo?.email ? `<br/><strong>E-post:</strong> <a href="mailto:${userInfo.email}">${userInfo.email}</a>` : ''}
+          ${userInfo?.phone ? `<br/><strong>Telefon:</strong> <a href="tel:${userInfo.phone}">${userInfo.phone}</a>` : ''}
+          ${userInfo?.name ? `<br/><strong>Namn:</strong> ${userInfo.name}` : ''}
+          ${!userInfo?.email && !userInfo?.phone ? '<br/><em style="color:#9ca3af;">Ej inloggad – ingen kontaktinfo tillgänglig</em>' : ''}
         </div>
         <h3 style="margin:12px 0 8px;">Senaste konversationen:</h3>
         <div style="background:#f9fafb;padding:12px;border-radius:8px;font-size:14px;">
@@ -193,9 +197,40 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, userRole = 'customer', userId } = await req.json();
+    const { messages, userRole = 'customer', userId, userEmail } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+
+    // Look up user profile if userId is provided
+    let userInfo: { email?: string; phone?: string; name?: string } | undefined;
+    if (userId) {
+      try {
+        const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
+        const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+        if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+          const profileRes = await fetch(
+            `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=email,phone,full_name`,
+            {
+              headers: {
+                'apikey': SUPABASE_SERVICE_ROLE_KEY,
+                'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+              },
+            }
+          );
+          if (profileRes.ok) {
+            const profiles = await profileRes.json();
+            if (profiles.length > 0) {
+              userInfo = { email: profiles[0].email, phone: profiles[0].phone, name: profiles[0].full_name };
+            }
+          }
+        }
+      } catch (e) {
+        console.error('Failed to fetch user profile:', e);
+      }
+      if (!userInfo && userEmail) {
+        userInfo = { email: userEmail };
+      }
+    }
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
@@ -251,7 +286,7 @@ serve(async (req) => {
       aiMessage = aiMessage.replace('[NEEDS_HUMAN]', '').trim();
       // Send email notification in the background (don't block response)
       const lastUserMsg = messages[messages.length - 1]?.content || '';
-      sendEscalationEmail(lastUserMsg, aiMessage, userRole, messages).catch(console.error);
+      sendEscalationEmail(lastUserMsg, aiMessage, userRole, messages, userInfo).catch(console.error);
     }
 
     console.log('AI response generated successfully, needsHuman:', needsHuman);
