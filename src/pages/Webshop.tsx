@@ -9,15 +9,114 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { useCart } from '@/contexts/CartContext';
 
+// Product-specific images
+import imgKniv from '@/assets/webshop/kniv.jpg';
+import imgSkarbrada from '@/assets/webshop/skarbrada.jpg';
+import imgStekpanna from '@/assets/webshop/stekpanna.jpg';
+import imgKastrull from '@/assets/webshop/kastrull.jpg';
+import imgWok from '@/assets/webshop/wok.jpg';
+import imgStavmixer from '@/assets/webshop/stavmixer.jpg';
+import imgMatberedare from '@/assets/webshop/matberedare.jpg';
+import imgVag from '@/assets/webshop/vag.jpg';
+import imgTermometer from '@/assets/webshop/termometer.jpg';
+import imgTimer from '@/assets/webshop/timer.jpg';
+import imgHandskar from '@/assets/webshop/handskar.jpg';
+import imgForklader from '@/assets/webshop/forklader.jpg';
+import imgDesinfektion from '@/assets/webshop/desinfektion.jpg';
+import imgStadkit from '@/assets/webshop/stadkit.jpg';
+import imgTakeaway from '@/assets/webshop/takeaway.jpg';
+import imgSushibox from '@/assets/webshop/sushibox.jpg';
+import imgSalladsbowl from '@/assets/webshop/salladsbowl.jpg';
+import imgSoppskalar from '@/assets/webshop/soppskalar.jpg';
+import imgSasbehallare from '@/assets/webshop/sasbehallare.jpg';
+import imgAluformar from '@/assets/webshop/aluformar.jpg';
+import imgPapperspasar from '@/assets/webshop/papperspasar.jpg';
+import imgBestick from '@/assets/webshop/bestick.jpg';
+import imgServetter from '@/assets/webshop/servetter.jpg';
+import imgKlisteretikett from '@/assets/webshop/klisteretikett.jpg';
+import imgIngrediensetiketter from '@/assets/webshop/ingrediensetiketter.jpg';
+import imgEtiketter from '@/assets/webshop/etiketter.jpg';
+import imgMatlador from '@/assets/webshop/matlador.jpg';
+import imgGnbehallare from '@/assets/webshop/gnbehallare.jpg';
+import imgKryddburkar from '@/assets/webshop/kryddburkar.jpg';
+import imgVakuumpasar from '@/assets/webshop/vakuumpasar.jpg';
+import imgVakuummaskin from '@/assets/webshop/vakuummaskin.jpg';
+import imgFolie from '@/assets/webshop/folie.jpg';
+import imgHylla from '@/assets/webshop/hylla.jpg';
+import imgTermovaska from '@/assets/webshop/termovaska.jpg';
+import imgLeveransryggsack from '@/assets/webshop/leveransryggsack.jpg';
+import imgTransportbox from '@/assets/webshop/transportbox.jpg';
+import imgIsblock from '@/assets/webshop/isblock.jpg';
+import imgDryckeshallare from '@/assets/webshop/dryckeshallare.jpg';
+import imgStartpaket from '@/assets/webshop/startpaket.jpg';
 import imgKoksutrustning from '@/assets/webshop/koksutrustning.jpg';
 import imgHygien from '@/assets/webshop/hygien.jpg';
 import imgForpackningar from '@/assets/webshop/forpackningar.jpg';
-import imgEtiketter from '@/assets/webshop/etiketter.jpg';
-import imgForvaring from '@/assets/webshop/forvaring.jpg';
 import imgLeverans from '@/assets/webshop/leverans.jpg';
-import imgStartpaket from '@/assets/webshop/startpaket.jpg';
+import imgForvaring from '@/assets/webshop/forvaring.jpg';
 
-const CATEGORY_IMAGES: Record<string, string> = {
+// Keyword-to-image mapping for matching product names
+const IMAGE_RULES: Array<{ keywords: string[]; image: string }> = [
+  // Köksutrustning
+  { keywords: ['kockkniv', 'filékniv', 'skalkniv', 'kniv'], image: imgKniv },
+  { keywords: ['skärbräd'], image: imgSkarbrada },
+  { keywords: ['stekpanna'], image: imgStekpanna },
+  { keywords: ['kastrull'], image: imgKastrull },
+  { keywords: ['wok'], image: imgWok },
+  { keywords: ['stavmixer'], image: imgStavmixer },
+  { keywords: ['matberedare'], image: imgMatberedare },
+  { keywords: ['köksvåg', 'våg'], image: imgVag },
+  { keywords: ['termometer', 'temperaturmätare'], image: imgTermometer },
+  { keywords: ['timer'], image: imgTimer },
+  // Hygien
+  { keywords: ['handsk'], image: imgHandskar },
+  { keywords: ['hårnät'], image: imgHygien },
+  { keywords: ['förkläde'], image: imgForklader },
+  { keywords: ['desinfektionsmedel', 'handsprit', 'ytdesinfektion'], image: imgDesinfektion },
+  { keywords: ['diskmedel'], image: imgStadkit },
+  { keywords: ['städkit'], image: imgStadkit },
+  // Förpackningar
+  { keywords: ['takeaway'], image: imgTakeaway },
+  { keywords: ['sushi'], image: imgSushibox },
+  { keywords: ['salladsbox', 'salladsbowl'], image: imgSalladsbowl },
+  { keywords: ['soppskål'], image: imgSoppskalar },
+  { keywords: ['såsbehållare'], image: imgSasbehallare },
+  { keywords: ['aluminiumform'], image: imgAluformar },
+  { keywords: ['papperspåsar', 'bärpåsar'], image: imgPapperspasar },
+  { keywords: ['plastlock'], image: imgForpackningar },
+  { keywords: ['bestick trä'], image: imgBestick },
+  { keywords: ['bestick plast'], image: imgBestick },
+  { keywords: ['servett'], image: imgServetter },
+  { keywords: ['klisteretiketter runda'], image: imgKlisteretikett },
+  // Etiketter
+  { keywords: ['ingrediensetikett'], image: imgIngrediensetiketter },
+  { keywords: ['allergi-etikett'], image: imgIngrediensetiketter },
+  { keywords: ['klistermärken'], image: imgKlisteretikett },
+  { keywords: ['qr-etikett'], image: imgEtiketter },
+  { keywords: ['datumetikett'], image: imgEtiketter },
+  { keywords: ['logotyp-etikett'], image: imgEtiketter },
+  // Förvaring
+  { keywords: ['matlådor'], image: imgMatlador },
+  { keywords: ['gn-behållare'], image: imgGnbehallare },
+  { keywords: ['kryddburk'], image: imgKryddburkar },
+  { keywords: ['vakuumpåsar'], image: imgVakuumpasar },
+  { keywords: ['vakuummaskin'], image: imgVakuummaskin },
+  { keywords: ['plastfolie'], image: imgFolie },
+  { keywords: ['aluminiumfolie'], image: imgFolie },
+  { keywords: ['förvaringshylla'], image: imgHylla },
+  // Leverans
+  { keywords: ['termoväska liten'], image: imgTermovaska },
+  { keywords: ['termoväska stor'], image: imgLeverans },
+  { keywords: ['leveransryggsäck'], image: imgLeveransryggsack },
+  { keywords: ['mattransportbox'], image: imgTransportbox },
+  { keywords: ['isblock'], image: imgIsblock },
+  { keywords: ['dryckeshållare'], image: imgDryckeshallare },
+  // Startpaket
+  { keywords: ['startpaket', 'förpackningspaket'], image: imgStartpaket },
+];
+
+// Category fallback images
+const CATEGORY_FALLBACK: Record<string, string> = {
   'Köksutrustning': imgKoksutrustning,
   'Hygien & Säkerhet': imgHygien,
   'Förpackningar': imgForpackningar,
@@ -26,6 +125,17 @@ const CATEGORY_IMAGES: Record<string, string> = {
   'Leverans & Transport': imgLeverans,
   'Startpaket': imgStartpaket,
 };
+
+function getProductImage(name: string, category: string): string {
+  const lower = name.toLowerCase();
+  for (const rule of IMAGE_RULES) {
+    if (rule.keywords.some(kw => lower.includes(kw))) {
+      return rule.image;
+    }
+  }
+  return CATEGORY_FALLBACK[category] || '';
+}
+
 interface WebshopProduct {
   id: string;
   name: string;
@@ -147,7 +257,7 @@ const Webshop = () => {
               <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow group">
                 <div className="h-48 bg-gradient-to-br from-muted to-secondary flex items-center justify-center overflow-hidden">
                   <img
-                    src={product.image_url || CATEGORY_IMAGES[product.category] || ''}
+                    src={product.image_url || getProductImage(product.name, product.category)}
                     alt={product.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
