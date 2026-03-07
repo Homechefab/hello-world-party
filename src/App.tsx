@@ -221,7 +221,5 @@ const App = () => {
       </TooltipProvider>
     </QueryClientProvider>
   );
-};
-            <Route path="/webshop" element={<PublicLayout><Webshop /></PublicLayout>} />
 
 export default App;
