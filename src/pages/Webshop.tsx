@@ -8,7 +8,6 @@ import { ShoppingCart, Plus, Minus, Package, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { useCart } from '@/contexts/CartContext';
-import { useNavigate } from 'react-router-dom';
 
 interface WebshopProduct {
   id: string;
