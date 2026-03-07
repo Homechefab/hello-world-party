@@ -221,6 +221,6 @@ const App = () => {
     </QueryClientProvider>
   );
 };
-
+            <Route path="/webshop" element={<PublicLayout><Webshop /></PublicLayout>} />
 
 export default App;
