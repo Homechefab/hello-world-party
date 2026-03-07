@@ -91,6 +91,7 @@ import BusinessServicesPage from "./pages/business/BusinessServices";
 import BusinessApplication from "./pages/business/BusinessApplication";
 import BusinessApplicationPending from "./pages/business/BusinessApplicationPending";
 import OrderTracking from "./pages/OrderTracking";
+import Webshop from "./pages/Webshop";
 
 const queryClient = new QueryClient();
 
