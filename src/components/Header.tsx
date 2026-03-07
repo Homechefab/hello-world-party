@@ -27,7 +27,7 @@ import {
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { isChef, role, switchRole } = useRole();
+  const { isChef, isAdmin, role, switchRole } = useRole();
   const navigate = useNavigate();
 
   const roleLabels: Record<UserRole, string> = {
@@ -128,7 +128,7 @@ const Header = () => {
             <DropdownMenuContent align="end" className="w-48 z-50 bg-background">
               <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {(['customer','chef','kitchen_partner','restaurant','business','admin','webshop'] as const).map((r) => (
+              {(['customer','chef','kitchen_partner','restaurant','business','admin','webshop'] as const).filter(r => r !== 'webshop' || isAdmin).map((r) => (
                 <DropdownMenuItem
                   key={r}
                   onClick={() => handleRoleSwitch(r)}
@@ -196,7 +196,7 @@ const Header = () => {
                     <DropdownMenuContent className="w-full z-50 bg-background">
                       <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      {(['customer','chef','kitchen_partner','restaurant','business','admin','webshop'] as const).map((r) => (
+                      {(['customer','chef','kitchen_partner','restaurant','business','admin','webshop'] as const).filter(r => r !== 'webshop' || isAdmin).map((r) => (
                         <DropdownMenuItem
                           key={r}
                           onClick={() => {
