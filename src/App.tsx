@@ -150,6 +150,7 @@ const App = () => {
             <Route path="/business/services" element={<PublicLayout><BusinessServicesPage /></PublicLayout>} />
             <Route path="/business/application" element={<PublicLayout><BusinessApplication /></PublicLayout>} />
             <Route path="/business/application-pending" element={<PublicLayout><BusinessApplicationPending /></PublicLayout>} />
+            <Route path="/webshop" element={<PublicLayout><Webshop /></PublicLayout>} />
 
             {/* Protected routes - require authentication */}
             <Route path="/dashboard" element={<RoleBasedLayout><Dashboard /></RoleBasedLayout>} />
