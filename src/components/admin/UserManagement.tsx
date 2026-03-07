@@ -25,7 +25,8 @@ const roleLabels: Record<UserRole, string> = {
   kitchen_partner: 'Kökspartner',
   restaurant: 'Restaurang',
   business: 'Företagare',
-  admin: 'Admin'
+  admin: 'Admin',
+  webshop: 'Webbshop'
 };
 
 const allRoles: UserRole[] = ['customer', 'chef', 'kitchen_partner', 'restaurant', 'business', 'admin'];
