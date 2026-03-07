@@ -36,7 +36,8 @@ const Header = () => {
     kitchen_partner: 'Kökspartner',
     restaurant: 'Restaurang',
     business: 'Företagare',
-    admin: 'Administratör'
+    admin: 'Administratör',
+    webshop: 'Webbshop'
   };
 
   const handleSearch = (e?: FormEvent<HTMLFormElement>) => {
@@ -53,11 +54,12 @@ const Header = () => {
     // Navigate to public service pages (not dashboards) when switching roles
     const targetByRole: Record<UserRole, string> = {
       customer: '/',
-      admin: '/admin/dashboard', // Admin dashboard is always accessible for admins
-      chef: '/chef', // Public chef services page
-      kitchen_partner: '/kitchen-partner/hyr-ut-ditt-kok', // Public kitchen partner info page
-      restaurant: '/restaurant/partnership', // Public restaurant partnership page
-      business: '/business/services', // Business services page
+      admin: '/admin/dashboard',
+      chef: '/chef',
+      kitchen_partner: '/kitchen-partner/hyr-ut-ditt-kok',
+      restaurant: '/restaurant/partnership',
+      business: '/business/services',
+      webshop: '/webshop',
     };
 
     navigate(targetByRole[newRole] || '/');
@@ -126,7 +128,7 @@ const Header = () => {
             <DropdownMenuContent align="end" className="w-48 z-50 bg-background">
               <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              {(['customer','chef','kitchen_partner','restaurant','business','admin'] as const).map((r) => (
+              {(['customer','chef','kitchen_partner','restaurant','business','admin','webshop'] as const).map((r) => (
                 <DropdownMenuItem
                   key={r}
                   onClick={() => handleRoleSwitch(r)}
@@ -194,7 +196,7 @@ const Header = () => {
                     <DropdownMenuContent className="w-full z-50 bg-background">
                       <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      {(['customer','chef','kitchen_partner','restaurant','business','admin'] as const).map((r) => (
+                      {(['customer','chef','kitchen_partner','restaurant','business','admin','webshop'] as const).map((r) => (
                         <DropdownMenuItem
                           key={r}
                           onClick={() => {

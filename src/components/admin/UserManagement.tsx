@@ -25,7 +25,8 @@ const roleLabels: Record<UserRole, string> = {
   kitchen_partner: 'Kökspartner',
   restaurant: 'Restaurang',
   business: 'Företagare',
-  admin: 'Admin'
+  admin: 'Admin',
+  webshop: 'Webbshop'
 };
 
 const allRoles: UserRole[] = ['customer', 'chef', 'kitchen_partner', 'restaurant', 'business', 'admin'];
@@ -96,7 +97,7 @@ export const UserManagement = () => {
           .from('user_roles')
           .delete()
           .eq('user_id', userId)
-          .eq('role', role);
+          .eq('role', role as any);
 
         if (error) throw error;
         toast.success(`Rollen ${roleLabels[role]} har tagits bort`);
@@ -104,7 +105,7 @@ export const UserManagement = () => {
         // Lägg till roll
         const { error } = await supabase
           .from('user_roles')
-          .insert({ user_id: userId, role });
+          .insert({ user_id: userId, role } as any);
 
         if (error) throw error;
         toast.success(`Rollen ${roleLabels[role]} har lagts till`);
