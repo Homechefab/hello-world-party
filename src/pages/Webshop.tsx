@@ -27,7 +27,6 @@ const Webshop = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const { addItem } = useCart();
-  const navigate = useNavigate();
 
   const { data: products, isLoading } = useQuery({
     queryKey: ['webshop-products'],
