@@ -149,7 +149,8 @@ const LiveChat = () => {
         body: { 
           messages: conversationMessages,
           userRole: userRole,
-          userId: user?.id
+          userId: user?.id,
+          userEmail: user?.email
         }
       });
 
