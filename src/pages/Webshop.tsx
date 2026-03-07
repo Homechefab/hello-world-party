@@ -9,6 +9,23 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { useCart } from '@/contexts/CartContext';
 
+import imgKoksutrustning from '@/assets/webshop/koksutrustning.jpg';
+import imgHygien from '@/assets/webshop/hygien.jpg';
+import imgForpackningar from '@/assets/webshop/forpackningar.jpg';
+import imgEtiketter from '@/assets/webshop/etiketter.jpg';
+import imgForvaring from '@/assets/webshop/forvaring.jpg';
+import imgLeverans from '@/assets/webshop/leverans.jpg';
+import imgStartpaket from '@/assets/webshop/startpaket.jpg';
+
+const CATEGORY_IMAGES: Record<string, string> = {
+  'Köksutrustning': imgKoksutrustning,
+  'Hygien & Säkerhet': imgHygien,
+  'Förpackningar': imgForpackningar,
+  'Etiketter & Branding': imgEtiketter,
+  'Förvaring': imgForvaring,
+  'Leverans & Transport': imgLeverans,
+  'Startpaket': imgStartpaket,
+};
 interface WebshopProduct {
   id: string;
   name: string;
