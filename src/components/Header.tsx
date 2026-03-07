@@ -27,7 +27,7 @@ import {
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { isChef, role, switchRole } = useRole();
+  const { isChef, isAdmin, role, switchRole } = useRole();
   const navigate = useNavigate();
 
   const roleLabels: Record<UserRole, string> = {
