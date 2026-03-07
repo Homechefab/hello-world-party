@@ -76,7 +76,7 @@ const Auth = () => {
             .insert({
               user_id: authData.user.id,
               role: selectedRole,
-            });
+            } as any);
 
           if (roleError) console.error('Role creation error:', roleError);
         }
