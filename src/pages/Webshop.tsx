@@ -145,12 +145,13 @@ const Webshop = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filtered.map((product) => (
               <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow group">
-                <div className="h-48 bg-gradient-to-br from-muted to-secondary flex items-center justify-center">
-                  {product.image_url ? (
-                    <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
-                  ) : (
-                    <Package className="w-16 h-16 text-muted-foreground/40" />
-                  )}
+                <div className="h-48 bg-gradient-to-br from-muted to-secondary flex items-center justify-center overflow-hidden">
+                  <img
+                    src={product.image_url || CATEGORY_IMAGES[product.category] || ''}
+                    alt={product.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  />
                 </div>
                 <CardContent className="p-4">
                   <Badge variant="secondary" className="mb-2 text-xs">{product.category}</Badge>
