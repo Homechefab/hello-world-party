@@ -20,7 +20,7 @@ interface WebshopProduct {
   stock_quantity: number | null;
 }
 
-const CATEGORIES = ['Alla', 'Matlådor', 'Förpackning', 'Hygien', 'Köksredskap', 'Kläder'];
+const CATEGORIES = ['Alla', 'Köksutrustning', 'Hygien & Säkerhet', 'Förpackningar', 'Etiketter & Branding', 'Förvaring', 'Leverans & Transport', 'Startpaket'];
 
 const Webshop = () => {
   const [selectedCategory, setSelectedCategory] = useState('Alla');
