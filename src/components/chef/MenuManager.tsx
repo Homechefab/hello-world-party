@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import DishTemplates from "./DishTemplates";
 import DishCardManage from "@/components/shared/DishCardManage";
+import { DishScheduleManager } from "./DishScheduleManager";
 
 interface Dish {
   id: string;
@@ -35,6 +36,7 @@ const MenuManager = () => {
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [editingDish, setEditingDish] = useState<Dish | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [scheduleDish, setScheduleDish] = useState<Dish | null>(null);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("my-menu");
   
@@ -250,6 +252,7 @@ const MenuManager = () => {
                         onEdit={() => handleEditDish(dish)}
                         onToggleAvailability={() => toggleDishAvailability(dish.id, !dish.available)}
                         onDelete={() => handleDeleteDish(dish.id)}
+                        onSchedule={() => setScheduleDish(dish)}
                       />
                     ))}
                   </div>
@@ -343,6 +346,25 @@ const MenuManager = () => {
                 </Button>
               </div>
             </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Schedule dialog */}
+      <Dialog open={!!scheduleDish} onOpenChange={(open) => !open && setScheduleDish(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Schemalägg rätt</DialogTitle>
+            <DialogDescription>
+              Välj vilka dagar rätten ska vara tillgänglig
+            </DialogDescription>
+          </DialogHeader>
+          {scheduleDish && (
+            <DishScheduleManager
+              dishId={scheduleDish.id}
+              dishName={scheduleDish.name}
+              onClose={() => setScheduleDish(null)}
+            />
           )}
         </DialogContent>
       </Dialog>
