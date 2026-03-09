@@ -200,7 +200,11 @@ const Header = () => {
                     <DropdownMenuContent className="w-full z-50 bg-background">
                       <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      {(['customer','chef','kitchen_partner','restaurant','business','admin','webshop'] as const).filter(r => r !== 'webshop' || isAdmin).map((r) => (
+                      {(['customer','chef','kitchen_partner','restaurant','business','admin','webshop'] as const).filter(r => {
+                        if (r === 'webshop' && !isAdmin) return false;
+                        if (r === 'admin' && !isAdmin) return false;
+                        return true;
+                      }).map((r) => (
                         <DropdownMenuItem
                           key={r}
                           onClick={() => {

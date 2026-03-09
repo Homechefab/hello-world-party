@@ -29,7 +29,8 @@ const roleLabels: Record<UserRole, string> = {
   webshop: 'Webbshop'
 };
 
-const allRoles: UserRole[] = ['customer', 'chef', 'kitchen_partner', 'restaurant', 'business', 'admin'];
+// Admin-rollen hanteras enbart via databasen och ska inte kunna tilldelas via UI
+const allRoles: UserRole[] = ['customer', 'chef', 'kitchen_partner', 'restaurant', 'business'];
 
 export const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
