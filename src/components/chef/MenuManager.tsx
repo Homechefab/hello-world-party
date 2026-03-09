@@ -36,6 +36,7 @@ const MenuManager = () => {
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [editingDish, setEditingDish] = useState<Dish | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [scheduleDish, setScheduleDish] = useState<Dish | null>(null);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("my-menu");
   
