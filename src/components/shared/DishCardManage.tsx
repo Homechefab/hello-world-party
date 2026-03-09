@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Trash2, Eye, EyeOff } from "lucide-react";
+import { Edit, Trash2, Eye, EyeOff, CalendarDays } from "lucide-react";
 
 interface DishCardManageProps {
   name: string;
@@ -12,6 +12,7 @@ interface DishCardManageProps {
   onEdit?: () => void;
   onToggleAvailability?: () => void;
   onDelete?: () => void;
+  onSchedule?: () => void;
 }
 
 const DishCardManage = ({
