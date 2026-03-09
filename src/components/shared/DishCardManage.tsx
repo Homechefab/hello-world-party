@@ -81,6 +81,17 @@ const DishCardManage = ({
               </>
             )}
           </Button>
+          {onSchedule && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={onSchedule}
+              className="h-8 px-2"
+            >
+              <CalendarDays className="w-3.5 h-3.5 mr-1" />
+              <span className="text-xs">Schema</span>
+            </Button>
+          )}
           <Button
             size="sm"
             variant="ghost"
