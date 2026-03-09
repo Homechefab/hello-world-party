@@ -17,6 +17,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import DishTemplates from "./DishTemplates";
 import DishCardManage from "@/components/shared/DishCardManage";
+import { DishScheduleManager } from "./DishScheduleManager";
 
 interface Dish {
   id: string;
