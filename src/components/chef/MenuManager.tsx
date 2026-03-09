@@ -269,10 +269,12 @@ const MenuManager = () => {
                         imageUrl={dish.image_url}
                         category={dish.category}
                         available={dish.available ?? true}
+                        preparationTime={dish.preparation_time}
                         onEdit={() => handleEditDish(dish)}
                         onToggleAvailability={() => toggleDishAvailability(dish.id, !dish.available)}
                         onDelete={() => handleDeleteDish(dish.id)}
                         onSchedule={() => setScheduleDish(dish)}
+                        onUpdatePrepTime={(mins) => updatePrepTime(dish.id, mins)}
                       />
                     ))}
                   </div>
