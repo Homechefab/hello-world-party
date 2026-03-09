@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Trash2, Eye, EyeOff, CalendarDays } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Edit, Trash2, Eye, EyeOff, CalendarDays, Clock, Check } from "lucide-react";
 
 interface DishCardManageProps {
   name: string;
@@ -9,10 +11,12 @@ interface DishCardManageProps {
   imageUrl?: string | null;
   category?: string | null;
   available?: boolean;
+  preparationTime?: number | null;
   onEdit?: () => void;
   onToggleAvailability?: () => void;
   onDelete?: () => void;
   onSchedule?: () => void;
+  onUpdatePrepTime?: (minutes: number) => void;
 }
 
 const DishCardManage = ({
@@ -22,11 +26,22 @@ const DishCardManage = ({
   imageUrl,
   category,
   available = true,
+  preparationTime,
   onEdit,
   onToggleAvailability,
   onDelete,
-  onSchedule
+  onSchedule,
+  onUpdatePrepTime
 }: DishCardManageProps) => {
+  const [editingTime, setEditingTime] = useState(false);
+  const [tempTime, setTempTime] = useState(preparationTime?.toString() || '');
+
+  const handleSaveTime = () => {
+    const mins = parseInt(tempTime) || 0;
+    onUpdatePrepTime?.(mins);
+    setEditingTime(false);
+  };
+
   return (
     <div className={`flex items-stretch gap-3 p-4 bg-card border border-border rounded-lg transition-all ${!available ? 'opacity-60' : 'hover:shadow-md'}`}>
       {/* Left side - Info */}
@@ -50,6 +65,34 @@ const DishCardManage = ({
               {description}
             </p>
           )}
+          {/* Inline preparation time */}
+          <div className="flex items-center gap-1.5 mt-1">
+            <Clock className="w-3 h-3 text-muted-foreground" />
+            {editingTime ? (
+              <div className="flex items-center gap-1">
+                <Input
+                  type="number"
+                  value={tempTime}
+                  onChange={(e) => setTempTime(e.target.value)}
+                  className="h-6 w-16 text-xs px-1"
+                  min={0}
+                  autoFocus
+                  onKeyDown={(e) => e.key === 'Enter' && handleSaveTime()}
+                />
+                <span className="text-xs text-muted-foreground">min</span>
+                <Button size="icon" variant="ghost" className="h-5 w-5" onClick={handleSaveTime}>
+                  <Check className="w-3 h-3 text-green-600" />
+                </Button>
+              </div>
+            ) : (
+              <button
+                onClick={() => { setTempTime(preparationTime?.toString() || '0'); setEditingTime(true); }}
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {preparationTime ? `${preparationTime} min` : 'Ange tid'}
+              </button>
+            )}
+          </div>
         </div>
         
         {/* Action buttons */}
