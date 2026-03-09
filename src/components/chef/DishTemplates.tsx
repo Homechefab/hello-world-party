@@ -244,11 +244,15 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
                   />
                 </div>
                 <div>
-                  <Label>Tillaganstid</Label>
-                  <div className="flex items-center gap-2 p-2 border rounded-md bg-muted">
-                    <Clock className="w-4 h-4" />
-                    {selectedTemplate.preparation_time || 30} minuter
-                  </div>
+                  <Label htmlFor="prepTime">Tillagningstid (min)</Label>
+                  <Input
+                    id="prepTime"
+                    type="number"
+                    value={customPrepTime}
+                    onChange={(e) => setCustomPrepTime(e.target.value)}
+                    placeholder={String(selectedTemplate.preparation_time || 30)}
+                    min={1}
+                  />
                 </div>
               </div>
 
