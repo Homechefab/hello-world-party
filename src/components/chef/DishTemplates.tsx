@@ -144,7 +144,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
           category: selectedTemplate.category,
           ingredients: selectedTemplate.ingredients || [],
           allergens: selectedTemplate.allergens || [],
-          preparation_time: selectedTemplate.preparation_time || 30,
+          preparation_time: parseInt(customPrepTime) || selectedTemplate.preparation_time || 30,
           price: parseFloat(customPrice),
           available: true,
           image_url: imageUrl
