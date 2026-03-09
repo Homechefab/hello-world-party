@@ -252,6 +252,7 @@ const MenuManager = () => {
                         onEdit={() => handleEditDish(dish)}
                         onToggleAvailability={() => toggleDishAvailability(dish.id, !dish.available)}
                         onDelete={() => handleDeleteDish(dish.id)}
+                        onSchedule={() => setScheduleDish(dish)}
                       />
                     ))}
                   </div>
