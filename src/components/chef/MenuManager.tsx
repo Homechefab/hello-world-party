@@ -349,6 +349,25 @@ const MenuManager = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Schedule dialog */}
+      <Dialog open={!!scheduleDish} onOpenChange={(open) => !open && setScheduleDish(null)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Schemalägg rätt</DialogTitle>
+            <DialogDescription>
+              Välj vilka dagar rätten ska vara tillgänglig
+            </DialogDescription>
+          </DialogHeader>
+          {scheduleDish && (
+            <DishScheduleManager
+              dishId={scheduleDish.id}
+              dishName={scheduleDish.name}
+              onClose={() => setScheduleDish(null)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
