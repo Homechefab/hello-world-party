@@ -159,18 +159,6 @@ const Webshop = () => {
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const { addItem } = useCart();
 
-  // Admin-only access guard
-  if (!loading && !isAdmin) {
-    return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-8">
-        <Package className="h-16 w-16 text-muted-foreground mb-4" />
-        <h1 className="text-2xl font-bold mb-2">Åtkomst nekad</h1>
-        <p className="text-muted-foreground mb-6">Webbshopen är för närvarande bara tillgänglig för administratörer.</p>
-        <Button onClick={() => navigate('/')} variant="outline">Tillbaka till startsidan</Button>
-      </div>
-    );
-  }
-
   const { data: products, isLoading } = useQuery({
     queryKey: ['webshop-products'],
     queryFn: async () => {
@@ -182,7 +170,20 @@ const Webshop = () => {
       if (error) throw error;
       return data as unknown as WebshopProduct[];
     },
+    enabled: isAdmin,
   });
+
+  // Admin-only access guard (after all hooks)
+  if (!loading && !isAdmin) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center p-8">
+        <Package className="h-16 w-16 text-muted-foreground mb-4" />
+        <h1 className="text-2xl font-bold mb-2">Åtkomst nekad</h1>
+        <p className="text-muted-foreground mb-6">Webbshopen är för närvarande bara tillgänglig för administratörer.</p>
+        <Button onClick={() => navigate('/')} variant="outline">Tillbaka till startsidan</Button>
+      </div>
+    );
+  }
 
   const filtered = products?.filter((p) => {
     const matchCategory = selectedCategory === 'Alla' || p.category === selectedCategory;
