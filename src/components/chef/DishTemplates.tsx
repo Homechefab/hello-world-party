@@ -38,6 +38,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
   const [customImagePreview, setCustomImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [customPrepTime, setCustomPrepTime] = useState<string>("");
   const [activeCategory, setActiveCategory] = useState<string>("Alla");
   
   const { toast } = useToast();
