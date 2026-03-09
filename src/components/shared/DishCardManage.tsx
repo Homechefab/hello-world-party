@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Trash2, Eye, EyeOff } from "lucide-react";
+import { Edit, Trash2, Eye, EyeOff, CalendarDays } from "lucide-react";
 
 interface DishCardManageProps {
   name: string;
@@ -12,6 +12,7 @@ interface DishCardManageProps {
   onEdit?: () => void;
   onToggleAvailability?: () => void;
   onDelete?: () => void;
+  onSchedule?: () => void;
 }
 
 const DishCardManage = ({
@@ -23,7 +24,8 @@ const DishCardManage = ({
   available = true,
   onEdit,
   onToggleAvailability,
-  onDelete
+  onDelete,
+  onSchedule
 }: DishCardManageProps) => {
   return (
     <div className={`flex items-stretch gap-3 p-4 bg-card border border-border rounded-lg transition-all ${!available ? 'opacity-60' : 'hover:shadow-md'}`}>
@@ -79,6 +81,17 @@ const DishCardManage = ({
               </>
             )}
           </Button>
+          {onSchedule && (
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={onSchedule}
+              className="h-8 px-2"
+            >
+              <CalendarDays className="w-3.5 h-3.5 mr-1" />
+              <span className="text-xs">Schema</span>
+            </Button>
+          )}
           <Button
             size="sm"
             variant="ghost"

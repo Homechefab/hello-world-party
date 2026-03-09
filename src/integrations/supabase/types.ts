@@ -254,6 +254,41 @@ export type Database = {
         }
         Relationships: []
       }
+      dish_date_exceptions: {
+        Row: {
+          created_at: string
+          dish_id: string
+          exception_date: string
+          id: string
+          is_available: boolean
+          reason: string | null
+        }
+        Insert: {
+          created_at?: string
+          dish_id: string
+          exception_date: string
+          id?: string
+          is_available?: boolean
+          reason?: string | null
+        }
+        Update: {
+          created_at?: string
+          dish_id?: string
+          exception_date?: string
+          id?: string
+          is_available?: boolean
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dish_date_exceptions_dish_id_fkey"
+            columns: ["dish_id"]
+            isOneToOne: false
+            referencedRelation: "dishes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dish_templates: {
         Row: {
           allergens: string[] | null
@@ -295,6 +330,41 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      dish_weekly_schedule: {
+        Row: {
+          created_at: string
+          day_of_week: number
+          dish_id: string
+          id: string
+          is_available: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          day_of_week: number
+          dish_id: string
+          id?: string
+          is_available?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          day_of_week?: number
+          dish_id?: string
+          id?: string
+          is_available?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dish_weekly_schedule_dish_id_fkey"
+            columns: ["dish_id"]
+            isOneToOne: false
+            referencedRelation: "dishes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       dishes: {
         Row: {
