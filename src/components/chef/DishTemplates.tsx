@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Clock, Check, Upload, X } from "lucide-react";
+import { Check, Upload, X } from "lucide-react";
 import DishCard from "@/components/shared/DishCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -38,6 +38,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
   const [customImagePreview, setCustomImagePreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [customPrepTime, setCustomPrepTime] = useState<string>("");
   const [activeCategory, setActiveCategory] = useState<string>("Alla");
   
   const { toast } = useToast();
@@ -76,6 +77,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
     setCustomName(template.name);
     setCustomPrice(template.suggested_price?.toString() || "");
     setCustomDescription(template.description || "");
+    setCustomPrepTime(template.preparation_time?.toString() || "30");
     setCustomImage(null);
     setCustomImagePreview(null);
     setIsDialogOpen(true);
@@ -143,7 +145,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
           category: selectedTemplate.category,
           ingredients: selectedTemplate.ingredients || [],
           allergens: selectedTemplate.allergens || [],
-          preparation_time: selectedTemplate.preparation_time || 30,
+          preparation_time: parseInt(customPrepTime) || selectedTemplate.preparation_time || 30,
           price: parseFloat(customPrice),
           available: true,
           image_url: imageUrl
@@ -243,11 +245,15 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
                   />
                 </div>
                 <div>
-                  <Label>Tillaganstid</Label>
-                  <div className="flex items-center gap-2 p-2 border rounded-md bg-muted">
-                    <Clock className="w-4 h-4" />
-                    {selectedTemplate.preparation_time || 30} minuter
-                  </div>
+                  <Label htmlFor="prepTime">Tillagningstid (min)</Label>
+                  <Input
+                    id="prepTime"
+                    type="number"
+                    value={customPrepTime}
+                    onChange={(e) => setCustomPrepTime(e.target.value)}
+                    placeholder={String(selectedTemplate.preparation_time || 30)}
+                    min={1}
+                  />
                 </div>
               </div>
 
