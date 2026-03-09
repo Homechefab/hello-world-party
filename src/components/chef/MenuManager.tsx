@@ -175,6 +175,26 @@ const MenuManager = () => {
     }
   };
 
+  const updatePrepTime = async (dishId: string, minutes: number) => {
+    try {
+      const { error } = await supabase
+        .from('dishes')
+        .update({ preparation_time: minutes })
+        .eq('id', dishId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Uppdaterat!",
+        description: `Tillagningstid satt till ${minutes} minuter`,
+      });
+      fetchMyDishes();
+    } catch (error) {
+      console.error('Error updating prep time:', error);
+      toast({ title: "Fel", description: "Kunde inte uppdatera tillagningstiden", variant: "destructive" });
+    }
+  };
+
   const categories = ["Alla", ...Array.from(new Set(dishes.map(d => d.category)))];
   const [activeCategory, setActiveCategory] = useState("Alla");
   const filteredDishes = activeCategory === "Alla" 
@@ -249,10 +269,12 @@ const MenuManager = () => {
                         imageUrl={dish.image_url}
                         category={dish.category}
                         available={dish.available ?? true}
+                        preparationTime={dish.preparation_time}
                         onEdit={() => handleEditDish(dish)}
                         onToggleAvailability={() => toggleDishAvailability(dish.id, !dish.available)}
                         onDelete={() => handleDeleteDish(dish.id)}
                         onSchedule={() => setScheduleDish(dish)}
+                        onUpdatePrepTime={(mins) => updatePrepTime(dish.id, mins)}
                       />
                     ))}
                   </div>
