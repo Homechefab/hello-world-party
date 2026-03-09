@@ -77,6 +77,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
     setCustomName(template.name);
     setCustomPrice(template.suggested_price?.toString() || "");
     setCustomDescription(template.description || "");
+    setCustomPrepTime(template.preparation_time?.toString() || "30");
     setCustomImage(null);
     setCustomImagePreview(null);
     setIsDialogOpen(true);
