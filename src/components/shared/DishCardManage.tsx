@@ -24,7 +24,8 @@ const DishCardManage = ({
   available = true,
   onEdit,
   onToggleAvailability,
-  onDelete
+  onDelete,
+  onSchedule
 }: DishCardManageProps) => {
   return (
     <div className={`flex items-stretch gap-3 p-4 bg-card border border-border rounded-lg transition-all ${!available ? 'opacity-60' : 'hover:shadow-md'}`}>
