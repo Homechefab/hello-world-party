@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import ShareButtons from "@/components/ShareButtons";
+import { ChefOperatingHoursDisplay } from "@/components/chef/ChefOperatingHoursDisplay";
 import SEOHead from "@/components/SEOHead";
 import { VideoDisplay } from "@/components/VideoDisplay";
 
@@ -359,6 +360,13 @@ const ChefProfile = () => {
             </div>
           </section>
         )}
+
+        {/* Operating Hours Section */}
+        <section className="py-8 bg-secondary/10">
+          <div className="container mx-auto px-4 max-w-3xl">
+            <ChefOperatingHoursDisplay chefId={chef.id} />
+          </div>
+        </section>
 
         {/* Dishes Section */}
         <section className="py-12">
