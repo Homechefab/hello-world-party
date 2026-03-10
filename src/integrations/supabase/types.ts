@@ -83,6 +83,54 @@ export type Database = {
         }
         Relationships: []
       }
+      chef_operating_hours: {
+        Row: {
+          chef_id: string
+          close_time: string
+          created_at: string
+          day_of_week: number
+          id: string
+          is_open: boolean
+          open_time: string
+          updated_at: string
+        }
+        Insert: {
+          chef_id: string
+          close_time?: string
+          created_at?: string
+          day_of_week: number
+          id?: string
+          is_open?: boolean
+          open_time?: string
+          updated_at?: string
+        }
+        Update: {
+          chef_id?: string
+          close_time?: string
+          created_at?: string
+          day_of_week?: number
+          id?: string
+          is_open?: boolean
+          open_time?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chef_operating_hours_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
+            referencedRelation: "chefs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chef_operating_hours_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
+            referencedRelation: "public_chef_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chef_videos: {
         Row: {
           chef_id: string
