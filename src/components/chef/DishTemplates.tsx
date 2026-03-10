@@ -6,11 +6,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Check, Upload, X } from "lucide-react";
+import { Check, Upload, X, CalendarDays } from "lucide-react";
 import DishCard from "@/components/shared/DishCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+
+const WEEKDAYS = [
+  { value: 1, label: 'Måndag', short: 'Mån' },
+  { value: 2, label: 'Tisdag', short: 'Tis' },
+  { value: 3, label: 'Onsdag', short: 'Ons' },
+  { value: 4, label: 'Torsdag', short: 'Tor' },
+  { value: 5, label: 'Fredag', short: 'Fre' },
+  { value: 6, label: 'Lördag', short: 'Lör' },
+  { value: 0, label: 'Söndag', short: 'Sön' },
+];
 
 interface DishTemplate {
   id: string;
