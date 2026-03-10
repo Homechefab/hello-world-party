@@ -91,7 +91,12 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
     setCustomPrepTime(template.preparation_time?.toString() || "30");
     setCustomImage(null);
     setCustomImagePreview(null);
+    setScheduleDays({});
     setIsDialogOpen(true);
+  };
+
+  const toggleScheduleDay = (day: number) => {
+    setScheduleDays(prev => ({ ...prev, [day]: !prev[day] }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
