@@ -102,28 +102,23 @@ const ChefApplication = () => {
 
         // Om vi får auth-error, hoppa över duplicate-check (RLS blockerar anon SELECT)
         if (!checkError) {
-          // Om det finns en aktiv eller godkänd ansökan, blockera ny ansökan
-          if (existingApplication && ['pending', 'under_review', 'approved'].includes(existingApplication.application_status || '')) {
+          // Blockera BARA om ansökan är under granskning eller godkänd
+          if (existingApplication && ['under_review', 'approved'].includes(existingApplication.application_status || '')) {
             toast({
               title: "Ansökan finns redan",
-              description: `Det finns redan en ${existingApplication.application_status === 'approved' ? 'godkänd' : 'pågående'} ansökan för denna email.`,
+              description: `Det finns redan en ${existingApplication.application_status === 'approved' ? 'godkänd' : 'inskickad'} ansökan för denna email.`,
               variant: "destructive"
             });
             return;
           }
-        }
 
-        // Om det finns en nekad ansökan, ta bort den först
-        if (existingApplication && existingApplication.application_status === 'rejected') {
-          await supabase
-            .from('chefs')
-            .delete()
-            .eq('id', existingApplication.id);
-          
-          toast({
-            title: "Tidigare ansökan borttagen",
-            description: "Din nekade ansökan har tagits bort. Du kan nu skicka in en ny.",
-          });
+          // Om det finns en ofullständig (pending) eller nekad ansökan, ta bort den först
+          if (existingApplication && ['pending', 'rejected'].includes(existingApplication.application_status || '')) {
+            await supabase
+              .from('chefs')
+              .delete()
+              .eq('id', existingApplication.id);
+          }
         }
 
         const serviceLabels: Record<string, string> = {
