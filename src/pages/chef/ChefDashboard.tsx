@@ -363,7 +363,9 @@ export const ChefDashboard = () => {
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-6">
+          <OperatingHoursManager />
           <DeliveryToggle />
+        </TabsContent>
         </TabsContent>
       </Tabs>
     </div>
