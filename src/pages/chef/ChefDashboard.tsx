@@ -14,6 +14,7 @@ import MenuManager from '@/components/chef/MenuManager';
 import IncomeReports from '@/components/chef/IncomeReports';
 import { SocialMediaLinks } from '@/components/chef/SocialMediaLinks';
 import { DeliveryToggle } from '@/components/chef/DeliveryToggle';
+import { OperatingHoursManager } from '@/components/chef/OperatingHoursManager';
 import { 
   CheckCircle, 
   AlertCircle, 
