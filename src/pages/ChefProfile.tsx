@@ -361,6 +361,13 @@ const ChefProfile = () => {
           </section>
         )}
 
+        {/* Operating Hours Section */}
+        <section className="py-8 bg-secondary/10">
+          <div className="container mx-auto px-4 max-w-3xl">
+            <ChefOperatingHoursDisplay chefId={chef.id} />
+          </div>
+        </section>
+
         {/* Dishes Section */}
         <section className="py-12">
         <div className="container mx-auto px-4">
