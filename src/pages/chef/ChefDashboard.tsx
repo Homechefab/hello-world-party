@@ -366,7 +366,6 @@ export const ChefDashboard = () => {
           <OperatingHoursManager />
           <DeliveryToggle />
         </TabsContent>
-        </TabsContent>
       </Tabs>
     </div>
   );
