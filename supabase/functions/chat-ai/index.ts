@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -197,40 +198,65 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, userRole = 'customer', userId, userEmail } = await req.json();
+    // Verify JWT - only authenticated users can use chat
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_ANON_KEY') || Deno.env.get('SUPABASE_PUBLISHABLE_KEY')!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabaseClient.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const authenticatedUserId = claimsData.claims.sub;
+
+    const { messages, userRole = 'customer', userEmail } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
-    // Look up user profile if userId is provided
+    // Look up user profile using the AUTHENTICATED user's ID only
     let userInfo: { email?: string; phone?: string; name?: string } | undefined;
-    if (userId) {
-      try {
-        const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
-        const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-        if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
-          const profileRes = await fetch(
-            `${SUPABASE_URL}/rest/v1/profiles?id=eq.${userId}&select=email,phone,full_name`,
-            {
-              headers: {
-                'apikey': SUPABASE_SERVICE_ROLE_KEY,
-                'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-              },
-            }
-          );
-          if (profileRes.ok) {
-            const profiles = await profileRes.json();
-            if (profiles.length > 0) {
-              userInfo = { email: profiles[0].email, phone: profiles[0].phone, name: profiles[0].full_name };
-            }
+    try {
+      const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
+      const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+      if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+        const profileRes = await fetch(
+          `${SUPABASE_URL}/rest/v1/profiles?id=eq.${authenticatedUserId}&select=email,phone,full_name`,
+          {
+            headers: {
+              'apikey': SUPABASE_SERVICE_ROLE_KEY,
+              'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+            },
+          }
+        );
+        if (profileRes.ok) {
+          const profiles = await profileRes.json();
+          if (profiles.length > 0) {
+            userInfo = { email: profiles[0].email, phone: profiles[0].phone, name: profiles[0].full_name };
           }
         }
-      } catch (e) {
-        console.error('Failed to fetch user profile:', e);
       }
-      if (!userInfo && userEmail) {
-        userInfo = { email: userEmail };
-      }
+    } catch (e) {
+      console.error('Failed to fetch user profile:', e);
     }
+    if (!userInfo && userEmail) {
+      userInfo = { email: userEmail };
+    }
+
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
