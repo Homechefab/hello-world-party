@@ -383,6 +383,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
                 </div>
               </div>
 
+              <div className="flex gap-3 pt-4">
                 <Button
                   onClick={() => setIsDialogOpen(false)}
                   variant="outline"
