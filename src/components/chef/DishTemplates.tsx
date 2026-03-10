@@ -6,11 +6,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Check, Upload, X } from "lucide-react";
+import { Check, Upload, X, CalendarDays } from "lucide-react";
 import DishCard from "@/components/shared/DishCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+
+const WEEKDAYS = [
+  { value: 1, label: 'Måndag', short: 'Mån' },
+  { value: 2, label: 'Tisdag', short: 'Tis' },
+  { value: 3, label: 'Onsdag', short: 'Ons' },
+  { value: 4, label: 'Torsdag', short: 'Tor' },
+  { value: 5, label: 'Fredag', short: 'Fre' },
+  { value: 6, label: 'Lördag', short: 'Lör' },
+  { value: 0, label: 'Söndag', short: 'Sön' },
+];
 
 interface DishTemplate {
   id: string;
@@ -39,6 +49,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [customPrepTime, setCustomPrepTime] = useState<string>("");
+  const [scheduleDays, setScheduleDays] = useState<{ [day: number]: boolean }>({});
   const [activeCategory, setActiveCategory] = useState<string>("Alla");
   
   const { toast } = useToast();
@@ -80,7 +91,12 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
     setCustomPrepTime(template.preparation_time?.toString() || "30");
     setCustomImage(null);
     setCustomImagePreview(null);
+    setScheduleDays({});
     setIsDialogOpen(true);
+  };
+
+  const toggleScheduleDay = (day: number) => {
+    setScheduleDays(prev => ({ ...prev, [day]: !prev[day] }));
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -136,7 +152,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
       const dishName = customName.trim() || selectedTemplate.name;
 
       // Add the dish using the template data
-      const { error } = await supabase
+      const { data: dishData, error } = await supabase
         .from('dishes')
         .insert({
           chef_id: chefData.id,
@@ -149,13 +165,29 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
           price: parseFloat(customPrice),
           available: true,
           image_url: imageUrl
-        });
+        })
+        .select('id')
+        .single();
 
       if (error) throw error;
 
+      // Save weekly schedule if any days were selected
+      const selectedDays = WEEKDAYS.filter(d => scheduleDays[d.value]);
+      if (selectedDays.length > 0 && dishData) {
+        const scheduleData = WEEKDAYS.map(d => ({
+          dish_id: dishData.id,
+          day_of_week: d.value,
+          is_available: scheduleDays[d.value] ?? false,
+        }));
+
+        await supabase
+          .from('dish_weekly_schedule')
+          .upsert(scheduleData, { onConflict: 'dish_id,day_of_week' });
+      }
+
       toast({
         title: "Rätt tillagd!",
-        description: `${dishName} har lagts till i din meny`,
+        description: `${dishName} har lagts till i din meny${selectedDays.length > 0 ? ` (${selectedDays.map(d => d.short).join(', ')})` : ''}`,
       });
 
       setIsDialogOpen(false);
@@ -320,6 +352,33 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
                     <Badge key={index} variant="outline" className="text-xs">
                       {allergen}
                     </Badge>
+                  ))}
+                </div>
+              </div>
+
+              {/* Weekly schedule */}
+              <div>
+                <Label className="flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4" />
+                  Tillgängliga dagar (valfritt)
+                </Label>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Välj vilka dagar rätten ska säljas. Lämna tomt = alla dagar.
+                </p>
+                <div className="grid grid-cols-7 gap-1.5">
+                  {WEEKDAYS.map(day => (
+                    <button
+                      key={day.value}
+                      type="button"
+                      onClick={() => toggleScheduleDay(day.value)}
+                      className={`flex flex-col items-center gap-0.5 p-2 rounded-lg border transition-colors text-xs font-medium ${
+                        scheduleDays[day.value]
+                          ? 'bg-primary text-primary-foreground border-primary'
+                          : 'bg-muted/50 text-muted-foreground border-border hover:border-primary/50'
+                      }`}
+                    >
+                      {day.short}
+                    </button>
                   ))}
                 </div>
               </div>
