@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import ShareButtons from "@/components/ShareButtons";
+import { ChefOperatingHoursDisplay } from "@/components/chef/ChefOperatingHoursDisplay";
 import SEOHead from "@/components/SEOHead";
 import { VideoDisplay } from "@/components/VideoDisplay";
 
