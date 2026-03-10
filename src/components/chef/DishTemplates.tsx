@@ -49,6 +49,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
   const [loading, setLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [customPrepTime, setCustomPrepTime] = useState<string>("");
+  const [scheduleDays, setScheduleDays] = useState<{ [day: number]: boolean }>({});
   const [activeCategory, setActiveCategory] = useState<string>("Alla");
   
   const { toast } = useToast();
