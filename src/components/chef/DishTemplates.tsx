@@ -152,7 +152,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
       const dishName = customName.trim() || selectedTemplate.name;
 
       // Add the dish using the template data
-      const { error } = await supabase
+      const { data: dishData, error } = await supabase
         .from('dishes')
         .insert({
           chef_id: chefData.id,
@@ -165,13 +165,29 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
           price: parseFloat(customPrice),
           available: true,
           image_url: imageUrl
-        });
+        })
+        .select('id')
+        .single();
 
       if (error) throw error;
 
+      // Save weekly schedule if any days were selected
+      const selectedDays = WEEKDAYS.filter(d => scheduleDays[d.value]);
+      if (selectedDays.length > 0 && dishData) {
+        const scheduleData = WEEKDAYS.map(d => ({
+          dish_id: dishData.id,
+          day_of_week: d.value,
+          is_available: scheduleDays[d.value] ?? false,
+        }));
+
+        await supabase
+          .from('dish_weekly_schedule')
+          .upsert(scheduleData, { onConflict: 'dish_id,day_of_week' });
+      }
+
       toast({
         title: "Rätt tillagd!",
-        description: `${dishName} har lagts till i din meny`,
+        description: `${dishName} har lagts till i din meny${selectedDays.length > 0 ? ` (${selectedDays.map(d => d.short).join(', ')})` : ''}`,
       });
 
       setIsDialogOpen(false);
