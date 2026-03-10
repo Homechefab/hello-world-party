@@ -356,7 +356,33 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
                 </div>
               </div>
 
-              <div className="flex gap-3 pt-4">
+              {/* Weekly schedule */}
+              <div>
+                <Label className="flex items-center gap-2">
+                  <CalendarDays className="h-4 w-4" />
+                  Tillgängliga dagar (valfritt)
+                </Label>
+                <p className="text-xs text-muted-foreground mb-2">
+                  Välj vilka dagar rätten ska säljas. Lämna tomt = alla dagar.
+                </p>
+                <div className="grid grid-cols-7 gap-1.5">
+                  {WEEKDAYS.map(day => (
+                    <button
+                      key={day.value}
+                      type="button"
+                      onClick={() => toggleScheduleDay(day.value)}
+                      className={`flex flex-col items-center gap-0.5 p-2 rounded-lg border transition-colors text-xs font-medium ${
+                        scheduleDays[day.value]
+                          ? 'bg-primary text-primary-foreground border-primary'
+                          : 'bg-muted/50 text-muted-foreground border-border hover:border-primary/50'
+                      }`}
+                    >
+                      {day.short}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
                 <Button
                   onClick={() => setIsDialogOpen(false)}
                   variant="outline"
