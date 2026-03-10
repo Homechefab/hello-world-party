@@ -1,0 +1,1 @@
+DELETE FROM chefs WHERE id = 'b89d633a-a2d4-49df-ab9a-92c7e6c14579';
