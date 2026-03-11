@@ -316,17 +316,27 @@ export const KitchenPartnerApprovalManager = () => {
                                   <Button
                                     size="sm"
                                     variant="outline"
-                                    onClick={() => window.open(doc.document_url, '_blank')}
+                                    onClick={async () => {
+                                      try {
+                                        const signedUrl = await getDocumentSignedUrl(doc.document_url);
+                                        if (!signedUrl) throw new Error('Kunde inte skapa länk');
+                                        window.open(signedUrl, '_blank');
+                                      } catch (error) {
+                                        console.error('View error:', error);
+                                      }
+                                    }}
                                   >
                                     <Eye className="w-4 h-4 mr-1" />
-                                    Visa
+                                    {isImageDocument(doc.document_url) ? 'Visa bild' : 'Visa'}
                                   </Button>
                                   <Button
                                     size="sm"
                                     variant="outline"
                                     onClick={async () => {
                                       try {
-                                        const response = await fetch(doc.document_url);
+                                        const signedUrl = await getDocumentSignedUrl(doc.document_url);
+                                        if (!signedUrl) throw new Error('Kunde inte skapa länk');
+                                        const response = await fetch(signedUrl);
                                         const blob = await response.blob();
                                         const url = window.URL.createObjectURL(blob);
                                         const link = document.createElement('a');
@@ -337,10 +347,8 @@ export const KitchenPartnerApprovalManager = () => {
                                         link.click();
                                         document.body.removeChild(link);
                                         window.URL.revokeObjectURL(url);
-                                        toast.success('Dokument nedladdat');
                                       } catch (error) {
                                         console.error('Download error:', error);
-                                        toast.error('Kunde inte ladda ner dokument');
                                       }
                                     }}
                                   >
