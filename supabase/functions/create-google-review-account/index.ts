@@ -221,8 +221,8 @@ serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown error";
-    console.error("create-google-review-account error:", message);
+    const message = error instanceof Error ? error.message : JSON.stringify(error);
+    console.error("create-google-review-account error:", error);
 
     return new Response(
       JSON.stringify({ success: false, error: message }),
