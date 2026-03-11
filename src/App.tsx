@@ -19,7 +19,7 @@ import PickupPage from "./pages/PickupPage";
 import ExperiencePage from "./pages/ExperiencePage";
 import PrivateChefPage from "./pages/PrivateChefPage";
 import CateringPage from "./pages/CateringPage";
-import MealBoxesPage from "./pages/MealBoxesPage";
+// import MealBoxesPage from "./pages/MealBoxesPage"; // Hidden until dishes available
 import PartnershipPage from "./pages/PartnershipPage";
 import HowItWorks from "./pages/HowItWorks";
 import HyrUtDittKokInfo from "@/pages/kitchen-partner/HyrUtDittKokInfo";
@@ -115,7 +115,7 @@ const App = () => {
             <Route path="/experiences" element={<PublicLayout><ExperiencePage /></PublicLayout>} />
             <Route path="/private-chef" element={<PublicLayout><PrivateChefPage /></PublicLayout>} />
             <Route path="/catering" element={<PublicLayout><CateringPage /></PublicLayout>} />
-            <Route path="/meal-boxes" element={<PublicLayout><MealBoxesPage /></PublicLayout>} />
+            {/* Meal boxes route hidden until dishes are available */}
             <Route path="/partnership" element={<PublicLayout><PartnershipPage /></PublicLayout>} />
             <Route path="/how-it-works" element={<PublicLayout><HowItWorks /></PublicLayout>} />
             <Route path="/secure-payments" element={<PublicLayout><SecurePayments /></PublicLayout>} />
