@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, Calendar, Users, Utensils, Package } from "lucide-react";
+import { ShoppingBag, Calendar, Users, Utensils } from "lucide-react";
 import pickupImage from "@/assets/customer-pickup.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
 import cateringImage from "@/assets/catering-service.jpg";
-import mealBoxesImage from "@/assets/meal-boxes.jpg";
 import chefRecruitmentBg from "@/assets/chef-recruitment-bg.jpg";
 
 const customerServices = [
@@ -41,14 +40,6 @@ const customerServices = [
     href: "/catering",
     icon: Utensils,
     color: "from-orange-500 to-orange-600"
-  },
-  {
-    image: mealBoxesImage,
-    title: "Färdiglagade matlådor",
-    description: "Köp färdiga måltider för upphämtning eller hemleverans",
-    href: "/meal-boxes",
-    icon: Package,
-    color: "from-rose-500 to-rose-600"
   }
 ];
 
