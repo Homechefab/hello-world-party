@@ -90,12 +90,14 @@ serve(async (req) => {
     };
 
     const ensureRoleData = async (userId: string, account: ReviewAccount) => {
+      const profileRole = account.role === "restaurant" ? "customer" : account.role;
+
       const { error: profileError } = await admin.from("profiles").upsert(
         {
           id: userId,
           email: account.email,
           full_name: account.fullName,
-          role: account.role,
+          role: profileRole,
         },
         { onConflict: "id" }
       );
