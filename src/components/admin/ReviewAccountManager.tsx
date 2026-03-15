@@ -98,7 +98,7 @@ export function ReviewAccountManager() {
               </div>
             </div>
             {created.includes(account.platform) ? (
-              <div className="flex items-center gap-1 text-green-600">
+              <div className="flex items-center gap-1 text-primary">
                 <CheckCircle className="h-4 w-4" />
                 <span className="text-sm">Skapat</span>
               </div>
