@@ -11,6 +11,7 @@ import { LoginLogsViewer } from '@/components/admin/LoginLogsViewer';
 import { UserManagement } from '@/components/admin/UserManagement';
 import { CommissionReports } from '@/components/admin/CommissionReports';
 import { PaymentOverview } from '@/components/admin/PaymentOverview';
+import { ReviewAccountManager } from '@/components/admin/ReviewAccountManager';
 
 import { OnboardingMaterials } from '@/components/admin/OnboardingMaterials';
 import { ChefOnboardingGuide } from '@/components/admin/ChefOnboardingGuide';
@@ -308,32 +309,35 @@ export const AdminDashboard = () => {
         </TabsContent>
 
         <TabsContent value="settings">
-          <Card>
-            <CardHeader>
-              <CardTitle>Inställningar</CardTitle>
-              <CardDescription>Ställ in systemparametrar</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span>Automatiskt godkännande av kockar</span>
-                  <Button variant="outline" size="sm">Inaktiverad</Button>
+          <div className="space-y-6">
+            <ReviewAccountManager />
+            <Card>
+              <CardHeader>
+                <CardTitle>Inställningar</CardTitle>
+                <CardDescription>Ställ in systemparametrar</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span>Automatiskt godkännande av kockar</span>
+                    <Button variant="outline" size="sm">Inaktiverad</Button>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Minimipris per rätt</span>
+                    <Button variant="outline" size="sm">50 kr</Button>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Kundavgift</span>
+                    <Button variant="outline" size="sm">6%</Button>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>Säljarprovisioner</span>
+                    <Button variant="outline" size="sm">19%</Button>
+                  </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span>Minimipris per rätt</span>
-                  <Button variant="outline" size="sm">50 kr</Button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Kundavgift</span>
-                  <Button variant="outline" size="sm">6%</Button>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Säljarprovisioner</span>
-                  <Button variant="outline" size="sm">19%</Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
 
