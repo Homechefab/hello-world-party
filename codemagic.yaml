@@ -35,7 +35,6 @@ workflows:
         script: |
           cd android
           ./gradlew bundleRelease
-        timeout: 3600
 
     artifacts:
       - android/app/build/outputs/bundle/release/*.aab
