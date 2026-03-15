@@ -168,20 +168,17 @@ const SearchResults = () => {
   useEffect(() => {
     const searchContent = async () => {
       try {
-        // Search for chefs with available dishes
+        // Search for chefs with available dishes (using public view to avoid exposing sensitive data)
         const { data: chefsData, error } = await supabase
-          .from('chefs')
+          .from('public_chef_profiles')
           .select(`
             id,
             business_name,
             full_name,
             city,
-            address,
             profile_image_url,
-            specialties,
-            user_id
-          `)
-          .eq('kitchen_approved', true);
+            specialties
+          `);
 
         if (error) throw error;
 
@@ -202,38 +199,29 @@ const SearchResults = () => {
 
         if (dishError) throw dishError;
 
-        // Get profiles for all users (chefs and dish chefs)
-        const allUserIds = (chefsData?.map(chef => chef.user_id).filter((id): id is string => id !== null) || []);
-        const uniqueUserIds = [...new Set(allUserIds)];
-        
-        const { data: profilesData, error: profilesError } = await supabase
-          .from('profiles')
-          .select('id, full_name, address')
-          .in('id', uniqueUserIds);
-
-        if (profilesError) throw profilesError;
-
         // Get dish counts for chefs
+        const chefIds = chefsData?.map(c => c.id).filter((id): id is string => id !== null) || [];
         const { data: dishCounts, error: dishCountError } = await supabase
           .from('dishes')
           .select('chef_id')
           .eq('available', true)
-          .in('chef_id', chefsData?.map(c => c.id) || []);
+          .in('chef_id', chefIds);
 
         if (dishCountError) throw dishCountError;
 
         // Format chef results with distance calculation
         let formattedChefs: Chef[] = [];
         if (chefsData && chefsData.length > 0) {
-          formattedChefs = chefsData.map(chef => {
-            const profile = profilesData?.find(p => p.id === chef.user_id);
+          formattedChefs = chefsData
+            .filter(chef => chef.id !== null)
+            .map(chef => {
             const dishCount = dishCounts?.filter(d => d.chef_id === chef.id).length || 0;
             
             const chefData: Chef = {
-              id: chef.id,
-              business_name: chef.business_name,
-              full_name: chef.full_name || profile?.full_name || '',
-              address: chef.address || profile?.address || '',
+              id: chef.id!,
+              business_name: chef.business_name || '',
+              full_name: chef.full_name || '',
+              address: chef.city || '',
               dish_count: dishCount,
               city: chef.city || '',
               profile_image_url: chef.profile_image_url || undefined,
