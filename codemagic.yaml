@@ -1,0 +1,129 @@
+workflows:
+
+  android-release:
+    name: Android Release (AAB)
+    max_build_duration: 60
+    environment:
+      android_signing:
+        - homechef_keystore          # Configure in Codemagic → Code signing → Android keystores
+      groups:
+        - app_credentials            # Must contain: CM_KEYSTORE, CM_KEYSTORE_PASSWORD, CM_KEY_ALIAS, CM_KEY_PASSWORD
+      node: 20.18.0
+    scripts:
+      - name: Install pnpm
+        script: npm install -g pnpm@latest
+
+      - name: Install dependencies
+        script: pnpm install --frozen-lockfile
+
+      - name: Build web app
+        script: pnpm build
+
+      - name: Sync Capacitor Android
+        script: npx cap sync android
+
+      - name: Write key.properties
+        script: |
+          cat > android/key.properties <<EOF
+          storePassword=$CM_KEYSTORE_PASSWORD
+          keyPassword=$CM_KEY_PASSWORD
+          keyAlias=$CM_KEY_ALIAS
+          storeFile=$CM_KEYSTORE_PATH
+          EOF
+
+      - name: Build Android AAB (release)
+        script: |
+          cd android
+          ./gradlew bundleRelease
+        timeout: 3600
+
+    artifacts:
+      - android/app/build/outputs/bundle/release/*.aab
+      - android/app/build/outputs/apk/release/*.apk
+      - android/app/build/reports/**/*
+
+    publishing:
+      email:
+        recipients:
+          - build-notifications@homechef.se   # Replace with your email
+        notify:
+          success: true
+          failure: true
+      # Uncomment when ready to publish to Google Play:
+      # google_play:
+      #   credentials: $GCLOUD_SERVICE_ACCOUNT_CREDENTIALS
+      #   track: internal
+      #   submit_as_draft: true
+
+  # ─────────────────────────────────────────────────────────
+  ios-release:
+    name: iOS Release (IPA)
+    max_build_duration: 120
+    integrations:
+      app_store_connect: HomechefASC   # Configure in Codemagic → Integrations → App Store Connect
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.homechef.app
+      groups:
+        - app_credentials
+      node: 20.18.0
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Install pnpm
+        script: npm install -g pnpm@latest
+
+      - name: Install dependencies
+        script: pnpm install --frozen-lockfile
+
+      - name: Build web app
+        script: pnpm build
+
+      - name: Sync Capacitor iOS
+        script: npx cap sync ios
+
+      - name: Install CocoaPods dependencies
+        script: |
+          cd ios/App
+          pod install
+
+      - name: Set up code signing
+        script: xcode-project use-profiles
+
+      - name: Build iOS archive
+        script: |
+          cd ios/App
+          xcodebuild \
+            -workspace App.xcworkspace \
+            -scheme App \
+            -configuration Release \
+            -archivePath "$CM_BUILD_DIR/App.xcarchive" \
+            -destination "generic/platform=iOS" \
+            CODE_SIGN_STYLE=Manual \
+            archive
+
+      - name: Export IPA
+        script: |
+          xcode-project build-ipa \
+            --workspace "ios/App/App.xcworkspace" \
+            --scheme App \
+            --archive-path "$CM_BUILD_DIR/App.xcarchive"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+
+    publishing:
+      email:
+        recipients:
+          - build-notifications@homechef.se   # Replace with your email
+        notify:
+          success: true
+          failure: true
+      # Uncomment when ready to publish to App Store / TestFlight:
+      # app_store_connect:
+      #   auth: integration
+      #   submit_to_testflight: true
+      #   submit_to_app_store: false
