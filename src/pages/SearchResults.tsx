@@ -168,20 +168,17 @@ const SearchResults = () => {
   useEffect(() => {
     const searchContent = async () => {
       try {
-        // Search for chefs with available dishes
+        // Search for chefs with available dishes (using public view to avoid exposing sensitive data)
         const { data: chefsData, error } = await supabase
-          .from('chefs')
+          .from('public_chef_profiles')
           .select(`
             id,
             business_name,
             full_name,
             city,
-            address,
             profile_image_url,
-            specialties,
-            user_id
-          `)
-          .eq('kitchen_approved', true);
+            specialties
+          `);
 
         if (error) throw error;
 
