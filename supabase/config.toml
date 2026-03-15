@@ -126,3 +126,6 @@ verify_jwt = false
 
 [functions.notify-chef-new-order]
 verify_jwt = false
+
+[functions.create-review-account]
+verify_jwt = false
