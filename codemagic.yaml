@@ -59,7 +59,7 @@ workflows:
     name: iOS Release (IPA)
     max_build_duration: 120
     integrations:
-      app_store_connect: HomechefASC   # Configure in Codemagic → Integrations → App Store Connect
+      app_store_connect: Homechef
     environment:
       ios_signing:
         distribution_type: app_store
