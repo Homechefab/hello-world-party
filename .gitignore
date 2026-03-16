@@ -30,3 +30,11 @@ storybook-static
 android/key.properties
 android/*.keystore
 android/*.jks
+
+# Build output directories (should never be committed)
+dist-lovable/
+dist-preview/
+
+# Release archives
+*.zip
+*.ipa
