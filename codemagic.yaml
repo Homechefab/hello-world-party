@@ -63,7 +63,7 @@ workflows:
     environment:
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.homechef.app
+        bundle_identifier: se.homechef.nu
       groups:
         - app_credentials
       node: 20.18.0
