@@ -7,10 +7,9 @@ const corsHeaders = {
 };
 
 interface SwishPaymentRequest {
-  amount: number;
   payerAlias: string; // Customer's phone number (Swedish format: 46XXXXXXXXX)
   message?: string;
-  orderId?: string;
+  orderId: string; // Required — we validate price from the DB
 }
 
 serve(async (req) => {
@@ -20,12 +19,76 @@ serve(async (req) => {
   }
 
   try {
-    const { amount, payerAlias, message, orderId } = await req.json() as SwishPaymentRequest;
+    // --- Authentication: require a valid JWT ---
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Unauthorized" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
+    }
+
+    const supabaseAnon = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsError } = await supabaseAnon.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Unauthorized" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
+    }
+
+    const userId = claimsData.claims.sub;
+
+    const { payerAlias, message, orderId } = await req.json() as SwishPaymentRequest;
 
     // Validate required fields
-    if (!amount || !payerAlias) {
-      throw new Error("Amount and payer phone number are required");
+    if (!payerAlias || !orderId) {
+      throw new Error("Payer phone number and orderId are required");
     }
+
+    // Validate Swedish phone number format
+    const phoneRegex = /^46\d{9}$/;
+    if (!phoneRegex.test(payerAlias.replace(/\D/g, ""))) {
+      throw new Error("Invalid Swedish phone number format. Use format: 46XXXXXXXXX");
+    }
+
+    // --- Server-side price validation: fetch the order from DB ---
+    const supabaseService = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    const { data: order, error: orderError } = await supabaseService
+      .from("orders")
+      .select("id, total_amount, customer_id, status")
+      .eq("id", orderId)
+      .single();
+
+    if (orderError || !order) {
+      throw new Error("Order not found");
+    }
+
+    // Verify the authenticated user owns this order
+    if (order.customer_id !== userId) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Forbidden" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
+      );
+    }
+
+    // Prevent paying for already-paid orders
+    if (order.status === "paid") {
+      throw new Error("Order is already paid");
+    }
+
+    // Use the DB-verified amount (not client-supplied)
+    const amount = Number(order.total_amount);
 
     // Add 6% service fee to the amount (customer pays)
     const serviceFeeRate = 0.06;
@@ -34,14 +97,8 @@ serve(async (req) => {
     console.log("Swish payment amount calculation:", {
       originalAmount: amount,
       serviceFee: amount * serviceFeeRate,
-      totalAmount: totalAmount
+      totalAmount: totalAmount,
     });
-
-    // Validate Swedish phone number format
-    const phoneRegex = /^46\d{9}$/;
-    if (!phoneRegex.test(payerAlias.replace(/\D/g, ''))) {
-      throw new Error("Invalid Swedish phone number format. Use format: 46XXXXXXXXX");
-    }
 
     const payeeAlias = Deno.env.get("SWISH_PAYEE_ALIAS");
     const certificate = Deno.env.get("SWISH_CERTIFICATE");
@@ -53,16 +110,17 @@ serve(async (req) => {
     }
 
     // Generate unique instruction ID (UUID format)
-    const instructionId = crypto.randomUUID().replace(/-/g, '').toUpperCase();
+    const instructionId = crypto.randomUUID().replace(/-/g, "").toUpperCase();
 
-    // Swish API endpoint (Production: https://cpc.getswish.net/swish-cpcapi/api/v2/paymentrequests)
-    // Test: https://mss.cpc.getswish.net/swish-cpcapi/api/v2/paymentrequests
+    // Generate a callback verification secret for this payment
+    const callbackSecret = crypto.randomUUID();
+
     const swishApiUrl = "https://cpc.getswish.net/swish-cpcapi/api/v2/paymentrequests";
 
     const paymentRequest = {
-      payeePaymentReference: orderId || instructionId,
+      payeePaymentReference: instructionId,
       callbackUrl: callbackUrl || `https://rkucenozpmaixfphpiub.supabase.co/functions/v1/swish-callback`,
-      payerAlias: payerAlias.replace(/\D/g, ''),
+      payerAlias: payerAlias.replace(/\D/g, ""),
       payeeAlias: payeeAlias,
       amount: totalAmount.toFixed(2),
       currency: "SEK",
@@ -72,11 +130,9 @@ serve(async (req) => {
     console.log("Creating Swish payment request:", JSON.stringify(paymentRequest));
 
     // Create HTTP client with mTLS (client certificate authentication)
-    // Swish requires mutual TLS for API authentication
     let response: Response;
-    
+
     try {
-      // Use Deno's createHttpClient for mTLS support
       const httpClient = Deno.createHttpClient({
         cert: certificate,
         key: privateKey,
@@ -92,13 +148,13 @@ serve(async (req) => {
       });
     } catch (tlsError) {
       console.error("TLS/mTLS error:", tlsError);
-      throw new Error(`Swish certificate authentication failed: ${tlsError instanceof Error ? tlsError.message : "Unknown TLS error"}`);
+      throw new Error("Swish certificate authentication failed");
     }
 
     if (!response.ok) {
       const errorText = await response.text();
       console.error("Swish API error:", errorText);
-      throw new Error(`Swish API error: ${response.status} - ${errorText}`);
+      throw new Error(`Swish API error: ${response.status}`);
     }
 
     // Swish returns 201 Created with Location header containing payment request URL
@@ -107,13 +163,8 @@ serve(async (req) => {
 
     console.log("Swish payment request created successfully:", { location, paymentRequestToken });
 
-    // Store payment request in database for tracking
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
-
-    await supabaseClient.from("swish_payments").insert({
+    // Store payment request in database for tracking, including the callback secret
+    await supabaseService.from("swish_payments").insert({
       instruction_id: instructionId,
       amount: totalAmount,
       payer_alias: payerAlias,
@@ -139,9 +190,9 @@ serve(async (req) => {
   } catch (error) {
     console.error("Error in swish-payment function:", error);
     return new Response(
-      JSON.stringify({ 
-        success: false, 
-        error: error instanceof Error ? error.message : "Unknown error" 
+      JSON.stringify({
+        success: false,
+        error: "Internal server error",
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
