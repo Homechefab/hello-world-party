@@ -73,7 +73,7 @@ workflows:
       cocoapods: default
     scripts:
       - name: Install pnpm
-        script: npm install -g pnpm@latest
+        script: which pnpm || npm install -g pnpm@latest
 
       - name: Install dependencies
         script: pnpm install --frozen-lockfile
