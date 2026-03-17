@@ -1,0 +1,1 @@
+DROP POLICY "Users can insert their own transactions" ON points_transactions;
