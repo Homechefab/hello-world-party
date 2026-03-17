@@ -40,11 +40,28 @@ serve(async (req) => {
       throw new Error('User not authenticated');
     }
 
-    const { order_id, order_amount } = await req.json();
+    const { order_id } = await req.json();
 
-    if (!order_id || !order_amount) {
-      throw new Error('Missing required parameters: order_id, order_amount');
+    if (!order_id) {
+      throw new Error('Missing required parameter: order_id');
     }
+
+    // Look up the actual order amount from the database — never trust client-supplied values
+    const { data: orderData, error: orderError } = await supabaseAdmin
+      .from('orders')
+      .select('total_amount, customer_id')
+      .eq('id', order_id)
+      .single();
+
+    if (orderError || !orderData) {
+      throw new Error('Order not found');
+    }
+
+    if (orderData.customer_id !== user.id) {
+      throw new Error('Order does not belong to this user');
+    }
+
+    const order_amount = orderData.total_amount;
 
     console.log(`Processing points award for user ${user.id}, order ${order_id}, amount ${order_amount}`);
 

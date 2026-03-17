@@ -270,9 +270,11 @@ const handler = async (req: Request): Promise<Response> => {
 function generatePassword(): string {
   const length = 12;
   const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%";
+  const array = new Uint32Array(length);
+  crypto.getRandomValues(array);
   let password = "";
   for (let i = 0; i < length; i++) {
-    password += charset.charAt(Math.floor(Math.random() * charset.length));
+    password += charset[array[i] % charset.length];
   }
   return password;
 }
