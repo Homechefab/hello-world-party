@@ -1,0 +1,1 @@
+DROP POLICY "Block anonymous access to login logs" ON login_logs;

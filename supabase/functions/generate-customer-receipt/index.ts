@@ -12,6 +12,30 @@ serve(async (req) => {
   }
 
   try {
+    // Verify authentication
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401,
+      });
+    }
+
+    const supabaseAnon = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabaseAnon.auth.getUser(token);
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401,
+      });
+    }
+
     const { sessionId } = await req.json();
     if (!sessionId) {
       return new Response(JSON.stringify({ error: "sessionId är obligatoriskt" }), {
@@ -45,7 +69,19 @@ serve(async (req) => {
       );
     }
 
-    console.log("[CUSTOMER-RECEIPT] Transaction found:", transaction.id);
+    // Verify the transaction belongs to the authenticated user
+    const { data: profile } = await supabaseClient
+      .from("profiles")
+      .select("email")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile || profile.email !== transaction.customer_email) {
+      return new Response(JSON.stringify({ error: 'Access denied' }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 403,
+      });
+    }
 
     // Calculate amounts
     // total_amount includes the 6% service fee, so base price (incl VAT) = total / 1.06
