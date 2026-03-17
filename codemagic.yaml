@@ -64,6 +64,10 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: se.homechef.nu
+      vars:
+        APP_STORE_CONNECT_KEY_IDENTIFIER: 2QX4G2DCW4
+        # APP_STORE_CONNECT_ISSUER_ID and APP_STORE_CONNECT_PRIVATE_KEY
+        # must be added in Codemagic → Environment variables (app_credentials group)
       groups:
         - app_credentials
       node: 20.18.0
