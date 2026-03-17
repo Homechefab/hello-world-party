@@ -111,7 +111,7 @@ workflows:
           xcode-project build-ipa \
             --workspace "ios/App/App.xcworkspace" \
             --scheme App \
-            --archive-path "$CM_BUILD_DIR/App.xcarchive"
+            --export-options-plist "ios/ExportOptions.plist"
 
     artifacts:
       - build/ios/ipa/*.ipa
