@@ -69,7 +69,19 @@ serve(async (req) => {
       );
     }
 
-    console.log("[CUSTOMER-RECEIPT] Transaction found:", transaction.id);
+    // Verify the transaction belongs to the authenticated user
+    const { data: profile } = await supabaseClient
+      .from("profiles")
+      .select("email")
+      .eq("id", user.id)
+      .single();
+
+    if (!profile || profile.email !== transaction.customer_email) {
+      return new Response(JSON.stringify({ error: 'Access denied' }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 403,
+      });
+    }
 
     // Calculate amounts
     // total_amount includes the 6% service fee, so base price (incl VAT) = total / 1.06
