@@ -94,24 +94,12 @@ workflows:
       - name: Set up code signing
         script: xcode-project use-profiles
 
-      - name: Build iOS archive
-        script: |
-          cd ios/App
-          xcodebuild \
-            -workspace App.xcworkspace \
-            -scheme App \
-            -configuration Release \
-            -archivePath "$CM_BUILD_DIR/App.xcarchive" \
-            -destination "generic/platform=iOS" \
-            CODE_SIGN_STYLE=Manual \
-            archive
-
-      - name: Export IPA
+      - name: Build and export IPA
         script: |
           xcode-project build-ipa \
             --workspace "ios/App/App.xcworkspace" \
-            --scheme App \
-            --export-options-plist "ios/ExportOptions.plist"
+            --scheme "App" \
+            --config "Release"
 
     artifacts:
       - build/ios/ipa/*.ipa
