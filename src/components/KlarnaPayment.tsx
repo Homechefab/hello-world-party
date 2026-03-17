@@ -1,22 +1,9 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ShoppingCart, CreditCard } from 'lucide-react';
-
-interface OrderLine {
-  type: 'physical' | 'digital_goods' | 'shipping_fee' | 'sales_tax' | 'discount';
-  name: string;
-  quantity: number;
-  unit_price: number;
-  tax_rate: number;
-  total_amount: number;
-  total_discount_amount?: number;
-  total_tax_amount: number;
-}
 
 interface KlarnaPaymentProps {
   dishId?: string;
@@ -45,40 +32,23 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
   quantity = 1,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [customerEmail, setCustomerEmail] = useState('');
   const [showCheckout, setShowCheckout] = useState(false);
   const [klarnaHtml, setKlarnaHtml] = useState('');
   const { toast } = useToast();
 
-
   const unitPrice = dishPrice * 100; // Convert to öre (SEK cents)
   const totalAmount = unitPrice * quantity;
-  const taxRate = 2000; // 20% moms i baspunkter (20.00%)
-  const totalTaxAmount = Math.round(totalAmount * 0.2);
-
-  const orderLines: OrderLine[] = [
-    {
-      type: 'physical',
-      name: dishTitle,
-      quantity: quantity,
-      unit_price: unitPrice,
-      tax_rate: taxRate,
-      total_amount: totalAmount,
-      total_tax_amount: totalTaxAmount
-    }
-  ];
 
   const handleKlarnaPayment = async () => {
     setIsLoading(true);
 
     try {
-      // Build request body – prefer dishId (secure) over legacy amount/orderLines
-      const requestBody = dishId
-        ? { dishId, quantity, userEmail: customerEmail }
-        : { amount: totalAmount, currency: 'SEK', orderLines, userEmail: customerEmail };
+      if (!dishId) {
+        throw new Error('dishId is required for Klarna payment');
+      }
 
       const { data, error } = await supabase.functions.invoke('klarna-payment', {
-        body: requestBody,
+        body: { dishId, quantity },
       });
 
       if (error) throw new Error(error.message);
@@ -177,19 +147,6 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="email">E-postadress (valfritt för gäster)</Label>
-          <Input
-            id="email"
-            type="email"
-            value={customerEmail}
-            onChange={(e) => setCustomerEmail(e.target.value)}
-            placeholder="din@email.se"
-          />
-          <p className="text-xs text-muted-foreground">
-            Om du inte anger e-post genomförs köpet som gäst
-          </p>
-        </div>
 
         <Button 
           onClick={handleKlarnaPayment}
