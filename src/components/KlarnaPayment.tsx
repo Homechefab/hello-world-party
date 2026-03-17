@@ -7,17 +7,6 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { ShoppingCart, CreditCard } from 'lucide-react';
 
-interface OrderLine {
-  type: 'physical' | 'digital_goods' | 'shipping_fee' | 'sales_tax' | 'discount';
-  name: string;
-  quantity: number;
-  unit_price: number;
-  tax_rate: number;
-  total_amount: number;
-  total_discount_amount?: number;
-  total_tax_amount: number;
-}
-
 interface KlarnaPaymentProps {
   dishId?: string;
   dishTitle: string;
@@ -45,28 +34,12 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
   quantity = 1,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [customerEmail, setCustomerEmail] = useState('');
   const [showCheckout, setShowCheckout] = useState(false);
   const [klarnaHtml, setKlarnaHtml] = useState('');
   const { toast } = useToast();
 
-
   const unitPrice = dishPrice * 100; // Convert to öre (SEK cents)
   const totalAmount = unitPrice * quantity;
-  const taxRate = 2000; // 20% moms i baspunkter (20.00%)
-  const totalTaxAmount = Math.round(totalAmount * 0.2);
-
-  const orderLines: OrderLine[] = [
-    {
-      type: 'physical',
-      name: dishTitle,
-      quantity: quantity,
-      unit_price: unitPrice,
-      tax_rate: taxRate,
-      total_amount: totalAmount,
-      total_tax_amount: totalTaxAmount
-    }
-  ];
 
   const handleKlarnaPayment = async () => {
     setIsLoading(true);
