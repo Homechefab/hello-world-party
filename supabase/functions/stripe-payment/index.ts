@@ -16,9 +16,36 @@ serve(async (req) => {
 
   try {
     logStep('Stripe payment function started');
-    
+
+    // Authenticate the user
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseAnon = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: userError } = await supabaseAnon.auth.getUser(token);
+    if (userError || !user) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid or expired session' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const userId = user.id;
+    logStep('Authenticated user', { userId });
+
     // Accept dish_id and quantity instead of amount
-    const { dishId, quantity, pickupTime, pickupAddress, userId } = await req.json();
+    const { dishId, quantity, pickupTime, pickupAddress } = await req.json();
 
     if (!dishId || !quantity) {
       throw new Error('dishId and quantity are required');

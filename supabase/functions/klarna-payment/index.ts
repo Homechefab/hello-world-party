@@ -47,154 +47,97 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     );
 
+    // Authenticate the user
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: authData, error: authError } = await supabaseClient.auth.getUser(token);
+    if (authError || !authData.user) {
+      return new Response(
+        JSON.stringify({ error: "Invalid or expired session" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const user = authData.user;
+    const customerEmail = user.email || "guest@homechef.nu";
+    logStep("Authenticated user", { userId: user.id });
+
     // Parse request body
     const body = await req.json();
-    const {
-      // Preferred (secure) shape
-      dishId,
+    const { dishId, quantity } = body ?? {};
+
+    if (!dishId || !quantity) {
+      throw new Error("dishId and quantity are required");
+    }
+
+    if (quantity < 1 || quantity > 100) {
+      throw new Error("Quantity must be between 1 and 100");
+    }
+
+    logStep("Received payment request", { dishId, quantity });
+
+    // Look up the dish price from database
+    const { data: dish, error: dishError } = await supabaseService
+      .from("dishes")
+      .select("id, name, price, chef_id")
+      .eq("id", dishId)
+      .single();
+
+    if (dishError || !dish) {
+      logStep("Dish lookup failed", { error: dishError });
+      throw new Error("Invalid dish ID");
+    }
+
+    logStep("Dish found", { name: dish.name, price: dish.price });
+
+    // Calculate total amount server-side (price in SEK, convert to öre for Klarna)
+    // Include 6% service fee from customer
+    const serviceFeeRate = 0.06;
+    const unitPriceInOre = Math.round(dish.price * 100);
+    const subtotalInOre = unitPriceInOre * quantity;
+    const serviceFeeInOre = Math.round(subtotalInOre * serviceFeeRate);
+    const resolvedOrderAmountInOre = subtotalInOre + serviceFeeInOre;
+    const resolvedTaxAmountInOre = Math.round(resolvedOrderAmountInOre * 0.2);
+    const resolvedCurrency = "SEK";
+
+    logStep("Calculated amounts with service fee", {
+      unitPriceInOre,
       quantity,
-      // Legacy shape (frontend currently sends this)
-      amount,
-      currency,
-      orderLines,
-      // optional
-      userEmail,
-    } = body ?? {};
+      subtotalInOre,
+      serviceFeeInOre,
+      totalAmountInOre: resolvedOrderAmountInOre,
+      taxAmountInOre: resolvedTaxAmountInOre,
+    });
 
-    // Try to get authenticated user
-    let user = null;
-    let customerEmail = userEmail || "guest@homechef.nu";
-
-    try {
-      const authHeader = req.headers.get("Authorization");
-      if (authHeader) {
-        const token = authHeader.replace("Bearer ", "");
-        const { data } = await supabaseClient.auth.getUser(token);
-        user = data.user;
-        if (user?.email) customerEmail = user.email;
-      }
-    } catch (authError) {
-      logStep("No authenticated user, proceeding as guest", { email: customerEmail });
-    }
-
-    // Resolve order details
-    let resolvedOrderLines: any[] = [];
-    let resolvedOrderAmountInOre = 0;
-    let resolvedTaxAmountInOre = 0;
-    let resolvedCurrency = (currency || "SEK") as string;
-
-    if (dishId) {
-      if (!quantity) {
-        throw new Error("dishId and quantity are required");
-      }
-
-      if (quantity < 1 || quantity > 100) {
-        throw new Error("Quantity must be between 1 and 100");
-      }
-
-      logStep("Received payment request (dishId)", { dishId, quantity });
-
-      // Look up the dish price from database
-      const { data: dish, error: dishError } = await supabaseService
-        .from("dishes")
-        .select("id, name, price, chef_id")
-        .eq("id", dishId)
-        .single();
-
-      if (dishError || !dish) {
-        logStep("Dish lookup failed", { error: dishError });
-        throw new Error("Invalid dish ID");
-      }
-
-      logStep("Dish found", { name: dish.name, price: dish.price });
-
-      // Calculate total amount server-side (price in SEK, convert to öre for Klarna)
-      // Include 6% service fee from customer
-      const serviceFeeRate = 0.06;
-      const unitPriceInOre = Math.round(dish.price * 100);
-      const subtotalInOre = unitPriceInOre * quantity;
-      const serviceFeeInOre = Math.round(subtotalInOre * serviceFeeRate);
-      resolvedOrderAmountInOre = subtotalInOre + serviceFeeInOre;
-      resolvedTaxAmountInOre = Math.round(resolvedOrderAmountInOre * 0.2); // 20% VAT on total
-
-      logStep("Calculated amounts with service fee", {
-        unitPriceInOre,
+    const resolvedOrderLines = [
+      {
+        type: "physical",
+        reference: dish.id,
+        name: dish.name,
         quantity,
-        subtotalInOre,
-        serviceFeeInOre,
-        totalAmountInOre: resolvedOrderAmountInOre,
-        taxAmountInOre: resolvedTaxAmountInOre,
-      });
-
-      resolvedOrderLines = [
-        {
-          type: "physical",
-          reference: dish.id,
-          name: dish.name,
-          quantity,
-          unit_price: unitPriceInOre,
-          tax_rate: 2000, // 20% in basis points
-          total_amount: subtotalInOre,
-          total_tax_amount: Math.round(subtotalInOre * 0.2),
-        },
-        {
-          type: "surcharge",
-          reference: "service-fee",
-          name: "Serviceavgift (6%)",
-          quantity: 1,
-          unit_price: serviceFeeInOre,
-          tax_rate: 2000,
-          total_amount: serviceFeeInOre,
-          total_tax_amount: Math.round(serviceFeeInOre * 0.2),
-        },
-      ];
-    } else {
-      // Backward-compatible mode (accepts amount + orderLines)
-      if (!amount || !Array.isArray(orderLines) || orderLines.length < 1) {
-        throw new Error("Either (dishId + quantity) or (amount + orderLines) is required");
-      }
-
-      // Add 6% service fee to the legacy amount (customer pays)
-      const serviceFeeRate = 0.06;
-      const originalAmountInOre = Number(amount);
-      if (!Number.isFinite(originalAmountInOre) || originalAmountInOre < 1) {
-        throw new Error("amount must be a positive number in öre");
-      }
-
-      const serviceFeeInOre = Math.round(originalAmountInOre * serviceFeeRate);
-      resolvedOrderAmountInOre = originalAmountInOre + serviceFeeInOre;
-
-      // Add service fee as a separate line item
-      resolvedOrderLines = [
-        ...orderLines,
-        {
-          type: "surcharge",
-          reference: "service-fee",
-          name: "Serviceavgift (6%)",
-          quantity: 1,
-          unit_price: serviceFeeInOre,
-          tax_rate: 2000,
-          total_amount: serviceFeeInOre,
-          total_tax_amount: Math.round(serviceFeeInOre * 0.2),
-        },
-      ];
-
-      resolvedTaxAmountInOre = resolvedOrderLines.reduce(
-        (sum, line) => sum + Number(line?.total_tax_amount ?? 0),
-        0
-      );
-      if (!Number.isFinite(resolvedTaxAmountInOre) || resolvedTaxAmountInOre < 0) {
-        resolvedTaxAmountInOre = Math.round(resolvedOrderAmountInOre * 0.2);
-      }
-
-      logStep("Received payment request (legacy) with service fee", {
-        originalAmount: originalAmountInOre,
-        serviceFee: serviceFeeInOre,
-        totalAmount: resolvedOrderAmountInOre,
-        currency: resolvedCurrency,
-        orderLinesCount: resolvedOrderLines.length,
-      });
-    }
+        unit_price: unitPriceInOre,
+        tax_rate: 2000,
+        total_amount: subtotalInOre,
+        total_tax_amount: Math.round(subtotalInOre * 0.2),
+      },
+      {
+        type: "surcharge",
+        reference: "service-fee",
+        name: "Serviceavgift (6%)",
+        quantity: 1,
+        unit_price: serviceFeeInOre,
+        tax_rate: 2000,
+        total_amount: serviceFeeInOre,
+        total_tax_amount: Math.round(serviceFeeInOre * 0.2),
+      },
+    ];
 
     // Determine Klarna API endpoint
     const apiEndpoints = {
