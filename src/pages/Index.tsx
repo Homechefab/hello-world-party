@@ -14,7 +14,6 @@ import { useOrderNotifications } from "@/hooks/useOrderNotifications";
 const Index = () => {
   const { role } = useRole();
   useOrderNotifications();
-  console.log('Index component rendering');
   
   return (
     <>

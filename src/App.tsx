@@ -96,11 +96,9 @@ import Webshop from "./pages/Webshop";
 const queryClient = new QueryClient();
 
 const App = () => {
-  console.log('App.tsx: App component rendering');
   // enable left-edge right-swipe to go back on mobile webviews
   useEdgeSwipeBack();
   // auto-adjust is handled by PublicLayout/RoleBasedLayout
-  console.log('App.tsx: Hooks initialized, rendering routes');
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>

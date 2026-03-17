@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'nu.homechef.app',
+  appId: 'se.homechef.nu',
   appName: 'Homechef',
   webDir: 'dist'
 };

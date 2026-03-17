@@ -1,9 +1,45 @@
-import { Link } from "react-router-dom";
-import { MapPin, CreditCard, Heart, User, Shield, Bell, HelpCircle } from "lucide-react";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { MapPin, CreditCard, Heart, User, Shield, Bell, HelpCircle, Trash2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const SettingsPage = () => {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase.functions.invoke('delete-account');
+      if (error) throw error;
+      await supabase.auth.signOut();
+      navigate('/auth');
+      toast({ title: "Konto raderat", description: "Ditt konto och all din data har raderats." });
+    } catch {
+      toast({
+        title: "Det gick inte att radera kontot",
+        description: "Försök igen eller kontakta support@homechef.nu.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const settingsItems = [
     {
       title: "Leveransadresser",
@@ -111,6 +147,42 @@ const SettingsPage = () => {
               </Button>
             </Link>
           </div>
+        </div>
+
+        {/* Danger Zone */}
+        <div className="mt-8 border border-destructive/40 rounded-lg p-6">
+          <h2 className="text-xl font-semibold text-destructive mb-1 flex items-center gap-2">
+            <Trash2 className="w-5 h-5" />
+            Farlig zon
+          </h2>
+          <p className="text-muted-foreground text-sm mb-4">
+            Åtgärder här kan inte ångras.
+          </p>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive" disabled={isDeleting}>
+                {isDeleting ? "Raderar..." : "Radera mitt konto"}
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Radera konto permanent?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Detta raderar permanent ditt konto, din profil, beställningshistorik,
+                  sparade adresser och all annan personlig data. Åtgärden kan inte ångras.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Avbryt</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={handleDeleteAccount}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  Ja, radera mitt konto
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
     </div>

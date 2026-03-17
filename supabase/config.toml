@@ -129,3 +129,6 @@ verify_jwt = false
 
 [functions.create-review-account]
 verify_jwt = false
+
+[functions.delete-account]
+verify_jwt = true
