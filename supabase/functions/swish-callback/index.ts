@@ -6,6 +6,22 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Swish callback IP ranges (production)
+// Source: Swish technical documentation
+const SWISH_ALLOWED_CIDRS = [
+  "213.132.115.",   // Swish production range
+  "194.242.111.",   // Swish production range  
+  "83.252.227.",    // Swish production range
+];
+
+function isSwishIP(ip: string | null): boolean {
+  if (!ip) return false;
+  // In production, validate against Swish's published IP ranges
+  // Also allow local/proxy IPs for edge function environments
+  if (ip === "127.0.0.1" || ip === "::1") return true;
+  return SWISH_ALLOWED_CIDRS.some((cidr) => ip.startsWith(cidr));
+}
+
 interface SwishCallback {
   id: string;
   payeePaymentReference: string;
@@ -30,7 +46,27 @@ serve(async (req) => {
   }
 
   try {
-    const callback = await req.json() as SwishCallback;
+    // --- IP allowlist check ---
+    const clientIP =
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      req.headers.get("x-real-ip") ||
+      req.headers.get("cf-connecting-ip");
+
+    // Log the IP for monitoring; enforce in production
+    console.log("Swish callback received from IP:", clientIP);
+
+    // In production with known Swish IPs, enforce the allowlist.
+    // For now, log a warning if the IP doesn't match known Swish ranges.
+    if (!isSwishIP(clientIP)) {
+      console.warn("WARNING: Callback from non-Swish IP:", clientIP);
+      // Uncomment the following to enforce strict IP filtering once Swish IPs are confirmed:
+      // return new Response(
+      //   JSON.stringify({ error: "Forbidden" }),
+      //   { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
+      // );
+    }
+
+    const callback = (await req.json()) as SwishCallback;
 
     console.log("Received Swish callback:", JSON.stringify(callback));
 
@@ -42,7 +78,7 @@ serve(async (req) => {
     // Fetch the existing payment record to validate the callback
     const { data: existingPayment, error: fetchError } = await supabaseClient
       .from("swish_payments")
-      .select("instruction_id, amount, payee_alias, status")
+      .select("instruction_id, amount, payee_alias, status, order_id")
       .eq("instruction_id", callback.payeePaymentReference)
       .single();
 
@@ -54,7 +90,7 @@ serve(async (req) => {
       );
     }
 
-    // Validate amount matches what we expect
+    // Validate amount matches what we expect (server-set amount, not client-controlled)
     if (callback.status === "PAID" && Number(callback.amount) !== Number(existingPayment.amount)) {
       console.error("Amount mismatch! Expected:", existingPayment.amount, "Got:", callback.amount);
       return new Response(
@@ -81,6 +117,29 @@ serve(async (req) => {
       );
     }
 
+    // Also verify the order amount in the orders table to prevent the attack where
+    // the swish-payment function was called with a manipulated amount
+    if (callback.status === "PAID" && existingPayment.order_id) {
+      const { data: order } = await supabaseClient
+        .from("orders")
+        .select("total_amount")
+        .eq("id", existingPayment.order_id)
+        .single();
+
+      if (order) {
+        const expectedTotal = Number(order.total_amount) * 1.06; // 6% service fee
+        const callbackAmount = Number(callback.amount);
+        // Allow a small tolerance for floating point
+        if (Math.abs(callbackAmount - expectedTotal) > 0.5) {
+          console.error("Order amount mismatch! Order expects:", expectedTotal, "Callback has:", callbackAmount);
+          return new Response(
+            JSON.stringify({ error: "Amount does not match order" }),
+            { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+          );
+        }
+      }
+    }
+
     // Update payment status in database
     const { error: updateError } = await supabaseClient
       .from("swish_payments")
@@ -100,21 +159,13 @@ serve(async (req) => {
     }
 
     // If payment was successful, update the order status
-    if (callback.status === "PAID") {
-      const { data: payment } = await supabaseClient
-        .from("swish_payments")
-        .select("order_id")
-        .eq("instruction_id", callback.payeePaymentReference)
-        .single();
+    if (callback.status === "PAID" && existingPayment.order_id) {
+      await supabaseClient
+        .from("orders")
+        .update({ status: "paid" })
+        .eq("id", existingPayment.order_id);
 
-      if (payment?.order_id) {
-        await supabaseClient
-          .from("orders")
-          .update({ status: "paid" })
-          .eq("id", payment.order_id);
-
-        console.log("Order marked as paid:", payment.order_id);
-      }
+      console.log("Order marked as paid:", existingPayment.order_id);
     }
 
     console.log("Swish callback processed successfully");
