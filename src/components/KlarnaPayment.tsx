@@ -149,19 +149,6 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
           </div>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="email">E-postadress (valfritt för gäster)</Label>
-          <Input
-            id="email"
-            type="email"
-            value={customerEmail}
-            onChange={(e) => setCustomerEmail(e.target.value)}
-            placeholder="din@email.se"
-          />
-          <p className="text-xs text-muted-foreground">
-            Om du inte anger e-post genomförs köpet som gäst
-          </p>
-        </div>
 
         <Button 
           onClick={handleKlarnaPayment}
