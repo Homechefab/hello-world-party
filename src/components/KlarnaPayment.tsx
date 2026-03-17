@@ -72,13 +72,12 @@ export const KlarnaPayment: React.FC<KlarnaPaymentProps> = ({
     setIsLoading(true);
 
     try {
-      // Build request body – prefer dishId (secure) over legacy amount/orderLines
-      const requestBody = dishId
-        ? { dishId, quantity, userEmail: customerEmail }
-        : { amount: totalAmount, currency: 'SEK', orderLines, userEmail: customerEmail };
+      if (!dishId) {
+        throw new Error('dishId is required for Klarna payment');
+      }
 
       const { data, error } = await supabase.functions.invoke('klarna-payment', {
-        body: requestBody,
+        body: { dishId, quantity },
       });
 
       if (error) throw new Error(error.message);
