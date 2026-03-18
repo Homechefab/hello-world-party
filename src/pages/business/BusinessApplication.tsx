@@ -142,9 +142,19 @@ const BusinessApplication = () => {
 
       const { data: { user } } = await supabase.auth.getUser();
       
-      // Insert application - user_id can be null for non-logged-in users
+      if (!user) {
+        toast({
+          title: "Inloggning krävs",
+          description: "Du måste vara inloggad för att skicka en ansökan.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+      
+      // Insert application - user_id is required
       const { data: insertResult, error } = await supabase.from("business_partners").insert({
-        user_id: user?.id || null,
+        user_id: user.id,
         business_name: data.businessName,
         organization_number: data.organizationNumber,
         contact_name: data.contactName,

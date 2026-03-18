@@ -181,13 +181,10 @@ export function RoleProvider({ children }: { children: ReactNode }) {
 
   const switchRole = (newRole: UserRole) => {
     console.log('switchRole called with:', newRole, 'current roles:', roles);
-    // Block switching to admin unless user already has admin role from DB
-    if (newRole === 'admin' && !roles.includes('admin')) {
-      console.warn('Cannot switch to admin role without DB-level admin access');
-      return;
-    }
+    // Only allow switching to roles the user already holds in the database
     if (!roles.includes(newRole)) {
-      setRoles(prev => [...prev, newRole]);
+      console.warn('Cannot switch to role not assigned in database:', newRole);
+      return;
     }
     setRole(newRole);
     if (user) {
