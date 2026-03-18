@@ -143,7 +143,11 @@ const BusinessApplication = () => {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        toast.error("Du måste vara inloggad för att skicka en ansökan.");
+        toast({
+          title: "Inloggning krävs",
+          description: "Du måste vara inloggad för att skicka en ansökan.",
+          variant: "destructive",
+        });
         setIsSubmitting(false);
         return;
       }
