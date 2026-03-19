@@ -82,7 +82,7 @@ const ReviewSection = ({ chefId, averageRating, totalReviews, reviews: propRevie
     fetchReviews();
   }, [fetchReviews]);
 
-  const handleSubmitReview = () => {
+  const handleSubmitReview = async () => {
     if (newReview.rating === 0) {
       toast({
         title: "Välj betyg",
@@ -101,12 +101,53 @@ const ReviewSection = ({ chefId, averageRating, totalReviews, reviews: propRevie
       return;
     }
 
+    // Get current user
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user || !chefId) {
+      toast({ title: "Du måste vara inloggad", variant: "destructive" });
+      return;
+    }
+
+    // Find a delivered order from this chef to attach the review to
+    const { data: orderData, error: orderError } = await supabase
+      .from('orders')
+      .select('id')
+      .eq('customer_id', user.id)
+      .eq('chef_id', chefId)
+      .eq('status', 'delivered')
+      .limit(1)
+      .maybeSingle();
+
+    if (orderError || !orderData) {
+      toast({ 
+        title: "Ingen levererad beställning", 
+        description: "Du kan bara recensera en kock efter en levererad beställning.",
+        variant: "destructive" 
+      });
+      return;
+    }
+
+    const { error } = await supabase.from('reviews').insert({
+      order_id: orderData.id,
+      customer_id: user.id,
+      chef_id: chefId,
+      rating: newReview.rating,
+      comment: newReview.comment.trim(),
+    });
+
+    if (error) {
+      console.error('Error submitting review:', error);
+      toast({ title: "Kunde inte skicka recension", variant: "destructive" });
+      return;
+    }
+
     toast({
       title: "Recension skickad!",
-      description: "Tack för din feedback. Din recension kommer granskas innan publicering."
+      description: "Tack för din feedback."
     });
 
     setNewReview({ rating: 0, comment: "" });
+    fetchReviews();
   };
 
   const getRatingDistribution = () => {

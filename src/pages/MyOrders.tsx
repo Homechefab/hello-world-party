@@ -421,6 +421,56 @@ const MyOrders = () => {
             ))}
           </div>
         )}
+
+        {/* Review Dialog */}
+        <Dialog open={reviewDialogOpen} onOpenChange={setReviewDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Lämna recension</DialogTitle>
+            </DialogHeader>
+            {reviewOrder && (
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  {reviewOrder.dish_name} från {reviewOrder.chef_name}
+                </p>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Betyg *</label>
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`w-8 h-8 cursor-pointer transition-transform hover:scale-110 ${
+                          star <= (reviewHover || reviewRating)
+                            ? 'fill-yellow-400 text-yellow-400'
+                            : 'text-muted-foreground/30'
+                        }`}
+                        onClick={() => setReviewRating(star)}
+                        onMouseEnter={() => setReviewHover(star)}
+                        onMouseLeave={() => setReviewHover(0)}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Kommentar (valfritt)</label>
+                  <Textarea
+                    placeholder="Berätta om din upplevelse..."
+                    value={reviewComment}
+                    onChange={(e) => setReviewComment(e.target.value)}
+                    rows={3}
+                  />
+                </div>
+                <Button
+                  onClick={handleSubmitReview}
+                  disabled={submittingReview || reviewRating === 0}
+                  className="w-full"
+                >
+                  {submittingReview ? 'Skickar...' : 'Skicka recension'}
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

@@ -467,6 +467,17 @@ const ChefProfile = () => {
           )}
         </div>
         </section>
+
+        {/* Reviews Section */}
+        <section className="py-12 bg-secondary/10">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <ReviewSection
+              chefId={chef.id}
+              averageRating={averageRating}
+              totalReviews={totalReviews}
+            />
+          </div>
+        </section>
       </div>
     </>
   );
