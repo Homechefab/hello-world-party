@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, Calendar, Users, Utensils } from "lucide-react";
+import { ShoppingBag, Calendar, Users, Utensils, Package } from "lucide-react";
 import pickupImage from "@/assets/customer-pickup.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
