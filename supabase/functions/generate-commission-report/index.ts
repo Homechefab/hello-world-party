@@ -406,7 +406,7 @@ serve(async (req) => {
         <div class="section-title">Beställning</div>
         <div class="order-item">
           <div class="item-details">
-            <div class="item-name">${transaction.dish_name}</div>
+            <div class="item-name">${escapeHtml(transaction.dish_name)}</div>
             <div class="item-quantity">Antal: ${transaction.quantity} st</div>
           </div>
         <div class="item-price">${basePrice.toFixed(2)} ${transaction.currency}</div>
