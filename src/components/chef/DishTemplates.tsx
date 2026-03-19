@@ -344,23 +344,79 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
 
               <div>
                 <Label>Ingredienser</Label>
-                <div className="flex flex-wrap gap-1 p-2 border rounded-md bg-muted">
-                  {(selectedTemplate.ingredients || []).map((ingredient, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
+                <div className="flex flex-wrap gap-1 p-2 border rounded-md bg-muted min-h-[40px]">
+                  {customIngredients.map((ingredient, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs gap-1">
                       {ingredient}
+                      <button type="button" onClick={() => setCustomIngredients(prev => prev.filter((_, i) => i !== index))} className="ml-0.5 hover:text-destructive">
+                        <X className="w-3 h-3" />
+                      </button>
                     </Badge>
                   ))}
+                </div>
+                <div className="flex gap-2 mt-1">
+                  <Input
+                    value={newIngredient}
+                    onChange={(e) => setNewIngredient(e.target.value)}
+                    placeholder="Lägg till ingrediens..."
+                    className="text-sm h-8"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const val = newIngredient.trim();
+                        if (val && !customIngredients.includes(val)) {
+                          setCustomIngredients(prev => [...prev, val]);
+                          setNewIngredient("");
+                        }
+                      }
+                    }}
+                  />
+                  <Button type="button" variant="outline" size="sm" className="h-8 px-3" onClick={() => {
+                    const val = newIngredient.trim();
+                    if (val && !customIngredients.includes(val)) {
+                      setCustomIngredients(prev => [...prev, val]);
+                      setNewIngredient("");
+                    }
+                  }}>Lägg till</Button>
                 </div>
               </div>
 
               <div>
                 <Label>Allergener</Label>
-                <div className="flex flex-wrap gap-1 p-2 border rounded-md bg-muted">
-                  {(selectedTemplate.allergens || []).map((allergen, index) => (
-                    <Badge key={index} variant="outline" className="text-xs">
+                <div className="flex flex-wrap gap-1 p-2 border rounded-md bg-muted min-h-[40px]">
+                  {customAllergens.map((allergen, index) => (
+                    <Badge key={index} variant="outline" className="text-xs gap-1">
                       {allergen}
+                      <button type="button" onClick={() => setCustomAllergens(prev => prev.filter((_, i) => i !== index))} className="ml-0.5 hover:text-destructive">
+                        <X className="w-3 h-3" />
+                      </button>
                     </Badge>
                   ))}
+                </div>
+                <div className="flex gap-2 mt-1">
+                  <Input
+                    value={newAllergen}
+                    onChange={(e) => setNewAllergen(e.target.value)}
+                    placeholder="Lägg till allergen..."
+                    className="text-sm h-8"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const val = newAllergen.trim();
+                        if (val && !customAllergens.includes(val)) {
+                          setCustomAllergens(prev => [...prev, val]);
+                          setNewAllergen("");
+                        }
+                      }
+                    }}
+                  />
+                  <Button type="button" variant="outline" size="sm" className="h-8 px-3" onClick={() => {
+                    const val = newAllergen.trim();
+                    if (val && !customAllergens.includes(val)) {
+                      setCustomAllergens(prev => [...prev, val]);
+                      setNewAllergen("");
+                    }
+                  }}>Lägg till</Button>
                 </div>
               </div>
 
