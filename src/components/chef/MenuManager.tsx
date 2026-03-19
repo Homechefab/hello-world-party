@@ -344,6 +344,86 @@ const MenuManager = () => {
                 </div>
               </div>
 
+              {/* Ingredients */}
+              <div>
+                <Label>Ingredienser</Label>
+                <div className="flex flex-wrap gap-1 p-2 border rounded-md bg-muted min-h-[40px]">
+                  {(editingDish.ingredients || []).map((ingredient, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs gap-1">
+                      {ingredient}
+                      <button type="button" onClick={() => setEditingDish({...editingDish, ingredients: (editingDish.ingredients || []).filter((_, i) => i !== index)})} className="ml-0.5 hover:text-destructive">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex gap-2 mt-1">
+                  <Input
+                    value={newIngredient}
+                    onChange={(e) => setNewIngredient(e.target.value)}
+                    placeholder="Lägg till ingrediens..."
+                    className="text-sm h-8"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const val = newIngredient.trim();
+                        if (val && !(editingDish.ingredients || []).includes(val)) {
+                          setEditingDish({...editingDish, ingredients: [...(editingDish.ingredients || []), val]});
+                          setNewIngredient("");
+                        }
+                      }
+                    }}
+                  />
+                  <Button type="button" variant="outline" size="sm" className="h-8 px-3" onClick={() => {
+                    const val = newIngredient.trim();
+                    if (val && !(editingDish.ingredients || []).includes(val)) {
+                      setEditingDish({...editingDish, ingredients: [...(editingDish.ingredients || []), val]});
+                      setNewIngredient("");
+                    }
+                  }}>Lägg till</Button>
+                </div>
+              </div>
+
+              {/* Allergens */}
+              <div>
+                <Label>Allergener</Label>
+                <div className="flex flex-wrap gap-1 p-2 border rounded-md bg-muted min-h-[40px]">
+                  {(editingDish.allergens || []).map((allergen, index) => (
+                    <Badge key={index} variant="outline" className="text-xs gap-1">
+                      {allergen}
+                      <button type="button" onClick={() => setEditingDish({...editingDish, allergens: (editingDish.allergens || []).filter((_, i) => i !== index)})} className="ml-0.5 hover:text-destructive">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex gap-2 mt-1">
+                  <Input
+                    value={newAllergen}
+                    onChange={(e) => setNewAllergen(e.target.value)}
+                    placeholder="Lägg till allergen..."
+                    className="text-sm h-8"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const val = newAllergen.trim();
+                        if (val && !(editingDish.allergens || []).includes(val)) {
+                          setEditingDish({...editingDish, allergens: [...(editingDish.allergens || []), val]});
+                          setNewAllergen("");
+                        }
+                      }
+                    }}
+                  />
+                  <Button type="button" variant="outline" size="sm" className="h-8 px-3" onClick={() => {
+                    const val = newAllergen.trim();
+                    if (val && !(editingDish.allergens || []).includes(val)) {
+                      setEditingDish({...editingDish, allergens: [...(editingDish.allergens || []), val]});
+                      setNewAllergen("");
+                    }
+                  }}>Lägg till</Button>
+                </div>
+              </div>
+
               <div className="flex items-center gap-2">
                 <Switch
                   checked={editingDish.available || false}
