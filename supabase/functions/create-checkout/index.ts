@@ -67,13 +67,15 @@ serve(async (req) => {
     // Try to get authenticated user (optional for checkout)
     let customerId: string | undefined;
     let userEmail: string | undefined;
+    let authenticatedUserId: string | undefined;
 
     const authHeader = req.headers.get("Authorization");
     if (authHeader) {
       try {
         const token = authHeader.replace("Bearer ", "");
         const { data } = await supabaseClient.auth.getUser(token);
-        if (data.user?.email) {
+        if (data.user) {
+          authenticatedUserId = data.user.id;
           userEmail = data.user.email;
           
           // Check if customer exists
