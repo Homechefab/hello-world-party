@@ -49,7 +49,7 @@ export const UserManagement = () => {
       // Hämta alla användare
       const { data: profiles, error: profileError } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, email, full_name, phone, address, created_at')
         .order('created_at', { ascending: false });
 
       if (profileError) throw profileError;

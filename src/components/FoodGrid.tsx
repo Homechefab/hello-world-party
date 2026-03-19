@@ -46,7 +46,7 @@ const FoodGrid = () => {
           price: dish.price,
           image_url: dish.image_url,
           chef_id: dish.chef_id,
-          chef_name: (dish.chefs as any)?.business_name || null
+          chef_name: (dish.chefs as { business_name: string } | null)?.business_name || null
         }));
 
         setDishes(formattedDishes);

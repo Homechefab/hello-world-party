@@ -94,8 +94,8 @@ const MyOrders = () => {
             delivery_address: order.delivery_address,
             delivery_time: order.delivery_time,
             created_at: order.created_at,
-            estimated_ready_at: (order as any).estimated_ready_at,
-            preparation_started_at: (order as any).preparation_started_at,
+            estimated_ready_at: order.estimated_ready_at,
+            preparation_started_at: order.preparation_started_at,
             items: transformedItems
           };
         })
