@@ -68,6 +68,13 @@ serve(async (req) => {
         });
       }
     }
+    // Final deny: if neither userId nor email could be verified, block access
+    if (!session.metadata?.userId && !session.customer_details?.email) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 403,
+      });
+    }
 
     let paymentIntentId: string | undefined;
     let chargeId: string | undefined;

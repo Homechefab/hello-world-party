@@ -486,7 +486,6 @@ serve(async (req: Request): Promise<Response> => {
       message: `${platform} review account ${existedAlready ? "updated" : "created"} successfully`,
       userId,
       email,
-      credentials: { email, password },
     });
   } catch (error: any) {
     console.error("Error creating review account:", error);
