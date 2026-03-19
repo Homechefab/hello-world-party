@@ -16,6 +16,8 @@ interface Chef {
   city?: string;
   profile_image_url?: string;
   specialties?: string;
+  avgRating?: number;
+  reviewCount?: number;
 }
 
 interface Dish {
@@ -209,6 +211,20 @@ const SearchResults = () => {
 
         if (dishCountError) throw dishCountError;
 
+        // Get reviews for all chefs
+        const { data: allReviews } = await supabase
+          .from('reviews')
+          .select('chef_id, rating')
+          .in('chef_id', chefIds);
+
+        // Build review stats per chef
+        const reviewStats: Record<string, { total: number; count: number }> = {};
+        (allReviews || []).forEach(r => {
+          if (!reviewStats[r.chef_id]) reviewStats[r.chef_id] = { total: 0, count: 0 };
+          reviewStats[r.chef_id].total += r.rating;
+          reviewStats[r.chef_id].count += 1;
+        });
+
         // Format chef results with distance calculation
         let formattedChefs: Chef[] = [];
         if (chefsData && chefsData.length > 0) {
@@ -216,6 +232,7 @@ const SearchResults = () => {
             .filter(chef => chef.id !== null)
             .map(chef => {
             const dishCount = dishCounts?.filter(d => d.chef_id === chef.id).length || 0;
+            const stats = reviewStats[chef.id!];
             
             const chefData: Chef = {
               id: chef.id!,
@@ -225,7 +242,9 @@ const SearchResults = () => {
               dish_count: dishCount,
               city: chef.city || '',
               profile_image_url: chef.profile_image_url || undefined,
-              specialties: chef.specialties || undefined
+              specialties: chef.specialties || undefined,
+              avgRating: stats ? Math.round((stats.total / stats.count) * 10) / 10 : undefined,
+              reviewCount: stats?.count || 0,
             };
 
             // Calculate distance if there's a location query
@@ -539,7 +558,9 @@ const SearchResults = () => {
                               <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center">
                                   <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                                  <span>4.8 (12 recensioner)</span>
+                                  <span>
+                                    {chef.avgRating ? `${chef.avgRating} (${chef.reviewCount} ${chef.reviewCount === 1 ? 'recension' : 'recensioner'})` : 'Inga recensioner'}
+                                  </span>
                                 </div>
                                 <Badge variant="secondary">
                                   {chef.dish_count} rätter

@@ -291,7 +291,7 @@ const RestaurantDashboard = () => {
     totalDishes: dishes.length,
     availableDishes: dishes.filter(d => d.available).length,
     totalOrders: 0,
-    avgRating: 4.7
+    avgRating: '-'
   };
 
   return (
