@@ -397,11 +397,17 @@ const MyOrders = () => {
                           </Link>
                         </Button>
                         
-                        {order.status === 'delivered' && (
-                          <Button variant="outline" size="sm">
+                        {order.status === 'delivered' && !reviewedOrderIds.has(order.id) && (
+                          <Button variant="outline" size="sm" onClick={() => handleOpenReview(order)}>
                             <Star className="w-4 h-4 mr-1" />
                             Lämna recension
                           </Button>
+                        )}
+                        {order.status === 'delivered' && reviewedOrderIds.has(order.id) && (
+                          <Badge variant="secondary">
+                            <Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400" />
+                            Recenserad
+                          </Badge>
                         )}
                         
                         <Button variant="outline" size="sm">
