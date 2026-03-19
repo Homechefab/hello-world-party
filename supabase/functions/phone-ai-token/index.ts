@@ -83,7 +83,7 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify({ 
-        signedUrl: data.signed_url,
+        signedUrl: result.signed_url,
         agentId: targetAgentId
       }),
       {
