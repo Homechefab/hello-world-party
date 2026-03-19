@@ -91,7 +91,7 @@ const ChefForum = () => {
       if (!expandedPost) return [];
       const { data, error } = await supabase
         .from("forum_replies")
-        .select("*")
+        .select("id, user_id, post_id, content, likes_count, created_at")
         .eq("post_id", expandedPost)
         .order("created_at", { ascending: true });
       if (error) throw error;
