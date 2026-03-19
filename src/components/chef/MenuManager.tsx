@@ -103,7 +103,9 @@ const MenuManager = () => {
           description: editingDish.description,
           price: editingDish.price,
           available: editingDish.available,
-          preparation_time: editingDish.preparation_time
+          preparation_time: editingDish.preparation_time,
+          ingredients: editingDish.ingredients || [],
+          allergens: editingDish.allergens || []
         })
         .eq('id', editingDish.id);
 
