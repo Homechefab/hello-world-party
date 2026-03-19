@@ -224,7 +224,28 @@ serve(async (req) => {
 
     const authenticatedUserId = claimsData.claims.sub;
 
-    const { messages, userRole = 'customer', userEmail } = await req.json();
+    const { messages, userEmail } = await req.json();
+
+    // Look up the user's actual role from the database instead of trusting client input
+    let verifiedRole = 'customer';
+    try {
+      const { data: roleRows } = await supabaseClient
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', authenticatedUserId);
+      if (roleRows && roleRows.length > 0) {
+        // Prefer admin > chef > kitchen_partner > restaurant > customer
+        const rolePriority = ['admin', 'chef', 'kitchen_partner', 'restaurant', 'customer'];
+        for (const r of rolePriority) {
+          if (roleRows.some((row: any) => row.role === r)) {
+            verifiedRole = r;
+            break;
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Failed to fetch user role:', e);
+    }
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
@@ -261,9 +282,9 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    console.log('Processing chat request for role:', userRole);
+    console.log('Processing chat request for verified role:', verifiedRole);
 
-    const systemPrompt = KNOWLEDGE_BASE[userRole as keyof typeof KNOWLEDGE_BASE] || KNOWLEDGE_BASE.customer;
+    const systemPrompt = KNOWLEDGE_BASE[verifiedRole as keyof typeof KNOWLEDGE_BASE] || KNOWLEDGE_BASE.customer;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -312,7 +333,7 @@ serve(async (req) => {
       aiMessage = aiMessage.replace('[NEEDS_HUMAN]', '').trim();
       // Send email notification in the background (don't block response)
       const lastUserMsg = messages[messages.length - 1]?.content || '';
-      sendEscalationEmail(lastUserMsg, aiMessage, userRole, messages, userInfo).catch(console.error);
+      sendEscalationEmail(lastUserMsg, aiMessage, verifiedRole, messages, userInfo).catch(console.error);
     }
 
     console.log('AI response generated successfully, needsHuman:', needsHuman);

@@ -55,15 +55,13 @@ serve(async (req) => {
     // Log the IP for monitoring; enforce in production
     console.log("Swish callback received from IP:", clientIP);
 
-    // In production with known Swish IPs, enforce the allowlist.
-    // For now, log a warning if the IP doesn't match known Swish ranges.
+    // Enforce IP allowlist in production
     if (!isSwishIP(clientIP)) {
-      console.warn("WARNING: Callback from non-Swish IP:", clientIP);
-      // Uncomment the following to enforce strict IP filtering once Swish IPs are confirmed:
-      // return new Response(
-      //   JSON.stringify({ error: "Forbidden" }),
-      //   { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
-      // );
+      console.warn("BLOCKED: Callback from non-Swish IP:", clientIP);
+      return new Response(
+        JSON.stringify({ error: "Forbidden" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 403 }
+      );
     }
 
     const callback = (await req.json()) as SwishCallback;
