@@ -78,6 +78,8 @@ const ChefProfile = () => {
   const [chef, setChef] = useState<Chef | null>(null);
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [videos, setVideos] = useState<ChefVideo[]>([]);
+  const [averageRating, setAverageRating] = useState(0);
+  const [totalReviews, setTotalReviews] = useState(0);
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
   const { toast } = useToast();
