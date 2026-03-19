@@ -113,7 +113,7 @@ const App = () => {
             <Route path="/experiences" element={<PublicLayout><ExperiencePage /></PublicLayout>} />
             <Route path="/private-chef" element={<PublicLayout><PrivateChefPage /></PublicLayout>} />
             <Route path="/catering" element={<PublicLayout><CateringPage /></PublicLayout>} />
-            {/* Meal boxes route hidden until dishes are available */}
+            <Route path="/meal-boxes" element={<PublicLayout><MealBoxesPage /></PublicLayout>} />
             <Route path="/partnership" element={<PublicLayout><PartnershipPage /></PublicLayout>} />
             <Route path="/how-it-works" element={<PublicLayout><HowItWorks /></PublicLayout>} />
             <Route path="/secure-payments" element={<PublicLayout><SecurePayments /></PublicLayout>} />
