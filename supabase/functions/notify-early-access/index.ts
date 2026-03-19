@@ -22,20 +22,44 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Verify JWT authentication - admin only
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } });
+    }
+
+    const supabaseAnon = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_ANON_KEY')!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabaseAnon.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } });
+    }
+
+    const userId = claimsData.claims.sub as string;
+
+    // Verify admin role - this function sends mass emails
+    const supabaseService = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    );
+
+    const { data: roleCheck } = await supabaseService.rpc('has_role', { _user_id: userId, _role: 'admin' });
+    if (!roleCheck) {
+      return new Response(JSON.stringify({ error: 'Forbidden: admin only' }), { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } });
+    }
+
     const { chef_id, chef_name, chef_postal_code, chef_city }: NotifyRequest = await req.json();
 
     console.log(`Notifying users about new chef: ${chef_name} in ${chef_postal_code}`);
 
-    // Initialize Supabase client
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    // Get postal code prefix (first 3 digits) for matching
     const postalPrefix = chef_postal_code.replace(/\s/g, '').substring(0, 3);
 
-    // Find all early access signups in the same postal area
-    const { data: signups, error: signupsError } = await supabase
+    const { data: signups, error: signupsError } = await supabaseService
       .from("early_access_signups")
       .select("email, postal_code");
 
@@ -43,7 +67,6 @@ const handler = async (req: Request): Promise<Response> => {
       throw signupsError;
     }
 
-    // Filter signups that match the postal code area
     const matchingSignups = signups?.filter(signup => {
       const signupPrefix = signup.postal_code.replace(/\s/g, '').substring(0, 3);
       return signupPrefix === postalPrefix;
@@ -58,7 +81,6 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Send emails to all matching users
     const emailPromises = matchingSignups.map(async (signup) => {
       try {
         const result = await resend.emails.send({
