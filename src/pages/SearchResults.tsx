@@ -558,7 +558,9 @@ const SearchResults = () => {
                               <div className="flex items-center justify-between text-sm">
                                 <div className="flex items-center">
                                   <Star className="w-4 h-4 fill-yellow-400 text-yellow-400 mr-1" />
-                                  <span>4.8 (12 recensioner)</span>
+                                  <span>
+                                    {chef.avgRating ? `${chef.avgRating} (${chef.reviewCount} ${chef.reviewCount === 1 ? 'recension' : 'recensioner'})` : 'Inga recensioner'}
+                                  </span>
                                 </div>
                                 <Badge variant="secondary">
                                   {chef.dish_count} rätter
