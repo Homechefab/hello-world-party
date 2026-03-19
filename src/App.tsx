@@ -19,7 +19,7 @@ import PickupPage from "./pages/PickupPage";
 import ExperiencePage from "./pages/ExperiencePage";
 import PrivateChefPage from "./pages/PrivateChefPage";
 import CateringPage from "./pages/CateringPage";
-// import MealBoxesPage from "./pages/MealBoxesPage"; // Hidden until dishes available
+import MealBoxesPage from "./pages/MealBoxesPage";
 import PartnershipPage from "./pages/PartnershipPage";
 import HowItWorks from "./pages/HowItWorks";
 import HyrUtDittKokInfo from "@/pages/kitchen-partner/HyrUtDittKokInfo";
