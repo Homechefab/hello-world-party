@@ -51,6 +51,10 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
   const [customPrepTime, setCustomPrepTime] = useState<string>("");
   const [scheduleDays, setScheduleDays] = useState<{ [day: number]: boolean }>({});
   const [activeCategory, setActiveCategory] = useState<string>("Alla");
+  const [customIngredients, setCustomIngredients] = useState<string[]>([]);
+  const [customAllergens, setCustomAllergens] = useState<string[]>([]);
+  const [newIngredient, setNewIngredient] = useState("");
+  const [newAllergen, setNewAllergen] = useState("");
   
   const { toast } = useToast();
   const { user } = useAuth();
@@ -92,6 +96,10 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
     setCustomImage(null);
     setCustomImagePreview(null);
     setScheduleDays({});
+    setCustomIngredients(template.ingredients || []);
+    setCustomAllergens(template.allergens || []);
+    setNewIngredient("");
+    setNewAllergen("");
     setIsDialogOpen(true);
   };
 
@@ -159,8 +167,8 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
           name: dishName,
           description: customDescription,
           category: selectedTemplate.category,
-          ingredients: selectedTemplate.ingredients || [],
-          allergens: selectedTemplate.allergens || [],
+          ingredients: customIngredients,
+          allergens: customAllergens,
           preparation_time: parseInt(customPrepTime) || selectedTemplate.preparation_time || 30,
           price: parseFloat(customPrice),
           available: true,
@@ -336,23 +344,79 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
 
               <div>
                 <Label>Ingredienser</Label>
-                <div className="flex flex-wrap gap-1 p-2 border rounded-md bg-muted">
-                  {(selectedTemplate.ingredients || []).map((ingredient, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
+                <div className="flex flex-wrap gap-1 p-2 border rounded-md bg-muted min-h-[40px]">
+                  {customIngredients.map((ingredient, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs gap-1">
                       {ingredient}
+                      <button type="button" onClick={() => setCustomIngredients(prev => prev.filter((_, i) => i !== index))} className="ml-0.5 hover:text-destructive">
+                        <X className="w-3 h-3" />
+                      </button>
                     </Badge>
                   ))}
+                </div>
+                <div className="flex gap-2 mt-1">
+                  <Input
+                    value={newIngredient}
+                    onChange={(e) => setNewIngredient(e.target.value)}
+                    placeholder="Lägg till ingrediens..."
+                    className="text-sm h-8"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const val = newIngredient.trim();
+                        if (val && !customIngredients.includes(val)) {
+                          setCustomIngredients(prev => [...prev, val]);
+                          setNewIngredient("");
+                        }
+                      }
+                    }}
+                  />
+                  <Button type="button" variant="outline" size="sm" className="h-8 px-3" onClick={() => {
+                    const val = newIngredient.trim();
+                    if (val && !customIngredients.includes(val)) {
+                      setCustomIngredients(prev => [...prev, val]);
+                      setNewIngredient("");
+                    }
+                  }}>Lägg till</Button>
                 </div>
               </div>
 
               <div>
                 <Label>Allergener</Label>
-                <div className="flex flex-wrap gap-1 p-2 border rounded-md bg-muted">
-                  {(selectedTemplate.allergens || []).map((allergen, index) => (
-                    <Badge key={index} variant="outline" className="text-xs">
+                <div className="flex flex-wrap gap-1 p-2 border rounded-md bg-muted min-h-[40px]">
+                  {customAllergens.map((allergen, index) => (
+                    <Badge key={index} variant="outline" className="text-xs gap-1">
                       {allergen}
+                      <button type="button" onClick={() => setCustomAllergens(prev => prev.filter((_, i) => i !== index))} className="ml-0.5 hover:text-destructive">
+                        <X className="w-3 h-3" />
+                      </button>
                     </Badge>
                   ))}
+                </div>
+                <div className="flex gap-2 mt-1">
+                  <Input
+                    value={newAllergen}
+                    onChange={(e) => setNewAllergen(e.target.value)}
+                    placeholder="Lägg till allergen..."
+                    className="text-sm h-8"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const val = newAllergen.trim();
+                        if (val && !customAllergens.includes(val)) {
+                          setCustomAllergens(prev => [...prev, val]);
+                          setNewAllergen("");
+                        }
+                      }
+                    }}
+                  />
+                  <Button type="button" variant="outline" size="sm" className="h-8 px-3" onClick={() => {
+                    const val = newAllergen.trim();
+                    if (val && !customAllergens.includes(val)) {
+                      setCustomAllergens(prev => [...prev, val]);
+                      setNewAllergen("");
+                    }
+                  }}>Lägg till</Button>
                 </div>
               </div>
 

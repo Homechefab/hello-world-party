@@ -7,10 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
 import { 
   Plus, 
   Save,
-  ChefHat
+  ChefHat,
+  X
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -39,6 +41,8 @@ const MenuManager = () => {
   const [scheduleDish, setScheduleDish] = useState<Dish | null>(null);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("my-menu");
+  const [newIngredient, setNewIngredient] = useState("");
+  const [newAllergen, setNewAllergen] = useState("");
   
   const { toast } = useToast();
   const { user } = useAuth();
@@ -82,6 +86,8 @@ const MenuManager = () => {
 
   const handleEditDish = (dish: Dish) => {
     setEditingDish({ ...dish });
+    setNewIngredient("");
+    setNewAllergen("");
     setIsEditDialogOpen(true);
   };
 
@@ -97,7 +103,9 @@ const MenuManager = () => {
           description: editingDish.description,
           price: editingDish.price,
           available: editingDish.available,
-          preparation_time: editingDish.preparation_time
+          preparation_time: editingDish.preparation_time,
+          ingredients: editingDish.ingredients || [],
+          allergens: editingDish.allergens || []
         })
         .eq('id', editingDish.id);
 
@@ -333,6 +341,86 @@ const MenuManager = () => {
                     value={editingDish.preparation_time || ""}
                     onChange={(e) => setEditingDish({...editingDish, preparation_time: parseInt(e.target.value) || 0})}
                   />
+                </div>
+              </div>
+
+              {/* Ingredients */}
+              <div>
+                <Label>Ingredienser</Label>
+                <div className="flex flex-wrap gap-1 p-2 border rounded-md bg-muted min-h-[40px]">
+                  {(editingDish.ingredients || []).map((ingredient, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs gap-1">
+                      {ingredient}
+                      <button type="button" onClick={() => setEditingDish({...editingDish, ingredients: (editingDish.ingredients || []).filter((_, i) => i !== index)})} className="ml-0.5 hover:text-destructive">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex gap-2 mt-1">
+                  <Input
+                    value={newIngredient}
+                    onChange={(e) => setNewIngredient(e.target.value)}
+                    placeholder="Lägg till ingrediens..."
+                    className="text-sm h-8"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const val = newIngredient.trim();
+                        if (val && !(editingDish.ingredients || []).includes(val)) {
+                          setEditingDish({...editingDish, ingredients: [...(editingDish.ingredients || []), val]});
+                          setNewIngredient("");
+                        }
+                      }
+                    }}
+                  />
+                  <Button type="button" variant="outline" size="sm" className="h-8 px-3" onClick={() => {
+                    const val = newIngredient.trim();
+                    if (val && !(editingDish.ingredients || []).includes(val)) {
+                      setEditingDish({...editingDish, ingredients: [...(editingDish.ingredients || []), val]});
+                      setNewIngredient("");
+                    }
+                  }}>Lägg till</Button>
+                </div>
+              </div>
+
+              {/* Allergens */}
+              <div>
+                <Label>Allergener</Label>
+                <div className="flex flex-wrap gap-1 p-2 border rounded-md bg-muted min-h-[40px]">
+                  {(editingDish.allergens || []).map((allergen, index) => (
+                    <Badge key={index} variant="outline" className="text-xs gap-1">
+                      {allergen}
+                      <button type="button" onClick={() => setEditingDish({...editingDish, allergens: (editingDish.allergens || []).filter((_, i) => i !== index)})} className="ml-0.5 hover:text-destructive">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex gap-2 mt-1">
+                  <Input
+                    value={newAllergen}
+                    onChange={(e) => setNewAllergen(e.target.value)}
+                    placeholder="Lägg till allergen..."
+                    className="text-sm h-8"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        const val = newAllergen.trim();
+                        if (val && !(editingDish.allergens || []).includes(val)) {
+                          setEditingDish({...editingDish, allergens: [...(editingDish.allergens || []), val]});
+                          setNewAllergen("");
+                        }
+                      }
+                    }}
+                  />
+                  <Button type="button" variant="outline" size="sm" className="h-8 px-3" onClick={() => {
+                    const val = newAllergen.trim();
+                    if (val && !(editingDish.allergens || []).includes(val)) {
+                      setEditingDish({...editingDish, allergens: [...(editingDish.allergens || []), val]});
+                      setNewAllergen("");
+                    }
+                  }}>Lägg till</Button>
                 </div>
               </div>
 
