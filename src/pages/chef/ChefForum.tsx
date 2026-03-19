@@ -350,7 +350,7 @@ const ChefForum = () => {
                                 : post.content}
                             </CardDescription>
                             <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                              <span className="font-medium">{(post as any).author_name}</span>
+                              <span className="font-medium">{(post as { author_name?: string }).author_name}</span>
                               <div className="flex items-center gap-1">
                                 <Reply className="w-4 h-4" />
                                 <span>{post.replies_count} svar</span>
