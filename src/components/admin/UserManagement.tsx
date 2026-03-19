@@ -106,7 +106,7 @@ export const UserManagement = () => {
         // Lägg till roll
         const { error } = await supabase
           .from('user_roles')
-          .insert({ user_id: userId, role } as any);
+          .insert({ user_id: userId, role: role as 'admin' | 'chef' | 'kitchen_partner' | 'restaurant' | 'customer' | 'business' });
 
         if (error) throw error;
         toast.success(`Rollen ${roleLabels[role]} har lagts till`);
