@@ -3,60 +3,35 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, Loader2, CheckCircle, Copy } from 'lucide-react';
+import { Shield, Loader2, CheckCircle } from 'lucide-react';
 
-interface ReviewAccount {
+interface ReviewAccountInfo {
   platform: string;
   email: string;
-  password: string;
-  fullName: string;
+  exists: boolean;
+  fullyConfigured: boolean;
+  roles: string[];
 }
 
-const defaultAccounts: ReviewAccount[] = [
-  {
-    platform: 'Apple',
-    email: 'applereview@homechef.nu',
-    password: 'AppleReview2026!',
-    fullName: 'Apple Review',
-  },
-  {
-    platform: 'Google',
-    email: 'googlereview@homechef.nu',
-    password: 'GoogleReview2026!',
-    fullName: 'Google Review',
-  },
-];
+const PLATFORMS = ['Apple', 'Google'];
 
 export function ReviewAccountManager() {
   const [loading, setLoading] = useState<string | null>(null);
-  const [created, setCreated] = useState<string[]>([]);
+  const [accounts, setAccounts] = useState<ReviewAccountInfo[]>([]);
   const [checkingStatus, setCheckingStatus] = useState(true);
   const { toast } = useToast();
 
   const fetchAccountStatus = async () => {
     setCheckingStatus(true);
-
     try {
       const { data, error } = await supabase.functions.invoke('create-review-account', {
-        body: {
-          action: 'status',
-          emails: defaultAccounts.map((account) => account.email),
-        },
+        body: { action: 'status', platforms: PLATFORMS },
       });
 
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
 
-      const platformByEmail = new Map(defaultAccounts.map((account) => [account.email, account.platform]));
-
-      const configuredPlatforms = Array.isArray(data?.accounts)
-        ? data.accounts
-            .filter((account: any) => account?.fullyConfigured)
-            .map((account: any) => platformByEmail.get(account.email))
-            .filter((platform: string | undefined): platform is string => Boolean(platform))
-        : [];
-
-      setCreated(configuredPlatforms);
+      setAccounts(Array.isArray(data?.accounts) ? data.accounts : []);
     } catch (err: any) {
       toast({
         title: 'Kunde inte läsa kontostatus',
@@ -72,17 +47,11 @@ export function ReviewAccountManager() {
     void fetchAccountStatus();
   }, []);
 
-  const handleCreate = async (account: ReviewAccount) => {
-    setLoading(account.platform);
-
+  const handleCreate = async (platform: string) => {
+    setLoading(platform);
     try {
       const { data, error } = await supabase.functions.invoke('create-review-account', {
-        body: {
-          email: account.email,
-          password: account.password,
-          fullName: account.fullName,
-          platform: account.platform,
-        },
+        body: { action: 'create', platform },
       });
 
       if (error) throw error;
@@ -92,7 +61,7 @@ export function ReviewAccountManager() {
 
       toast({
         title: 'Konto klart!',
-        description: `${account.platform}-granskningskonto (${account.email}) är nu fullt konfigurerat.`,
+        description: `${platform}-granskningskonto är nu fullt konfigurerat.`,
       });
     } catch (err: any) {
       toast({
@@ -105,11 +74,6 @@ export function ReviewAccountManager() {
     }
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast({ title: 'Kopierat!', description: text });
-  };
-
   return (
     <Card>
       <CardHeader>
@@ -119,7 +83,7 @@ export function ReviewAccountManager() {
         </CardTitle>
         <CardDescription>
           Skapa testkonton för Apple och Google-granskning. Kontona får alla roller (kund, kock, kökspartner,
-          restaurang) med förhandsgodkännande.
+          restaurang) med förhandsgodkännande. Inloggningsuppgifter hanteras säkert på serversidan.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -130,41 +94,40 @@ export function ReviewAccountManager() {
           </div>
         )}
 
-        {defaultAccounts.map((account) => (
-          <div key={account.platform} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 border rounded-lg">
-            <div className="flex-1 space-y-1">
-              <p className="font-medium">{account.platform}</p>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span>{account.email}</span>
-                <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => copyToClipboard(account.email)}>
-                  <Copy className="h-3 w-3" />
-                </Button>
-              </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span>{account.password}</span>
-                <Button variant="ghost" size="icon" className="h-5 w-5" onClick={() => copyToClipboard(account.password)}>
-                  <Copy className="h-3 w-3" />
-                </Button>
-              </div>
-            </div>
-            {created.includes(account.platform) ? (
-              <div className="flex items-center gap-1 text-primary">
-                <CheckCircle className="h-4 w-4" />
-                <span className="text-sm">Skapat</span>
-              </div>
-            ) : (
-              <Button onClick={() => handleCreate(account)} disabled={loading !== null || checkingStatus} size="sm">
-                {loading === account.platform ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-1 animate-spin" /> Skapar...
-                  </>
-                ) : (
-                  'Skapa konto'
+        {PLATFORMS.map((platform) => {
+          const account = accounts.find((a) => a.platform === platform);
+          const isConfigured = account?.fullyConfigured ?? false;
+
+          return (
+            <div key={platform} className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-4 border rounded-lg">
+              <div className="flex-1 space-y-1">
+                <p className="font-medium">{platform}</p>
+                {account?.email && (
+                  <p className="text-sm text-muted-foreground">{account.email}</p>
                 )}
-              </Button>
-            )}
-          </div>
-        ))}
+                <p className="text-xs text-muted-foreground">
+                  Lösenord hanteras säkert på serversidan
+                </p>
+              </div>
+              {isConfigured ? (
+                <div className="flex items-center gap-1 text-primary">
+                  <CheckCircle className="h-4 w-4" />
+                  <span className="text-sm">Skapat</span>
+                </div>
+              ) : (
+                <Button onClick={() => handleCreate(platform)} disabled={loading !== null || checkingStatus} size="sm">
+                  {loading === platform ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-1 animate-spin" /> Skapar...
+                    </>
+                  ) : (
+                    'Skapa konto'
+                  )}
+                </Button>
+              )}
+            </div>
+          );
+        })}
       </CardContent>
     </Card>
   );
