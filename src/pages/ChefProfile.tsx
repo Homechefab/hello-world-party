@@ -245,8 +245,8 @@ const ChefProfile = () => {
           name: chef.business_name || chef.full_name,
           description: `Hemkock på Homechef`,
           address: chef.address,
-          rating: 4.8,
-          reviewCount: 42,
+          rating: averageRating || undefined,
+          reviewCount: totalReviews || undefined,
         }}
       />
       
