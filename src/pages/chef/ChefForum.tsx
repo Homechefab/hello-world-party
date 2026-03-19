@@ -380,7 +380,7 @@ const ChefForum = () => {
                                 <div key={reply.id} className="bg-muted/50 rounded-lg p-3">
                                   <div className="flex items-center gap-2 mb-1">
                                     <span className="font-medium text-sm">
-                                      {(reply as any).author_name}
+                                      {(reply as { author_name?: string }).author_name}
                                     </span>
                                     <span className="text-xs text-muted-foreground">
                                       {format(new Date(reply.created_at), "d MMM yyyy, HH:mm", {
