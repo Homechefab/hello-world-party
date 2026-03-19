@@ -54,7 +54,7 @@ const ChefForum = () => {
     queryFn: async () => {
       let query = supabase
         .from("forum_posts")
-        .select("*")
+        .select("id, user_id, title, content, category, likes_count, replies_count, created_at")
         .order("created_at", { ascending: false });
 
       if (searchTerm.trim()) {
