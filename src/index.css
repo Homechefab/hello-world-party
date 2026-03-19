@@ -145,11 +145,9 @@ All colors MUST be HSL.
 @layer base {
   * {
     @apply border-border;
-    /* Make sizing predictable to avoid elements overflowing the viewport */
     box-sizing: border-box;
   }
 
-  /* Ensure pseudo-elements also use border-box so padding doesn't expand width */
   *, *::before, *::after {
     box-sizing: border-box;
   }
@@ -180,11 +178,21 @@ All colors MUST be HSL.
   }
   
   body {
-    /* Remove all padding - app takes full screen */
     padding: 0;
     margin: 0;
     -webkit-text-size-adjust: 100%;
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* iOS input zoom fix — inputs below 16px trigger auto-zoom */
+  input, textarea, select, button {
+    font-size: 16px !important;
+  }
+
+  /* Allow larger font sizes set by components to still apply */
+  input[style*="font-size"], textarea[style*="font-size"],
+  select[style*="font-size"], button[style*="font-size"] {
+    font-size: inherit !important;
   }
 
   /* Prevent media from causing overflow on small screens */
@@ -194,8 +202,7 @@ All colors MUST be HSL.
     display: block;
   }
 
-  /* Catch elements that use 100vw in inline or external styles and coerce them to fit the viewport
-     This prevents common cases where components set width:100vw and then add padding which causes overflow. */
+  /* Catch elements that use 100vw and coerce them to fit */
   [style*="100vw"] {
     width: 100% !important;
     max-width: 100% !important;
@@ -212,20 +219,30 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 
-  /* Prevent any top-level container from exceeding the viewport width
-     This helps in webviews / mobile wrappers where large padding or
-     transforms can cause horizontal scrolling. */
   #root {
     width: 100%;
     max-width: 100vw;
     overflow-x: hidden;
   }
 
-
-  /* Extra mobile safeguard - prevent any element from causing horizontal scroll */
+  /* Extra mobile safeguard */
   @media (max-width: 768px) {
-    section, article, main, aside, nav, header, footer {
+    section, article, main, aside, nav, header, footer,
+    .container {
       overflow-x: hidden;
+      max-width: 100vw;
+    }
+
+    /* Prevent flex rows from overflowing */
+    .flex {
+      flex-wrap: wrap;
+    }
+
+    /* Prevent tables from causing overflow */
+    table {
+      display: block;
+      overflow-x: auto;
+      max-width: 100%;
     }
   }
 }
