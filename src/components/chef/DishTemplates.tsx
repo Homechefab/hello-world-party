@@ -96,6 +96,10 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
     setCustomImage(null);
     setCustomImagePreview(null);
     setScheduleDays({});
+    setCustomIngredients(template.ingredients || []);
+    setCustomAllergens(template.allergens || []);
+    setNewIngredient("");
+    setNewAllergen("");
     setIsDialogOpen(true);
   };
 
