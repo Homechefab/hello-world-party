@@ -51,6 +51,24 @@ serve(async (req) => {
       expand: ["payment_intent", "customer"],
     });
 
+    // Verify the session belongs to the authenticated user
+    if (session.metadata?.userId && session.metadata.userId !== user.id) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 403,
+      });
+    }
+    // Also check by email if no userId in metadata
+    if (!session.metadata?.userId && session.customer_details?.email) {
+      const { data: profile } = await supabaseAuth.from('profiles').select('email').eq('id', user.id).single();
+      if (profile && profile.email !== session.customer_details.email) {
+        return new Response(JSON.stringify({ error: "Forbidden" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 403,
+        });
+      }
+    }
+
     let paymentIntentId: string | undefined;
     let chargeId: string | undefined;
     let receiptUrl: string | undefined;

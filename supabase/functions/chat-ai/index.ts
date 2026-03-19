@@ -333,7 +333,7 @@ serve(async (req) => {
       aiMessage = aiMessage.replace('[NEEDS_HUMAN]', '').trim();
       // Send email notification in the background (don't block response)
       const lastUserMsg = messages[messages.length - 1]?.content || '';
-      sendEscalationEmail(lastUserMsg, aiMessage, userRole, messages, userInfo).catch(console.error);
+      sendEscalationEmail(lastUserMsg, aiMessage, verifiedRole, messages, userInfo).catch(console.error);
     }
 
     console.log('AI response generated successfully, needsHuman:', needsHuman);
