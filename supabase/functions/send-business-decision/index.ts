@@ -6,8 +6,25 @@ const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
+
+// In-memory rate limiter: max 5 emails per admin per minute
+const rateLimitMap = new Map<string, number[]>();
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 5;
+
+function isRateLimited(userId: string): boolean {
+  const now = Date.now();
+  const timestamps = (rateLimitMap.get(userId) ?? []).filter(t => now - t < RATE_LIMIT_WINDOW_MS);
+  if (timestamps.length >= RATE_LIMIT_MAX) {
+    rateLimitMap.set(userId, timestamps);
+    return true;
+  }
+  timestamps.push(now);
+  rateLimitMap.set(userId, timestamps);
+  return false;
+}
 
 interface BusinessDecisionRequest {
   businessName: string;
@@ -54,6 +71,13 @@ const handler = async (req: Request): Promise<Response> => {
     if (!isAdmin) {
       return new Response(JSON.stringify({ error: 'Forbidden: admin role required' }), {
         status: 403, headers: { "Content-Type": "application/json", ...corsHeaders }
+      });
+    }
+
+    // Rate limiting per admin user
+    if (isRateLimited(userId as string)) {
+      return new Response(JSON.stringify({ error: 'Too many requests. Max 5 emails per minute.' }), {
+        status: 429, headers: { "Content-Type": "application/json", ...corsHeaders }
       });
     }
 

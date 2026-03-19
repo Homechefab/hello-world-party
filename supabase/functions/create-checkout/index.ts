@@ -67,13 +67,15 @@ serve(async (req) => {
     // Try to get authenticated user (optional for checkout)
     let customerId: string | undefined;
     let userEmail: string | undefined;
+    let authenticatedUserId: string | undefined;
 
     const authHeader = req.headers.get("Authorization");
     if (authHeader) {
       try {
         const token = authHeader.replace("Bearer ", "");
         const { data } = await supabaseClient.auth.getUser(token);
-        if (data.user?.email) {
+        if (data.user) {
+          authenticatedUserId = data.user.id;
           userEmail = data.user.email;
           
           // Check if customer exists
@@ -166,14 +168,15 @@ serve(async (req) => {
       success_url: successUrl || `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl || `${req.headers.get("origin")}/payment-canceled`,
       metadata: {
-        userId: user?.id || '',
+        userId: authenticatedUserId || '',
         dish_name: dishName || 'Multiple items',
-        customer_service_fee_percentage: "6", // 6% serviceavgift från kund
-        seller_commission_percentage: "19", // 19% provision från säljare
+        customer_service_fee_percentage: "6",
+        seller_commission_percentage: "19",
         total_amount: validatedTotalAmount > 0 ? String(validatedTotalAmount) : (totalAmount || ''),
       },
       payment_intent_data: {
         metadata: {
+          userId: authenticatedUserId || '',
           dish_name: dishName || 'Multiple items',
           customer_service_fee_percentage: "6",
           seller_commission_percentage: "19",
