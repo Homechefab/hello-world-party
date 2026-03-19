@@ -467,7 +467,7 @@ serve(async (req) => {
         </div>
         ${transaction.receipt_url ? `
         <div style="margin-top: 12px;">
-          <a href="${transaction.receipt_url}" style="color: #EA580C; text-decoration: none; font-size: 13px; font-weight: 500;">
+          <a href="${escapeHtml(transaction.receipt_url)}" style="color: #EA580C; text-decoration: none; font-size: 13px; font-weight: 500;">
             → Visa kundkvitto i Stripe
           </a>
         </div>
