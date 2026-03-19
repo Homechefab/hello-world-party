@@ -166,6 +166,7 @@ serve(async (req) => {
       success_url: successUrl || `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl || `${req.headers.get("origin")}/payment-canceled`,
       metadata: {
+        userId: user?.id || '',
         dish_name: dishName || 'Multiple items',
         customer_service_fee_percentage: "6", // 6% serviceavgift från kund
         seller_commission_percentage: "19", // 19% provision från säljare
