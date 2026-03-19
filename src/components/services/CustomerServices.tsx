@@ -6,6 +6,7 @@ import pickupImage from "@/assets/customer-pickup.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
 import cateringImage from "@/assets/catering-service.jpg";
+import mealBoxImage from "@/assets/meal-boxes.jpg";
 import chefRecruitmentBg from "@/assets/chef-recruitment-bg.jpg";
 
 const customerServices = [
