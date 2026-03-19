@@ -43,7 +43,7 @@ const customerServices = [
     color: "from-orange-500 to-orange-600"
   },
   {
-    image: pickupImage,
+    image: mealBoxImage,
     title: "Färdiglagade matlådor",
     description: "Beställ hemlagade matlådor för hela veckan",
     href: "/meal-boxes",
