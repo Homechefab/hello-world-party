@@ -11,6 +11,7 @@ import ShareButtons from "@/components/ShareButtons";
 import { ChefOperatingHoursDisplay } from "@/components/chef/ChefOperatingHoursDisplay";
 import SEOHead from "@/components/SEOHead";
 import { VideoDisplay } from "@/components/VideoDisplay";
+import ReviewSection from "@/components/ReviewSection";
 
 // Custom TikTok icon
 const TikTokIcon = ({ className }: { className?: string }) => (
@@ -77,6 +78,8 @@ const ChefProfile = () => {
   const [chef, setChef] = useState<Chef | null>(null);
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [videos, setVideos] = useState<ChefVideo[]>([]);
+  const [averageRating, setAverageRating] = useState(0);
+  const [totalReviews, setTotalReviews] = useState(0);
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
   const { toast } = useToast();
@@ -168,6 +171,18 @@ const ChefProfile = () => {
           createdAt: v.created_at
         }));
         setVideos(formattedVideos);
+
+        // Fetch reviews for rating
+        const { data: reviewsData, error: reviewsError } = await supabase
+          .from('reviews')
+          .select('rating')
+          .eq('chef_id', chefId);
+
+        if (!reviewsError && reviewsData && reviewsData.length > 0) {
+          const avg = reviewsData.reduce((sum, r) => sum + r.rating, 0) / reviewsData.length;
+          setAverageRating(Math.round(avg * 10) / 10);
+          setTotalReviews(reviewsData.length);
+        }
       } catch (error) {
         console.error('Error fetching chef data:', error);
       } finally {
@@ -230,8 +245,8 @@ const ChefProfile = () => {
           name: chef.business_name || chef.full_name,
           description: `Hemkock på Homechef`,
           address: chef.address,
-          rating: 4.8,
-          reviewCount: 42,
+          rating: averageRating || undefined,
+          reviewCount: totalReviews || undefined,
         }}
       />
       
@@ -279,10 +294,12 @@ const ChefProfile = () => {
                 </div>
               )}
               <div className="flex items-center justify-center gap-4 text-white/90">
-                <div className="flex items-center">
-                  <Star className="w-5 h-5 fill-yellow-400 text-yellow-400 mr-1" />
-                  <span>4.8 (42 recensioner)</span>
-                </div>
+                {totalReviews > 0 && (
+                  <div className="flex items-center">
+                    <Star className="w-5 h-5 fill-yellow-400 text-yellow-400 mr-1" />
+                    <span>{averageRating} ({totalReviews} {totalReviews === 1 ? 'recension' : 'recensioner'})</span>
+                  </div>
+                )}
                 <div className="flex items-center">
                   <Clock className="w-5 h-5 mr-1" />
                   <span>30-45 min tillagning</span>
@@ -449,6 +466,17 @@ const ChefProfile = () => {
             </div>
           )}
         </div>
+        </section>
+
+        {/* Reviews Section */}
+        <section className="py-12 bg-secondary/10">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <ReviewSection
+              chefId={chef.id}
+              averageRating={averageRating}
+              totalReviews={totalReviews}
+            />
+          </div>
         </section>
       </div>
     </>

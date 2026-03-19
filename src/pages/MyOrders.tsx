@@ -7,6 +7,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { OrderTrackingCard } from "@/components/order/OrderTrackingCard";
@@ -38,6 +40,13 @@ const MyOrders = () => {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [reviewDialogOpen, setReviewDialogOpen] = useState(false);
+  const [reviewOrder, setReviewOrder] = useState<Order | null>(null);
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewComment, setReviewComment] = useState('');
+  const [reviewHover, setReviewHover] = useState(0);
+  const [submittingReview, setSubmittingReview] = useState(false);
+  const [reviewedOrderIds, setReviewedOrderIds] = useState<Set<string>>(new Set());
 
   const fetchOrders = useCallback(async () => {
     if (!user?.id) {
@@ -117,13 +126,70 @@ const MyOrders = () => {
     }
   }, [user]);
 
+  const fetchReviewedOrders = useCallback(async () => {
+    if (!user?.id) return;
+    const { data } = await supabase
+      .from('reviews')
+      .select('order_id')
+      .eq('customer_id', user.id);
+    if (data) {
+      setReviewedOrderIds(new Set(data.map(r => r.order_id)));
+    }
+  }, [user]);
+
   useEffect(() => {
     if (user) {
       fetchOrders();
+      fetchReviewedOrders();
     } else {
       setLoading(false);
     }
-  }, [fetchOrders, user]);
+  }, [fetchOrders, fetchReviewedOrders, user]);
+
+  const handleOpenReview = (order: Order) => {
+    setReviewOrder(order);
+    setReviewRating(0);
+    setReviewComment('');
+    setReviewDialogOpen(true);
+  };
+
+  const handleSubmitReview = async () => {
+    if (!user?.id || !reviewOrder || reviewRating === 0) {
+      toast.error('Välj ett betyg (1-5 stjärnor)');
+      return;
+    }
+
+    setSubmittingReview(true);
+    try {
+      // We need the chef_id for this order - fetch it
+      const { data: orderData, error: orderError } = await supabase
+        .from('orders')
+        .select('chef_id')
+        .eq('id', reviewOrder.id)
+        .single();
+
+      if (orderError || !orderData) throw new Error('Kunde inte hitta beställningen');
+
+      const { error } = await supabase.from('reviews').insert({
+        order_id: reviewOrder.id,
+        customer_id: user.id,
+        chef_id: orderData.chef_id,
+        rating: reviewRating,
+        comment: reviewComment.trim() || null,
+      });
+
+      if (error) throw error;
+
+      toast.success('Tack för din recension!');
+      setReviewDialogOpen(false);
+      setReviewedOrderIds(prev => new Set(prev).add(reviewOrder.id));
+    } catch (error: any) {
+      console.error('Error submitting review:', error);
+      toast.error(error.message || 'Kunde inte skicka recension');
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -331,11 +397,17 @@ const MyOrders = () => {
                           </Link>
                         </Button>
                         
-                        {order.status === 'delivered' && (
-                          <Button variant="outline" size="sm">
+                        {order.status === 'delivered' && !reviewedOrderIds.has(order.id) && (
+                          <Button variant="outline" size="sm" onClick={() => handleOpenReview(order)}>
                             <Star className="w-4 h-4 mr-1" />
                             Lämna recension
                           </Button>
+                        )}
+                        {order.status === 'delivered' && reviewedOrderIds.has(order.id) && (
+                          <Badge variant="secondary">
+                            <Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400" />
+                            Recenserad
+                          </Badge>
                         )}
                         
                         <Button variant="outline" size="sm">
@@ -349,6 +421,56 @@ const MyOrders = () => {
             ))}
           </div>
         )}
+
+        {/* Review Dialog */}
+        <Dialog open={reviewDialogOpen} onOpenChange={setReviewDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Lämna recension</DialogTitle>
+            </DialogHeader>
+            {reviewOrder && (
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  {reviewOrder.dish_name} från {reviewOrder.chef_name}
+                </p>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Betyg *</label>
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`w-8 h-8 cursor-pointer transition-transform hover:scale-110 ${
+                          star <= (reviewHover || reviewRating)
+                            ? 'fill-yellow-400 text-yellow-400'
+                            : 'text-muted-foreground/30'
+                        }`}
+                        onClick={() => setReviewRating(star)}
+                        onMouseEnter={() => setReviewHover(star)}
+                        onMouseLeave={() => setReviewHover(0)}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Kommentar (valfritt)</label>
+                  <Textarea
+                    placeholder="Berätta om din upplevelse..."
+                    value={reviewComment}
+                    onChange={(e) => setReviewComment(e.target.value)}
+                    rows={3}
+                  />
+                </div>
+                <Button
+                  onClick={handleSubmitReview}
+                  disabled={submittingReview || reviewRating === 0}
+                  className="w-full"
+                >
+                  {submittingReview ? 'Skickar...' : 'Skicka recension'}
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
