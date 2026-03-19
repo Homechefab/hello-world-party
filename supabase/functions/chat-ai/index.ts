@@ -282,9 +282,9 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    console.log('Processing chat request for role:', userRole);
+    console.log('Processing chat request for verified role:', verifiedRole);
 
-    const systemPrompt = KNOWLEDGE_BASE[userRole as keyof typeof KNOWLEDGE_BASE] || KNOWLEDGE_BASE.customer;
+    const systemPrompt = KNOWLEDGE_BASE[verifiedRole as keyof typeof KNOWLEDGE_BASE] || KNOWLEDGE_BASE.customer;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
