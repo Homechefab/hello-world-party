@@ -40,6 +40,14 @@ const customerServices = [
     href: "/catering",
     icon: Utensils,
     color: "from-orange-500 to-orange-600"
+  },
+  {
+    image: pickupImage,
+    title: "Färdiglagade matlådor",
+    description: "Beställ hemlagade matlådor för hela veckan",
+    href: "/meal-boxes",
+    icon: Package,
+    color: "from-green-500 to-green-600"
   }
 ];
 
