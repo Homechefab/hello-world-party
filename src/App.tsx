@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Routes, Route } from "react-router-dom";
 import useEdgeSwipeBack from "@/hooks/useEdgeSwipeBack";
+import ScrollToTop from "@/components/ScrollToTop";
 
 import { RoleBasedLayout } from "@/components/RoleBasedLayout";
 import { PublicLayout } from "@/components/PublicLayout";
@@ -102,6 +103,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <ScrollToTop />
         <Routes>
 
             {/* Public routes */}
