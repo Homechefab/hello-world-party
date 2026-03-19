@@ -74,6 +74,13 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
+    // Rate limiting per admin user
+    if (isRateLimited(userId as string)) {
+      return new Response(JSON.stringify({ error: 'Too many requests. Max 5 emails per minute.' }), {
+        status: 429, headers: { "Content-Type": "application/json", ...corsHeaders }
+      });
+    }
+
     const data: BusinessDecisionRequest = await req.json();
 
     console.log(`Sending decision email to ${data.contactEmail}: ${data.decision}`);
