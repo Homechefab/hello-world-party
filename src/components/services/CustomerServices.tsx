@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, Calendar, Users, Utensils } from "lucide-react";
+import { ShoppingBag, Calendar, Users, Utensils, Package } from "lucide-react";
 import pickupImage from "@/assets/customer-pickup.jpg";
 import experienceImage from "@/assets/experience-dining.jpg";
 import privateChefImage from "@/assets/private-chef.jpg";
@@ -40,6 +40,14 @@ const customerServices = [
     href: "/catering",
     icon: Utensils,
     color: "from-orange-500 to-orange-600"
+  },
+  {
+    image: pickupImage,
+    title: "Färdiglagade matlådor",
+    description: "Beställ hemlagade matlådor för hela veckan",
+    href: "/meal-boxes",
+    icon: Package,
+    color: "from-green-500 to-green-600"
   }
 ];
 
