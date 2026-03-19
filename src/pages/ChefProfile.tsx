@@ -171,6 +171,18 @@ const ChefProfile = () => {
           createdAt: v.created_at
         }));
         setVideos(formattedVideos);
+
+        // Fetch reviews for rating
+        const { data: reviewsData, error: reviewsError } = await supabase
+          .from('reviews')
+          .select('rating')
+          .eq('chef_id', chefId);
+
+        if (!reviewsError && reviewsData && reviewsData.length > 0) {
+          const avg = reviewsData.reduce((sum, r) => sum + r.rating, 0) / reviewsData.length;
+          setAverageRating(Math.round(avg * 10) / 10);
+          setTotalReviews(reviewsData.length);
+        }
       } catch (error) {
         console.error('Error fetching chef data:', error);
       } finally {
