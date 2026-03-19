@@ -16,6 +16,8 @@ interface Chef {
   city?: string;
   profile_image_url?: string;
   specialties?: string;
+  avgRating?: number;
+  reviewCount?: number;
 }
 
 interface Dish {
