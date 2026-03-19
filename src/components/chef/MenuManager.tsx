@@ -86,6 +86,8 @@ const MenuManager = () => {
 
   const handleEditDish = (dish: Dish) => {
     setEditingDish({ ...dish });
+    setNewIngredient("");
+    setNewAllergen("");
     setIsEditDialogOpen(true);
   };
 
