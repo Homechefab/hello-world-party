@@ -41,6 +41,8 @@ const MenuManager = () => {
   const [scheduleDish, setScheduleDish] = useState<Dish | null>(null);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("my-menu");
+  const [newIngredient, setNewIngredient] = useState("");
+  const [newAllergen, setNewAllergen] = useState("");
   
   const { toast } = useToast();
   const { user } = useAuth();
