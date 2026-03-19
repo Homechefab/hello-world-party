@@ -391,7 +391,7 @@ serve(async (req) => {
         </div>
         <div class="info-row">
           <span class="info-label">Kund</span>
-          <span class="info-value">${transaction.customer_email}</span>
+          <span class="info-value">${escapeHtml(transaction.customer_email)}</span>
         </div>
         <div class="info-row">
           <span class="info-label">Status</span>
