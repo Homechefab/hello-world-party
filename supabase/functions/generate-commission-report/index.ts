@@ -396,7 +396,7 @@ serve(async (req) => {
         <div class="info-row">
           <span class="info-label">Status</span>
           <span class="info-value">
-            <span class="status-badge">${transaction.payment_status === 'paid' ? 'Betald' : transaction.payment_status}</span>
+            <span class="status-badge">${transaction.payment_status === 'paid' ? 'Betald' : escapeHtml(transaction.payment_status)}</span>
           </span>
         </div>
       </div>
