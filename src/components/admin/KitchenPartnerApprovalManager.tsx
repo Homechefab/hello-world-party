@@ -76,7 +76,7 @@ export const KitchenPartnerApprovalManager = () => {
         // Fetch documents for all kitchen partners
         const { data: documents } = await supabase
           .from('document_submissions')
-          .select('*')
+          .select('id, user_id, document_type, document_url, status, created_at')
           .in('user_id', userIds)
           .order('created_at', { ascending: false });
 
