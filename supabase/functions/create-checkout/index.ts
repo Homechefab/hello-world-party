@@ -17,6 +17,34 @@ serve(async (req) => {
     const body = await req.json();
     const { priceId, quantity, dishName, items, totalAmount, successUrl, cancelUrl } = body;
 
+    // Validate redirect URLs against allowed origins
+    const ALLOWED_ORIGINS = [
+      req.headers.get("origin"),
+      'https://homechef.nu',
+      'https://www.homechef.nu',
+      'https://hello-world-party.lovable.app',
+    ].filter(Boolean);
+
+    function isTrustedUrl(url: string): boolean {
+      try {
+        const parsed = new URL(url);
+        return ALLOWED_ORIGINS.some(o => parsed.origin === o);
+      } catch { return false; }
+    }
+
+    if (successUrl && !isTrustedUrl(successUrl)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid success redirect URL" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
+    }
+    if (cancelUrl && !isTrustedUrl(cancelUrl)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid cancel redirect URL" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
+      );
+    }
+
     console.log("Creating checkout session:", body);
 
     // Initialize Stripe

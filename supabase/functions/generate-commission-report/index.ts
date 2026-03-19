@@ -6,6 +6,16 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+function escapeHtml(str: string): string {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -381,12 +391,12 @@ serve(async (req) => {
         </div>
         <div class="info-row">
           <span class="info-label">Kund</span>
-          <span class="info-value">${transaction.customer_email}</span>
+          <span class="info-value">${escapeHtml(transaction.customer_email)}</span>
         </div>
         <div class="info-row">
           <span class="info-label">Status</span>
           <span class="info-value">
-            <span class="status-badge">${transaction.payment_status === 'paid' ? 'Betald' : transaction.payment_status}</span>
+            <span class="status-badge">${transaction.payment_status === 'paid' ? 'Betald' : escapeHtml(transaction.payment_status)}</span>
           </span>
         </div>
       </div>
@@ -396,7 +406,7 @@ serve(async (req) => {
         <div class="section-title">Beställning</div>
         <div class="order-item">
           <div class="item-details">
-            <div class="item-name">${transaction.dish_name}</div>
+            <div class="item-name">${escapeHtml(transaction.dish_name)}</div>
             <div class="item-quantity">Antal: ${transaction.quantity} st</div>
           </div>
         <div class="item-price">${basePrice.toFixed(2)} ${transaction.currency}</div>
@@ -457,7 +467,7 @@ serve(async (req) => {
         </div>
         ${transaction.receipt_url ? `
         <div style="margin-top: 12px;">
-          <a href="${transaction.receipt_url}" style="color: #EA580C; text-decoration: none; font-size: 13px; font-weight: 500;">
+          <a href="${escapeHtml(transaction.receipt_url)}" style="color: #EA580C; text-decoration: none; font-size: 13px; font-weight: 500;">
             → Visa kundkvitto i Stripe
           </a>
         </div>

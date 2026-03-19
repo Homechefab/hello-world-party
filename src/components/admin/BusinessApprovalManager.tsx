@@ -287,11 +287,17 @@ export const BusinessApprovalManager = () => {
                           </Button>
                         )}
                         {application.food_registration_document_url && (
-                          <Button variant="outline" size="sm" asChild>
-                            <a href={application.food_registration_document_url} target="_blank" rel="noopener noreferrer">
-                              <FileText className="h-4 w-4 mr-1" />
-                              Dokument
-                            </a>
+                          <Button variant="outline" size="sm" onClick={async () => {
+                            const docPath = application.food_registration_document_url!;
+                            if (docPath.startsWith('http')) {
+                              window.open(docPath, '_blank');
+                            } else {
+                              const { data } = await supabase.storage.from('business-documents').createSignedUrl(docPath, 3600);
+                              if (data?.signedUrl) window.open(data.signedUrl, '_blank');
+                            }
+                          }}>
+                            <FileText className="h-4 w-4 mr-1" />
+                            Dokument
                           </Button>
                         )}
                       </div>

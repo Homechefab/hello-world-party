@@ -112,11 +112,8 @@ const BusinessApplication = () => {
 
       if (uploadError) throw uploadError;
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('business-documents')
-        .getPublicUrl(filePath);
-
-      return publicUrl;
+      // Return the relative file path (not public URL) for private bucket
+      return filePath;
     } catch (error: any) {
       console.error("Error uploading document:", error);
       toast({
