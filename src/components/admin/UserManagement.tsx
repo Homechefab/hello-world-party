@@ -98,7 +98,7 @@ export const UserManagement = () => {
           .from('user_roles')
           .delete()
           .eq('user_id', userId)
-          .eq('role', role as any);
+          .eq('role', role as 'admin' | 'chef' | 'kitchen_partner' | 'restaurant' | 'customer' | 'business');
 
         if (error) throw error;
         toast.success(`Rollen ${roleLabels[role]} har tagits bort`);
