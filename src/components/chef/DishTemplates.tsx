@@ -51,6 +51,10 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
   const [customPrepTime, setCustomPrepTime] = useState<string>("");
   const [scheduleDays, setScheduleDays] = useState<{ [day: number]: boolean }>({});
   const [activeCategory, setActiveCategory] = useState<string>("Alla");
+  const [customIngredients, setCustomIngredients] = useState<string[]>([]);
+  const [customAllergens, setCustomAllergens] = useState<string[]>([]);
+  const [newIngredient, setNewIngredient] = useState("");
+  const [newAllergen, setNewAllergen] = useState("");
   
   const { toast } = useToast();
   const { user } = useAuth();
