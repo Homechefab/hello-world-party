@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
 import DishCard from "@/components/shared/DishCard";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { ChefHat, MapPin } from "lucide-react";
 
 interface DishWithChef {
   id: string;
@@ -14,32 +18,38 @@ interface DishWithChef {
   chef_name: string | null;
 }
 
+interface ChefProfile {
+  id: string;
+  business_name: string | null;
+  full_name: string | null;
+  city: string | null;
+  profile_image_url: string | null;
+  specialties: string | null;
+}
+
 const FoodGrid = () => {
   const [dishes, setDishes] = useState<DishWithChef[]>([]);
+  const [chefs, setChefs] = useState<ChefProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const { addItem } = useCart();
   const { toast } = useToast();
 
   useEffect(() => {
-    const fetchDishes = async () => {
+    const fetchContent = async () => {
       try {
-        const { data, error } = await supabase
+        // Fetch available dishes
+        const { data: dishData, error: dishError } = await supabase
           .from('dishes')
           .select(`
-            id,
-            name,
-            description,
-            price,
-            image_url,
-            chef_id,
+            id, name, description, price, image_url, chef_id,
             chefs!inner(business_name)
           `)
           .eq('available', true)
           .limit(8);
 
-        if (error) throw error;
+        if (dishError) throw dishError;
 
-        const formattedDishes = (data || []).map(dish => ({
+        const formattedDishes = (dishData || []).map(dish => ({
           id: dish.id,
           name: dish.name,
           description: dish.description,
@@ -50,14 +60,31 @@ const FoodGrid = () => {
         }));
 
         setDishes(formattedDishes);
+
+        // If no dishes, show approved chefs instead
+        if (formattedDishes.length === 0) {
+          const { data: chefData, error: chefError } = await supabase
+            .from('public_chef_profiles')
+            .select('id, business_name, full_name, city, profile_image_url, specialties')
+            .limit(8);
+
+          if (chefError) throw chefError;
+
+          // Filter out review accounts
+          const realChefs = (chefData || []).filter(
+            (c) => c.id !== null && !c.business_name?.toLowerCase().includes('review')
+          ) as ChefProfile[];
+
+          setChefs(realChefs);
+        }
       } catch (error) {
-        console.error('Error fetching dishes:', error);
+        console.error('Error fetching content:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchDishes();
+    fetchContent();
   }, []);
 
   const handleAddToCart = (dish: DishWithChef) => {
@@ -76,27 +103,23 @@ const FoodGrid = () => {
     });
   };
 
+  const getSpecialtiesList = (specialties: string | null): string[] => {
+    if (!specialties) return [];
+    return specialties.split(',').map(s => s.trim()).filter(Boolean).slice(0, 3);
+  };
+
   return (
     <section className="py-8 my-4">
       <div className="max-w-4xl mx-auto px-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground">
-            Populära rätter nära dig
+            {dishes.length > 0 ? 'Populära rätter nära dig' : 'Kockar nära dig'}
           </h2>
-          <div className="flex gap-2 w-full sm:w-auto">
-            <select className="px-3 py-2 bg-white border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm w-full sm:w-auto">
-              <option>Sortera efter</option>
-              <option>Närmast</option>
-              <option>Högst betyg</option>
-              <option>Lägst pris</option>
-              <option>Senast tillagd</option>
-            </select>
-          </div>
         </div>
         
         {loading ? (
           <div className="text-center py-8">
-            <p className="text-muted-foreground">Laddar rätter...</p>
+            <p className="text-muted-foreground">Laddar...</p>
           </div>
         ) : dishes.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -111,9 +134,56 @@ const FoodGrid = () => {
               />
             ))}
           </div>
+        ) : chefs.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {chefs.map((chef) => (
+              <Link key={chef.id} to={`/chef/${chef.id}`}>
+                <Card className="group hover:shadow-warm transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full overflow-hidden">
+                  <CardContent className="p-0 flex items-stretch h-full">
+                    {/* Chef image */}
+                    <div className="w-28 min-h-[120px] bg-muted flex-shrink-0 overflow-hidden">
+                      {chef.profile_image_url ? (
+                        <img
+                          src={chef.profile_image_url}
+                          alt={chef.business_name || chef.full_name || 'Kock'}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-primary/10">
+                          <ChefHat className="w-10 h-10 text-primary/40" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Chef info */}
+                    <div className="flex-1 p-4 flex flex-col justify-center gap-1.5">
+                      <h3 className="font-semibold text-foreground text-base leading-tight">
+                        {chef.business_name || chef.full_name || 'Hemkock'}
+                      </h3>
+                      {chef.city && (
+                        <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                          <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span>{chef.city}</span>
+                        </div>
+                      )}
+                      {chef.specialties && (
+                        <div className="flex flex-wrap gap-1 mt-1">
+                          {getSpecialtiesList(chef.specialties).map((s) => (
+                            <Badge key={s} variant="secondary" className="text-xs font-normal">
+                              {s}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
         ) : (
           <div className="text-center mt-8 text-muted-foreground">
-            <p>Inga rätter tillgängliga just nu</p>
+            <p>Inga kockar eller rätter tillgängliga just nu</p>
           </div>
         )}
       </div>
