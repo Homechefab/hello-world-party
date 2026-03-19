@@ -126,13 +126,70 @@ const MyOrders = () => {
     }
   }, [user]);
 
+  const fetchReviewedOrders = useCallback(async () => {
+    if (!user?.id) return;
+    const { data } = await supabase
+      .from('reviews')
+      .select('order_id')
+      .eq('customer_id', user.id);
+    if (data) {
+      setReviewedOrderIds(new Set(data.map(r => r.order_id)));
+    }
+  }, [user]);
+
   useEffect(() => {
     if (user) {
       fetchOrders();
+      fetchReviewedOrders();
     } else {
       setLoading(false);
     }
-  }, [fetchOrders, user]);
+  }, [fetchOrders, fetchReviewedOrders, user]);
+
+  const handleOpenReview = (order: Order) => {
+    setReviewOrder(order);
+    setReviewRating(0);
+    setReviewComment('');
+    setReviewDialogOpen(true);
+  };
+
+  const handleSubmitReview = async () => {
+    if (!user?.id || !reviewOrder || reviewRating === 0) {
+      toast.error('Välj ett betyg (1-5 stjärnor)');
+      return;
+    }
+
+    setSubmittingReview(true);
+    try {
+      // We need the chef_id for this order - fetch it
+      const { data: orderData, error: orderError } = await supabase
+        .from('orders')
+        .select('chef_id')
+        .eq('id', reviewOrder.id)
+        .single();
+
+      if (orderError || !orderData) throw new Error('Kunde inte hitta beställningen');
+
+      const { error } = await supabase.from('reviews').insert({
+        order_id: reviewOrder.id,
+        customer_id: user.id,
+        chef_id: orderData.chef_id,
+        rating: reviewRating,
+        comment: reviewComment.trim() || null,
+      });
+
+      if (error) throw error;
+
+      toast.success('Tack för din recension!');
+      setReviewDialogOpen(false);
+      setReviewedOrderIds(prev => new Set(prev).add(reviewOrder.id));
+    } catch (error: any) {
+      console.error('Error submitting review:', error);
+      toast.error(error.message || 'Kunde inte skicka recension');
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
