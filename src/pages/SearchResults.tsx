@@ -235,7 +235,7 @@ const SearchResults = () => {
             }
 
             return chefData;
-          }).filter(chef => chef.dish_count > 0);
+          });
         }
 
         // Format dish results - simplified without nested data
