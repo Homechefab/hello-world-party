@@ -50,7 +50,7 @@ export const KitchenPartnerApprovalManager = () => {
       // Fetch kitchen partners
       const { data, error } = await supabase
         .from('kitchen_partners')
-        .select('*')
+        .select('id, user_id, business_name, address, kitchen_size, hourly_rate, kitchen_description, equipment_details, municipality, application_status, approved, rejection_reason, created_at, updated_at')
         .order('created_at', { ascending: false });
 
       if (error) {
@@ -76,7 +76,7 @@ export const KitchenPartnerApprovalManager = () => {
         // Fetch documents for all kitchen partners
         const { data: documents } = await supabase
           .from('document_submissions')
-          .select('*')
+          .select('id, user_id, document_type, document_url, status, created_at')
           .in('user_id', userIds)
           .order('created_at', { ascending: false });
 

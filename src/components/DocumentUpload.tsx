@@ -174,7 +174,7 @@ export const DocumentUpload = ({
       const errorMessage = error instanceof Error 
         ? error.message 
         : typeof error === 'object' && error !== null && 'message' in error
-          ? String((error as any).message)
+          ? String((error as { message: unknown }).message)
           : "Något gick fel vid uppladdning av dokumentet.";
       console.error('Upload error full:', JSON.stringify(error));
       toast({

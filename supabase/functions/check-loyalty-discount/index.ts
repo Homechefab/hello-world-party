@@ -40,11 +40,28 @@ serve(async (req) => {
       throw new Error('User not authenticated');
     }
 
-    const { order_id, original_amount } = await req.json();
+    const { order_id } = await req.json();
 
-    if (!order_id || !original_amount) {
-      throw new Error('Missing required parameters: order_id, original_amount');
+    if (!order_id) {
+      throw new Error('Missing required parameter: order_id');
     }
+
+    // Look up the order's actual total_amount server-side to prevent price manipulation
+    const { data: order, error: orderError } = await supabaseAdmin
+      .from('orders')
+      .select('total_amount, customer_id')
+      .eq('id', order_id)
+      .single();
+
+    if (orderError || !order) {
+      throw new Error('Order not found');
+    }
+
+    if (order.customer_id !== user.id) {
+      throw new Error('Order does not belong to this user');
+    }
+
+    const original_amount = order.total_amount;
 
     console.log(`Checking loyalty discount for user ${user.id}, order ${order_id}, amount ${original_amount}`);
 

@@ -75,8 +75,8 @@ const Auth = () => {
             .from('user_roles')
             .insert({
               user_id: authData.user.id,
-              role: selectedRole,
-            } as any);
+              role: selectedRole as 'customer' | 'chef' | 'kitchen_partner' | 'restaurant' | 'business',
+            });
 
           if (roleError) console.error('Role creation error:', roleError);
         }

@@ -54,11 +54,12 @@ const ChefForum = () => {
     queryFn: async () => {
       let query = supabase
         .from("forum_posts")
-        .select("*")
+        .select("id, user_id, title, content, category, likes_count, replies_count, created_at")
         .order("created_at", { ascending: false });
 
       if (searchTerm.trim()) {
-        query = query.or(`title.ilike.%${searchTerm}%,content.ilike.%${searchTerm}%`);
+        const sanitized = searchTerm.replace(/%/g, '\\%').replace(/_/g, '\\_');
+        query = query.or(`title.ilike.%${sanitized}%,content.ilike.%${sanitized}%`);
       }
 
       const { data, error } = await query;
@@ -90,7 +91,7 @@ const ChefForum = () => {
       if (!expandedPost) return [];
       const { data, error } = await supabase
         .from("forum_replies")
-        .select("*")
+        .select("id, user_id, post_id, content, likes_count, created_at")
         .eq("post_id", expandedPost)
         .order("created_at", { ascending: true });
       if (error) throw error;
@@ -350,7 +351,7 @@ const ChefForum = () => {
                                 : post.content}
                             </CardDescription>
                             <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                              <span className="font-medium">{(post as any).author_name}</span>
+                              <span className="font-medium">{(post as { author_name?: string }).author_name}</span>
                               <div className="flex items-center gap-1">
                                 <Reply className="w-4 h-4" />
                                 <span>{post.replies_count} svar</span>
@@ -380,7 +381,7 @@ const ChefForum = () => {
                                 <div key={reply.id} className="bg-muted/50 rounded-lg p-3">
                                   <div className="flex items-center gap-2 mb-1">
                                     <span className="font-medium text-sm">
-                                      {(reply as any).author_name}
+                                      {(reply as { author_name?: string }).author_name}
                                     </span>
                                     <span className="text-xs text-muted-foreground">
                                       {format(new Date(reply.created_at), "d MMM yyyy, HH:mm", {

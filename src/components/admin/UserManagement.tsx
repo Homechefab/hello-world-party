@@ -49,7 +49,7 @@ export const UserManagement = () => {
       // Hämta alla användare
       const { data: profiles, error: profileError } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, email, full_name, phone, address, created_at')
         .order('created_at', { ascending: false });
 
       if (profileError) throw profileError;
@@ -98,7 +98,7 @@ export const UserManagement = () => {
           .from('user_roles')
           .delete()
           .eq('user_id', userId)
-          .eq('role', role as any);
+          .eq('role', role as 'admin' | 'chef' | 'kitchen_partner' | 'restaurant' | 'customer' | 'business');
 
         if (error) throw error;
         toast.success(`Rollen ${roleLabels[role]} har tagits bort`);
@@ -106,7 +106,7 @@ export const UserManagement = () => {
         // Lägg till roll
         const { error } = await supabase
           .from('user_roles')
-          .insert({ user_id: userId, role } as any);
+          .insert({ user_id: userId, role: role as 'admin' | 'chef' | 'kitchen_partner' | 'restaurant' | 'customer' | 'business' });
 
         if (error) throw error;
         toast.success(`Rollen ${roleLabels[role]} har lagts till`);

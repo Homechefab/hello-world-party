@@ -163,12 +163,12 @@ const Webshop = () => {
     queryKey: ['webshop-products'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('webshop_products' as any)
-        .select('*')
+        .from('webshop_products')
+        .select('id, name, description, price, category, image_url, available, stock_quantity')
         .eq('available', true)
         .order('category');
       if (error) throw error;
-      return data as unknown as WebshopProduct[];
+      return data as WebshopProduct[];
     },
     enabled: isAdmin,
   });
