@@ -294,10 +294,12 @@ const ChefProfile = () => {
                 </div>
               )}
               <div className="flex items-center justify-center gap-4 text-white/90">
-                <div className="flex items-center">
-                  <Star className="w-5 h-5 fill-yellow-400 text-yellow-400 mr-1" />
-                  <span>4.8 (42 recensioner)</span>
-                </div>
+                {totalReviews > 0 && (
+                  <div className="flex items-center">
+                    <Star className="w-5 h-5 fill-yellow-400 text-yellow-400 mr-1" />
+                    <span>{averageRating} ({totalReviews} {totalReviews === 1 ? 'recension' : 'recensioner'})</span>
+                  </div>
+                )}
                 <div className="flex items-center">
                   <Clock className="w-5 h-5 mr-1" />
                   <span>30-45 min tillagning</span>
