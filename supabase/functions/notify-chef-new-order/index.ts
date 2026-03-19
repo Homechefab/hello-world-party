@@ -3,8 +3,17 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.1?target
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -16,13 +25,40 @@ serve(async (req) => {
     if (!RESEND_API_KEY) throw new Error('RESEND_API_KEY not configured');
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+
+    // Authenticate the caller
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const supabaseAnon = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: claimsData, error: claimsError } = await supabaseAnon.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid or expired session' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const userId = claimsData.claims.sub;
+
+    // Use service role for data fetching
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     const { order_id } = await req.json();
     if (!order_id) throw new Error('order_id is required');
 
-    // Fetch order with items
+    // Fetch order and verify the caller owns it
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .select('*, order_items(quantity, unit_price, dishes(name))')
@@ -31,6 +67,14 @@ serve(async (req) => {
 
     if (orderError || !order) {
       throw new Error(`Order not found: ${orderError?.message}`);
+    }
+
+    // Only the customer who placed the order can trigger this notification
+    if (order.customer_id !== userId) {
+      return new Response(
+        JSON.stringify({ error: 'Forbidden' }),
+        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     // Get chef's email
@@ -48,10 +92,10 @@ serve(async (req) => {
       );
     }
 
-    // Build items list
+    // Build items list (XSS-safe)
     const itemsList = (order.order_items || [])
       .map((item: any) => {
-        const dishName = item.dishes?.name || 'Okänd rätt';
+        const dishName = escapeHtml(item.dishes?.name || 'Okänd rätt');
         return `<tr>
           <td style="padding:8px;border-bottom:1px solid #eee;">${dishName}</td>
           <td style="padding:8px;border-bottom:1px solid #eee;text-align:center;">${item.quantity}</td>
@@ -61,6 +105,8 @@ serve(async (req) => {
       .join('');
 
     const orderId = order.id.slice(0, 8);
+    const chefName = escapeHtml(chef.full_name || chef.business_name || '');
+    const specialInstructions = order.special_instructions ? escapeHtml(order.special_instructions) : '';
 
     const emailHtml = `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
@@ -69,7 +115,7 @@ serve(async (req) => {
           <p style="color:rgba(255,255,255,0.9);margin:8px 0 0;">Beställning #${orderId}</p>
         </div>
         <div style="background:#fff;padding:24px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px;">
-          <p>Hej ${chef.full_name || chef.business_name}! 👋</p>
+          <p>Hej ${chefName}! 👋</p>
           <p>Du har fått en ny beställning på <strong>${order.total_amount} kr</strong>.</p>
           
           <table style="width:100%;border-collapse:collapse;margin:16px 0;">
@@ -89,7 +135,7 @@ serve(async (req) => {
             </tfoot>
           </table>
 
-          ${order.special_instructions ? `<p style="background:#fef3c7;padding:12px;border-radius:8px;">📝 <strong>Kundens meddelande:</strong> ${order.special_instructions}</p>` : ''}
+          ${specialInstructions ? `<p style="background:#fef3c7;padding:12px;border-radius:8px;">📝 <strong>Kundens meddelande:</strong> ${specialInstructions}</p>` : ''}
           
           <a href="https://hello-world-party.lovable.app/chef/dashboard?tab=orders" 
              style="display:inline-block;background:#f97316;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;margin-top:16px;font-weight:bold;">
