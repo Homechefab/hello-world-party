@@ -78,7 +78,7 @@ serve(async (req) => {
       throw new Error(`ElevenLabs API error: ${response.status}`);
     }
 
-    const data = await response.json();
+    const result = await response.json();
     console.log('Signed URL generated successfully');
 
     return new Response(
