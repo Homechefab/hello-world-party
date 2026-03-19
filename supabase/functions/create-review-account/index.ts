@@ -6,6 +6,20 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+// Server-side only credentials — never sent to the client
+const REVIEW_ACCOUNTS: Record<string, { email: string; password: string; fullName: string }> = {
+  Apple: {
+    email: "applereview@homechef.nu",
+    password: "AppleReview2026!",
+    fullName: "Apple Review",
+  },
+  Google: {
+    email: "googlereview@homechef.nu",
+    password: "GoogleReview2026!",
+    fullName: "Google Review",
+  },
+};
+
 const jsonResponse = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
     status,
@@ -71,14 +85,13 @@ serve(async (req: Request): Promise<Response> => {
 
     const action = payload?.action ?? "create";
 
+    // ── STATUS action ──
     if (action === "status") {
-      const emails: string[] = Array.isArray(payload?.emails)
-        ? payload.emails.filter((email: unknown) => typeof email === "string")
-        : [];
+      const platforms: string[] = Array.isArray(payload?.platforms)
+        ? payload.platforms.filter((p: unknown) => typeof p === "string" && REVIEW_ACCOUNTS[p as string])
+        : Object.keys(REVIEW_ACCOUNTS);
 
-      if (!emails.length) {
-        return jsonResponse({ error: "Missing required field: emails" }, 400);
-      }
+      const emails = platforms.map((p) => REVIEW_ACCOUNTS[p].email);
 
       const { data: profiles, error: profilesError } = await supabaseAdmin
         .from("profiles")
@@ -99,110 +112,78 @@ serve(async (req: Request): Promise<Response> => {
       >();
 
       userIds.forEach((userId) => {
-        approvalByUser.set(userId, {
-          chef: false,
-          kitchenPartner: false,
-          restaurant: false,
-        });
+        approvalByUser.set(userId, { chef: false, kitchenPartner: false, restaurant: false });
       });
 
       if (userIds.length > 0) {
         const [rolesResult, chefsResult, kitchenPartnersResult, restaurantsResult] = await Promise.all([
           supabaseAdmin.from("user_roles").select("user_id, role").in("user_id", userIds),
           supabaseAdmin.from("chefs").select("user_id, kitchen_approved").in("user_id", userIds),
-          supabaseAdmin
-            .from("kitchen_partners")
-            .select("user_id, approved")
-            .in("user_id", userIds),
+          supabaseAdmin.from("kitchen_partners").select("user_id, approved").in("user_id", userIds),
           supabaseAdmin.from("restaurants").select("user_id, approved").in("user_id", userIds),
         ]);
 
         if (rolesResult.error || chefsResult.error || kitchenPartnersResult.error || restaurantsResult.error) {
-          return jsonResponse(
-            {
-              error: `Failed to fetch status data: ${
-                rolesResult.error?.message ??
-                chefsResult.error?.message ??
-                kitchenPartnersResult.error?.message ??
-                restaurantsResult.error?.message
-              }`,
-            },
-            400,
-          );
+          return jsonResponse({
+            error: `Failed to fetch status data: ${
+              rolesResult.error?.message ??
+              chefsResult.error?.message ??
+              kitchenPartnersResult.error?.message ??
+              restaurantsResult.error?.message
+            }`,
+          }, 400);
         }
 
         (rolesResult.data ?? []).forEach((row) => {
-          if (!rolesByUser.has(row.user_id)) {
-            rolesByUser.set(row.user_id, new Set<string>());
-          }
+          if (!rolesByUser.has(row.user_id)) rolesByUser.set(row.user_id, new Set<string>());
           rolesByUser.get(row.user_id)?.add(row.role);
         });
 
         (chefsResult.data ?? []).forEach((row) => {
           if (!row.user_id) return;
-          const current = approvalByUser.get(row.user_id);
-          if (current && row.kitchen_approved) {
-            current.chef = true;
-          }
+          const c = approvalByUser.get(row.user_id);
+          if (c && row.kitchen_approved) c.chef = true;
         });
 
         (kitchenPartnersResult.data ?? []).forEach((row) => {
-          const current = approvalByUser.get(row.user_id);
-          if (current && row.approved) {
-            current.kitchenPartner = true;
-          }
+          const c = approvalByUser.get(row.user_id);
+          if (c && row.approved) c.kitchenPartner = true;
         });
 
         (restaurantsResult.data ?? []).forEach((row) => {
           if (!row.user_id) return;
-          const current = approvalByUser.get(row.user_id);
-          if (current && row.approved) {
-            current.restaurant = true;
-          }
+          const c = approvalByUser.get(row.user_id);
+          if (c && row.approved) c.restaurant = true;
         });
       }
 
-      const accounts = emails.map((email) => {
+      const accounts = platforms.map((platform) => {
+        const email = REVIEW_ACCOUNTS[platform].email;
         const profile = (profiles ?? []).find((row) => row.email === email);
 
         if (!profile) {
-          return {
-            email,
-            exists: false,
-            fullyConfigured: false,
-            roles: [],
-          };
+          return { platform, email, exists: false, fullyConfigured: false, roles: [] };
         }
 
         const roles = Array.from(rolesByUser.get(profile.id) ?? []);
-        const approvals = approvalByUser.get(profile.id) ?? {
-          chef: false,
-          kitchenPartner: false,
-          restaurant: false,
-        };
-
+        const approvals = approvalByUser.get(profile.id) ?? { chef: false, kitchenPartner: false, restaurant: false };
         const hasAllRoles = requiredRoles.every((role) => roles.includes(role));
         const fullyConfigured = hasAllRoles && approvals.chef && approvals.kitchenPartner && approvals.restaurant;
 
-        return {
-          email,
-          exists: true,
-          fullyConfigured,
-          roles,
-        };
+        return { platform, email, exists: true, fullyConfigured, roles };
       });
 
+      // Never return passwords
       return jsonResponse({ success: true, accounts });
     }
 
-    const { email, password, fullName, platform } = payload;
-
-    if (!email || !password || !fullName || !platform) {
-      return jsonResponse(
-        { error: "Missing required fields: email, password, fullName, platform" },
-        400,
-      );
+    // ── CREATE action ──
+    const platform = payload?.platform;
+    if (!platform || !REVIEW_ACCOUNTS[platform]) {
+      return jsonResponse({ error: "Invalid platform. Must be 'Apple' or 'Google'." }, 400);
     }
+
+    const { email, password, fullName } = REVIEW_ACCOUNTS[platform];
 
     let userId: string | null = null;
     let existedAlready = false;
@@ -231,17 +212,14 @@ serve(async (req: Request): Promise<Response> => {
 
       if (!userId) {
         const { data: usersPage, error: listUsersError } = await supabaseAdmin.auth.admin.listUsers({
-          page: 1,
-          perPage: 1000,
+          page: 1, perPage: 1000,
         });
 
         if (listUsersError) {
           return jsonResponse({ error: `Failed to list existing users: ${listUsersError.message}` }, 400);
         }
 
-        userId =
-          usersPage.users.find((existingUser) => existingUser.email?.toLowerCase() === email.toLowerCase())
-            ?.id ?? null;
+        userId = usersPage.users.find((u) => u.email?.toLowerCase() === email.toLowerCase())?.id ?? null;
       }
 
       if (!userId) {
@@ -263,14 +241,9 @@ serve(async (req: Request): Promise<Response> => {
 
     const { error: profileError } = await supabaseAdmin.from("profiles").upsert(
       {
-        id: userId,
-        email,
-        full_name: fullName,
-        phone: "+46700000000",
-        address: `${platform} Review, Stockholm`,
-        municipality_approved: true,
-        onboarding_completed: true,
-        role: "customer",
+        id: userId, email, full_name: fullName, phone: "+46700000000",
+        address: `${platform} Review, Stockholm`, municipality_approved: true,
+        onboarding_completed: true, role: "customer",
       },
       { onConflict: "id" },
     );
@@ -291,195 +264,98 @@ serve(async (req: Request): Promise<Response> => {
 
     let chefId: string | null = null;
 
-    const { data: existingChef, error: existingChefError } = await supabaseAdmin
-      .from("chefs")
-      .select("id")
-      .eq("user_id", userId)
-      .maybeSingle();
-
-    if (existingChefError) {
-      return jsonResponse({ error: `Failed to check chef profile: ${existingChefError.message}` }, 400);
-    }
+    const { data: existingChef } = await supabaseAdmin
+      .from("chefs").select("id").eq("user_id", userId).maybeSingle();
 
     if (existingChef?.id) {
       const { data: updatedChef, error: updateChefError } = await supabaseAdmin
         .from("chefs")
         .update({
-          business_name: `${platform} Review Kitchen`,
-          full_name: fullName,
-          kitchen_approved: true,
-          application_status: "approved",
+          business_name: `${platform} Review Kitchen`, full_name: fullName,
+          kitchen_approved: true, application_status: "approved",
           municipality_approval_date: new Date().toISOString(),
-          contact_email: email,
-          phone: "+46700000000",
-          city: "Stockholm",
+          contact_email: email, phone: "+46700000000", city: "Stockholm",
         })
-        .eq("id", existingChef.id)
-        .select("id")
-        .single();
+        .eq("id", existingChef.id).select("id").single();
 
       if (updateChefError) {
         return jsonResponse({ error: `Failed to update chef profile: ${updateChefError.message}` }, 400);
       }
-
       chefId = updatedChef.id;
     } else {
       const { data: createdChef, error: createChefError } = await supabaseAdmin
         .from("chefs")
         .insert({
-          user_id: userId,
-          business_name: `${platform} Review Kitchen`,
-          full_name: fullName,
-          kitchen_approved: true,
-          application_status: "approved",
+          user_id: userId, business_name: `${platform} Review Kitchen`, full_name: fullName,
+          kitchen_approved: true, application_status: "approved",
           municipality_approval_date: new Date().toISOString(),
-          contact_email: email,
-          phone: "+46700000000",
-          city: "Stockholm",
+          contact_email: email, phone: "+46700000000", city: "Stockholm",
         })
-        .select("id")
-        .single();
+        .select("id").single();
 
       if (createChefError) {
         return jsonResponse({ error: `Failed to create chef profile: ${createChefError.message}` }, 400);
       }
-
       chefId = createdChef.id;
     }
 
-    const { data: existingKitchenPartner, error: existingKitchenPartnerError } = await supabaseAdmin
-      .from("kitchen_partners")
-      .select("id")
-      .eq("user_id", userId)
-      .maybeSingle();
+    const { data: existingKP } = await supabaseAdmin
+      .from("kitchen_partners").select("id").eq("user_id", userId).maybeSingle();
 
-    if (existingKitchenPartnerError) {
-      return jsonResponse(
-        { error: `Failed to check kitchen partner profile: ${existingKitchenPartnerError.message}` },
-        400,
-      );
-    }
-
-    if (existingKitchenPartner?.id) {
-      const { error: updateKitchenPartnerError } = await supabaseAdmin
-        .from("kitchen_partners")
-        .update({
-          business_name: `${platform} Review Kitchen Partner`,
-          address: "Review Street 1, Stockholm",
-          approved: true,
-          application_status: "approved",
-        })
-        .eq("id", existingKitchenPartner.id);
-
-      if (updateKitchenPartnerError) {
-        return jsonResponse(
-          { error: `Failed to update kitchen partner profile: ${updateKitchenPartnerError.message}` },
-          400,
-        );
-      }
-    } else {
-      const { error: createKitchenPartnerError } = await supabaseAdmin.from("kitchen_partners").insert({
-        user_id: userId,
+    if (existingKP?.id) {
+      await supabaseAdmin.from("kitchen_partners").update({
         business_name: `${platform} Review Kitchen Partner`,
-        address: "Review Street 1, Stockholm",
-        approved: true,
-        application_status: "approved",
+        address: "Review Street 1, Stockholm", approved: true, application_status: "approved",
+      }).eq("id", existingKP.id);
+    } else {
+      await supabaseAdmin.from("kitchen_partners").insert({
+        user_id: userId, business_name: `${platform} Review Kitchen Partner`,
+        address: "Review Street 1, Stockholm", approved: true, application_status: "approved",
       });
-
-      if (createKitchenPartnerError) {
-        return jsonResponse(
-          { error: `Failed to create kitchen partner profile: ${createKitchenPartnerError.message}` },
-          400,
-        );
-      }
     }
 
-    const { data: existingRestaurant, error: existingRestaurantError } = await supabaseAdmin
-      .from("restaurants")
-      .select("id")
-      .eq("user_id", userId)
-      .maybeSingle();
-
-    if (existingRestaurantError) {
-      return jsonResponse({ error: `Failed to check restaurant profile: ${existingRestaurantError.message}` }, 400);
-    }
+    const { data: existingRestaurant } = await supabaseAdmin
+      .from("restaurants").select("id").eq("user_id", userId).maybeSingle();
 
     if (existingRestaurant?.id) {
-      const { error: updateRestaurantError } = await supabaseAdmin
-        .from("restaurants")
-        .update({
-          business_name: `${platform} Review Restaurant`,
-          full_name: fullName,
-          approved: true,
-          application_status: "approved",
-          contact_email: email,
-          phone: "+46700000000",
-          city: "Stockholm",
-        })
-        .eq("id", existingRestaurant.id);
-
-      if (updateRestaurantError) {
-        return jsonResponse({ error: `Failed to update restaurant profile: ${updateRestaurantError.message}` }, 400);
-      }
+      await supabaseAdmin.from("restaurants").update({
+        business_name: `${platform} Review Restaurant`, full_name: fullName,
+        approved: true, application_status: "approved",
+        contact_email: email, phone: "+46700000000", city: "Stockholm",
+      }).eq("id", existingRestaurant.id);
     } else {
-      const { error: createRestaurantError } = await supabaseAdmin.from("restaurants").insert({
-        user_id: userId,
-        business_name: `${platform} Review Restaurant`,
-        full_name: fullName,
-        approved: true,
-        application_status: "approved",
-        contact_email: email,
-        phone: "+46700000000",
-        city: "Stockholm",
+      await supabaseAdmin.from("restaurants").insert({
+        user_id: userId, business_name: `${platform} Review Restaurant`, full_name: fullName,
+        approved: true, application_status: "approved",
+        contact_email: email, phone: "+46700000000", city: "Stockholm",
       });
-
-      if (createRestaurantError) {
-        return jsonResponse({ error: `Failed to create restaurant profile: ${createRestaurantError.message}` }, 400);
-      }
     }
 
     if (chefId) {
-      const { count: existingDishesCount, error: dishesCountError } = await supabaseAdmin
-        .from("dishes")
-        .select("id", { count: "exact", head: true })
-        .eq("chef_id", chefId);
+      const { count } = await supabaseAdmin
+        .from("dishes").select("id", { count: "exact", head: true }).eq("chef_id", chefId);
 
-      if (dishesCountError) {
-        return jsonResponse({ error: `Failed to check dishes: ${dishesCountError.message}` }, 400);
-      }
-
-      if ((existingDishesCount ?? 0) === 0) {
-        const { error: createDishesError } = await supabaseAdmin.from("dishes").insert([
+      if ((count ?? 0) === 0) {
+        await supabaseAdmin.from("dishes").insert([
           {
-            chef_id: chefId,
-            name: "Köttbullar med lingon",
+            chef_id: chefId, name: "Köttbullar med lingon",
             description: "Klassiska svenska köttbullar med lingonsylt och potatismos",
-            price: 149,
-            category: "Huvudrätt",
+            price: 149, category: "Huvudrätt",
             ingredients: ["nötfärs", "ströbröd", "grädde", "lök", "lingon"],
-            allergens: ["gluten", "mjölk"],
-            preparation_time: 45,
-            available: true,
+            allergens: ["gluten", "mjölk"], preparation_time: 45, available: true,
           },
           {
-            chef_id: chefId,
-            name: "Laxfilé med dillsås",
+            chef_id: chefId, name: "Laxfilé med dillsås",
             description: "Ugnsbakad lax med krämig dillsås och kokt potatis",
-            price: 179,
-            category: "Huvudrätt",
+            price: 179, category: "Huvudrätt",
             ingredients: ["lax", "dill", "grädde", "potatis", "citron"],
-            allergens: ["fisk", "mjölk"],
-            preparation_time: 35,
-            available: true,
+            allergens: ["fisk", "mjölk"], preparation_time: 35, available: true,
           },
         ]);
-
-        if (createDishesError) {
-          return jsonResponse({ error: `Failed to create dishes: ${createDishesError.message}` }, 400);
-        }
       }
     }
 
+    // Never return password in response
     return jsonResponse({
       success: true,
       existed: existedAlready,
