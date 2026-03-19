@@ -50,7 +50,14 @@ const MyOrders = () => {
       const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
         .select(`
-          *,
+          id,
+          total_amount,
+          status,
+          delivery_address,
+          delivery_time,
+          created_at,
+          estimated_ready_at,
+          preparation_started_at,
           chefs (
             business_name,
             full_name
