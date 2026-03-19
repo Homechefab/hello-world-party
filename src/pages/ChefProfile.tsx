@@ -11,6 +11,7 @@ import ShareButtons from "@/components/ShareButtons";
 import { ChefOperatingHoursDisplay } from "@/components/chef/ChefOperatingHoursDisplay";
 import SEOHead from "@/components/SEOHead";
 import { VideoDisplay } from "@/components/VideoDisplay";
+import ReviewSection from "@/components/ReviewSection";
 
 // Custom TikTok icon
 const TikTokIcon = ({ className }: { className?: string }) => (
