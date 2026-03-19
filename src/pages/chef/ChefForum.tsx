@@ -58,7 +58,8 @@ const ChefForum = () => {
         .order("created_at", { ascending: false });
 
       if (searchTerm.trim()) {
-        query = query.or(`title.ilike.%${searchTerm}%,content.ilike.%${searchTerm}%`);
+        const sanitized = searchTerm.replace(/%/g, '\\%').replace(/_/g, '\\_');
+        query = query.or(`title.ilike.%${sanitized}%,content.ilike.%${sanitized}%`);
       }
 
       const { data, error } = await query;
