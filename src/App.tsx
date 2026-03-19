@@ -103,6 +103,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <ScrollToTop />
         <Routes>
 
             {/* Public routes */}
