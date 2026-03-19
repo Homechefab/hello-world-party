@@ -185,14 +185,22 @@ All colors MUST be HSL.
   }
 
   /* iOS input zoom fix — inputs below 16px trigger auto-zoom */
-  input, textarea, select, button {
+  input, textarea, select {
     font-size: 16px !important;
   }
 
-  /* Allow larger font sizes set by components to still apply */
-  input[style*="font-size"], textarea[style*="font-size"],
-  select[style*="font-size"], button[style*="font-size"] {
-    font-size: inherit !important;
+  /* Touch target audit — minimum 44x44px hit areas */
+  button, a, [role="button"], [type="submit"], [type="button"],
+  .cursor-pointer {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Exclude inline text links and icon-only small elements from min-width */
+  a:not([class]),
+  .inline-link {
+    min-height: auto;
+    min-width: auto;
   }
 
   /* Prevent media from causing overflow on small screens */
