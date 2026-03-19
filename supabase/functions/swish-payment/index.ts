@@ -58,7 +58,7 @@ serve(async (req) => {
       throw new Error("Invalid Swedish phone number format. Use format: 46XXXXXXXXX");
     }
 
-    // --- Server-side price validation: fetch the order from DB ---
+    // --- Server-side price validation: derive amount from order_items × dish prices ---
     const supabaseService = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
@@ -66,7 +66,7 @@ serve(async (req) => {
 
     const { data: order, error: orderError } = await supabaseService
       .from("orders")
-      .select("id, total_amount, customer_id, status")
+      .select("id, customer_id, status")
       .eq("id", orderId)
       .single();
 
@@ -87,8 +87,31 @@ serve(async (req) => {
       throw new Error("Order is already paid");
     }
 
-    // Use the DB-verified amount (not client-supplied)
-    const amount = Number(order.total_amount);
+    // Derive the true amount from order_items joined with dish prices
+    const { data: orderItems, error: itemsError } = await supabaseService
+      .from("order_items")
+      .select("quantity, dish_id, dishes(price)")
+      .eq("order_id", orderId);
+
+    if (itemsError || !orderItems || orderItems.length === 0) {
+      throw new Error("No order items found for this order");
+    }
+
+    // Calculate amount from authoritative dish prices × quantities
+    const amount = orderItems.reduce((sum, item) => {
+      const dishPrice = Number((item.dishes as any)?.price ?? 0);
+      return sum + dishPrice * item.quantity;
+    }, 0);
+
+    if (amount <= 0) {
+      throw new Error("Invalid order amount");
+    }
+
+    // Update the order's total_amount to the server-calculated value
+    await supabaseService
+      .from("orders")
+      .update({ total_amount: amount })
+      .eq("id", orderId);
 
     // Add 6% service fee to the amount (customer pays)
     const serviceFeeRate = 0.06;
