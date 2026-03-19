@@ -6,16 +6,16 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-// Server-side only credentials — never sent to the client
+// Credentials loaded from Supabase secrets — never hardcoded
 const REVIEW_ACCOUNTS: Record<string, { email: string; password: string; fullName: string }> = {
   Apple: {
     email: "applereview@homechef.nu",
-    password: "AppleReview2026!",
+    password: Deno.env.get("APPLE_REVIEW_PASSWORD") || "",
     fullName: "Apple Review",
   },
   Google: {
     email: "googlereview@homechef.nu",
-    password: "GoogleReview2026!",
+    password: Deno.env.get("GOOGLE_REVIEW_PASSWORD") || "",
     fullName: "Google Review",
   },
 };
