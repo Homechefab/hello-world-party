@@ -69,7 +69,7 @@ workflows:
       groups:
         - app_credentials
       node: 20.18.0
-      xcode: latest
+      xcode: 16.3
       cocoapods: default
     scripts:
       - name: Install pnpm
