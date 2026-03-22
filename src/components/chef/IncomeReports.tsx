@@ -69,19 +69,10 @@ const IncomeReports = ({ chefId: overrideChefId }: IncomeReportsProps = {}) => {
           setLoading(false);
           return;
         }
-        chefId = chefData.id;
+        resolvedChefId = chefData.id;
       }
 
-      if (chefError || !chefData) {
-        // No chef profile found, show empty state
-        setIncomeData({
-          totalRevenue: 0,
-          ordersCount: 0,
-          averageOrder: 0,
-          taxableAmount: 0,
-          monthlyBreakdown: [],
-          dishBreakdown: []
-        });
+      if (!resolvedChefId) {
         setLoading(false);
         return;
       }
