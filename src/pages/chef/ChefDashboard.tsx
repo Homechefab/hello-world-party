@@ -403,6 +403,8 @@ export const ChefDashboard = () => {
           <DeliveryToggle />
         </TabsContent>
       </Tabs>
+      </>
+      )}
     </div>
   );
 };
