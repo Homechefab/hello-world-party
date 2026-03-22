@@ -107,7 +107,7 @@ const IncomeReports = ({ chefId: overrideChefId }: IncomeReportsProps = {}) => {
           created_at,
           status
         `)
-        .eq('chef_id', chefData.id)
+        .eq('chef_id', resolvedChefId)
         .eq('status', 'completed')
         .gte('created_at', startDate.toISOString());
 
