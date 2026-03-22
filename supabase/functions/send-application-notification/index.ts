@@ -101,8 +101,17 @@ const handler = async (req: Request): Promise<Response> => {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } });
     }
 
+    // Get authenticated user's email server-side
+    const { data: { user }, error: userError } = await supabaseAnon.auth.getUser();
+    if (userError || !user?.email) {
+      return new Response(JSON.stringify({ error: 'Could not verify user email' }), { status: 403, headers: { "Content-Type": "application/json", ...corsHeaders } });
+    }
+
     const data: NotificationRequest = await req.json();
-    const { type, applicant_name, applicant_email, business_name, phone, address, city, application_id } = data;
+    const { type, applicant_name, business_name, phone, address, city, application_id } = data;
+
+    // Enforce: confirmation email goes ONLY to the authenticated user's own email
+    const applicant_email = user.email;
 
     console.log(`Sending notification for ${type} application:`, {
       applicant_name, applicant_email, business_name, application_id
