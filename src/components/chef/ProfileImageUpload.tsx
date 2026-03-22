@@ -69,9 +69,10 @@ export function ProfileImageUpload({ chefId: overrideChefId }: ProfileImageUploa
     setUploading(true);
 
     try {
+      const ownerId = overrideChefId || user!.id!;
       // Create unique filename
       const fileExt = file.name.split(".").pop();
-      const fileName = `${user.id}/profile.${fileExt}`;
+      const fileName = `${ownerId}/profile.${fileExt}`;
 
       // Delete old image if exists
       await supabase.storage.from("chef-profiles").remove([fileName]);
@@ -92,10 +93,13 @@ export function ProfileImageUpload({ chefId: overrideChefId }: ProfileImageUploa
       const urlWithCacheBuster = `${publicUrl}?t=${Date.now()}`;
 
       // Update chef record
-      const { error: updateError } = await supabase
-        .from("chefs")
-        .update({ profile_image_url: urlWithCacheBuster })
-        .eq("user_id", user.id || '');
+      let updateQuery = supabase.from("chefs").update({ profile_image_url: urlWithCacheBuster });
+      if (overrideChefId) {
+        updateQuery = updateQuery.eq("id", overrideChefId);
+      } else {
+        updateQuery = updateQuery.eq("user_id", user!.id!);
+      }
+      const { error: updateError } = await updateQuery;
 
       if (updateError) throw updateError;
 
