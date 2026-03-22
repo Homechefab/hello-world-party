@@ -23,13 +23,7 @@ import {
   CheckCircle, 
   Clock,
   DollarSign,
-  TrendingUp,
-  CreditCard,
-  
-  Building2,
-  FileText,
-  Eye,
-  ChefHat
+  TrendingUp
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
@@ -187,57 +181,52 @@ export const AdminDashboard = () => {
       </div>
 
       <Tabs defaultValue={defaultTab} className="space-y-6">
-        <TabsList className="inline-flex w-full overflow-x-auto flex-nowrap justify-start h-auto p-1">
-          <TabsTrigger value="chefs" className="whitespace-nowrap">
-            <span className="hidden sm:inline">Kock-ansökningar</span>
-            <span className="sm:hidden">Kockar</span>
-          </TabsTrigger>
-          <TabsTrigger value="kitchen-partners" className="whitespace-nowrap">
-            <span className="hidden sm:inline">Kökspartner-ansökningar</span>
-            <span className="sm:hidden">Kökspartners</span>
-          </TabsTrigger>
-          <TabsTrigger value="restaurants" className="whitespace-nowrap">
-            <span className="hidden sm:inline">Restaurang-ansökningar</span>
-            <span className="sm:hidden">Restauranger</span>
-          </TabsTrigger>
-          <TabsTrigger value="business" className="whitespace-nowrap">
-            <Building2 className="h-4 w-4 mr-1 hidden sm:inline" />
-            <span className="hidden sm:inline">Företag</span>
-            <span className="sm:hidden">Företag</span>
-          </TabsTrigger>
-          <TabsTrigger value="archive" className="whitespace-nowrap">Arkiv</TabsTrigger>
-          <TabsTrigger value="commission" className="whitespace-nowrap">Provisionsunderlag</TabsTrigger>
-          <TabsTrigger value="payments" className="whitespace-nowrap">
-            <CreditCard className="h-4 w-4 mr-1 hidden sm:inline" />
-            <span className="hidden sm:inline">Betalningar</span>
-            <span className="sm:hidden">Betal.</span>
-          </TabsTrigger>
-          <TabsTrigger value="users" className="whitespace-nowrap">
-            <span className="hidden sm:inline">Användarhantering</span>
-            <span className="sm:hidden">Användare</span>
-          </TabsTrigger>
-          <TabsTrigger value="logins" className="whitespace-nowrap">Inloggningar</TabsTrigger>
-          <TabsTrigger value="onboarding" className="whitespace-nowrap">
-            <FileText className="h-4 w-4 mr-1 hidden sm:inline" />
-            <span className="hidden sm:inline">Onboarding</span>
-            <span className="sm:hidden">Onb.</span>
-          </TabsTrigger>
-          <TabsTrigger value="chef-guide" className="whitespace-nowrap">
-            <ChefHat className="h-4 w-4 mr-1 hidden sm:inline" />
-            <span className="hidden sm:inline">Kock-guide</span>
-            <span className="sm:hidden">Guide</span>
-          </TabsTrigger>
-          <TabsTrigger value="complaints" className="whitespace-nowrap">Klagomål</TabsTrigger>
-          <TabsTrigger value="visitors" className="whitespace-nowrap">
-            <Eye className="h-4 w-4 mr-1 hidden sm:inline" />
-            <span className="hidden sm:inline">Besökare</span>
-            <span className="sm:hidden">Besök</span>
-          </TabsTrigger>
-          <TabsTrigger value="settings" className="whitespace-nowrap">
-            <span className="hidden sm:inline">Inställningar</span>
-            <span className="sm:hidden">Inst.</span>
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto -mx-4 px-4 pb-2">
+          <TabsList className="inline-flex w-max gap-1 h-auto p-1 flex-nowrap">
+            <TabsTrigger value="chefs" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Kock-ansökningar
+            </TabsTrigger>
+            <TabsTrigger value="kitchen-partners" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Kökspartner
+            </TabsTrigger>
+            <TabsTrigger value="restaurants" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Restauranger
+            </TabsTrigger>
+            <TabsTrigger value="business" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Företag
+            </TabsTrigger>
+            <TabsTrigger value="archive" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Arkiv
+            </TabsTrigger>
+            <TabsTrigger value="commission" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Provision
+            </TabsTrigger>
+            <TabsTrigger value="payments" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Betalningar
+            </TabsTrigger>
+            <TabsTrigger value="users" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Användare
+            </TabsTrigger>
+            <TabsTrigger value="logins" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Inloggningar
+            </TabsTrigger>
+            <TabsTrigger value="onboarding" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Onboarding
+            </TabsTrigger>
+            <TabsTrigger value="chef-guide" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Kock-guide
+            </TabsTrigger>
+            <TabsTrigger value="complaints" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Klagomål
+            </TabsTrigger>
+            <TabsTrigger value="visitors" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Besökare
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Inställningar
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="chefs">
           <ChefApprovalManager showArchived={false} />
