@@ -34,7 +34,11 @@ interface Dish {
   image_url?: string | null;
 }
 
-const MenuManager = () => {
+interface MenuManagerProps {
+  chefId?: string | null;
+}
+
+const MenuManager = ({ chefId: overrideChefId }: MenuManagerProps = {}) => {
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [editingDish, setEditingDish] = useState<Dish | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -48,17 +52,23 @@ const MenuManager = () => {
   const { user } = useAuth();
 
   const fetchMyDishes = useCallback(async () => {
-    if (!user?.id) return;
+    if (!overrideChefId && !user?.id) return;
 
     try {
-      // Get chef_id first
-      const { data: chefData, error: chefError } = await supabase
-        .from('chefs')
-        .select('id')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      let chefId: string | null = null;
 
-      if (chefError || !chefData) return;
+      if (overrideChefId) {
+        chefId = overrideChefId;
+      } else {
+        const { data: chefData, error: chefError } = await supabase
+          .from('chefs')
+          .select('id')
+          .eq('user_id', user!.id)
+          .maybeSingle();
+
+        if (chefError || !chefData) return;
+        chefId = chefData.id;
+      }
 
       const { data, error } = await supabase
         .from('dishes')
