@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -35,14 +36,14 @@ const getSignedUrl = async (agentId: string, apiKey: string) => {
 
     lastStatus = response.status;
     lastErrorText = await response.text();
-    console.error("ElevenLabs signed URL request failed:", { url, status: lastStatus, body: lastErrorText });
+    console.error("ElevenLabs signed URL request failed:", { url, status: lastStatus });
 
     if (response.status !== 404) {
       break;
     }
   }
 
-  throw new Error(`ElevenLabs API error: ${lastStatus} ${lastErrorText}`);
+  throw new Error(`ElevenLabs API error: ${lastStatus}`);
 };
 
 serve(async (req) => {
@@ -51,16 +52,39 @@ serve(async (req) => {
   }
 
   try {
-    const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
+    // --- JWT Authentication ---
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // --- Secrets ---
+    const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
     if (!ELEVENLABS_API_KEY) {
       console.error("ELEVENLABS_API_KEY is not configured");
       throw new Error("ElevenLabs API key is not configured");
     }
 
-    const { agentId } = await req.json().catch(() => ({}));
-    const targetAgentId = agentId || Deno.env.get("ELEVENLABS_AGENT_ID");
-
+    // Always use server-side agent ID — ignore client-supplied agentId
+    const targetAgentId = Deno.env.get("ELEVENLABS_AGENT_ID");
     if (!targetAgentId) {
       return new Response(
         JSON.stringify({
@@ -74,24 +98,19 @@ serve(async (req) => {
       );
     }
 
-    console.log("Generating ElevenLabs signed URL...", { agentId: targetAgentId });
+    console.log("Generating ElevenLabs signed URL for authenticated user", { userId: claimsData.claims.sub });
 
     const signedUrl = await getSignedUrl(targetAgentId, ELEVENLABS_API_KEY);
 
     return new Response(
-      JSON.stringify({
-        signedUrl,
-        agentId: targetAgentId,
-      }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      }
+      JSON.stringify({ signedUrl, agentId: targetAgentId }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
     console.error("Error in phone-ai-token function:", error);
     return new Response(
       JSON.stringify({
-        error: error instanceof Error ? error.message : "Failed to generate token",
+        error: "Failed to generate token",
         message: "Kunde inte starta röstsamtal. Försök igen senare.",
       }),
       {
