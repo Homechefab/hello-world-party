@@ -23,13 +23,7 @@ import {
   CheckCircle, 
   Clock,
   DollarSign,
-  TrendingUp,
-  CreditCard,
-  
-  Building2,
-  FileText,
-  Eye,
-  ChefHat
+  TrendingUp
 } from 'lucide-react';
 
 export const AdminDashboard = () => {
