@@ -247,6 +247,10 @@ const LiveChat = () => {
       }
 
       audioContextRef.current = new AudioContext({ sampleRate: 16000 });
+      // Resume AudioContext on mobile (iOS requires user gesture)
+      if (audioContextRef.current.state === 'suspended') {
+        await audioContextRef.current.resume();
+      }
 
       const ws = new WebSocket(data.signedUrl);
       wsRef.current = ws;
@@ -460,6 +464,9 @@ const LiveChat = () => {
     if (!mediaStreamRef.current || !wsRef.current || !audioContextRef.current) return;
 
     const captureContext = new AudioContext({ sampleRate: 16000 });
+    if (captureContext.state === 'suspended') {
+      captureContext.resume();
+    }
     
     sourceRef.current = captureContext.createMediaStreamSource(mediaStreamRef.current);
     processorRef.current = captureContext.createScriptProcessor(4096, 1, 1);
@@ -557,7 +564,7 @@ const LiveChat = () => {
 
   return (
     <div className="fixed bottom-0 right-0 md:bottom-6 md:right-6 z-50 w-full md:w-auto" data-no-safe-adjust>
-      <Card className={`w-full md:w-96 shadow-2xl transition-all duration-300 rounded-none md:rounded-lg ${isMinimized ? 'h-16' : 'h-[100dvh] md:h-[500px]'}`}>
+      <Card className={`w-full md:w-96 shadow-2xl transition-all duration-300 rounded-none md:rounded-lg flex flex-col ${isMinimized ? 'h-16' : 'h-[100dvh] md:h-[500px]'}`}>
         <CardHeader className="pb-3 bg-gradient-primary text-white rounded-t-lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -643,11 +650,11 @@ const LiveChat = () => {
               </button>
             </div>
 
-            <CardContent className="p-0 flex flex-col h-[380px]">
+            <CardContent className="p-0 flex flex-col flex-1 min-h-0">
               {chatMode === 'text' ? (
                 <>
                   {/* Text Chat Messages */}
-                  <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  <div className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0">
                     {messages.map((message) => (
                       <div
                         key={message.id}
@@ -693,7 +700,7 @@ const LiveChat = () => {
                   </div>
 
                   {/* Text Input */}
-                  <div className="border-t p-4">
+                  <div className="border-t p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
                     <div className="flex gap-2">
                       <Input
                         value={newMessage}
