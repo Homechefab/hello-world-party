@@ -35,7 +35,11 @@ interface Order {
   }[];
 }
 
-export const OrderManagement = () => {
+interface OrderManagementProps {
+  chefId?: string | null;
+}
+
+export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps = {}) => {
   const { user } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,23 +47,29 @@ export const OrderManagement = () => {
   const { toast } = useToast();
 
   const loadOrders = useCallback(async () => {
-    if (!user?.id) {
+    if (!overrideChefId && !user?.id) {
       setLoading(false);
       return;
     }
 
     try {
-      // First get the chef record for this user
-      const { data: chefData, error: chefError } = await supabase
-        .from('chefs')
-        .select('id')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      let chefId: string | null = null;
+      
+      if (overrideChefId) {
+        chefId = overrideChefId;
+      } else {
+        const { data: chefData, error: chefError } = await supabase
+          .from('chefs')
+          .select('id')
+          .eq('user_id', user!.id)
+          .maybeSingle();
 
-      if (chefError || !chefData) {
-        console.error('Chef not found:', chefError);
-        setLoading(false);
-        return;
+        if (chefError || !chefData) {
+          console.error('Chef not found:', chefError);
+          setLoading(false);
+          return;
+        }
+        chefId = chefData.id;
       }
 
       // Then fetch orders for this chef
