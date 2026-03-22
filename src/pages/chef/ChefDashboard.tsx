@@ -131,7 +131,7 @@ export const ChefDashboard = () => {
       const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
         .select('*, order_items(dish_id, quantity, dishes(name, price))')
-        .eq('chef_id', chefData.id)
+        .eq('chef_id', chefId)
         .order('created_at', { ascending: false })
         .limit(10);
 
