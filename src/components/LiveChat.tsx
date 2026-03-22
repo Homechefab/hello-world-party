@@ -247,6 +247,10 @@ const LiveChat = () => {
       }
 
       audioContextRef.current = new AudioContext({ sampleRate: 16000 });
+      // Resume AudioContext on mobile (iOS requires user gesture)
+      if (audioContextRef.current.state === 'suspended') {
+        await audioContextRef.current.resume();
+      }
 
       const ws = new WebSocket(data.signedUrl);
       wsRef.current = ws;
