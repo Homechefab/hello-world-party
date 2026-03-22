@@ -93,7 +93,7 @@ export function SocialMediaLinks({ chefId: overrideChefId }: SocialMediaLinksPro
       if (overrideChefId) {
         query = query.eq("id", overrideChefId);
       } else {
-        query = query.eq("user_id", user!.id);
+        query = query.eq("user_id", user!.id!);
       }
       const { error } = await query;
 
