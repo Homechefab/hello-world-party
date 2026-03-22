@@ -24,7 +24,7 @@ export const DeliveryToggle = ({ chefId: overrideChefId }: DeliveryToggleProps =
       if (overrideChefId) {
         query = query.eq('id', overrideChefId);
       } else {
-        query = query.eq('user_id', user!.id);
+        query = query.eq('user_id', user!.id!);
       }
       const { data } = await query.maybeSingle();
       if (data) setOffersDelivery(data.offers_delivery ?? false);

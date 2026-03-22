@@ -63,7 +63,7 @@ const MenuManager = ({ chefId: overrideChefId }: MenuManagerProps = {}) => {
         const { data: chefData, error: chefError } = await supabase
           .from('chefs')
           .select('id')
-          .eq('user_id', user!.id)
+          .eq('user_id', user!.id!)
           .maybeSingle();
 
         if (chefError || !chefData) return;
