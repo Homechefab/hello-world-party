@@ -204,6 +204,16 @@ export const ChefDashboard = () => {
         </p>
       </div>
 
+      {/* Admin without a chef selected */}
+      {isAdmin && !adminSelectedChefId && (
+        <Card className="p-8 text-center">
+          <p className="text-muted-foreground text-lg">Välj en kock ovan för att visa deras dashboard.</p>
+        </Card>
+      )}
+
+      {/* Only show dashboard content when we have a chef context */}
+      {(!isAdmin || adminSelectedChefId) && (
+      <>
       {/* Chef profile section */}
       <div className="flex items-start gap-6 mb-8 p-4 bg-muted/30 rounded-lg">
         <div className="flex flex-col items-center gap-2">
