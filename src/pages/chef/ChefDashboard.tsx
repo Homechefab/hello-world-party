@@ -165,7 +165,7 @@ export const ChefDashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, [toast, isAdmin, adminSelectedChefId]);
 
   useEffect(() => {
     loadChefData();
