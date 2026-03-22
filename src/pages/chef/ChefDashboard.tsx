@@ -189,9 +189,19 @@ export const ChefDashboard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Admin chef selector */}
+      {isAdmin && (
+        <AdminChefSelector
+          selectedChefId={adminSelectedChefId}
+          onChefSelected={(id) => setAdminSelectedChefId(id)}
+        />
+      )}
+
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard</h1>
-        <p className="text-muted-foreground">Hantera din hemlagade mat verksamhet</p>
+        <p className="text-muted-foreground">
+          {isAdmin ? 'Administratörsvy – Visa och hantera kockens dashboard' : 'Hantera din hemlagade mat verksamhet'}
+        </p>
       </div>
 
       {/* Chef profile section */}
