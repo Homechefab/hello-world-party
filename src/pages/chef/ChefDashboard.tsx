@@ -217,10 +217,10 @@ export const ChefDashboard = () => {
       {/* Chef profile section */}
       <div className="flex items-start gap-6 mb-8 p-4 bg-muted/30 rounded-lg">
         <div className="flex flex-col items-center gap-2">
-          <ChefProfileAvatar size="lg" />
+          <ChefProfileAvatar size="lg" chefId={adminSelectedChefId} />
           <p className="text-xs text-muted-foreground text-center">Klicka för att<br/>ladda upp bild</p>
         </div>
-        <ChefBioEditor />
+        <ChefBioEditor chefId={adminSelectedChefId} />
       </div>
 
 
@@ -349,7 +349,7 @@ export const ChefDashboard = () => {
         </TabsContent>
 
         <TabsContent value="orders" className="space-y-6">
-          <OrderManagement />
+          <OrderManagement chefId={adminSelectedChefId} />
         </TabsContent>
 
         <TabsContent value="hygiene" className="space-y-6">
@@ -361,15 +361,15 @@ export const ChefDashboard = () => {
         </TabsContent>
 
         <TabsContent value="menu" className="space-y-6">
-          <MenuManager />
+          <MenuManager chefId={adminSelectedChefId} />
         </TabsContent>
 
         <TabsContent value="income" className="space-y-6">
-          <IncomeReports />
+          <IncomeReports chefId={adminSelectedChefId} />
         </TabsContent>
 
         <TabsContent value="social" className="space-y-6">
-          <SocialMediaLinks />
+          <SocialMediaLinks chefId={adminSelectedChefId} />
         </TabsContent>
 
         <TabsContent value="sales" className="space-y-6">
@@ -399,8 +399,8 @@ export const ChefDashboard = () => {
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-6">
-          <OperatingHoursManager />
-          <DeliveryToggle />
+          <OperatingHoursManager chefId={adminSelectedChefId} />
+          <DeliveryToggle chefId={adminSelectedChefId} />
         </TabsContent>
       </Tabs>
       </>

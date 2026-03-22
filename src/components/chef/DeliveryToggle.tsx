@@ -7,7 +7,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 
-export const DeliveryToggle = () => {
+interface DeliveryToggleProps {
+  chefId?: string | null;
+}
+
+export const DeliveryToggle = ({ chefId: overrideChefId }: DeliveryToggleProps = {}) => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [offersDelivery, setOffersDelivery] = useState(false);
@@ -15,17 +19,19 @@ export const DeliveryToggle = () => {
 
   useEffect(() => {
     const load = async () => {
-      if (!user?.id) return;
-      const { data } = await supabase
-        .from('chefs')
-        .select('offers_delivery')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      if (!overrideChefId && !user?.id) return;
+      let query = supabase.from('chefs').select('offers_delivery');
+      if (overrideChefId) {
+        query = query.eq('id', overrideChefId);
+      } else {
+        query = query.eq('user_id', user!.id!);
+      }
+      const { data } = await query.maybeSingle();
       if (data) setOffersDelivery(data.offers_delivery ?? false);
       setLoading(false);
     };
     load();
-  }, [user?.id]);
+  }, [user?.id, overrideChefId]);
 
   const handleToggle = async (checked: boolean) => {
     setOffersDelivery(checked);

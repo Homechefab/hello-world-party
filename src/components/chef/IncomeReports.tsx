@@ -28,7 +28,11 @@ interface IncomeData {
   dishBreakdown: { dish: string; amount: number; orders: number }[];
 }
 
-const IncomeReports = () => {
+interface IncomeReportsProps {
+  chefId?: string | null;
+}
+
+const IncomeReports = ({ chefId: overrideChefId }: IncomeReportsProps = {}) => {
   const [incomeData, setIncomeData] = useState<IncomeData | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedPeriod, setSelectedPeriod] = useState('current-year');
@@ -38,27 +42,37 @@ const IncomeReports = () => {
   const { user } = useAuth();
 
   const fetchIncomeData = useCallback(async () => {
-    if (!user?.id) return;
+    if (!overrideChefId && !user?.id) return;
 
     setLoading(true);
     try {
-      // Get chef_id first
-      const { data: chefData, error: chefError } = await supabase
-        .from('chefs')
-        .select('id')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      let resolvedChefId: string | null = null;
 
-      if (chefError || !chefData) {
-        // No chef profile found, show empty state
-        setIncomeData({
-          totalRevenue: 0,
-          ordersCount: 0,
-          averageOrder: 0,
-          taxableAmount: 0,
-          monthlyBreakdown: [],
-          dishBreakdown: []
-        });
+      if (overrideChefId) {
+        resolvedChefId = overrideChefId;
+      } else {
+        const { data: chefData, error: chefError } = await supabase
+          .from('chefs')
+          .select('id')
+          .eq('user_id', user!.id!)
+          .maybeSingle();
+
+        if (chefError || !chefData) {
+          setIncomeData({
+            totalRevenue: 0,
+            ordersCount: 0,
+            averageOrder: 0,
+            taxableAmount: 0,
+            monthlyBreakdown: [],
+            dishBreakdown: []
+          });
+          setLoading(false);
+          return;
+        }
+        resolvedChefId = chefData.id;
+      }
+
+      if (!resolvedChefId) {
         setLoading(false);
         return;
       }
@@ -93,7 +107,7 @@ const IncomeReports = () => {
           created_at,
           status
         `)
-        .eq('chef_id', chefData.id)
+        .eq('chef_id', resolvedChefId)
         .eq('status', 'completed')
         .gte('created_at', startDate.toISOString());
 
