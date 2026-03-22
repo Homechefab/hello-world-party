@@ -46,7 +46,7 @@ const IncomeReports = ({ chefId: overrideChefId }: IncomeReportsProps = {}) => {
 
     setLoading(true);
     try {
-      let chefId: string | null = null;
+      let resolvedChefId: string | null = null;
 
       if (overrideChefId) {
         chefId = overrideChefId;
