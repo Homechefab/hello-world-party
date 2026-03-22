@@ -52,7 +52,7 @@ export function ProfileImageUpload({ chefId: overrideChefId }: ProfileImageUploa
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || !user?.id) return;
+    if (!file || (!overrideChefId && !user?.id)) return;
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
