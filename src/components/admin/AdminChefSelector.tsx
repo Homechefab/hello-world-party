@@ -27,6 +27,7 @@ export const AdminChefSelector = ({ onChefSelected, selectedChefId }: AdminChefS
       const { data, error } = await supabase
         .from('chefs')
         .select('id, business_name, full_name, contact_email, application_status')
+        .eq('application_status', 'approved')
         .order('business_name');
 
       if (!error && data) {
