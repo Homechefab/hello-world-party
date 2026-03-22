@@ -210,15 +210,41 @@ const LiveChat = () => {
     });
   };
 
-  // Explicitly request microphone permission (critical for iOS/Capacitor)
+  // Explicitly request microphone permission (critical for iOS/Capacitor & Android)
   const requestMicrophonePermission = useCallback(async (): Promise<boolean> => {
     try {
+      // Check if permissions API is available (Android/Chrome)
+      if (navigator.permissions) {
+        try {
+          const permStatus = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+          if (permStatus.state === 'denied') {
+            toast.error(
+              'Mikrofontillstånd har blockerats. Gå till enhetens Inställningar → Appar → Homechef → Behörigheter och aktivera mikrofon.',
+              { duration: 6000 }
+            );
+            return false;
+          }
+        } catch {
+          // permissions.query not supported for microphone on this browser — fall through
+        }
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       // Stop the test stream immediately
       stream.getTracks().forEach(track => track.stop());
       return true;
-    } catch {
-      toast.error('Mikrofonåtkomst nekades. Gå till Inställningar och tillåt mikrofon för denna app.');
+    } catch (err: unknown) {
+      const error = err as DOMException;
+      if (error.name === 'NotAllowedError') {
+        toast.error(
+          'Mikrofontillstånd nekades. Gå till enhetens Inställningar och aktivera mikrofon för Homechef-appen.',
+          { duration: 6000 }
+        );
+      } else if (error.name === 'NotFoundError') {
+        toast.error('Ingen mikrofon hittades på denna enhet.');
+      } else {
+        toast.error('Kunde inte komma åt mikrofonen. Kontrollera dina inställningar.');
+      }
       return false;
     }
   }, []);
