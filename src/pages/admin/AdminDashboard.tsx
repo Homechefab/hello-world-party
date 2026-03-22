@@ -107,9 +107,14 @@ export const AdminDashboard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Adminpanel</h1>
-        <p className="text-muted-foreground">Översikt och hantering av plattformen</p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Adminpanel</h1>
+          <p className="text-muted-foreground">Översikt och hantering av plattformen</p>
+        </div>
+        <Button asChild variant="outline" size="sm">
+          <Link to="/chef/dashboard">👨‍🍳 Visa kock-dashboard</Link>
+        </Button>
       </div>
 
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mb-8">
