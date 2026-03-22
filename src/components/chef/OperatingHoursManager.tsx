@@ -29,7 +29,11 @@ const DEFAULT_SCHEDULE: DaySchedule[] = Array.from({ length: 7 }, (_, i) => ({
   close_time: '18:00',
 }));
 
-export const OperatingHoursManager = () => {
+interface OperatingHoursManagerProps {
+  chefId?: string | null;
+}
+
+export const OperatingHoursManager = ({ chefId: overrideChefId }: OperatingHoursManagerProps = {}) => {
   const [schedule, setSchedule] = useState<DaySchedule[]>(DEFAULT_SCHEDULE);
   const [chefId, setChefId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -38,21 +42,29 @@ export const OperatingHoursManager = () => {
 
   useEffect(() => {
     loadOperatingHours();
-  }, []);
+  }, [overrideChefId]);
 
   const loadOperatingHours = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) return;
+      let resolvedChefId: string | null = null;
 
-      const { data: chefData } = await supabase
-        .from('chefs')
-        .select('id')
-        .eq('user_id', session.user.id)
-        .maybeSingle();
+      if (overrideChefId) {
+        resolvedChefId = overrideChefId;
+      } else {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) return;
 
-      if (!chefData) return;
-      setChefId(chefData.id);
+        const { data: chefData } = await supabase
+          .from('chefs')
+          .select('id')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+
+        if (!chefData) return;
+        resolvedChefId = chefData.id;
+      }
+
+      setChefId(resolvedChefId);
 
       const { data: hours } = await supabase
         .from('chef_operating_hours')
