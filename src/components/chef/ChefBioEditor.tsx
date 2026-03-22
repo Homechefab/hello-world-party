@@ -47,14 +47,17 @@ export function ChefBioEditor({ chefId: overrideChefId }: ChefBioEditorProps = {
   };
 
   const handleSave = async () => {
-    if (!user?.id) return;
+    if (!overrideChefId && !user?.id) return;
 
     setSaving(true);
     try {
-      const { error } = await supabase
-        .from("chefs")
-        .update({ bio })
-        .eq("user_id", user.id);
+      let query = supabase.from("chefs").update({ bio });
+      if (overrideChefId) {
+        query = query.eq("id", overrideChefId);
+      } else {
+        query = query.eq("user_id", user!.id);
+      }
+      const { error } = await query;
 
       if (error) throw error;
 
