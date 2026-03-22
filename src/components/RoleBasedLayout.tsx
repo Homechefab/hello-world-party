@@ -53,6 +53,11 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
     // Check each dashboard
     for (const [, config] of Object.entries(dashboardConfig)) {
       if (location.pathname.startsWith(config.path)) {
+        // Admins can access ALL dashboards for support purposes
+        if (role === 'admin') {
+          break;
+        }
+        
         // Must have correct role
         if (role !== config.requiredRole) {
           navigate('/auth');
@@ -60,7 +65,7 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
         }
         
         // Must be approved (except admin which is always approved)
-        if (config.requiredRole !== 'admin' && !isApproved) {
+        if (!isApproved) {
           navigate(config.pendingPage);
           return;
         }

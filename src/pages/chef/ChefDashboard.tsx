@@ -15,6 +15,8 @@ import IncomeReports from '@/components/chef/IncomeReports';
 import { SocialMediaLinks } from '@/components/chef/SocialMediaLinks';
 import { DeliveryToggle } from '@/components/chef/DeliveryToggle';
 import { OperatingHoursManager } from '@/components/chef/OperatingHoursManager';
+import { AdminChefSelector } from '@/components/admin/AdminChefSelector';
+import { useRole } from '@/hooks/useRole';
 import { 
   CheckCircle, 
   AlertCircle, 
@@ -28,6 +30,8 @@ import { useChefOrderNotifications } from '@/hooks/useChefOrderNotifications';
 // Chef Dashboard Component
 export const ChefDashboard = () => {
   const [searchParams] = useSearchParams();
+  const { isAdmin } = useRole();
+  const [adminSelectedChefId, setAdminSelectedChefId] = useState<string | null>(null);
   
   const tabFromUrl = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState(tabFromUrl || 'overview');
@@ -67,22 +71,34 @@ export const ChefDashboard = () => {
 
   const loadChefData = useCallback(async () => {
     try {
-      // Get the current user's session
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) {
-        setLoading(false);
-        return;
+      let chefId: string | null = null;
+
+      if (isAdmin && adminSelectedChefId) {
+        // Admin mode: use the selected chef ID directly
+        chefId = adminSelectedChefId;
+      } else {
+        // Normal chef mode: find chef by current user
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) {
+          setLoading(false);
+          return;
+        }
+
+        const { data: chefData, error: chefError } = await supabase
+          .from('chefs')
+          .select('id')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+
+        if (chefError || !chefData) {
+          console.log('No chef profile found for user');
+          setLoading(false);
+          return;
+        }
+        chefId = chefData.id;
       }
 
-      // Get chef_id for current user
-      const { data: chefData, error: chefError } = await supabase
-        .from('chefs')
-        .select('id')
-        .eq('user_id', session.user.id)
-        .maybeSingle();
-
-      if (chefError || !chefData) {
-        console.log('No chef profile found for user');
+      if (!chefId) {
         setLoading(false);
         return;
       }
@@ -91,7 +107,7 @@ export const ChefDashboard = () => {
       const { data: dishesData, error: dishesError } = await supabase
         .from('dishes')
         .select('*')
-        .eq('chef_id', chefData.id)
+        .eq('chef_id', chefId)
         .order('created_at', { ascending: false });
 
       if (dishesError) {
@@ -115,7 +131,7 @@ export const ChefDashboard = () => {
       const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
         .select('*, order_items(dish_id, quantity, dishes(name, price))')
-        .eq('chef_id', chefData.id)
+        .eq('chef_id', chefId)
         .order('created_at', { ascending: false })
         .limit(10);
 
@@ -149,7 +165,7 @@ export const ChefDashboard = () => {
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, [toast, isAdmin, adminSelectedChefId]);
 
   useEffect(() => {
     loadChefData();
@@ -173,11 +189,31 @@ export const ChefDashboard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Admin chef selector */}
+      {isAdmin && (
+        <AdminChefSelector
+          selectedChefId={adminSelectedChefId}
+          onChefSelected={(id) => setAdminSelectedChefId(id)}
+        />
+      )}
+
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard</h1>
-        <p className="text-muted-foreground">Hantera din hemlagade mat verksamhet</p>
+        <p className="text-muted-foreground">
+          {isAdmin ? 'Administratörsvy – Visa och hantera kockens dashboard' : 'Hantera din hemlagade mat verksamhet'}
+        </p>
       </div>
 
+      {/* Admin without a chef selected */}
+      {isAdmin && !adminSelectedChefId && (
+        <Card className="p-8 text-center">
+          <p className="text-muted-foreground text-lg">Välj en kock ovan för att visa deras dashboard.</p>
+        </Card>
+      )}
+
+      {/* Only show dashboard content when we have a chef context */}
+      {(!isAdmin || adminSelectedChefId) && (
+      <>
       {/* Chef profile section */}
       <div className="flex items-start gap-6 mb-8 p-4 bg-muted/30 rounded-lg">
         <div className="flex flex-col items-center gap-2">
@@ -367,6 +403,8 @@ export const ChefDashboard = () => {
           <DeliveryToggle />
         </TabsContent>
       </Tabs>
+      </>
+      )}
     </div>
   );
 };
