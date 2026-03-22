@@ -117,20 +117,25 @@ export function ProfileImageUpload({ chefId: overrideChefId }: ProfileImageUploa
   };
 
   const handleRemoveImage = async () => {
-    if (!user?.id || !imageUrl) return;
+    if (!overrideChefId && !user?.id) return;
+    if (!imageUrl) return;
 
     setUploading(true);
 
     try {
+      const ownerId = overrideChefId || user!.id!;
       // Remove from storage
-      const fileName = `${user.id}/profile.${imageUrl.split(".").pop()?.split("?")[0]}`;
+      const fileName = `${ownerId}/profile.${imageUrl.split(".").pop()?.split("?")[0]}`;
       await supabase.storage.from("chef-profiles").remove([fileName]);
 
       // Update chef record
-      const { error } = await supabase
-        .from("chefs")
-        .update({ profile_image_url: null })
-        .eq("user_id", user.id || '');
+      let updateQuery = supabase.from("chefs").update({ profile_image_url: null });
+      if (overrideChefId) {
+        updateQuery = updateQuery.eq("id", overrideChefId);
+      } else {
+        updateQuery = updateQuery.eq("user_id", user!.id!);
+      }
+      const { error } = await updateQuery;
 
       if (error) throw error;
 
