@@ -464,6 +464,9 @@ const LiveChat = () => {
     if (!mediaStreamRef.current || !wsRef.current || !audioContextRef.current) return;
 
     const captureContext = new AudioContext({ sampleRate: 16000 });
+    if (captureContext.state === 'suspended') {
+      captureContext.resume();
+    }
     
     sourceRef.current = captureContext.createMediaStreamSource(mediaStreamRef.current);
     processorRef.current = captureContext.createScriptProcessor(4096, 1, 1);
