@@ -369,7 +369,7 @@ export const ChefDashboard = () => {
         </TabsContent>
 
         <TabsContent value="social" className="space-y-6">
-          <SocialMediaLinks />
+          <SocialMediaLinks chefId={adminSelectedChefId} />
         </TabsContent>
 
         <TabsContent value="sales" className="space-y-6">
