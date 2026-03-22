@@ -210,6 +210,19 @@ const LiveChat = () => {
     });
   };
 
+  // Explicitly request microphone permission (critical for iOS/Capacitor)
+  const requestMicrophonePermission = useCallback(async (): Promise<boolean> => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Stop the test stream immediately
+      stream.getTracks().forEach(track => track.stop());
+      return true;
+    } catch {
+      toast.error('Mikrofonåtkomst nekades. Gå till Inställningar och tillåt mikrofon för denna app.');
+      return false;
+    }
+  }, []);
+
   // Voice assistant functions
   const startVoiceConversation = useCallback(async () => {
     try {
@@ -217,6 +230,13 @@ const LiveChat = () => {
       setVoiceTranscript([]);
       audioQueueRef.current = [];
       isPlayingRef.current = false;
+
+      // Request permission explicitly first (required on iOS)
+      const hasPermission = await requestMicrophonePermission();
+      if (!hasPermission) {
+        setVoiceStatus('idle');
+        return;
+      }
 
       try {
         mediaStreamRef.current = await navigator.mediaDevices.getUserMedia({ 
