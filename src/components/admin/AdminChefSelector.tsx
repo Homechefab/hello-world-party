@@ -56,9 +56,10 @@ export const AdminChefSelector = ({ onChefSelected, selectedChefId }: AdminChefS
             {chefs.map((chef) => (
               <SelectItem key={chef.id} value={chef.id}>
                 <div className="flex items-center gap-2">
-                  <span>{chef.business_name}</span>
-                  {chef.full_name && (
-                    <span className="text-muted-foreground text-xs">({chef.full_name})</span>
+                  <span>{chef.full_name || chef.business_name}</span>
+                  <span className="text-muted-foreground text-xs">({chef.business_name})</span>
+                  {chef.contact_email && (
+                    <span className="text-muted-foreground text-xs">– {chef.contact_email}</span>
                   )}
                   <Badge variant={chef.application_status === 'approved' ? 'default' : 'secondary'} className="text-[10px] ml-1">
                     {chef.application_status === 'approved' ? 'Godkänd' : chef.application_status}
