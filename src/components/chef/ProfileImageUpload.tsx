@@ -7,7 +7,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Camera, Upload, Trash2, User } from "lucide-react";
 
-export function ProfileImageUpload() {
+interface ProfileImageUploadProps {
+  chefId?: string | null;
+}
+
+export function ProfileImageUpload({ chefId: overrideChefId }: ProfileImageUploadProps = {}) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -16,18 +20,22 @@ export function ProfileImageUpload() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (user) {
+    if (overrideChefId || user) {
       loadProfileImage();
     }
-  }, [user]);
+  }, [user, overrideChefId]);
 
   const loadProfileImage = async () => {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from("chefs")
-        .select("profile_image_url, kitchen_approved")
-        .eq("user_id", user?.id || '')
-        .single();
+        .select("profile_image_url, kitchen_approved");
+      if (overrideChefId) {
+        query = query.eq("id", overrideChefId);
+      } else {
+        query = query.eq("user_id", user?.id || '');
+      }
+      const { data, error } = await query.single();
 
       if (error) throw error;
 
