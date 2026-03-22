@@ -49,7 +49,7 @@ const IncomeReports = ({ chefId: overrideChefId }: IncomeReportsProps = {}) => {
       let resolvedChefId: string | null = null;
 
       if (overrideChefId) {
-        chefId = overrideChefId;
+        resolvedChefId = overrideChefId;
       } else {
         const { data: chefData, error: chefError } = await supabase
           .from('chefs')
