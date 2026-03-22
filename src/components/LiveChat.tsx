@@ -650,7 +650,7 @@ const LiveChat = () => {
               </button>
             </div>
 
-            <CardContent className="p-0 flex flex-col h-[380px]">
+            <CardContent className="p-0 flex flex-col flex-1 min-h-0">
               {chatMode === 'text' ? (
                 <>
                   {/* Text Chat Messages */}
