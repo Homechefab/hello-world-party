@@ -53,6 +53,11 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
     // Check each dashboard
     for (const [, config] of Object.entries(dashboardConfig)) {
       if (location.pathname.startsWith(config.path)) {
+        // Admins can access ALL dashboards for support purposes
+        if (role === 'admin') {
+          break;
+        }
+        
         // Must have correct role
         if (role !== config.requiredRole) {
           navigate('/auth');
