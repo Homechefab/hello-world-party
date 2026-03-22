@@ -40,11 +40,11 @@ export const AdminChefSelector = ({ onChefSelected, selectedChefId }: AdminChefS
   if (loading) return null;
 
   return (
-    <Card className="border-orange-300 bg-orange-50 dark:bg-orange-950/20 mb-6">
+    <Card className="border-primary/40 bg-primary/5 mb-6">
       <CardHeader className="pb-3">
         <CardTitle className="text-sm flex items-center gap-2">
-          <Shield className="h-4 w-4 text-orange-600" />
-          <span className="text-orange-700 dark:text-orange-400">Administratörsläge – Visa kockens dashboard</span>
+          <Shield className="h-4 w-4 text-primary" />
+          <span className="text-primary">Administratörsläge – Visa kockens dashboard</span>
         </CardTitle>
       </CardHeader>
       <CardContent>
