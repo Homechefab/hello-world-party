@@ -80,19 +80,22 @@ export function SocialMediaLinks({ chefId: overrideChefId }: SocialMediaLinksPro
   };
 
   const handleSave = async () => {
-    if (!user?.id) return;
+    if (!overrideChefId && !user?.id) return;
 
     setSaving(true);
     try {
-      const { error } = await supabase
-        .from("chefs")
-        .update({
-          tiktok_url: links.tiktok_url || null,
-          facebook_url: links.facebook_url || null,
-          instagram_url: links.instagram_url || null,
-          snapchat_url: links.snapchat_url || null
-        })
-        .eq("user_id", user.id);
+      let query = supabase.from("chefs").update({
+        tiktok_url: links.tiktok_url || null,
+        facebook_url: links.facebook_url || null,
+        instagram_url: links.instagram_url || null,
+        snapchat_url: links.snapchat_url || null
+      });
+      if (overrideChefId) {
+        query = query.eq("id", overrideChefId);
+      } else {
+        query = query.eq("user_id", user!.id!);
+      }
+      const { error } = await query;
 
       if (error) throw error;
 

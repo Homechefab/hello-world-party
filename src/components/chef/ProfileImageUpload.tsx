@@ -7,7 +7,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Camera, Upload, Trash2, User } from "lucide-react";
 
-export function ProfileImageUpload() {
+interface ProfileImageUploadProps {
+  chefId?: string | null;
+}
+
+export function ProfileImageUpload({ chefId: overrideChefId }: ProfileImageUploadProps = {}) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -16,18 +20,22 @@ export function ProfileImageUpload() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (user) {
+    if (overrideChefId || user) {
       loadProfileImage();
     }
-  }, [user]);
+  }, [user, overrideChefId]);
 
   const loadProfileImage = async () => {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from("chefs")
-        .select("profile_image_url, kitchen_approved")
-        .eq("user_id", user?.id || '')
-        .single();
+        .select("profile_image_url, kitchen_approved");
+      if (overrideChefId) {
+        query = query.eq("id", overrideChefId);
+      } else {
+        query = query.eq("user_id", user?.id || '');
+      }
+      const { data, error } = await query.single();
 
       if (error) throw error;
 
@@ -44,7 +52,7 @@ export function ProfileImageUpload() {
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || !user?.id) return;
+    if (!file || (!overrideChefId && !user?.id)) return;
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
@@ -61,9 +69,10 @@ export function ProfileImageUpload() {
     setUploading(true);
 
     try {
+      const ownerId = overrideChefId || user!.id!;
       // Create unique filename
       const fileExt = file.name.split(".").pop();
-      const fileName = `${user.id}/profile.${fileExt}`;
+      const fileName = `${ownerId}/profile.${fileExt}`;
 
       // Delete old image if exists
       await supabase.storage.from("chef-profiles").remove([fileName]);
@@ -84,10 +93,13 @@ export function ProfileImageUpload() {
       const urlWithCacheBuster = `${publicUrl}?t=${Date.now()}`;
 
       // Update chef record
-      const { error: updateError } = await supabase
-        .from("chefs")
-        .update({ profile_image_url: urlWithCacheBuster })
-        .eq("user_id", user.id || '');
+      let updateQuery = supabase.from("chefs").update({ profile_image_url: urlWithCacheBuster });
+      if (overrideChefId) {
+        updateQuery = updateQuery.eq("id", overrideChefId);
+      } else {
+        updateQuery = updateQuery.eq("user_id", user!.id!);
+      }
+      const { error: updateError } = await updateQuery;
 
       if (updateError) throw updateError;
 
@@ -105,20 +117,25 @@ export function ProfileImageUpload() {
   };
 
   const handleRemoveImage = async () => {
-    if (!user?.id || !imageUrl) return;
+    if (!overrideChefId && !user?.id) return;
+    if (!imageUrl) return;
 
     setUploading(true);
 
     try {
+      const ownerId = overrideChefId || user!.id!;
       // Remove from storage
-      const fileName = `${user.id}/profile.${imageUrl.split(".").pop()?.split("?")[0]}`;
+      const fileName = `${ownerId}/profile.${imageUrl.split(".").pop()?.split("?")[0]}`;
       await supabase.storage.from("chef-profiles").remove([fileName]);
 
       // Update chef record
-      const { error } = await supabase
-        .from("chefs")
-        .update({ profile_image_url: null })
-        .eq("user_id", user.id || '');
+      let updateQuery = supabase.from("chefs").update({ profile_image_url: null });
+      if (overrideChefId) {
+        updateQuery = updateQuery.eq("id", overrideChefId);
+      } else {
+        updateQuery = updateQuery.eq("user_id", user!.id!);
+      }
+      const { error } = await updateQuery;
 
       if (error) throw error;
 

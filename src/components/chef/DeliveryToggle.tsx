@@ -35,10 +35,13 @@ export const DeliveryToggle = ({ chefId: overrideChefId }: DeliveryToggleProps =
 
   const handleToggle = async (checked: boolean) => {
     setOffersDelivery(checked);
-    const { error } = await supabase
-      .from('chefs')
-      .update({ offers_delivery: checked })
-      .eq('user_id', user?.id ?? '');
+    let query = supabase.from('chefs').update({ offers_delivery: checked });
+    if (overrideChefId) {
+      query = query.eq('id', overrideChefId);
+    } else {
+      query = query.eq('user_id', user?.id ?? '');
+    }
+    const { error } = await query;
 
     if (error) {
       setOffersDelivery(!checked);

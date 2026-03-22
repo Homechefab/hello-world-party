@@ -54,7 +54,7 @@ export function ChefProfileAvatar({ size = "md", className = "", chefId: overrid
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || !user?.id) return;
+    if (!file || (!overrideChefId && !user?.id)) return;
 
     if (!file.type.startsWith("image/")) {
       toast.error("Endast bilder är tillåtna");
@@ -69,8 +69,9 @@ export function ChefProfileAvatar({ size = "md", className = "", chefId: overrid
     setUploading(true);
 
     try {
+      const ownerId = overrideChefId || user!.id!;
       const fileExt = file.name.split(".").pop();
-      const fileName = `${user.id}/profile.${fileExt}`;
+      const fileName = `${ownerId}/profile.${fileExt}`;
 
       await supabase.storage.from("chef-profiles").remove([fileName]);
 
@@ -86,10 +87,13 @@ export function ChefProfileAvatar({ size = "md", className = "", chefId: overrid
 
       const urlWithCacheBuster = `${publicUrl}?t=${Date.now()}`;
 
-      const { error: updateError } = await supabase
-        .from("chefs")
-        .update({ profile_image_url: urlWithCacheBuster })
-        .eq("user_id", user.id || '');
+      let updateQuery = supabase.from("chefs").update({ profile_image_url: urlWithCacheBuster });
+      if (overrideChefId) {
+        updateQuery = updateQuery.eq("id", overrideChefId);
+      } else {
+        updateQuery = updateQuery.eq("user_id", user!.id!);
+      }
+      const { error: updateError } = await updateQuery;
 
       if (updateError) throw updateError;
 
