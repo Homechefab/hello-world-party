@@ -30,6 +30,8 @@ import { useChefOrderNotifications } from '@/hooks/useChefOrderNotifications';
 // Chef Dashboard Component
 export const ChefDashboard = () => {
   const [searchParams] = useSearchParams();
+  const { isAdmin } = useRole();
+  const [adminSelectedChefId, setAdminSelectedChefId] = useState<string | null>(null);
   
   const tabFromUrl = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState(tabFromUrl || 'overview');
@@ -69,22 +71,34 @@ export const ChefDashboard = () => {
 
   const loadChefData = useCallback(async () => {
     try {
-      // Get the current user's session
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) {
-        setLoading(false);
-        return;
+      let chefId: string | null = null;
+
+      if (isAdmin && adminSelectedChefId) {
+        // Admin mode: use the selected chef ID directly
+        chefId = adminSelectedChefId;
+      } else {
+        // Normal chef mode: find chef by current user
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session?.user) {
+          setLoading(false);
+          return;
+        }
+
+        const { data: chefData, error: chefError } = await supabase
+          .from('chefs')
+          .select('id')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+
+        if (chefError || !chefData) {
+          console.log('No chef profile found for user');
+          setLoading(false);
+          return;
+        }
+        chefId = chefData.id;
       }
 
-      // Get chef_id for current user
-      const { data: chefData, error: chefError } = await supabase
-        .from('chefs')
-        .select('id')
-        .eq('user_id', session.user.id)
-        .maybeSingle();
-
-      if (chefError || !chefData) {
-        console.log('No chef profile found for user');
+      if (!chefId) {
         setLoading(false);
         return;
       }
