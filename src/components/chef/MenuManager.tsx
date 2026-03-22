@@ -73,7 +73,7 @@ const MenuManager = ({ chefId: overrideChefId }: MenuManagerProps = {}) => {
       const { data, error } = await supabase
         .from('dishes')
         .select('*')
-        .eq('chef_id', chefData.id)
+        .eq('chef_id', chefId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;

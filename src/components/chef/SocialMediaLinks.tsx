@@ -29,7 +29,11 @@ interface SocialLinks {
   snapchat_url: string | null;
 }
 
-export function SocialMediaLinks() {
+interface SocialMediaLinksProps {
+  chefId?: string | null;
+}
+
+export function SocialMediaLinks({ chefId: overrideChefId }: SocialMediaLinksProps = {}) {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -42,18 +46,20 @@ export function SocialMediaLinks() {
   });
 
   useEffect(() => {
-    if (user) {
+    if (overrideChefId || user) {
       loadSocialLinks();
     }
-  }, [user]);
+  }, [user, overrideChefId]);
 
   const loadSocialLinks = async () => {
     try {
-      const { data, error } = await supabase
-        .from("chefs")
-        .select("tiktok_url, facebook_url, instagram_url, snapchat_url, kitchen_approved")
-        .eq("user_id", user?.id || '')
-        .single();
+      let query = supabase.from("chefs").select("tiktok_url, facebook_url, instagram_url, snapchat_url, kitchen_approved");
+      if (overrideChefId) {
+        query = query.eq("id", overrideChefId);
+      } else {
+        query = query.eq("user_id", user?.id || '');
+      }
+      const { data, error } = await query.single();
 
       if (error) throw error;
 

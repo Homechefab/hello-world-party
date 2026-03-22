@@ -69,7 +69,7 @@ export const OperatingHoursManager = ({ chefId: overrideChefId }: OperatingHours
       const { data: hours } = await supabase
         .from('chef_operating_hours')
         .select('*')
-        .eq('chef_id', chefData.id)
+        .eq('chef_id', resolvedChefId)
         .order('day_of_week');
 
       if (hours && hours.length > 0) {

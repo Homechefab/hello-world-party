@@ -83,7 +83,7 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
             dishes (name, preparation_time)
           )
         `)
-        .eq('chef_id', chefData.id)
+        .eq('chef_id', chefId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;

@@ -7,7 +7,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { Save, Pencil } from "lucide-react";
 import { ChefRatingDisplay } from "./ChefRatingDisplay";
 
-export function ChefBioEditor() {
+interface ChefBioEditorProps {
+  chefId?: string | null;
+}
+
+export function ChefBioEditor({ chefId: overrideChefId }: ChefBioEditorProps = {}) {
   const { user } = useAuth();
   const [bio, setBio] = useState("");
   const [originalBio, setOriginalBio] = useState("");
@@ -16,18 +20,20 @@ export function ChefBioEditor() {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    if (user) {
+    if (overrideChefId || user) {
       loadBio();
     }
-  }, [user]);
+  }, [user, overrideChefId]);
 
   const loadBio = async () => {
     try {
-      const { data, error } = await supabase
-        .from("chefs")
-        .select("bio")
-        .eq("user_id", user?.id || '')
-        .single();
+      let query = supabase.from("chefs").select("bio");
+      if (overrideChefId) {
+        query = query.eq("id", overrideChefId);
+      } else {
+        query = query.eq("user_id", user?.id || '');
+      }
+      const { data, error } = await query.single();
 
       if (error) throw error;
       const bioText = data?.bio || "";

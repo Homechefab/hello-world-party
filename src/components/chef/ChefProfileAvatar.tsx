@@ -8,9 +8,10 @@ import { ChefHat, Camera } from "lucide-react";
 interface ChefProfileAvatarProps {
   size?: "sm" | "md" | "lg";
   className?: string;
+  chefId?: string | null;
 }
 
-export function ChefProfileAvatar({ size = "md", className = "" }: ChefProfileAvatarProps) {
+export function ChefProfileAvatar({ size = "md", className = "", chefId: overrideChefId }: ChefProfileAvatarProps) {
   const { user } = useAuth();
   const [uploading, setUploading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -29,18 +30,20 @@ export function ChefProfileAvatar({ size = "md", className = "" }: ChefProfileAv
   };
 
   useEffect(() => {
-    if (user) {
+    if (overrideChefId || user) {
       loadProfileImage();
     }
-  }, [user]);
+  }, [user, overrideChefId]);
 
   const loadProfileImage = async () => {
     try {
-      const { data, error } = await supabase
-        .from("chefs")
-        .select("profile_image_url")
-        .eq("user_id", user?.id || '')
-        .single();
+      let query = supabase.from("chefs").select("profile_image_url");
+      if (overrideChefId) {
+        query = query.eq("id", overrideChefId);
+      } else {
+        query = query.eq("user_id", user?.id || '');
+      }
+      const { data, error } = await query.single();
 
       if (error) throw error;
       setImageUrl(data?.profile_image_url || null);
