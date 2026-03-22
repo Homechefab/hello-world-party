@@ -700,7 +700,7 @@ const LiveChat = () => {
                   </div>
 
                   {/* Text Input */}
-                  <div className="border-t p-4">
+                  <div className="border-t p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
                     <div className="flex gap-2">
                       <Input
                         value={newMessage}
