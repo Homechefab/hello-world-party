@@ -15,6 +15,8 @@ import IncomeReports from '@/components/chef/IncomeReports';
 import { SocialMediaLinks } from '@/components/chef/SocialMediaLinks';
 import { DeliveryToggle } from '@/components/chef/DeliveryToggle';
 import { OperatingHoursManager } from '@/components/chef/OperatingHoursManager';
+import { AdminChefSelector } from '@/components/admin/AdminChefSelector';
+import { useRole } from '@/hooks/useRole';
 import { 
   CheckCircle, 
   AlertCircle, 
