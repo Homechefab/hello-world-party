@@ -65,7 +65,7 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
         }
         
         // Must be approved (except admin which is always approved)
-        if (config.requiredRole !== 'admin' && !isApproved) {
+        if (!isApproved) {
           navigate(config.pendingPage);
           return;
         }
