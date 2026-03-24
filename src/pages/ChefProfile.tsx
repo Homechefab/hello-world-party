@@ -196,6 +196,29 @@ const ChefProfile = () => {
         if (dishesError) throw dishesError;
         setDishes(dishesData || []);
 
+        // Fetch dish weekly schedules for all dishes
+        const dishIds = (dishesData || []).map(d => d.id);
+        if (dishIds.length > 0) {
+          const { data: scheduleData } = await supabase
+            .from('dish_weekly_schedule')
+            .select('dish_id, day_of_week, is_available')
+            .in('dish_id', dishIds);
+          
+          const grouped: Record<string, DishScheduleDay[]> = {};
+          (scheduleData || []).forEach((s: any) => {
+            if (!grouped[s.dish_id]) grouped[s.dish_id] = [];
+            grouped[s.dish_id].push({ day_of_week: s.day_of_week, is_available: s.is_available });
+          });
+          setDishSchedules(grouped);
+        }
+
+        // Fetch chef operating hours
+        const { data: hoursData } = await supabase
+          .from('chef_operating_hours')
+          .select('day_of_week, is_open, open_time, close_time')
+          .eq('chef_id', chefId);
+        setOperatingHours(hoursData || []);
+
         // Fetch chef's videos
         const { data: videosData, error: videosError } = await supabase
           .from('chef_videos')
