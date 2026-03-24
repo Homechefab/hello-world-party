@@ -1,0 +1,1 @@
+UPDATE dishes SET available = true, updated_at = now() WHERE chef_id = '09b7167b-25b4-4160-baed-99a0cbd2e297';
