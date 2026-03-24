@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { MessageCircle, X, Send, User, Bot, Clock, Minimize2, Phone, PhoneOff, Mic, MicOff, Volume2, Loader2 } from "lucide-react";
+import { Mail, X, Send, User, Bot, Clock, Minimize2, Phone, PhoneOff, Mic, MicOff, Volume2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
