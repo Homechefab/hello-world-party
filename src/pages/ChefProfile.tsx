@@ -121,6 +121,8 @@ const ChefProfile = () => {
   const [averageRating, setAverageRating] = useState(0);
   const [totalReviews, setTotalReviews] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [dishSchedules, setDishSchedules] = useState<Record<string, DishScheduleDay[]>>({});
+  const [operatingHours, setOperatingHours] = useState<OperatingHour[]>([]);
   const { addItem } = useCart();
   const { toast } = useToast();
 
