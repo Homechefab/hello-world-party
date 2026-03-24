@@ -517,6 +517,26 @@ const ChefProfile = () => {
                         </div>
                       </div>
                     )}
+
+                    {/* Dish availability schedule */}
+                    {(() => {
+                      const avail = getDishAvailabilityText(dish.id, dishSchedules, operatingHours);
+                      if (!avail) return null;
+                      return (
+                        <div className="mb-4 p-2.5 rounded-lg bg-secondary/50 border border-border">
+                          <div className="flex items-center gap-1.5 text-xs font-medium text-foreground mb-1">
+                            <CalendarDays className="w-3.5 h-3.5 text-primary" />
+                            <span>Tillgänglig: {avail.days}</span>
+                          </div>
+                          {avail.times && (
+                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                              <Clock className="w-3.5 h-3.5" />
+                              <span>{avail.times}</span>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                     
                     <Button 
                       variant="food" 
