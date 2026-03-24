@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Star, Clock, MapPin, ChefHat, Instagram, Facebook, Phone } from "lucide-react";
+import { Star, Clock, MapPin, ChefHat, Instagram, Facebook, Phone, CalendarDays } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
@@ -55,6 +55,46 @@ interface Dish {
   available: boolean | null;
 }
 
+interface DishScheduleDay {
+  day_of_week: number;
+  is_available: boolean;
+}
+
+interface OperatingHour {
+  day_of_week: number;
+  is_open: boolean;
+  open_time: string;
+  close_time: string;
+}
+
+const DAY_SHORT = ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'];
+
+const getDishAvailabilityText = (
+  dishId: string,
+  schedules: Record<string, DishScheduleDay[]>,
+  operatingHours: OperatingHour[]
+): { days: string; times: string } | null => {
+  const dishSchedule = schedules[dishId];
+  if (!dishSchedule || dishSchedule.length === 0) return null;
+  
+  const availableDays = dishSchedule.filter(s => s.is_available).map(s => s.day_of_week);
+  if (availableDays.length === 0 || availableDays.length === 7) return null;
+  
+  const dayNames = availableDays.map(d => DAY_SHORT[d]).join(', ');
+  
+  // Get operating hours for those days
+  let timeStr = '';
+  if (operatingHours.length > 0) {
+    const relevantHours = operatingHours.filter(h => availableDays.includes(h.day_of_week) && h.is_open);
+    if (relevantHours.length > 0) {
+      const uniqueTimes = [...new Set(relevantHours.map(h => `${h.open_time.slice(0, 5)}–${h.close_time.slice(0, 5)}`))];
+      timeStr = uniqueTimes.join(', ');
+    }
+  }
+  
+  return { days: dayNames, times: timeStr };
+};
+
 interface ChefVideo {
   id: string;
   title: string;
@@ -81,6 +121,8 @@ const ChefProfile = () => {
   const [averageRating, setAverageRating] = useState(0);
   const [totalReviews, setTotalReviews] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [dishSchedules, setDishSchedules] = useState<Record<string, DishScheduleDay[]>>({});
+  const [operatingHours, setOperatingHours] = useState<OperatingHour[]>([]);
   const { addItem } = useCart();
   const { toast } = useToast();
 
@@ -153,6 +195,29 @@ const ChefProfile = () => {
 
         if (dishesError) throw dishesError;
         setDishes(dishesData || []);
+
+        // Fetch dish weekly schedules for all dishes
+        const dishIds = (dishesData || []).map(d => d.id);
+        if (dishIds.length > 0) {
+          const { data: scheduleData } = await supabase
+            .from('dish_weekly_schedule')
+            .select('dish_id, day_of_week, is_available')
+            .in('dish_id', dishIds);
+          
+          const grouped: Record<string, DishScheduleDay[]> = {};
+          (scheduleData || []).forEach((s: any) => {
+            if (!grouped[s.dish_id]) grouped[s.dish_id] = [];
+            grouped[s.dish_id].push({ day_of_week: s.day_of_week, is_available: s.is_available });
+          });
+          setDishSchedules(grouped);
+        }
+
+        // Fetch chef operating hours
+        const { data: hoursData } = await supabase
+          .from('chef_operating_hours')
+          .select('day_of_week, is_open, open_time, close_time')
+          .eq('chef_id', chefId);
+        setOperatingHours(hoursData || []);
 
         // Fetch chef's videos
         const { data: videosData, error: videosError } = await supabase
@@ -452,6 +517,26 @@ const ChefProfile = () => {
                         </div>
                       </div>
                     )}
+
+                    {/* Dish availability schedule */}
+                    {(() => {
+                      const avail = getDishAvailabilityText(dish.id, dishSchedules, operatingHours);
+                      if (!avail) return null;
+                      return (
+                        <div className="mb-4 p-2.5 rounded-lg bg-secondary/50 border border-border">
+                          <div className="flex items-center gap-1.5 text-xs font-medium text-foreground mb-1">
+                            <CalendarDays className="w-3.5 h-3.5 text-primary" />
+                            <span>Tillgänglig: {avail.days}</span>
+                          </div>
+                          {avail.times && (
+                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                              <Clock className="w-3.5 h-3.5" />
+                              <span>{avail.times}</span>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                     
                     <Button 
                       variant="food" 
