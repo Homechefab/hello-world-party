@@ -52,17 +52,9 @@ serve(async (req) => {
   }
 
   try {
-    // --- JWT Authentication ---
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(
-        JSON.stringify({ error: "Unauthorized" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY");
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_PUBLISHABLE_KEY");
 
     if (!supabaseUrl || !supabaseAnonKey) {
       console.error("Missing SUPABASE_URL or SUPABASE_ANON_KEY");
@@ -73,19 +65,21 @@ serve(async (req) => {
     }
 
     const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } }
+      global: authHeader ? { headers: { Authorization: authHeader } } : undefined,
     });
 
-    const { data: userData, error: userError } = await supabase.auth.getUser();
-    if (userError || !userData?.user) {
-      console.error("Auth error:", userError?.message);
-      return new Response(
-        JSON.stringify({ error: "Unauthorized" }),
-        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const bearerToken = authHeader?.replace("Bearer ", "").trim();
+    const isAnonymousToken = !bearerToken || bearerToken === supabaseAnonKey;
 
-    const userId = userData.user.id;
+    let userId: string | null = null;
+    if (!isAnonymousToken && bearerToken) {
+      const { data: userData, error: userError } = await supabase.auth.getUser(bearerToken);
+      if (userError || !userData?.user) {
+        console.error("Auth fallback to guest:", userError?.message);
+      } else {
+        userId = userData.user.id;
+      }
+    }
 
     // --- Secrets ---
     const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
@@ -109,7 +103,7 @@ serve(async (req) => {
       );
     }
 
-    console.log("Generating ElevenLabs signed URL for authenticated user", { userId });
+    console.log("Generating ElevenLabs signed URL", { authenticated: !!userId, userId });
 
     const signedUrl = await getSignedUrl(targetAgentId, ELEVENLABS_API_KEY);
 
