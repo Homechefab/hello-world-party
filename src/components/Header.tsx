@@ -7,6 +7,7 @@ import type { UserRole } from "@/types/user";
 import { Cart } from "@/components/Cart";
 import UserMenu from "@/components/UserMenu";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
+import messageIcon from "@/assets/message-icon.png";
 
 import { toast } from "sonner";
 import {
@@ -146,6 +147,11 @@ const Header = () => {
           </DropdownMenu>
 
           {role === 'admin' && <AdminNotifications />}
+
+          {/* Message notifications */}
+          <Button variant="ghost" size="icon" className="relative" onClick={() => navigate('/customer-service')}>
+            <img src={messageIcon} alt="Meddelanden" className="w-7 h-7" />
+          </Button>
           
           <Cart />
           
