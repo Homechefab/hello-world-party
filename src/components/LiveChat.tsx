@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import chatEnvelopeIcon from '@/assets/chat-envelope-icon.png';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -594,16 +595,12 @@ const LiveChat = () => {
   if (!isOpen) {
     return (
       <div className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-50" data-no-safe-adjust>
-        <Button
+        <button
           onClick={() => setIsOpen(true)}
-          size="lg"
-          className="rounded-full w-14 h-14 md:w-16 md:h-16 bg-gradient-primary hover:bg-gradient-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
+          className="w-14 h-14 md:w-16 md:h-16 rounded-none bg-transparent border-0 p-0 shadow-none hover:scale-105 transition-transform duration-200 cursor-pointer"
         >
-          <Mail className="w-6 h-6 md:w-8 md:h-8" />
-        </Button>
-        <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 w-5 h-5 md:w-6 md:h-6 bg-red-500 rounded-full flex items-center justify-center">
-          <span className="text-white text-xs font-bold">1</span>
-        </div>
+          <img src={chatEnvelopeIcon} alt="Meddelanden" className="w-full h-full object-contain" />
+        </button>
       </div>
     );
   }
