@@ -109,7 +109,7 @@ serve(async (req) => {
       );
     }
 
-    console.log("Generating ElevenLabs signed URL for authenticated user", { userId: claimsData.claims.sub });
+    console.log("Generating ElevenLabs signed URL for authenticated user", { userId });
 
     const signedUrl = await getSignedUrl(targetAgentId, ELEVENLABS_API_KEY);
 
