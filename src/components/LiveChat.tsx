@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { MessageCircle, X, Send, User, Bot, Clock, Minimize2, Phone, PhoneOff, Mic, MicOff, Volume2, Loader2 } from "lucide-react";
+import { Mail, X, Send, User, Bot, Clock, Minimize2, Phone, PhoneOff, Mic, MicOff, Volume2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -599,7 +599,7 @@ const LiveChat = () => {
           size="lg"
           className="rounded-full w-14 h-14 md:w-16 md:h-16 bg-gradient-primary hover:bg-gradient-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
         >
-          <MessageCircle className="w-6 h-6 md:w-8 md:h-8" />
+          <Mail className="w-6 h-6 md:w-8 md:h-8" />
         </Button>
         <div className="absolute -top-1 -right-1 md:-top-2 md:-right-2 w-5 h-5 md:w-6 md:h-6 bg-red-500 rounded-full flex items-center justify-center">
           <span className="text-white text-xs font-bold">1</span>
@@ -615,7 +615,7 @@ const LiveChat = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                {chatMode === 'voice' ? <Phone className="w-5 h-5" /> : <MessageCircle className="w-5 h-5" />}
+                {chatMode === 'voice' ? <Phone className="w-5 h-5" /> : <Mail className="w-5 h-5" />}
               </div>
               <div>
                 <CardTitle className="text-lg">
@@ -680,7 +680,7 @@ const LiveChat = () => {
                     : 'text-muted-foreground hover:bg-muted/50'
                 }`}
               >
-                <MessageCircle className="w-4 h-4" />
+                <Mail className="w-4 h-4" />
                 Chatt
               </button>
               <button
