@@ -55,6 +55,46 @@ interface Dish {
   available: boolean | null;
 }
 
+interface DishScheduleDay {
+  day_of_week: number;
+  is_available: boolean;
+}
+
+interface OperatingHour {
+  day_of_week: number;
+  is_open: boolean;
+  open_time: string;
+  close_time: string;
+}
+
+const DAY_SHORT = ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'];
+
+const getDishAvailabilityText = (
+  dishId: string,
+  schedules: Record<string, DishScheduleDay[]>,
+  operatingHours: OperatingHour[]
+): { days: string; times: string } | null => {
+  const dishSchedule = schedules[dishId];
+  if (!dishSchedule || dishSchedule.length === 0) return null;
+  
+  const availableDays = dishSchedule.filter(s => s.is_available).map(s => s.day_of_week);
+  if (availableDays.length === 0 || availableDays.length === 7) return null;
+  
+  const dayNames = availableDays.map(d => DAY_SHORT[d]).join(', ');
+  
+  // Get operating hours for those days
+  let timeStr = '';
+  if (operatingHours.length > 0) {
+    const relevantHours = operatingHours.filter(h => availableDays.includes(h.day_of_week) && h.is_open);
+    if (relevantHours.length > 0) {
+      const uniqueTimes = [...new Set(relevantHours.map(h => `${h.open_time.slice(0, 5)}–${h.close_time.slice(0, 5)}`))];
+      timeStr = uniqueTimes.join(', ');
+    }
+  }
+  
+  return { days: dayNames, times: timeStr };
+};
+
 interface ChefVideo {
   id: string;
   title: string;
