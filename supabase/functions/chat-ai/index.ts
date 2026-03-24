@@ -198,53 +198,50 @@ serve(async (req) => {
   }
 
   try {
-    // Verify JWT - only authenticated users can use chat
     const authHeader = req.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') || Deno.env.get('SUPABASE_PUBLISHABLE_KEY')!;
+
+    const supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: authHeader ? { headers: { Authorization: authHeader } } : undefined,
+    });
+
+    const bearerToken = authHeader?.replace('Bearer ', '').trim();
+    const isAnonymousToken = !bearerToken || bearerToken === supabaseAnonKey;
+
+    let authenticatedUserId: string | null = null;
+    if (!isAnonymousToken && bearerToken) {
+      const { data: userData, error: userError } = await supabaseClient.auth.getUser(bearerToken);
+      if (userError || !userData?.user) {
+        console.error('Auth fallback to guest:', userError?.message);
+      } else {
+        authenticatedUserId = userData.user.id;
+      }
     }
-
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_ANON_KEY') || Deno.env.get('SUPABASE_PUBLISHABLE_KEY')!,
-      { global: { headers: { Authorization: authHeader } } }
-    );
-
-    const { data: userData, error: userError } = await supabaseClient.auth.getUser();
-    if (userError || !userData?.user) {
-      console.error('Auth error:', userError?.message);
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const authenticatedUserId = userData.user.id;
 
     const { messages, userEmail } = await req.json();
 
     // Look up the user's actual role from the database instead of trusting client input
     let verifiedRole = 'customer';
-    try {
-      const { data: roleRows } = await supabaseClient
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', authenticatedUserId);
-      if (roleRows && roleRows.length > 0) {
-        // Prefer admin > chef > kitchen_partner > restaurant > customer
-        const rolePriority = ['admin', 'chef', 'kitchen_partner', 'restaurant', 'customer'];
-        for (const r of rolePriority) {
-          if (roleRows.some((row: any) => row.role === r)) {
-            verifiedRole = r;
-            break;
+    if (authenticatedUserId) {
+      try {
+        const { data: roleRows } = await supabaseClient
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', authenticatedUserId);
+        if (roleRows && roleRows.length > 0) {
+          // Prefer admin > chef > kitchen_partner > restaurant > customer
+          const rolePriority = ['admin', 'chef', 'kitchen_partner', 'restaurant', 'customer'];
+          for (const r of rolePriority) {
+            if (roleRows.some((row: any) => row.role === r)) {
+              verifiedRole = r;
+              break;
+            }
           }
         }
+      } catch (e) {
+        console.error('Failed to fetch user role:', e);
       }
-    } catch (e) {
-      console.error('Failed to fetch user role:', e);
     }
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
@@ -252,11 +249,10 @@ serve(async (req) => {
     // Look up user profile using the AUTHENTICATED user's ID only
     let userInfo: { email?: string; phone?: string; name?: string } | undefined;
     try {
-      const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
       const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-      if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+      if (authenticatedUserId && supabaseUrl && SUPABASE_SERVICE_ROLE_KEY) {
         const profileRes = await fetch(
-          `${SUPABASE_URL}/rest/v1/profiles?id=eq.${authenticatedUserId}&select=email,phone,full_name`,
+          `${supabaseUrl}/rest/v1/profiles?id=eq.${authenticatedUserId}&select=email,phone,full_name`,
           {
             headers: {
               'apikey': SUPABASE_SERVICE_ROLE_KEY,
@@ -282,7 +278,7 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    console.log('Processing chat request for verified role:', verifiedRole);
+    console.log('Processing chat request for role:', verifiedRole, 'authenticated:', !!authenticatedUserId);
 
     const systemPrompt = KNOWLEDGE_BASE[verifiedRole as keyof typeof KNOWLEDGE_BASE] || KNOWLEDGE_BASE.customer;
 
