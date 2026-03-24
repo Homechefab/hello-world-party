@@ -7,7 +7,6 @@ import type { UserRole } from "@/types/user";
 import { Cart } from "@/components/Cart";
 import UserMenu from "@/components/UserMenu";
 import { AdminNotifications } from "@/components/admin/AdminNotifications";
-import messageIcon from "@/assets/message-icon.png";
 
 import { toast } from "sonner";
 import {
