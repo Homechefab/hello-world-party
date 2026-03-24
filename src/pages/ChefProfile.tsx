@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Star, Clock, MapPin, ChefHat, Instagram, Facebook, Phone } from "lucide-react";
+import { Star, Clock, MapPin, ChefHat, Instagram, Facebook, Phone, CalendarDays } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
