@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
@@ -27,6 +27,7 @@ const Profile = () => {
   };
 
   const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
+  const [chefImageUrl, setChefImageUrl] = useState<string | null>(null);
   
   const [profile, setProfile] = useState({
     full_name: '',
@@ -66,6 +67,17 @@ const Profile = () => {
           ...prev,
           email: user?.email || ''
         }));
+      }
+
+      // Fetch chef profile image if user is a chef
+      const { data: chefData } = await supabase
+        .from('chefs')
+        .select('profile_image_url')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (chefData?.profile_image_url) {
+        setChefImageUrl(chefData.profile_image_url);
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -311,6 +323,7 @@ const Profile = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-3">
                 <Avatar className="w-16 h-16">
+                  <AvatarImage src={chefImageUrl || undefined} alt="Profilbild" className="object-cover" />
                   <AvatarFallback className="bg-primary text-primary-foreground text-lg">
                     {userInitials}
                   </AvatarFallback>
