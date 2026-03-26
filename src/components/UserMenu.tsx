@@ -67,6 +67,7 @@ const UserMenu = () => {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
           <Avatar className="w-8 h-8">
+            <AvatarImage src={profileImageUrl || undefined} alt="Profil" className="object-cover" />
             <AvatarFallback className="bg-primary text-primary-foreground text-sm">
               {userInitials}
             </AvatarFallback>
