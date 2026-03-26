@@ -597,7 +597,7 @@ const LiveChat = () => {
       <div className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-50" data-no-safe-adjust>
         <button
           onClick={() => setIsOpen(true)}
-          className="w-16 h-16 md:w-16 md:h-16 rounded-none bg-transparent border-0 p-0 shadow-none hover:scale-105 transition-transform duration-200 cursor-pointer"
+          className="w-20 h-20 md:w-18 md:h-18 rounded-none bg-transparent border-0 p-0 shadow-none hover:scale-105 transition-transform duration-200 cursor-pointer"
         >
           <img src={chatEnvelopeIcon} alt="Meddelanden" className="w-full h-full object-contain" />
         </button>
