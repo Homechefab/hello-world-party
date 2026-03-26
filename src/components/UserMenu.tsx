@@ -30,7 +30,7 @@ const UserMenu = () => {
     );
   }
 
-  const userName = profileUser?.full_name || user?.user_metadata?.full_name;
+  const userName = profileUser?.full_name;
   const userInitials = userName
     ? userName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
     : userEmail?.split('@')[0]?.slice(0, 2)?.toUpperCase() || 'TE';
