@@ -323,6 +323,7 @@ const Profile = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-3">
                 <Avatar className="w-16 h-16">
+                  <AvatarImage src={chefImageUrl || undefined} alt="Profilbild" className="object-cover" />
                   <AvatarFallback className="bg-primary text-primary-foreground text-lg">
                     {userInitials}
                   </AvatarFallback>
