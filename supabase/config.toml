@@ -103,6 +103,12 @@ verify_jwt = true
 [functions.send-application-notification]
 verify_jwt = false
 
+[functions.submit-chef-application]
+verify_jwt = false
+
+[functions.create-document-submission-public]
+verify_jwt = false
+
 [functions.send-business-confirmation]
 verify_jwt = false
 
