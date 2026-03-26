@@ -82,7 +82,6 @@ const ChefApplication = () => {
     // När man går från steg 2 till 3, skapa chef-ansökan
     if (currentStep === 2) {
       try {
-        // Validera att kontakt-email är ifylld
         if (!formData.contactEmail) {
           toast({
             title: "Fel",
@@ -90,35 +89,6 @@ const ChefApplication = () => {
             variant: "destructive"
           });
           return;
-        }
-
-        // Kolla om det redan finns en ansökan med samma contact_email
-        // Använd service-level check via RPC eller hantera 401 graciöst
-        const { data: existingApplication, error: checkError } = await supabase
-          .from('chefs')
-          .select('id, application_status')
-          .eq('contact_email', formData.contactEmail)
-          .maybeSingle();
-
-        // Om vi får auth-error, hoppa över duplicate-check (RLS blockerar anon SELECT)
-        if (!checkError) {
-          // Blockera BARA om ansökan är under granskning eller godkänd
-          if (existingApplication && ['under_review', 'approved'].includes(existingApplication.application_status || '')) {
-            toast({
-              title: "Ansökan finns redan",
-              description: `Det finns redan en ${existingApplication.application_status === 'approved' ? 'godkänd' : 'inskickad'} ansökan för denna email.`,
-              variant: "destructive"
-            });
-            return;
-          }
-
-          // Om det finns en ofullständig (pending) eller nekad ansökan, ta bort den först
-          if (existingApplication && ['pending', 'rejected'].includes(existingApplication.application_status || '')) {
-            await supabase
-              .from('chefs')
-              .delete()
-              .eq('id', existingApplication.id);
-          }
         }
 
         const serviceLabels: Record<string, string> = {
@@ -131,33 +101,35 @@ const ChefApplication = () => {
         const servicesText = formData.services.map(s => serviceLabels[s] || s).join(', ');
         const combinedSpecialties = [servicesText, formData.specialties].filter(Boolean).join(' | ');
 
-        // Skapa ny chef-ansökan UTAN user_id - kontot skapas vid godkännande
-        const { data: newChef, error } = await supabase
-          .from('chefs')
-          .insert({
-            user_id: null,
-            business_name: formData.businessName || 'Mitt kök',
-            kitchen_approved: false,
-            application_status: 'pending',
-            full_name: formData.fullName,
-            contact_email: formData.contactEmail,
+        const { data, error } = await supabase.functions.invoke('submit-chef-application', {
+          body: {
+            fullName: formData.fullName,
+            contactEmail: formData.contactEmail,
             phone: formData.phone,
             address: formData.address,
             city: formData.city,
-            postal_code: formData.postalCode,
+            postalCode: formData.postalCode,
             experience: formData.experience,
-            specialties: combinedSpecialties
-          })
-          .select()
-          .single();
+            specialties: combinedSpecialties,
+            businessName: formData.businessName || 'Mitt kök',
+          }
+        });
 
         if (error) {
           throw error;
         }
 
-        setChefId(newChef.id);
-        setCurrentStep(3);
+        if (!data?.success || !data?.chefId) {
+          toast({
+            title: "Ansökan kunde inte skapas",
+            description: data?.message || "Något gick fel. Försök igen senare.",
+            variant: "destructive"
+          });
+          return;
+        }
 
+        setChefId(data.chefId);
+        setCurrentStep(3);
       } catch (err) {
         console.error(err);
         toast({
@@ -180,56 +152,25 @@ const ChefApplication = () => {
           return;
         }
 
-        const serviceLabels2: Record<string, string> = {
-          sell_food: "Sälj din mat",
-          private_chef: "Privatkock-tjänster",
-          experiences: "Matupplevelser",
-          catering: "Catering",
-          meal_boxes: "Sälj färdiglagade matlådor",
-        };
-        const servicesText2 = formData.services.map(s => serviceLabels2[s] || s).join(', ');
-        const combinedSpecialties2 = [servicesText2, formData.specialties].filter(Boolean).join(' | ');
+        const { data: { session } } = await supabase.auth.getSession();
 
-        // Uppdatera chef-ansökan till "under review"
-        const { error } = await supabase
-          .from('chefs')
-          .update({ 
-            application_status: 'under_review',
-            business_name: formData.businessName || 'Mitt företag',
-            full_name: formData.fullName,
-            contact_email: formData.contactEmail,
-            phone: formData.phone,
-            address: formData.address,
-            city: formData.city,
-            postal_code: formData.postalCode,
-            experience: formData.experience,
-            specialties: combinedSpecialties2
-          })
-          .eq('id', chefId);
-
-        if (error) {
-          throw error;
+        if (session) {
+          try {
+            await supabase.functions.invoke('send-application-notification', {
+              body: {
+                type: 'chef',
+                application_id: chefId,
+                applicant_name: formData.fullName,
+                applicant_email: formData.contactEmail,
+                business_name: formData.businessName || 'Mitt företag',
+                phone: formData.phone
+              }
+            });
+            console.log('Admin notification sent successfully');
+          } catch (notifyError) {
+            console.error('Failed to send admin notification:', notifyError);
+          }
         }
-
-        // Skicka notifiering till admin via edge function
-        try {
-          await supabase.functions.invoke('send-application-notification', {
-            body: {
-              type: 'chef',
-              application_id: chefId,
-              applicant_name: formData.fullName,
-              applicant_email: formData.contactEmail,
-              business_name: formData.businessName || 'Mitt företag',
-              phone: formData.phone
-            }
-          });
-          console.log('Admin notification sent successfully');
-        } catch (notifyError) {
-          console.error('Failed to send admin notification:', notifyError);
-          // Fortsätt även om notifieringen misslyckas
-        }
-
-        // Onboarding-guide skickas inte separat - bekräftelsemejlet räcker
 
         toast({
           title: "Ansökan skickad!",
