@@ -27,6 +27,7 @@ const Profile = () => {
   };
 
   const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
+  const [chefImageUrl, setChefImageUrl] = useState<string | null>(null);
   
   const [profile, setProfile] = useState({
     full_name: '',
