@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
 import { User, Settings, MapPin, CreditCard, LogOut, UserCircle, ShoppingBag, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useRole } from "../hooks/useRole";
-import { supabase } from "../integrations/supabase/client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "../components/ui/dropdown-menu";
 import { Button } from "../components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { Avatar, AvatarFallback } from "../components/ui/avatar";
 
 const UserMenu = () => {
   const { user, signOut } = useAuth();
