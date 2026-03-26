@@ -68,6 +68,17 @@ const Profile = () => {
           email: user?.email || ''
         }));
       }
+
+      // Fetch chef profile image if user is a chef
+      const { data: chefData } = await supabase
+        .from('chefs')
+        .select('profile_image_url')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (chefData?.profile_image_url) {
+        setChefImageUrl(chefData.profile_image_url);
+      }
     } catch (error) {
       console.error('Error fetching profile:', error);
       toast.error('Kunde inte hämta profilinformation');
