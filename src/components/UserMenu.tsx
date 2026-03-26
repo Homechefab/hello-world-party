@@ -28,7 +28,7 @@ const UserMenu = () => {
       supabase
         .from("chefs")
         .select("profile_image_url")
-        .eq("user_id", user.id)
+        .eq("user_id", user.id!)
         .single()
         .then(({ data }) => {
           if (data?.profile_image_url) {
