@@ -18,9 +18,25 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 const UserMenu = () => {
   const { user, signOut } = useAuth();
   const { user: profileUser, isChef, isAdmin, isKitchenPartner, isRestaurant } = useRole();
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
 
   const userEmail = user?.email || profileUser?.email;
   const shouldShowMenu = !!user;
+
+  useEffect(() => {
+    if (user && isChef) {
+      supabase
+        .from("chefs")
+        .select("profile_image_url")
+        .eq("user_id", user.id)
+        .single()
+        .then(({ data }) => {
+          if (data?.profile_image_url) {
+            setProfileImageUrl(data.profile_image_url);
+          }
+        });
+    }
+  }, [user, isChef]);
 
   if (!shouldShowMenu) {
     return (
