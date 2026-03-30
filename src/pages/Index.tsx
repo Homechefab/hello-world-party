@@ -38,7 +38,7 @@ const Index = () => {
         <Features />
         <FAQ />
         <Footer />
-        
+        <PreRegistrationPopup />
       </div>
     </>
   );
