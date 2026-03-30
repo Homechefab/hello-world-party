@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero";
 import PopularChefs from "@/components/Categories";
+import PreRegistrationPopup from "@/components/PreRegistrationPopup";
 import FoodGrid from "@/components/FoodGrid";
 import Features from "@/components/Features";
 import Footer from "@/components/Footer";
@@ -37,7 +38,7 @@ const Index = () => {
         <Features />
         <FAQ />
         <Footer />
-        
+        <PreRegistrationPopup />
       </div>
     </>
   );
