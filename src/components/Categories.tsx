@@ -7,8 +7,8 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Chef {
-  id: string;
-  business_name: string;
+  id: string | null;
+  business_name: string | null;
   full_name: string | null;
   city: string | null;
   specialties: string | null;
@@ -26,9 +26,8 @@ const PopularChefs = () => {
   const loadChefs = async () => {
     try {
       const { data, error } = await supabase
-        .from("chefs")
+        .from("public_chef_profiles")
         .select("id, business_name, full_name, city, specialties, profile_image_url")
-        .eq("kitchen_approved", true)
         .limit(6);
 
       if (error) throw error;
@@ -58,7 +57,7 @@ const PopularChefs = () => {
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     <Avatar className="w-14 h-14 border-2 border-primary/20">
-                      <AvatarImage src={chef.profile_image_url || undefined} alt={chef.full_name || chef.business_name} />
+                      <AvatarImage src={chef.profile_image_url ?? undefined} alt={chef.full_name || chef.business_name || ''} />
                       <AvatarFallback className="bg-primary/10">
                         <ChefHat className="w-6 h-6 text-primary" />
                       </AvatarFallback>
