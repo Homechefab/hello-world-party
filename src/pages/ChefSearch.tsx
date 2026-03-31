@@ -228,7 +228,7 @@ const ChefSearch = () => {
                     <CardContent className="p-6">
                       <div className="flex items-start gap-4">
                         <Avatar className="w-16 h-16 border-2 border-primary/20">
-                          <AvatarImage src={chef.profile_image_url || undefined} alt={chef.full_name || chef.business_name} />
+                          <AvatarImage src={chef.profile_image_url ?? undefined} alt={chef.full_name || chef.business_name || ''} />
                           <AvatarFallback className="bg-primary/10">
                             <ChefHat className="w-8 h-8 text-primary" />
                           </AvatarFallback>
