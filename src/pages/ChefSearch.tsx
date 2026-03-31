@@ -15,11 +15,10 @@ interface SearchFilters {
 }
 
 interface Chef {
-  id: string;
-  business_name: string;
+  id: string | null;
+  business_name: string | null;
   full_name: string | null;
   city: string | null;
-  address: string | null;
   specialties: string | null;
   profile_image_url: string | null;
 }
