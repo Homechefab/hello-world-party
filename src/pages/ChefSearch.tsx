@@ -81,8 +81,7 @@ const ChefSearch = () => {
     if (filters.location) {
       const location = filters.location.toLowerCase();
       result = result.filter(chef =>
-        chef.city?.toLowerCase().includes(location) ||
-        chef.address?.toLowerCase().includes(location)
+        chef.city?.toLowerCase().includes(location)
       );
     }
 
