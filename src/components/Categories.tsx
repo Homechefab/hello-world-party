@@ -26,9 +26,8 @@ const PopularChefs = () => {
   const loadChefs = async () => {
     try {
       const { data, error } = await supabase
-        .from("chefs")
+        .from("public_chef_profiles")
         .select("id, business_name, full_name, city, specialties, profile_image_url")
-        .eq("kitchen_approved", true)
         .limit(6);
 
       if (error) throw error;

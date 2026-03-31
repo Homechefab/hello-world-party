@@ -133,21 +133,20 @@ const ChefProfile = () => {
       try {
         // Fetch chef info
         const { data: chefData, error: chefError } = await supabase
-          .from('chefs')
+          .from('public_chef_profiles')
           .select(`
             id,
             business_name,
-            user_id,
+            full_name,
             profile_image_url,
             tiktok_url,
             facebook_url,
             instagram_url,
             snapchat_url,
-            phone,
-            bio
+            bio,
+            city
           `)
           .eq('id', chefId)
-          .eq('kitchen_approved', true)
           .maybeSingle();
 
         if (chefError) throw chefError;

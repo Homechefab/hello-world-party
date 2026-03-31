@@ -53,9 +53,8 @@ const ChefSearch = () => {
   const loadChefs = async () => {
     try {
       const { data, error } = await supabase
-        .from("chefs")
-        .select("id, business_name, full_name, city, address, specialties, profile_image_url")
-        .eq("kitchen_approved", true);
+        .from("public_chef_profiles")
+        .select("id, business_name, full_name, city, specialties, profile_image_url");
 
       if (error) throw error;
       setChefs(data || []);
