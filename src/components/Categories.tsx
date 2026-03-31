@@ -7,8 +7,8 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Chef {
-  id: string;
-  business_name: string;
+  id: string | null;
+  business_name: string | null;
   full_name: string | null;
   city: string | null;
   specialties: string | null;
