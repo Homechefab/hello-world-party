@@ -55,6 +55,21 @@ serve(async (req) => {
       throw new Error('Invalid authentication token');
     }
 
+    // SECURITY: Verify the user owns this document before downloading
+    const { data: docRecord, error: docError } = await supabase
+      .from('document_submissions')
+      .select('id, document_url')
+      .eq('user_id', user.id)
+      .eq('document_url', documentUrl)
+      .maybeSingle();
+
+    if (docError || !docRecord) {
+      return new Response(
+        JSON.stringify({ success: false, error: 'Document not found or access denied' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 403 }
+      );
+    }
+
     const urlParts = documentUrl.split('/documents/');
     if (urlParts.length < 2) {
       throw new Error('Invalid document URL format');
