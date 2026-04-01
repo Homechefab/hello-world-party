@@ -47,10 +47,10 @@ serve(async (req) => {
 
   try {
     // --- IP allowlist check ---
+    // Use cf-connecting-ip as the sole trusted source — cannot be spoofed by clients
     const clientIP =
-      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-      req.headers.get("x-real-ip") ||
-      req.headers.get("cf-connecting-ip");
+      req.headers.get("cf-connecting-ip") ||
+      req.headers.get("x-real-ip");
 
     // Log the IP for monitoring; enforce in production
     console.log("Swish callback received from IP:", clientIP);
