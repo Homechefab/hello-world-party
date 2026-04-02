@@ -1674,6 +1674,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      log_user_login: { Args: { p_user_agent?: string }; Returns: undefined }
       process_referral_signup: {
         Args: { p_new_user_id: string; p_referral_code: string }
         Returns: Json
