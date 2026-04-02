@@ -12,6 +12,7 @@ import { UserManagement } from '@/components/admin/UserManagement';
 import { CommissionReports } from '@/components/admin/CommissionReports';
 import { PaymentOverview } from '@/components/admin/PaymentOverview';
 import { ReviewAccountManager } from '@/components/admin/ReviewAccountManager';
+import { EarlyAccessSignups } from '@/components/admin/EarlyAccessSignups';
 
 import { OnboardingMaterials } from '@/components/admin/OnboardingMaterials';
 import { ChefOnboardingGuide } from '@/components/admin/ChefOnboardingGuide';
