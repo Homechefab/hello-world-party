@@ -302,6 +302,10 @@ export const AdminDashboard = () => {
           </Card>
         </TabsContent>
 
+        <TabsContent value="early-access">
+          <EarlyAccessSignups />
+        </TabsContent>
+
         <TabsContent value="visitors">
           <Visitors />
         </TabsContent>
