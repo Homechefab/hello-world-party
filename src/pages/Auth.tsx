@@ -110,7 +110,7 @@ const Auth = () => {
     }
   };
 
-  const handleSocialAuth = async (provider: 'google' | 'facebook') => {
+  const handleSocialAuth = async (provider: 'google' | 'facebook' | 'apple') => {
     setIsLoading(true);
     
     try {
