@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { ChefHat, Sparkles, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { useLocation } from "react-router-dom";
 
 const PreRegistrationPopup = () => {
   const [open, setOpen] = useState(false);
@@ -13,14 +15,20 @@ const PreRegistrationPopup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
+  const location = useLocation();
 
   useEffect(() => {
+    // Don't show popup if user is logged in or on the auth page
+    if (user) return;
+    if (location.pathname === '/auth') return;
+
     const dismissed = sessionStorage.getItem("preregPopupDismissed");
     if (dismissed) return;
 
     const timer = setTimeout(() => setOpen(true), 3000);
     return () => clearTimeout(timer);
-  }, []);
+  }, [user, location.pathname]);
 
   const handleClose = () => {
     setOpen(false);
