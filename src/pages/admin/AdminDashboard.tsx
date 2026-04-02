@@ -225,6 +225,9 @@ export const AdminDashboard = () => {
             <TabsTrigger value="complaints" className="whitespace-nowrap text-xs px-3 py-1.5">
               Klagomål
             </TabsTrigger>
+            <TabsTrigger value="early-access" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Early Access
+            </TabsTrigger>
             <TabsTrigger value="visitors" className="whitespace-nowrap text-xs px-3 py-1.5">
               Besökare
             </TabsTrigger>
