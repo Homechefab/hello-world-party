@@ -27,10 +27,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // Log sign in events
       if (event === 'SIGNED_IN' && session?.user) {
         setTimeout(() => {
-          supabase.from('login_logs').insert({
-            user_id: session.user.id,
-            email: session.user.email ?? '',
-            user_agent: navigator.userAgent
+          supabase.rpc('log_user_login', {
+            p_user_agent: navigator.userAgent
           }).then(({ error }) => {
             if (error) console.error('Failed to log login:', error);
           });
