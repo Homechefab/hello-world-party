@@ -49,7 +49,7 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
     }
   };
 
-  const handleSocialLogin = async (provider: 'google' | 'facebook') => {
+  const handleSocialLogin = async (provider: 'google' | 'facebook' | 'apple') => {
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: provider,
