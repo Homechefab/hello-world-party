@@ -12,6 +12,7 @@ import { UserManagement } from '@/components/admin/UserManagement';
 import { CommissionReports } from '@/components/admin/CommissionReports';
 import { PaymentOverview } from '@/components/admin/PaymentOverview';
 import { ReviewAccountManager } from '@/components/admin/ReviewAccountManager';
+import { EarlyAccessSignups } from '@/components/admin/EarlyAccessSignups';
 
 import { OnboardingMaterials } from '@/components/admin/OnboardingMaterials';
 import { ChefOnboardingGuide } from '@/components/admin/ChefOnboardingGuide';
@@ -224,6 +225,9 @@ export const AdminDashboard = () => {
             <TabsTrigger value="complaints" className="whitespace-nowrap text-xs px-3 py-1.5">
               Klagomål
             </TabsTrigger>
+            <TabsTrigger value="early-access" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Early Access
+            </TabsTrigger>
             <TabsTrigger value="visitors" className="whitespace-nowrap text-xs px-3 py-1.5">
               Besökare
             </TabsTrigger>
@@ -296,6 +300,10 @@ export const AdminDashboard = () => {
               <p className="text-muted-foreground">Inga klagomål just nu.</p>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="early-access">
+          <EarlyAccessSignups />
         </TabsContent>
 
         <TabsContent value="visitors">
