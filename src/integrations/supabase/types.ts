@@ -1344,6 +1344,7 @@ export type Database = {
           payment_request_token: string | null
           status: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           amount: number
@@ -1361,6 +1362,7 @@ export type Database = {
           payment_request_token?: string | null
           status?: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           amount?: number
@@ -1378,6 +1380,7 @@ export type Database = {
           payment_request_token?: string | null
           status?: string
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -1636,6 +1639,59 @@ export type Database = {
           tiktok_url?: string | null
         }
         Relationships: []
+      }
+      swish_payments_safe: {
+        Row: {
+          amount: number | null
+          created_at: string | null
+          date_paid: string | null
+          error_code: string | null
+          error_message: string | null
+          id: string | null
+          message: string | null
+          order_id: string | null
+          payment_reference: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string | null
+          date_paid?: string | null
+          error_code?: string | null
+          error_message?: string | null
+          id?: string | null
+          message?: string | null
+          order_id?: string | null
+          payment_reference?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string | null
+          date_paid?: string | null
+          error_code?: string | null
+          error_message?: string | null
+          id?: string | null
+          message?: string | null
+          order_id?: string | null
+          payment_reference?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "swish_payments_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Functions: {
