@@ -194,6 +194,7 @@ serve(async (req) => {
       payee_alias: payeeAlias,
       message: message,
       order_id: orderId,
+      user_id: userId,
       status: "CREATED",
       payment_request_token: paymentRequestToken,
     });
