@@ -121,6 +121,7 @@ serve(async (req) => {
           stripe_payment_intent_id: paymentIntentId,
           stripe_charge_id: chargeId,
           customer_email: session.customer_details?.email || "unknown@email.com",
+          user_id: user.id,
           dish_name: dishName,
           quantity: items.data[0]?.quantity || 1,
           total_amount: totalAmount,

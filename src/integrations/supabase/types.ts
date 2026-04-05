@@ -1020,6 +1020,7 @@ export type Database = {
           stripe_session_id: string
           total_amount: number
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           chef_earnings: number
@@ -1037,6 +1038,7 @@ export type Database = {
           stripe_session_id: string
           total_amount: number
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           chef_earnings?: number
@@ -1054,6 +1056,7 @@ export type Database = {
           stripe_session_id?: string
           total_amount?: number
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
