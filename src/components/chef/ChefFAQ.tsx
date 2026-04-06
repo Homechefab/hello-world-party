@@ -10,7 +10,7 @@ const ChefFAQ = () => {
     },
     {
       question: "Vad kostar det att starta som kock på Homechef?",
-      answer: "Startkostnaderna är cirka 3 500-5 000 kr totalt. Detta inkluderar registreringsavgift till kommunen (1 555 kr, kan variera mellan kommuner), företagsförsäkring (från 2 000 kr/år), och eventuella mindre investeringar i utrustning. Registrering av näringsverksamhet hos Skatteverket är gratis."
+      answer: "Homechef tar inga kostnader för att komma igång. Den enda externa kostnaden är registreringsavgiften till kommunen för livsmedelsverksamhet (1 555 kr för 2025, kan variera mellan kommuner). Registrering av näringsverksamhet hos Skatteverket är gratis."
     },
     {
       question: "Kan jag sälja mat från mitt ordinarie hemkök?",
