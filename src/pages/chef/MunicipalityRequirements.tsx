@@ -1,7 +1,7 @@
 // Removed @ts-nocheck to allow type checking
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, FileText, ClipboardCheck, Building2 } from "lucide-react";
-import MunicipalitySearch from "@/components/MunicipalitySearch";
+
 import ChefFAQ from "@/components/chef/ChefFAQ";
 
 const MunicipalityRequirements = () => {
@@ -145,21 +145,6 @@ const MunicipalityRequirements = () => {
                 </p>
               </div>
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Municipality Search Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              Intresserad av att sälja med hemifrån men saknar tillstånd från kommunen?
-            </CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Sök på din adress för att få direktlänkar till ansökningsblanketter och e-tjänster för livsmedelsregistrering från din kommun.
-            </p>
-          </CardHeader>
-          <CardContent>
-            <MunicipalitySearch />
           </CardContent>
         </Card>
 
