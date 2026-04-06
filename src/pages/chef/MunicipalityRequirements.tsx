@@ -148,21 +148,6 @@ const MunicipalityRequirements = () => {
           </CardContent>
         </Card>
 
-        {/* Municipality Search Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle>
-              Intresserad av att sälja med hemifrån men saknar tillstånd från kommunen?
-            </CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Sök på din adress för att få direktlänkar till ansökningsblanketter och e-tjänster för livsmedelsregistrering från din kommun.
-            </p>
-          </CardHeader>
-          <CardContent>
-            <MunicipalitySearch />
-          </CardContent>
-        </Card>
-
         {/* FAQ Section */}
         <ChefFAQ />
       </div>
