@@ -50,7 +50,7 @@ const ChefFAQ = () => {
     },
     {
       question: "Hur hanterar jag moms på matförsäljningen?",
-      answer: "Restaurang- och cateringtjänster har 12% moms, medan livsmedel som säljs i butik har 12% eller 25% moms beroende på typ. Om din omsättning är under 80 000 kr/år kan du välja frivillig skattskyldighet. Vi rekommenderar att du konsulterar en revisor för att få rätt från start."
+      answer: "Från 1 april 2026 är momsen på livsmedel sänkt till 6% (tillfälligt till 31 december 2027). Restaurang- och cateringtjänster har fortfarande 12% moms. Om din omsättning är under 120 000 kr/år kan du vara momsbefriad. Vi rekommenderar att du konsulterar en revisor för att få rätt från start."
     }
   ];
 
