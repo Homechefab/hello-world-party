@@ -1,7 +1,7 @@
 // Removed @ts-nocheck to allow type checking
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, FileText, ClipboardCheck, Building2 } from "lucide-react";
-import MunicipalitySearch from "@/components/MunicipalitySearch";
+
 import ChefFAQ from "@/components/chef/ChefFAQ";
 
 const MunicipalityRequirements = () => {
