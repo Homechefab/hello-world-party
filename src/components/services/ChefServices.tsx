@@ -66,7 +66,7 @@ const otherChefServices = [
   },
   {
     image: approvedKitchenImage,
-    title: "Kök-krav",
+    title: "Kökskrav",
     description: "Vad som krävs för att få sälja mat från ditt kök",
     href: "/chef/kitchen-requirements",
     icon: Shield,

@@ -8,7 +8,7 @@ const ChefHome = () => {
     if (metaDesc) {
       metaDesc.setAttribute(
         "content",
-        "Utforska kockens tjänster på Homechef: sälj din mat, privatkock-tjänster, matupplevelser och kök-krav."
+        "Utforska kockens tjänster på Homechef: sälj din mat, privatkock-tjänster, matupplevelser och kökskrav."
       );
     }
   }, []);
