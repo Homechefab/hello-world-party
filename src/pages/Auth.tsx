@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { UserRole } from '@/types/user';
+import { signInWithSocial } from '@/lib/socialAuth';
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +32,6 @@ const Auth = () => {
     { value: 'restaurant' as UserRole, label: 'Restaurang', icon: Utensils, description: 'Samarbeta med oss' },
   ];
 
-  // Redirect if already logged in
   useEffect(() => {
     if (user) {
       navigate('/');
@@ -58,10 +58,7 @@ const Auth = () => {
 
         if (error) throw error;
 
-        // The handle_new_user trigger automatically creates profile and user_roles.
-        // If user selected a non-default role, update it after trigger has run.
         if (authData.user && selectedRole !== 'customer') {
-          // Small delay to let the trigger complete
           await new Promise(resolve => setTimeout(resolve, 500));
           
           await supabase
@@ -75,7 +72,6 @@ const Auth = () => {
             .eq('user_id', authData.user.id);
         }
 
-        // If auto-confirmed (session exists), navigate home
         if (authData.session) {
           toast({
             title: "Konto skapat!",
@@ -117,36 +113,7 @@ const Auth = () => {
     setIsLoading(true);
     
     try {
-      const redirectUrl = `${window.location.origin}/`;
-
-      const options: Record<string, unknown> = {
-        redirectTo: redirectUrl,
-        skipBrowserRedirect: false,
-      };
-
-      // Google-specific params — don't send to Apple/Facebook
-      if (provider === 'google') {
-        options.queryParams = {
-          access_type: 'offline',
-          prompt: 'consent',
-        };
-      }
-
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options,
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      if (data?.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error('Inget svar från autentiseringstjänsten');
-      }
-
+      await signInWithSocial(provider);
     } catch (error: unknown) {
       const err = error as Error
       toast({
