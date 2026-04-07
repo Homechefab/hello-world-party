@@ -58,33 +58,36 @@ const Auth = () => {
 
         if (error) throw error;
 
-        // Create profile and role after signup
-        if (authData.user) {
-          const { error: profileError } = await supabase
+        // The handle_new_user trigger automatically creates profile and user_roles.
+        // If user selected a non-default role, update it after trigger has run.
+        if (authData.user && selectedRole !== 'customer') {
+          // Small delay to let the trigger complete
+          await new Promise(resolve => setTimeout(resolve, 500));
+          
+          await supabase
             .from('profiles')
-            .insert({
-              id: authData.user.id,
-              email,
-              full_name: fullName,
-              role: selectedRole,
-            });
+            .update({ role: selectedRole })
+            .eq('id', authData.user.id);
 
-          if (profileError) console.error('Profile creation error:', profileError);
-
-          const { error: roleError } = await supabase
+          await supabase
             .from('user_roles')
-            .insert({
-              user_id: authData.user.id,
-              role: selectedRole as 'customer' | 'chef' | 'kitchen_partner' | 'restaurant' | 'business',
-            });
-
-          if (roleError) console.error('Role creation error:', roleError);
+            .update({ role: selectedRole as 'customer' | 'chef' | 'kitchen_partner' | 'restaurant' | 'business' })
+            .eq('user_id', authData.user.id);
         }
 
-        toast({
-          title: "Konto skapat!",
-          description: "Kontrollera din e-post för att verifiera ditt konto.",
-        });
+        // If auto-confirmed (session exists), navigate home
+        if (authData.session) {
+          toast({
+            title: "Konto skapat!",
+            description: "Välkommen till Homechef!",
+          });
+          navigate('/');
+        } else {
+          toast({
+            title: "Konto skapat!",
+            description: "Kontrollera din e-post för att verifiera ditt konto.",
+          });
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
