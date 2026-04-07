@@ -5,8 +5,7 @@ import { AuthProvider } from '@/contexts/AuthContext'
 import { CartProvider } from '@/contexts/CartContext'
 import { RoleProvider } from '@/contexts/RoleContext'
 import { BrowserRouter } from 'react-router-dom'
-
-
+import AuthRedirectHandler from '@/components/auth/AuthRedirectHandler'
 
 // iOS sticky-zoom / viewport reset on input blur
 if (typeof window !== 'undefined') {
@@ -32,13 +31,13 @@ if (typeof window !== 'undefined') {
 
 const rootElement = document.getElementById("root");
 
-
 if (rootElement) {
   createRoot(rootElement).render(
     <BrowserRouter>
       <AuthProvider>
         <RoleProvider>
           <CartProvider>
+            <AuthRedirectHandler />
             <App />
           </CartProvider>
         </RoleProvider>

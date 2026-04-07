@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
+import { signInWithSocial } from "@/lib/socialAuth";
 
 interface LoginFormProps {
   onToggleMode: () => void;
@@ -36,7 +37,6 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
         description: "Du är nu inloggad i appen.",
       });
       
-      // Navigate to home page after successful login
       navigate('/');
     } catch (error: unknown) {
       toast({
@@ -51,14 +51,7 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
 
   const handleSocialLogin = async (provider: 'google' | 'facebook' | 'apple') => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: provider,
-        options: {
-          redirectTo: `${window.location.origin}/`
-        }
-      });
-
-      if (error) throw error;
+      await signInWithSocial(provider);
     } catch (error: unknown) {
       toast({
         title: "Fel vid social inloggning",

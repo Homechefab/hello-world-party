@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Separator } from "@/components/ui/separator";
 import { useNavigate } from "react-router-dom";
+import { signInWithSocial } from "@/lib/socialAuth";
 
 interface RegisterFormProps {
   onToggleMode: () => void;
@@ -63,14 +64,7 @@ export const RegisterForm = ({ onToggleMode }: RegisterFormProps) => {
 
   const handleSocialLogin = async (provider: 'google' | 'facebook' | 'apple') => {
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: provider,
-        options: {
-          redirectTo: `${window.location.origin}/`
-        }
-      });
-
-      if (error) throw error;
+      await signInWithSocial(provider);
     } catch (error: unknown) {
       toast({
         title: "Fel vid social registrering",
