@@ -117,18 +117,24 @@ const Auth = () => {
     setIsLoading(true);
     
     try {
-      const redirectUrl = window.location.href;
+      const redirectUrl = `${window.location.origin}/`;
+
+      const options: Record<string, unknown> = {
+        redirectTo: redirectUrl,
+        skipBrowserRedirect: false,
+      };
+
+      // Google-specific params — don't send to Apple/Facebook
+      if (provider === 'google') {
+        options.queryParams = {
+          access_type: 'offline',
+          prompt: 'consent',
+        };
+      }
 
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider,
-        options: {
-          redirectTo: redirectUrl,
-          skipBrowserRedirect: false,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          }
-        }
+        options,
       });
 
       if (error) {
