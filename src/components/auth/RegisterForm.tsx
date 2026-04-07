@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Separator } from "@/components/ui/separator";
+import { useNavigate } from "react-router-dom";
 
 interface RegisterFormProps {
   onToggleMode: () => void;
@@ -17,13 +18,14 @@ export const RegisterForm = ({ onToggleMode }: RegisterFormProps) => {
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -36,10 +38,18 @@ export const RegisterForm = ({ onToggleMode }: RegisterFormProps) => {
 
       if (error) throw error;
 
-      toast({
-        title: "Registrering lyckades!",
-        description: "Kolla din e-post för att bekräfta ditt konto.",
-      });
+      if (data.session) {
+        toast({
+          title: "Registrering lyckades!",
+          description: "Välkommen till Homechef!",
+        });
+        navigate('/');
+      } else {
+        toast({
+          title: "Registrering lyckades!",
+          description: "Kolla din e-post för att bekräfta ditt konto.",
+        });
+      }
     } catch (error: unknown) {
       toast({
         title: "Fel vid registrering",
