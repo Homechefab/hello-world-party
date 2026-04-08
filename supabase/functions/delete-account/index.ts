@@ -1,14 +1,19 @@
-import { serve } from 'https://deno.land/std@0.190.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
-import { corsHeaders } from '../_shared/cors.ts';
 
-serve(async (req) => {
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
+};
+
+Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
 
   try {
     const authHeader = req.headers.get('Authorization');
+    console.log('Delete account called, has auth header:', !!authHeader);
+
     if (!authHeader) {
       return new Response(
         JSON.stringify({ error: 'Unauthorized' }),
@@ -16,7 +21,7 @@ serve(async (req) => {
       );
     }
 
-    // Verify the user's JWT and get their identity
+    // User-context client to verify identity
     const supabaseUser = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_ANON_KEY')!,
@@ -24,6 +29,8 @@ serve(async (req) => {
     );
 
     const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
+    console.log('getUser result:', { userId: user?.id, error: userError?.message });
+
     if (userError || !user) {
       return new Response(
         JSON.stringify({ error: 'Invalid or expired session' }),
@@ -31,13 +38,15 @@ serve(async (req) => {
       );
     }
 
-    // Use admin client to permanently delete the user and their data
+    // Service-role client to delete user
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     );
 
     const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(user.id);
+    console.log('deleteUser result:', { error: deleteError?.message });
+
     if (deleteError) {
       return new Response(
         JSON.stringify({ error: deleteError.message }),
@@ -49,7 +58,8 @@ serve(async (req) => {
       JSON.stringify({ success: true }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
-  } catch {
+  } catch (err) {
+    console.error('Unexpected error:', err);
     return new Response(
       JSON.stringify({ error: 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
