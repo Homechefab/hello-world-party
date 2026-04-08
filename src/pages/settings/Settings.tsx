@@ -17,6 +17,9 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
+const SUPABASE_FUNCTIONS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1`;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
 const SettingsPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
@@ -53,20 +56,33 @@ const SettingsPage = () => {
         throw new Error("Din session kunde inte verifieras. Logga in igen och försök på nytt.");
       }
 
-      const { data, error } = await supabase.functions.invoke('delete-account', {
-        method: 'POST',
-        body: {},
+      const response = await fetch(`${SUPABASE_FUNCTIONS_URL}/delete-account`, {
+        method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
+          apikey: SUPABASE_ANON_KEY,
         },
+        body: JSON.stringify({}),
       });
 
-      if (error) {
-        throw error;
+      const responseText = await response.text();
+      let payload: { error?: string; success?: boolean } | null = null;
+
+      if (responseText) {
+        try {
+          payload = JSON.parse(responseText) as { error?: string; success?: boolean };
+        } catch {
+          payload = null;
+        }
       }
 
-      if (data && typeof data === 'object' && 'error' in data && data.error) {
-        throw new Error(String(data.error));
+      if (!response.ok) {
+        throw new Error(payload?.error ?? `Kunde inte radera kontot (${response.status}).`);
+      }
+
+      if (payload?.error) {
+        throw new Error(payload.error);
       }
 
       await supabase.auth.signOut();
