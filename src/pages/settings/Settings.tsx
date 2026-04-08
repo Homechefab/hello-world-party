@@ -17,6 +17,8 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
+const SUPABASE_FUNCTIONS_URL = "https://rkucenozpmaixfphpiub.supabase.co/functions/v1";
+
 const SettingsPage = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
