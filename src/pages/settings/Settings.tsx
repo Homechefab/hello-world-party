@@ -24,8 +24,11 @@ const SettingsPage = () => {
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
     try {
-      const { error } = await supabase.functions.invoke('delete-account');
+      const { data, error } = await supabase.functions.invoke('delete-account', {
+        method: 'POST',
+      });
       if (error) throw error;
+      if (data && data.error) throw new Error(data.error);
       await supabase.auth.signOut();
       navigate('/auth');
       toast({ title: "Konto raderat", description: "Ditt konto och all din data har raderats." });
