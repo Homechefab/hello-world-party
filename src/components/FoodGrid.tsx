@@ -42,7 +42,7 @@ const FoodGrid = () => {
           .from('dishes')
           .select(`
             id, name, description, price, image_url, chef_id,
-            chefs!inner(business_name)
+            public_chef_profiles!inner(business_name)
           `)
           .eq('available', true)
           .limit(8);
@@ -56,7 +56,7 @@ const FoodGrid = () => {
           price: dish.price,
           image_url: dish.image_url,
           chef_id: dish.chef_id,
-          chef_name: (dish.chefs as { business_name: string } | null)?.business_name || null
+          chef_name: (dish.public_chef_profiles as { business_name: string } | null)?.business_name || null
         }));
 
         setDishes(formattedDishes);
