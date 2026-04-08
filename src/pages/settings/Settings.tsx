@@ -23,28 +23,52 @@ const SettingsPage = () => {
   const navigate = useNavigate();
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
+
     try {
-      // Refresh session before calling the function
-      const { data: sessionData } = await supabase.auth.getSession();
-      if (!sessionData.session) {
-        toast({
-          title: "Du är inte inloggad",
-          description: "Logga in igen och försök sedan radera kontot.",
-          variant: "destructive",
-        });
-        setIsDeleting(false);
-        return;
+      const {
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
+      if (sessionError) {
+        throw sessionError;
+      }
+
+      let accessToken = session?.access_token;
+
+      if (!accessToken) {
+        const {
+          data: refreshData,
+          error: refreshError,
+        } = await supabase.auth.refreshSession();
+
+        if (refreshError) {
+          throw refreshError;
+        }
+
+        accessToken = refreshData.session?.access_token;
+      }
+
+      if (!accessToken) {
+        throw new Error("Din session kunde inte verifieras. Logga in igen och försök på nytt.");
       }
 
       const { data, error } = await supabase.functions.invoke('delete-account', {
         method: 'POST',
+        body: {},
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
-      
-      console.log('Delete account response:', { data, error });
-      
-      if (error) throw error;
-      if (data && data.error) throw new Error(data.error);
-      
+
+      if (error) {
+        throw error;
+      }
+
+      if (data && typeof data === 'object' && 'error' in data && data.error) {
+        throw new Error(String(data.error));
+      }
+
       await supabase.auth.signOut();
       toast({ title: "Konto raderat", description: "Ditt konto och all din data har raderats." });
       navigate('/auth');
@@ -52,7 +76,7 @@ const SettingsPage = () => {
       console.error('Delete account error:', err);
       toast({
         title: "Det gick inte att radera kontot",
-        description: "Försök igen eller kontakta support@homechef.nu.",
+        description: err instanceof Error ? err.message : "Försök igen eller kontakta support@homechef.nu.",
         variant: "destructive",
       });
     } finally {
