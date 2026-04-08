@@ -24,12 +24,32 @@ const SettingsPage = () => {
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
     try {
-      const { error } = await supabase.functions.invoke('delete-account');
+      // Refresh session before calling the function
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (!sessionData.session) {
+        toast({
+          title: "Du är inte inloggad",
+          description: "Logga in igen och försök sedan radera kontot.",
+          variant: "destructive",
+        });
+        setIsDeleting(false);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('delete-account', {
+        method: 'POST',
+      });
+      
+      console.log('Delete account response:', { data, error });
+      
       if (error) throw error;
+      if (data && data.error) throw new Error(data.error);
+      
       await supabase.auth.signOut();
-      navigate('/auth');
       toast({ title: "Konto raderat", description: "Ditt konto och all din data har raderats." });
-    } catch {
+      navigate('/auth');
+    } catch (err) {
+      console.error('Delete account error:', err);
       toast({
         title: "Det gick inte att radera kontot",
         description: "Försök igen eller kontakta support@homechef.nu.",
