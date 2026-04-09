@@ -542,33 +542,26 @@ const ChefProfile = () => {
                       </div>
                     )}
 
-                    {/* Dish availability schedule */}
                     {(() => {
-                      const avail = getDishAvailabilityText(dish.id, dishSchedules, operatingHours);
-                      if (!avail) return null;
+                      const orderStatus = getDishOrderStatus(dish.id, dishSchedules, operatingHours);
                       return (
-                        <div className="mb-4 p-2.5 rounded-lg bg-secondary/50 border border-border">
-                          <div className="flex items-center gap-1.5 text-xs font-medium text-foreground mb-1">
-                            <CalendarDays className="w-3.5 h-3.5 text-primary" />
-                            <span>Tillgänglig: {avail.days}</span>
-                          </div>
-                          {avail.times && (
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                              <Clock className="w-3.5 h-3.5" />
-                              <span>{avail.times}</span>
+                        <>
+                          {!orderStatus.canOrder && (
+                            <div className="mb-3 rounded-lg border border-border bg-secondary/40 px-3 py-2">
+                              <p className="text-xs text-muted-foreground">{orderStatus.message}</p>
                             </div>
                           )}
-                        </div>
+                          <Button 
+                            variant="food" 
+                            className="w-full"
+                            onClick={() => handleAddToCart(dish)}
+                            disabled={!orderStatus.canOrder}
+                          >
+                            {orderStatus.canOrder ? 'Lägg till i varukorg' : 'Kan inte beställas nu'}
+                          </Button>
+                        </>
                       );
                     })()}
-                    
-                    <Button 
-                      variant="food" 
-                      className="w-full"
-                      onClick={() => handleAddToCart(dish)}
-                    >
-                      Lägg till i varukorg
-                    </Button>
                   </CardContent>
                 </Card>
               ))}
