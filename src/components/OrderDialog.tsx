@@ -55,7 +55,25 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId, offersDelivery =
   };
 
   const totalPrice = dish.price * quantity;
-  
+
+  if (showConfirmation) {
+    return (
+      <OrderConfirmation
+        open={open}
+        onOpenChange={(val) => {
+          setShowConfirmation(false);
+          setShowCheckout(false);
+          setQuantity(1);
+          onOpenChange(val);
+        }}
+        dishName={dish.title}
+        quantity={quantity}
+        totalPrice={totalPrice}
+        sellerName={dish.seller}
+        deliveryMethod={deliveryMethod}
+      />
+    );
+  }
 
   if (showCheckout) {
     return (
