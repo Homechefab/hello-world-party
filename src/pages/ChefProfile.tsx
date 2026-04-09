@@ -66,7 +66,7 @@ interface OperatingHour {
   close_time: string;
 }
 
-const DAY_SHORT = ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'];
+
 
 
 const getDishOrderStatus = (
