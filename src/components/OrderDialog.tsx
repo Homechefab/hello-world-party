@@ -31,6 +31,7 @@ interface OrderDialogProps {
 const OrderDialog = ({ open, onOpenChange, dish, stripePriceId, offersDelivery = false }: OrderDialogProps) => {
   const [quantity, setQuantity] = useState(1);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("pickup");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [specialInstructions, setSpecialInstructions] = useState("");
