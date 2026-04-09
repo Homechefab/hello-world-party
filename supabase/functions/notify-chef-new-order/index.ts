@@ -77,17 +77,17 @@ serve(async (req) => {
       );
     }
 
-    // Get chef's email
+    // Get chef's email and phone
     const { data: chef, error: chefError } = await supabase
       .from('chefs')
-      .select('contact_email, full_name, business_name')
+      .select('contact_email, full_name, business_name, phone')
       .eq('id', order.chef_id)
       .single();
 
-    if (chefError || !chef?.contact_email) {
-      console.log('No chef email found, skipping email notification');
+    if (chefError || !chef) {
+      console.log('No chef found, skipping notifications');
       return new Response(
-        JSON.stringify({ success: false, reason: 'no_chef_email' }),
+        JSON.stringify({ success: false, reason: 'no_chef_found' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -149,26 +149,85 @@ serve(async (req) => {
       </div>
     `;
 
-    // Send email via Resend
-    const emailResponse = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${RESEND_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        from: 'Homechef <info@homechef.nu>',
-        to: [chef.contact_email],
-        subject: `🆕 Ny beställning #${orderId} (${order.total_amount} kr)`,
-        html: emailHtml,
-      }),
-    });
+    // Send email via Resend (if chef has email)
+    let emailSent = false;
+    if (chef.contact_email) {
+      const emailResponse = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'Homechef <info@homechef.nu>',
+          to: [chef.contact_email],
+          subject: `🆕 Ny beställning #${orderId} (${order.total_amount} kr)`,
+          html: emailHtml,
+        }),
+      });
+      const emailResult = await emailResponse.json();
+      console.log('Email sent to chef:', chef.contact_email, emailResult);
+      emailSent = true;
+    }
 
-    const emailResult = await emailResponse.json();
-    console.log('Email sent to chef:', chef.contact_email, emailResult);
+    // Send SMS via Twilio gateway (if chef has phone)
+    let smsSent = false;
+    if (chef.phone) {
+      const GATEWAY_URL = 'https://connector-gateway.lovable.dev/twilio';
+      const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+      const TWILIO_API_KEY = Deno.env.get('TWILIO_API_KEY');
+      const TWILIO_FROM_NUMBER = Deno.env.get('TWILIO_FROM_NUMBER');
+
+      if (LOVABLE_API_KEY && TWILIO_API_KEY && TWILIO_FROM_NUMBER) {
+        // Format phone: ensure E.164 format for Swedish numbers
+        let toPhone = chef.phone.replace(/[\s\-()]/g, '');
+        if (toPhone.startsWith('0')) {
+          toPhone = '+46' + toPhone.substring(1);
+        } else if (!toPhone.startsWith('+')) {
+          toPhone = '+46' + toPhone;
+        }
+
+        const itemNames = (order.order_items || [])
+          .map((item: any) => `${item.quantity}x ${item.dishes?.name || 'Okänd'}`)
+          .join(', ');
+
+        const smsBody = `🆕 Ny beställning #${orderId}!\n${itemNames}\nTotalt: ${order.total_amount} kr\n${specialInstructions ? 'Meddelande: ' + order.special_instructions + '\n' : ''}Visa: https://hello-world-party.lovable.app/chef/dashboard?tab=orders`;
+
+        try {
+          const smsResponse = await fetch(`${GATEWAY_URL}/Messages.json`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+              'X-Connection-Api-Key': TWILIO_API_KEY,
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+              To: toPhone,
+              From: TWILIO_FROM_NUMBER,
+              Body: smsBody,
+            }),
+          });
+
+          const smsResult = await smsResponse.json();
+          if (!smsResponse.ok) {
+            console.error('Twilio SMS error:', JSON.stringify(smsResult));
+          } else {
+            console.log('SMS sent to chef:', toPhone, 'SID:', smsResult.sid);
+            smsSent = true;
+          }
+        } catch (smsError) {
+          console.error('SMS sending failed:', smsError);
+        }
+      } else {
+        console.log('Twilio not fully configured, skipping SMS. Missing:', 
+          !LOVABLE_API_KEY ? 'LOVABLE_API_KEY' : '', 
+          !TWILIO_API_KEY ? 'TWILIO_API_KEY' : '',
+          !TWILIO_FROM_NUMBER ? 'TWILIO_FROM_NUMBER' : '');
+      }
+    }
 
     return new Response(
-      JSON.stringify({ success: true }),
+      JSON.stringify({ success: true, emailSent, smsSent }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error: unknown) {
