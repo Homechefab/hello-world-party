@@ -15,7 +15,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { priceId, quantity, dishName, items, totalAmount, successUrl, cancelUrl } = body;
+    const { priceId, quantity, dishName, items, totalAmount, successUrl, cancelUrl, deliveryAddress, specialInstructions } = body;
 
     // Validate redirect URLs against allowed origins
     const ALLOWED_ORIGINS = [
