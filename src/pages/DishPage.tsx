@@ -10,6 +10,7 @@ import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import ReviewSection from "@/components/ReviewSection";
 import PaymentSelector from "@/components/PaymentSelector";
+import { OrderConfirmation } from "@/components/order/OrderConfirmation";
 import { VideoDisplay } from "@/components/VideoDisplay";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
