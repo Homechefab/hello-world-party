@@ -15,7 +15,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { priceId, quantity, dishName, items, totalAmount, successUrl, cancelUrl } = body;
+    const { priceId, quantity, dishName, items, totalAmount, successUrl, cancelUrl, deliveryAddress, specialInstructions } = body;
 
     // Validate redirect URLs against allowed origins
     const ALLOWED_ORIGINS = [
@@ -96,6 +96,8 @@ serve(async (req) => {
     // Prepare line items with SERVER-SIDE PRICE VALIDATION
     let lineItems;
     let validatedTotalAmount = 0;
+    // Collect dish info for order creation after payment
+    const orderItems: Array<{ dishId: string; chefId: string; quantity: number; unitPrice: number; name: string }> = [];
 
     if (items && Array.isArray(items) && items.length > 0) {
       // Cart checkout with multiple items - VALIDATE EACH PRICE
@@ -132,10 +134,9 @@ serve(async (req) => {
 
         if (opHours && opHours.length > 0) {
           const now = new Date();
-          // Stockholm timezone
           const stockholmStr = now.toLocaleString("en-US", { timeZone: "Europe/Stockholm" });
           const stockholmDate = new Date(stockholmStr);
-          const currentDay = stockholmDate.getDay(); // 0=Sun
+          const currentDay = stockholmDate.getDay();
           const currentMinutes = stockholmDate.getHours() * 60 + stockholmDate.getMinutes();
 
           const todayHours = opHours.find((h: { day_of_week: number }) => h.day_of_week === currentDay);
@@ -157,6 +158,14 @@ serve(async (req) => {
         const itemTotal = serverPriceInOre * (item.quantity || 1);
         validatedTotalAmount += itemTotal;
         
+        orderItems.push({
+          dishId: dish.id,
+          chefId: dish.chef_id,
+          quantity: item.quantity || 1,
+          unitPrice: dish.price,
+          name: dish.name,
+        });
+        
         console.log(`Validated dish ${dish.name}: server price ${serverPriceInOre} öre, quantity ${item.quantity}`);
         
         validatedItems.push({
@@ -165,7 +174,7 @@ serve(async (req) => {
             product_data: {
               name: dish.name,
             },
-            unit_amount: serverPriceInOre, // VALIDATED SERVER PRICE
+            unit_amount: serverPriceInOre,
           },
           quantity: item.quantity || 1,
         });
@@ -175,8 +184,6 @@ serve(async (req) => {
       console.log(`Total validated amount: ${validatedTotalAmount} öre`);
       
     } else if (priceId) {
-      // Single item checkout with Stripe price ID (fallback for direct StripeCheckout component usage)
-      // This uses pre-configured Stripe prices which are already server-controlled
       lineItems = [
         {
           price: priceId,
@@ -187,7 +194,7 @@ serve(async (req) => {
       throw new Error("No items or priceId provided");
     }
 
-    // Create checkout session
+    // Create checkout session with order items in metadata
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : userEmail,
@@ -201,6 +208,10 @@ serve(async (req) => {
         customer_service_fee_percentage: "6",
         seller_commission_percentage: "19",
         total_amount: validatedTotalAmount > 0 ? String(validatedTotalAmount) : (totalAmount || ''),
+        // Store order info for order creation after payment
+        order_items: JSON.stringify(orderItems),
+        delivery_address: deliveryAddress || 'Upphämtning',
+        special_instructions: specialInstructions || '',
       },
       payment_intent_data: {
         metadata: {

@@ -106,6 +106,7 @@ const PaymentSelector = ({
         {selectedMethod === "stripe" && (
           <StripeCheckout
             priceId={priceId}
+            dishId={dishId}
             dishName={dishName}
             price={price}
             quantity={quantity}
