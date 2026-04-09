@@ -7,6 +7,7 @@ import { CreditCard, Loader2 } from 'lucide-react';
 
 interface StripeCheckoutProps {
   priceId: string;
+  dishId?: string;
   dishName: string;
   price: number;
   quantity?: number;
