@@ -244,6 +244,19 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId, offersDelivery =
             </div>
           </div>
 
+          {/* Closed Banner */}
+          {!chefLoading && !chefIsOpen && (
+            <div className="flex items-center gap-3 p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+              <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0" />
+              <div>
+                <p className="font-medium text-destructive text-sm">Kocken tar inte emot beställningar just nu</p>
+                {nextOpenInfo && (
+                  <p className="text-xs text-muted-foreground mt-0.5">Öppnar igen: {nextOpenInfo}</p>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Action Buttons */}
           <div className="flex gap-3">
             <Button
@@ -256,8 +269,13 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId, offersDelivery =
             <Button
               onClick={handleProceedToPayment}
               className="flex-1"
+              disabled={chefLoading || !chefIsOpen}
             >
-              <ShoppingBag className="w-4 h-4 mr-2" />
+              {chefLoading ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <ShoppingBag className="w-4 h-4 mr-2" />
+              )}
               Gå till betalning
             </Button>
           </div>
