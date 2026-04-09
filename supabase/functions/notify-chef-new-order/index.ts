@@ -77,17 +77,17 @@ serve(async (req) => {
       );
     }
 
-    // Get chef's email
+    // Get chef's email and phone
     const { data: chef, error: chefError } = await supabase
       .from('chefs')
-      .select('contact_email, full_name, business_name')
+      .select('contact_email, full_name, business_name, phone')
       .eq('id', order.chef_id)
       .single();
 
-    if (chefError || !chef?.contact_email) {
-      console.log('No chef email found, skipping email notification');
+    if (chefError || !chef) {
+      console.log('No chef found, skipping notifications');
       return new Response(
-        JSON.stringify({ success: false, reason: 'no_chef_email' }),
+        JSON.stringify({ success: false, reason: 'no_chef_found' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
