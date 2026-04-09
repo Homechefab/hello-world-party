@@ -194,7 +194,7 @@ serve(async (req) => {
       throw new Error("No items or priceId provided");
     }
 
-    // Create checkout session
+    // Create checkout session with order items in metadata
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : userEmail,
@@ -208,6 +208,10 @@ serve(async (req) => {
         customer_service_fee_percentage: "6",
         seller_commission_percentage: "19",
         total_amount: validatedTotalAmount > 0 ? String(validatedTotalAmount) : (totalAmount || ''),
+        // Store order info for order creation after payment
+        order_items: JSON.stringify(orderItems),
+        delivery_address: deliveryAddress || 'Upphämtning',
+        special_instructions: specialInstructions || '',
       },
       payment_intent_data: {
         metadata: {
