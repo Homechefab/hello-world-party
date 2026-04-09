@@ -65,6 +65,8 @@ export const Cart = () => {
         body: {
           items: lineItems,
           totalAmount: state.total,
+          deliveryAddress: 'Upphämtning',
+          specialInstructions: '',
         }
       });
 
