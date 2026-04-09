@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Minus, Plus, ShoppingBag, MapPin, Truck } from "lucide-react";
+import { Minus, Plus, ShoppingBag, MapPin, Truck, AlertCircle, Loader2 } from "lucide-react";
 import PaymentSelector from "./PaymentSelector";
 import { useToast } from "@/hooks/use-toast";
+import { useChefAvailability } from "@/hooks/useChefAvailability";
 
 type DeliveryMethod = "pickup" | "delivery";
 
@@ -20,6 +21,7 @@ interface OrderDialogProps {
     price: number;
     image: string;
     seller: string;
+    chefId?: string;
   };
   stripePriceId: string;
   offersDelivery?: boolean;
@@ -31,6 +33,7 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId, offersDelivery =
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("pickup");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [specialInstructions, setSpecialInstructions] = useState("");
+  const { isOpen: chefIsOpen, loading: chefLoading, nextOpenInfo } = useChefAvailability(dish.chefId);
 
   const handleQuantityChange = (delta: number) => {
     const newQuantity = quantity + delta;
@@ -241,6 +244,19 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId, offersDelivery =
             </div>
           </div>
 
+          {/* Closed Banner */}
+          {!chefLoading && !chefIsOpen && (
+            <div className="flex items-center gap-3 p-4 rounded-lg bg-destructive/10 border border-destructive/20">
+              <AlertCircle className="w-5 h-5 text-destructive flex-shrink-0" />
+              <div>
+                <p className="font-medium text-destructive text-sm">Kocken tar inte emot beställningar just nu</p>
+                {nextOpenInfo && (
+                  <p className="text-xs text-muted-foreground mt-0.5">Öppnar igen: {nextOpenInfo}</p>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Action Buttons */}
           <div className="flex gap-3">
             <Button
@@ -253,8 +269,13 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId, offersDelivery =
             <Button
               onClick={handleProceedToPayment}
               className="flex-1"
+              disabled={chefLoading || !chefIsOpen}
             >
-              <ShoppingBag className="w-4 h-4 mr-2" />
+              {chefLoading ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <ShoppingBag className="w-4 h-4 mr-2" />
+              )}
               Gå till betalning
             </Button>
           </div>

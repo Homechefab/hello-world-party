@@ -110,7 +110,7 @@ serve(async (req) => {
         // Fetch actual price from database
         const { data: dish, error: dishError } = await supabaseService
           .from("dishes")
-          .select("price, name, id, available")
+          .select("price, name, id, available, chef_id")
           .eq("id", item.dishId)
           .single();
         
@@ -122,6 +122,34 @@ serve(async (req) => {
         if (!dish.available) {
           console.error("Dish not available:", item.dishId);
           throw new Error(`Dish not available: ${dish.name}`);
+        }
+
+        // SERVER-SIDE: Check chef operating hours
+        const { data: opHours } = await supabaseService
+          .from("chef_operating_hours")
+          .select("day_of_week, is_open, open_time, close_time")
+          .eq("chef_id", dish.chef_id);
+
+        if (opHours && opHours.length > 0) {
+          const now = new Date();
+          // Stockholm timezone
+          const stockholmStr = now.toLocaleString("en-US", { timeZone: "Europe/Stockholm" });
+          const stockholmDate = new Date(stockholmStr);
+          const currentDay = stockholmDate.getDay(); // 0=Sun
+          const currentMinutes = stockholmDate.getHours() * 60 + stockholmDate.getMinutes();
+
+          const todayHours = opHours.find((h: { day_of_week: number }) => h.day_of_week === currentDay);
+          let chefOpen = false;
+          if (todayHours && todayHours.is_open) {
+            const [openH, openM] = todayHours.open_time.split(":").map(Number);
+            const [closeH, closeM] = todayHours.close_time.split(":").map(Number);
+            if (currentMinutes >= openH * 60 + openM && currentMinutes < closeH * 60 + closeM) {
+              chefOpen = true;
+            }
+          }
+          if (!chefOpen) {
+            throw new Error(`Kocken tar inte emot beställningar just nu (${dish.name})`);
+          }
         }
         
         // Use SERVER price, not client price (price is in SEK, convert to öre)

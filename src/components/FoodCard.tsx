@@ -3,10 +3,12 @@ import { Badge } from "@/components/ui/badge";
 import { Star, Clock, MapPin, Heart, ShoppingCart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { isChefCurrentlyOpen } from "@/hooks/useChefAvailability";
 
 interface FoodCardProps {
   id?: string;
   dishId?: string;
+  chefId?: string;
   title: string;
   description: string;
   price: number;
@@ -24,6 +26,7 @@ interface FoodCardProps {
 const FoodCard = ({ 
   id,
   dishId,
+  chefId,
   title, 
   description, 
   price, 
@@ -40,14 +43,30 @@ const FoodCard = ({
   const { addItem } = useCart();
   const { toast } = useToast();
 
-  const handleAddToCart = (e: React.MouseEvent) => {
+  const handleAddToCart = async (e: React.MouseEvent) => {
     e.stopPropagation();
+
+    // Check chef availability if chefId is provided
+    if (chefId) {
+      const { isOpen, nextOpenInfo } = await isChefCurrentlyOpen(chefId);
+      if (!isOpen) {
+        toast({
+          title: "Kocken tar inte emot beställningar just nu",
+          description: nextOpenInfo
+            ? `Öppnar igen: ${nextOpenInfo}`
+            : "Kocken har inga öppettider inställda just nu",
+          variant: "destructive",
+        });
+        return;
+      }
+    }
+
     addItem({
       id: id || `dish-${title.replace(/\s/g, '-').toLowerCase()}`,
       dishId: dishId || id || `dish-${title.replace(/\s/g, '-').toLowerCase()}`,
       name: title,
       price,
-      chefId: seller,
+      chefId: chefId || seller,
       chefName: seller,
       image
     });
@@ -69,7 +88,7 @@ const FoodCard = ({
         }`}>
           <Heart className="w-4 h-4" fill={isFavorite ? "currentColor" : "none"} />
         </button>
-        {/* Overlay tags only on medium+ screens; on small screens show simple text tags below to avoid boxed overlays and horizontal overflow */}
+        {/* Overlay tags only on medium+ screens */}
         <div className="absolute bottom-3 left-3 flex gap-2 hidden md:flex">
           {tags.slice(0, 2).map((tag) => (
             <Badge key={tag} variant="secondary" className="bg-white/80 text-foreground">
@@ -80,7 +99,7 @@ const FoodCard = ({
       </div>
       
       <div className="p-4">
-        {/* Mobile: show tags as plain text below the image to avoid boxed overlays */}
+        {/* Mobile: show tags as plain text */}
         <div className="flex gap-2 mt-2 md:hidden">
           {tags.slice(0, 2).map((tag) => (
             <span key={tag} className="text-sm text-muted-foreground font-medium truncate">

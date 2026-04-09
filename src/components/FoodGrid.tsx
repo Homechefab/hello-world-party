@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { isChefCurrentlyOpen } from "@/hooks/useChefAvailability";
 import DishCard from "@/components/shared/DishCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -37,7 +38,6 @@ const FoodGrid = () => {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        // Fetch available dishes
         const { data: dishData, error: dishError } = await supabase
           .from('dishes')
           .select(`
@@ -61,7 +61,6 @@ const FoodGrid = () => {
 
         setDishes(formattedDishes);
 
-        // If no dishes, show approved chefs instead
         if (formattedDishes.length === 0) {
           const { data: chefData, error: chefError } = await supabase
             .from('public_chef_profiles')
@@ -70,7 +69,6 @@ const FoodGrid = () => {
 
           if (chefError) throw chefError;
 
-          // Filter out review accounts
           const realChefs = (chefData || []).filter(
             (c) => c.id !== null && !c.business_name?.toLowerCase().includes('review')
           ) as ChefProfile[];
@@ -87,7 +85,20 @@ const FoodGrid = () => {
     fetchContent();
   }, []);
 
-  const handleAddToCart = (dish: DishWithChef) => {
+  const handleAddToCart = async (dish: DishWithChef) => {
+    // Check if chef is currently open
+    const { isOpen, nextOpenInfo } = await isChefCurrentlyOpen(dish.chef_id);
+    if (!isOpen) {
+      toast({
+        title: "Kocken tar inte emot beställningar just nu",
+        description: nextOpenInfo
+          ? `Öppnar igen: ${nextOpenInfo}`
+          : "Kocken har inga öppettider inställda just nu",
+        variant: "destructive",
+      });
+      return;
+    }
+
     addItem({
       id: dish.id,
       dishId: dish.id,
@@ -140,7 +151,6 @@ const FoodGrid = () => {
               <Link key={chef.id} to={`/chef/${chef.id}`}>
                 <Card className="group hover:shadow-warm transition-all duration-300 hover:-translate-y-1 cursor-pointer h-full overflow-hidden">
                   <CardContent className="p-0 flex items-stretch h-full">
-                    {/* Chef image */}
                     <div className="w-28 min-h-[120px] bg-muted flex-shrink-0 overflow-hidden">
                       {chef.profile_image_url ? (
                         <img
@@ -154,8 +164,6 @@ const FoodGrid = () => {
                         </div>
                       )}
                     </div>
-
-                    {/* Chef info */}
                     <div className="flex-1 p-4 flex flex-col justify-center gap-1.5">
                       <h3 className="font-semibold text-foreground text-base leading-tight">
                         {chef.business_name || chef.full_name || 'Hemkock'}
