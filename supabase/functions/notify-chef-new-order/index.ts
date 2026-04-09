@@ -25,40 +25,15 @@ serve(async (req) => {
     if (!RESEND_API_KEY) throw new Error('RESEND_API_KEY not configured');
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
 
-    // Authenticate the caller
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const supabaseAnon = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
-
-    const token = authHeader.replace('Bearer ', '');
-    const { data: claimsData, error: claimsError } = await supabaseAnon.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid or expired session' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const userId = claimsData.claims.sub;
-
-    // Use service role for data fetching
+    // Use service role for all data fetching
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     const { order_id } = await req.json();
     if (!order_id) throw new Error('order_id is required');
 
-    // Fetch order and verify the caller owns it
+    // Fetch order
     const { data: order, error: orderError } = await supabase
       .from('orders')
       .select('*, order_items(quantity, unit_price, dishes(name))')
@@ -67,14 +42,6 @@ serve(async (req) => {
 
     if (orderError || !order) {
       throw new Error(`Order not found: ${orderError?.message}`);
-    }
-
-    // Only the customer who placed the order can trigger this notification
-    if (order.customer_id !== userId) {
-      return new Response(
-        JSON.stringify({ error: 'Forbidden' }),
-        { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
     }
 
     // Get chef's email and phone
@@ -219,10 +186,7 @@ serve(async (req) => {
           console.error('SMS sending failed:', smsError);
         }
       } else {
-        console.log('Twilio not fully configured, skipping SMS. Missing:', 
-          !LOVABLE_API_KEY ? 'LOVABLE_API_KEY' : '', 
-          !TWILIO_API_KEY ? 'TWILIO_API_KEY' : '',
-          !TWILIO_FROM_NUMBER ? 'TWILIO_FROM_NUMBER' : '');
+        console.log('Twilio not fully configured, skipping SMS.');
       }
     }
 
