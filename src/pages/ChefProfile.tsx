@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Star, Clock, MapPin, ChefHat, Instagram, Facebook, Phone, CalendarDays } from "lucide-react";
+import { Star, Clock, MapPin, ChefHat, Instagram, Facebook, Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
@@ -68,30 +68,6 @@ interface OperatingHour {
 
 const DAY_SHORT = ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'];
 
-const getDishAvailabilityText = (
-  dishId: string,
-  schedules: Record<string, DishScheduleDay[]>,
-  operatingHours: OperatingHour[]
-): { days: string; times: string } | null => {
-  const dishSchedule = schedules[dishId];
-  if (!dishSchedule || dishSchedule.length === 0) return null;
-
-  const availableDays = dishSchedule.filter(s => s.is_available).map(s => s.day_of_week);
-  if (availableDays.length === 0 || availableDays.length === 7) return null;
-
-  const dayNames = availableDays.map(d => DAY_SHORT[d]).join(', ');
-
-  let timeStr = '';
-  if (operatingHours.length > 0) {
-    const relevantHours = operatingHours.filter(h => availableDays.includes(h.day_of_week) && h.is_open);
-    if (relevantHours.length > 0) {
-      const uniqueTimes = [...new Set(relevantHours.map(h => `${h.open_time.slice(0, 5)}–${h.close_time.slice(0, 5)}`))];
-      timeStr = uniqueTimes.join(', ');
-    }
-  }
-
-  return { days: dayNames, times: timeStr };
-};
 
 const getDishOrderStatus = (
   dishId: string,
