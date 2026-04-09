@@ -81,7 +81,7 @@ export function checkAvailability(hours: OperatingHours[]): { isOpen: boolean; n
 
   const hourPart = stockholm.find(p => p.type === "hour")?.value || "0";
   const minutePart = stockholm.find(p => p.type === "minute")?.value || "0";
-  const weekdayPart = stockholm.find(p => p.type === "weekday")?.value || "";
+  
 
   const currentMinutes = parseInt(hourPart) * 60 + parseInt(minutePart);
 
