@@ -8,6 +8,7 @@ import { AuthDialog } from "@/components/auth/AuthDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { isChefCurrentlyOpen } from "@/hooks/useChefAvailability";
 
 export const Cart = () => {
   const { state, updateQuantity, removeItem, clearCart } = useCart();
@@ -34,6 +35,24 @@ export const Cart = () => {
     setIsProcessing(true);
 
     try {
+      // Check availability for all unique chefs in the cart
+      const uniqueChefIds = [...new Set(state.items.map(item => item.chefId))];
+      for (const chefId of uniqueChefIds) {
+        const { isOpen, nextOpenInfo } = await isChefCurrentlyOpen(chefId);
+        if (!isOpen) {
+          const chefName = state.items.find(i => i.chefId === chefId)?.chefName || "Kocken";
+          toast({
+            title: `${chefName} tar inte emot beställningar just nu`,
+            description: nextOpenInfo
+              ? `Öppnar igen: ${nextOpenInfo}. Ta bort dessa varor och försök igen under öppettiderna.`
+              : "Kocken har inga öppettider inställda just nu",
+            variant: "destructive",
+          });
+          setIsProcessing(false);
+          return;
+        }
+      }
+
       // Skapa line items för Stripe
       const lineItems = state.items.map(item => ({
         dishId: item.dishId,
@@ -54,7 +73,6 @@ export const Cart = () => {
       }
 
       if (data?.url) {
-        // Spara session ID om det finns
         if (data.sessionId) {
           try { 
             sessionStorage.setItem('last_checkout_session_id', data.sessionId); 
@@ -63,7 +81,6 @@ export const Cart = () => {
           }
         }
         
-        // Öppna Stripe Checkout i ny flik
         const stripeWindow = window.open(data.url, '_blank');
         
         if (!stripeWindow) {
@@ -80,7 +97,6 @@ export const Cart = () => {
           description: "Stripe Checkout öppnas i en ny flik",
         });
 
-        // Rensa varukorgen efter lyckad omdirigering
         clearCart();
       } else {
         throw new Error('Ingen checkout-URL mottogs');
