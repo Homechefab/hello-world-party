@@ -103,7 +103,7 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId, offersDelivery =
               price={dish.price}
               quantity={quantity}
               description={`Beställning från ${dish.seller}`}
-              onPaymentSuccess={() => onOpenChange(false)}
+              onPaymentSuccess={() => setShowConfirmation(true)}
             />
             <Button 
               variant="outline" 
