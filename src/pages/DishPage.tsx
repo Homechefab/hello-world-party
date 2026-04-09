@@ -67,6 +67,7 @@ const DishPage = () => {
   const [selectedTime, setSelectedTime] = useState("");
   const [specialRequests, setSpecialRequests] = useState("");
   const [showPayment, setShowPayment] = useState(false);
+  const [showOrderConfirmation, setShowOrderConfirmation] = useState(false);
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
