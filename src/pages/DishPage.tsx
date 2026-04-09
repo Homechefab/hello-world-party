@@ -337,11 +337,9 @@ const DishPage = () => {
                         description={`Hämtning: ${selectedTime} - ${dishData.cookAddress}`}
                         onPaymentSuccess={() => {
                           setShowPayment(false);
-                          toast({
-                            title: "Beställning genomförd!",
-                            description: "Du kommer att få en bekräftelse via e-post"
-                          });
+                          setShowOrderConfirmation(true);
                         }}
+                      />
                       />
                     </DialogContent>
                   </Dialog>
