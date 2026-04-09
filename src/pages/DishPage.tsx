@@ -340,7 +340,6 @@ const DishPage = () => {
                           setShowOrderConfirmation(true);
                         }}
                       />
-                      />
                     </DialogContent>
                   </Dialog>
                 </div>
