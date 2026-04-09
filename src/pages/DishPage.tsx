@@ -370,6 +370,16 @@ const DishPage = () => {
         </div>
         </div>
       </div>
+
+      <OrderConfirmation
+        open={showOrderConfirmation}
+        onOpenChange={setShowOrderConfirmation}
+        dishName={dishData.title}
+        quantity={quantity}
+        totalPrice={dishData.price * quantity}
+        sellerName={dishData.cookName}
+        deliveryMethod="pickup"
+      />
     </>
   );
 };
