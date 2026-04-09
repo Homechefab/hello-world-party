@@ -21,6 +21,7 @@ interface OrderDialogProps {
     price: number;
     image: string;
     seller: string;
+    chefId?: string;
   };
   stripePriceId: string;
   offersDelivery?: boolean;
@@ -32,6 +33,7 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId, offersDelivery =
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("pickup");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [specialInstructions, setSpecialInstructions] = useState("");
+  const { isOpen: chefIsOpen, loading: chefLoading, nextOpenInfo } = useChefAvailability(dish.chefId);
 
   const handleQuantityChange = (delta: number) => {
     const newQuantity = quantity + delta;
