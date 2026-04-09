@@ -26,8 +26,8 @@ export const OrderConfirmation = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md text-center">
         <div className="flex flex-col items-center gap-4 py-4">
-          <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
-            <CheckCircle2 className="w-10 h-10 text-green-600" />
+          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+            <CheckCircle2 className="w-10 h-10 text-primary" />
           </div>
 
           <div className="space-y-1">
