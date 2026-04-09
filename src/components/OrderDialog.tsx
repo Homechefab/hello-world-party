@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { OrderConfirmation } from "@/components/order/OrderConfirmation";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -30,6 +31,7 @@ interface OrderDialogProps {
 const OrderDialog = ({ open, onOpenChange, dish, stripePriceId, offersDelivery = false }: OrderDialogProps) => {
   const [quantity, setQuantity] = useState(1);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const [deliveryMethod, setDeliveryMethod] = useState<DeliveryMethod>("pickup");
   const [deliveryAddress, setDeliveryAddress] = useState("");
   const [specialInstructions, setSpecialInstructions] = useState("");
@@ -53,7 +55,25 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId, offersDelivery =
   };
 
   const totalPrice = dish.price * quantity;
-  
+
+  if (showConfirmation) {
+    return (
+      <OrderConfirmation
+        open={open}
+        onOpenChange={(val) => {
+          setShowConfirmation(false);
+          setShowCheckout(false);
+          setQuantity(1);
+          onOpenChange(val);
+        }}
+        dishName={dish.title}
+        quantity={quantity}
+        totalPrice={totalPrice}
+        sellerName={dish.seller}
+        deliveryMethod={deliveryMethod}
+      />
+    );
+  }
 
   if (showCheckout) {
     return (
@@ -83,7 +103,7 @@ const OrderDialog = ({ open, onOpenChange, dish, stripePriceId, offersDelivery =
               price={dish.price}
               quantity={quantity}
               description={`Beställning från ${dish.seller}`}
-              onPaymentSuccess={() => onOpenChange(false)}
+              onPaymentSuccess={() => setShowConfirmation(true)}
             />
             <Button 
               variant="outline" 

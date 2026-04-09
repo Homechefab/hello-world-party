@@ -10,6 +10,7 @@ import { useParams, Link } from "react-router-dom";
 import Header from "@/components/Header";
 import ReviewSection from "@/components/ReviewSection";
 import PaymentSelector from "@/components/PaymentSelector";
+import { OrderConfirmation } from "@/components/order/OrderConfirmation";
 import { VideoDisplay } from "@/components/VideoDisplay";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
@@ -66,6 +67,7 @@ const DishPage = () => {
   const [selectedTime, setSelectedTime] = useState("");
   const [specialRequests, setSpecialRequests] = useState("");
   const [showPayment, setShowPayment] = useState(false);
+  const [showOrderConfirmation, setShowOrderConfirmation] = useState(false);
 
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
@@ -335,10 +337,7 @@ const DishPage = () => {
                         description={`Hämtning: ${selectedTime} - ${dishData.cookAddress}`}
                         onPaymentSuccess={() => {
                           setShowPayment(false);
-                          toast({
-                            title: "Beställning genomförd!",
-                            description: "Du kommer att få en bekräftelse via e-post"
-                          });
+                          setShowOrderConfirmation(true);
                         }}
                       />
                     </DialogContent>
@@ -371,6 +370,16 @@ const DishPage = () => {
         </div>
         </div>
       </div>
+
+      <OrderConfirmation
+        open={showOrderConfirmation}
+        onOpenChange={setShowOrderConfirmation}
+        dishName={dishData.title}
+        quantity={quantity}
+        totalPrice={dishData.price * quantity}
+        sellerName={dishData.cookName}
+        deliveryMethod="pickup"
+      />
     </>
   );
 };
