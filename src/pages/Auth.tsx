@@ -45,7 +45,9 @@ const Auth = () => {
     try {
       if (isSignUp) {
         const redirectUrl = `${window.location.origin}/`;
-        const { data: authData, error } = await supabase.auth.signUp({
+        
+        // Add timeout to prevent infinite loading
+        const signUpPromise = supabase.auth.signUp({
           email,
           password,
           options: {
@@ -55,21 +57,32 @@ const Auth = () => {
             }
           }
         });
+        
+        const timeoutPromise = new Promise<never>((_, reject) => 
+          setTimeout(() => reject(new Error('Registreringen tog för lång tid. Försök igen.')), 15000)
+        );
+        
+        const { data: authData, error } = await Promise.race([signUpPromise, timeoutPromise]);
 
         if (error) throw error;
 
+        // Update role if non-customer, but don't block on failure
         if (authData.user && selectedRole !== 'customer') {
-          await new Promise(resolve => setTimeout(resolve, 500));
-          
-          await supabase
-            .from('profiles')
-            .update({ role: selectedRole })
-            .eq('id', authData.user.id);
+          try {
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            await supabase
+              .from('profiles')
+              .update({ role: selectedRole })
+              .eq('id', authData.user.id);
 
-          await supabase
-            .from('user_roles')
-            .update({ role: selectedRole as 'customer' | 'chef' | 'kitchen_partner' | 'restaurant' | 'business' })
-            .eq('user_id', authData.user.id);
+            await supabase
+              .from('user_roles')
+              .update({ role: selectedRole as 'customer' | 'chef' | 'kitchen_partner' | 'restaurant' | 'business' })
+              .eq('user_id', authData.user.id);
+          } catch (roleError) {
+            console.warn('Role update failed, will use default role:', roleError);
+          }
         }
 
         if (authData.session) {
@@ -114,6 +127,8 @@ const Auth = () => {
     
     try {
       await signInWithSocial(provider);
+      // For native: Browser.open resolves immediately, loading will reset via auth state change
+      // For web: page navigates away, no need to reset
     } catch (error: unknown) {
       const err = error as Error
       toast({
@@ -121,6 +136,7 @@ const Auth = () => {
         description: err?.message ?? 'Ett okänt fel inträffade',
         variant: "destructive"
       });
+    } finally {
       setIsLoading(false);
     }
   };
