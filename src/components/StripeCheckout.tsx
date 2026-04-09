@@ -29,6 +29,7 @@ interface StripeCheckoutProps {
  */
 export const StripeCheckout: React.FC<StripeCheckoutProps> = ({
   priceId,
+  dishId,
   dishName,
   price,
   quantity = 1,
@@ -41,12 +42,23 @@ export const StripeCheckout: React.FC<StripeCheckoutProps> = ({
     setIsLoading(true);
     
     try {
+      // If we have a dishId, use the items array for proper order creation
+      const body = dishId
+        ? {
+            items: [{ dishId, name: dishName, price: price * 100, quantity }],
+            totalAmount: price * quantity,
+            dishName,
+            deliveryAddress: 'Upphämtning',
+            specialInstructions: '',
+          }
+        : {
+            priceId,
+            quantity,
+            dishName,
+          };
+
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: {
-          priceId,
-          quantity,
-          dishName,
-        }
+        body,
       });
 
       if (error) {
