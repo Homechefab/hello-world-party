@@ -127,6 +127,8 @@ const Auth = () => {
     
     try {
       await signInWithSocial(provider);
+      // For native: Browser.open resolves immediately, loading will reset via auth state change
+      // For web: page navigates away, no need to reset
     } catch (error: unknown) {
       const err = error as Error
       toast({
@@ -134,6 +136,7 @@ const Auth = () => {
         description: err?.message ?? 'Ett okänt fel inträffade',
         variant: "destructive"
       });
+    } finally {
       setIsLoading(false);
     }
   };
