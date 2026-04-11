@@ -26,16 +26,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     let isMounted = true;
-    let sessionResolved = false;
 
+    // Set up listener FIRST — handles all auth events including INITIAL_SESSION
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (!sessionResolved && event === 'INITIAL_SESSION') {
-        return;
-      }
-
-      if (!isMounted) {
-        return;
-      }
+      if (!isMounted) return;
 
       setUser(mapSessionUser(session));
       setIsReady(true);
@@ -51,26 +45,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     });
 
-    void supabase.auth.getSession()
-      .then(({ data: { session } }) => {
-        if (!isMounted) {
-          return;
-        }
-
-        sessionResolved = true;
-        setUser(mapSessionUser(session));
-        setIsReady(true);
-      })
-      .catch((error) => {
-        console.error('Failed to restore auth session:', error);
-        if (isMounted) {
-          sessionResolved = true;
-          setIsReady(true);
-        }
-      });
+    // Fallback: if onAuthStateChange doesn't fire quickly, resolve from getSession
+    const timeout = setTimeout(() => {
+      if (isMounted && !isReady) {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          if (isMounted) {
+            setUser(mapSessionUser(session));
+            setIsReady(true);
+          }
+        });
+      }
+    }, 500);
 
     return () => {
       isMounted = false;
+      clearTimeout(timeout);
       subscription.unsubscribe();
     };
   }, []);
