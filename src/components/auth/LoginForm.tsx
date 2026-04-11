@@ -11,9 +11,10 @@ import { signInWithSocial } from "@/lib/socialAuth";
 
 interface LoginFormProps {
   onToggleMode: () => void;
+  onSuccess?: () => void;
 }
 
-export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
+export const LoginForm = ({ onToggleMode, onSuccess }: LoginFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -36,8 +37,12 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
         title: "Inloggad!",
         description: "Du är nu inloggad i appen.",
       });
-      
-      navigate('/');
+
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        navigate('/');
+      }
     } catch (error: unknown) {
       toast({
         title: "Fel vid inloggning",
@@ -96,7 +101,7 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
             {loading ? "Loggar in..." : "Logga in"}
           </Button>
         </form>
-        
+
         <div className="my-6">
           <Separator />
           <div className="relative">
@@ -136,7 +141,7 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
             </svg>
             Fortsätt med Google
           </Button>
-          
+
           <Button
             type="button"
             variant="outline"
@@ -149,7 +154,7 @@ export const LoginForm = ({ onToggleMode }: LoginFormProps) => {
             Fortsätt med Facebook
           </Button>
         </div>
-        
+
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
             Har du inget konto?{" "}

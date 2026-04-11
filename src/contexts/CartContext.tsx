@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useReducer, ReactNode } from 'react';
 
 export interface CartItem {
   id: string;
@@ -22,56 +22,90 @@ type CartAction =
   | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
   | { type: 'CLEAR_CART' };
 
+const CART_STORAGE_KEY = 'homechef_cart_v1';
+const EMPTY_CART_STATE: CartState = { items: [], total: 0 };
+
+const calculateTotal = (items: CartItem[]) =>
+  items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+const loadCartState = (): CartState => {
+  if (typeof window === 'undefined') {
+    return EMPTY_CART_STATE;
+  }
+
+  try {
+    const storedCart = window.localStorage.getItem(CART_STORAGE_KEY);
+    if (!storedCart) {
+      return EMPTY_CART_STATE;
+    }
+
+    const parsed = JSON.parse(storedCart) as { items?: CartItem[] };
+    const items = Array.isArray(parsed.items) ? parsed.items : [];
+
+    return {
+      items,
+      total: calculateTotal(items),
+    };
+  } catch (error) {
+    console.error('Failed to restore cart state:', error);
+    return EMPTY_CART_STATE;
+  }
+};
+
 const cartReducer = (state: CartState, action: CartAction): CartState => {
   switch (action.type) {
     case 'ADD_ITEM': {
       const existingItem = state.items.find(item => item.dishId === action.payload.dishId);
-      
+
       if (existingItem) {
         const updatedItems = state.items.map(item =>
           item.dishId === action.payload.dishId
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
+
         return {
           items: updatedItems,
-          total: updatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+          total: calculateTotal(updatedItems),
         };
       }
-      
+
       const newItem: CartItem = { ...action.payload, quantity: 1 };
       const updatedItems = [...state.items, newItem];
+
       return {
         items: updatedItems,
-        total: updatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+        total: calculateTotal(updatedItems),
       };
     }
-    
+
     case 'REMOVE_ITEM': {
       const updatedItems = state.items.filter(item => item.id !== action.payload);
       return {
         items: updatedItems,
-        total: updatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+        total: calculateTotal(updatedItems),
       };
     }
-    
+
     case 'UPDATE_QUANTITY': {
-      const updatedItems = state.items.map(item =>
-        item.id === action.payload.id
-          ? { ...item, quantity: action.payload.quantity }
-          : item
-      ).filter(item => item.quantity > 0);
-      
+      const updatedItems = state.items
+        .map(item =>
+          item.id === action.payload.id
+            ? { ...item, quantity: action.payload.quantity }
+            : item
+        )
+        .filter(item => item.quantity > 0);
+
       return {
         items: updatedItems,
-        total: updatedItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+        total: calculateTotal(updatedItems),
       };
     }
-    
+
     case 'CLEAR_CART': {
-      return { items: [], total: 0 };
+      return EMPTY_CART_STATE;
     }
-    
+
     default:
       return state;
   }
@@ -88,7 +122,22 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [state, dispatch] = useReducer(cartReducer, { items: [], total: 0 });
+  const [state, dispatch] = useReducer(cartReducer, EMPTY_CART_STATE, loadCartState);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    try {
+      window.localStorage.setItem(
+        CART_STORAGE_KEY,
+        JSON.stringify({ items: state.items })
+      );
+    } catch (error) {
+      console.error('Failed to persist cart state:', error);
+    }
+  }, [state.items]);
 
   const addItem = (item: Omit<CartItem, 'quantity'>) => {
     dispatch({ type: 'ADD_ITEM', payload: item });

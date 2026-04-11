@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, ReceiptText, FileText, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/contexts/CartContext";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
@@ -19,7 +21,7 @@ const PaymentSuccess = () => {
   }, [searchParams]);
   const [loading, setLoading] = useState(true);
   const [generatingReceipt, setGeneratingReceipt] = useState(false);
-  
+
   type PaymentLineItem = {
     description: string;
     quantity: number;
@@ -43,14 +45,26 @@ const PaymentSuccess = () => {
 
   const [result, setResult] = useState<PaymentResult | null>(null);
   const { toast } = useToast();
+  const { user, isReady } = useAuth();
+  const { clearCart } = useCart();
 
   useEffect(() => {
     const verify = async () => {
+      if (!isReady) {
+        return;
+      }
+
       if (!sessionId) {
         console.log("No session_id found in URL");
         setLoading(false);
         return;
       }
+
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+
       console.log("Calling verify-payment with sessionId:", sessionId);
       try {
         const { data, error } = await supabase.functions.invoke("verify-payment", {
@@ -59,6 +73,15 @@ const PaymentSuccess = () => {
         console.log("verify-payment response:", { data, error });
         if (error) throw new Error(error.message);
         setResult(data);
+
+        if (data?.payment_status === 'paid') {
+          clearCart();
+          try {
+            window.sessionStorage.removeItem('last_checkout_session_id');
+          } catch {
+            // ignore storage cleanup errors
+          }
+        }
       } catch (err) {
         console.error("verify-payment error", err);
         toast({ title: "Kunde inte hämta kvitto", description: err instanceof Error ? err.message : "Okänt fel", variant: "destructive" });
@@ -66,25 +89,24 @@ const PaymentSuccess = () => {
         setLoading(false);
       }
     };
-    verify();
-  }, [sessionId, toast]);
+    void verify();
+  }, [sessionId, toast, user, isReady, clearCart]);
 
   const handleViewCustomerReceipt = async () => {
     if (!sessionId) return;
-    
+
     setGeneratingReceipt(true);
     try {
       const { data, error } = await supabase.functions.invoke("generate-customer-receipt", {
         body: { sessionId }
       });
-      
+
       if (error) throw new Error(error.message);
-      
-      // Open HTML receipt in new window
+
       const blob = new Blob([data], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
       const printWindow = window.open(url, '_blank');
-      
+
       if (printWindow) {
         printWindow.onload = () => {
           setTimeout(() => {
@@ -92,29 +114,31 @@ const PaymentSuccess = () => {
           }, 500);
         };
       }
-      
+
       toast({
         title: 'Kvitto öppnat',
         description: 'Använd Ctrl+P eller Cmd+P för att spara som PDF'
       });
-      
+
       setTimeout(() => URL.revokeObjectURL(url), 10000);
     } catch (err) {
       console.error("Error generating receipt:", err);
-      toast({ 
-        title: "Kunde inte generera kvitto", 
-        description: err instanceof Error ? err.message : "Okänt fel", 
-        variant: "destructive" 
+      toast({
+        title: "Kunde inte generera kvitto",
+        description: err instanceof Error ? err.message : "Okänt fel",
+        variant: "destructive"
       });
     } finally {
       setGeneratingReceipt(false);
     }
   };
 
-  // Calculate displayed amounts
   const totalAmount = result?.amount_total ? result.amount_total / 100 : 0;
   const basePrice = totalAmount / 1.06;
   const serviceFee = totalAmount - basePrice;
+  const missingSession = !loading && !sessionId;
+  const missingLogin = !loading && !!sessionId && isReady && !user;
+  const missingResult = !loading && !!sessionId && !!user && !result;
 
   return (
     <div className="container mx-auto max-w-3xl py-10 px-4">
@@ -132,6 +156,27 @@ const PaymentSuccess = () => {
           {loading ? (
             <div className="flex items-center gap-2 text-muted-foreground">
               <Loader2 className="w-4 h-4 animate-spin" /> Hämtar kvitto...
+            </div>
+          ) : missingSession ? (
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <p>Ingen betalningssession hittades.</p>
+              <Link to="/">
+                <Button variant="outline">Till startsidan</Button>
+              </Link>
+            </div>
+          ) : missingLogin ? (
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <p>Logga in igen för att slutföra verifieringen av din betalning.</p>
+              <Link to="/auth">
+                <Button variant="outline">Logga in</Button>
+              </Link>
+            </div>
+          ) : missingResult ? (
+            <div className="space-y-3 text-sm text-muted-foreground">
+              <p>Vi kunde inte verifiera betalningen ännu.</p>
+              <Link to="/">
+                <Button variant="outline">Till startsidan</Button>
+              </Link>
             </div>
           ) : (
             <>
@@ -165,8 +210,8 @@ const PaymentSuccess = () => {
               </div>
 
               <div className="flex gap-3 pt-4 flex-wrap">
-                <Button 
-                  onClick={handleViewCustomerReceipt} 
+                <Button
+                  onClick={handleViewCustomerReceipt}
                   disabled={generatingReceipt}
                   className="gap-2"
                 >

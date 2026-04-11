@@ -11,18 +11,26 @@ import { useToast } from "@/hooks/use-toast";
 import { isChefCurrentlyOpen } from "@/hooks/useChefAvailability";
 
 export const Cart = () => {
-  const { state, updateQuantity, removeItem, clearCart } = useCart();
-  const { user } = useAuth();
+  const { state, updateQuantity, removeItem } = useCart();
+  const { user, isReady } = useAuth();
   const [showAuth, setShowAuth] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
 
   const handleCheckout = async () => {
+    if (!isReady) {
+      toast({
+        title: "Laddar konto",
+        description: "Vänta ett ögonblick och försök igen.",
+      });
+      return;
+    }
+
     if (!user) {
       setShowAuth(true);
       return;
     }
-    
+
     if (state.items.length === 0) {
       toast({
         title: "Tom varukorg",
@@ -35,7 +43,6 @@ export const Cart = () => {
     setIsProcessing(true);
 
     try {
-      // Check availability for all unique chefs in the cart
       const uniqueChefIds = [...new Set(state.items.map(item => item.chefId))];
       for (const chefId of uniqueChefIds) {
         const { isOpen, nextOpenInfo } = await isChefCurrentlyOpen(chefId);
@@ -53,7 +60,6 @@ export const Cart = () => {
         }
       }
 
-      // Skapa line items för Stripe
       const lineItems = state.items.map(item => ({
         dishId: item.dishId,
         name: item.name,
@@ -76,30 +82,31 @@ export const Cart = () => {
 
       if (data?.url) {
         if (data.sessionId) {
-          try { 
-            sessionStorage.setItem('last_checkout_session_id', data.sessionId); 
+          try {
+            sessionStorage.setItem('last_checkout_session_id', data.sessionId);
           } catch (e) {
             console.error('Failed to save session ID:', e);
           }
         }
-        
-        const stripeWindow = window.open(data.url, '_blank');
-        
-        if (!stripeWindow) {
-          toast({
-            title: "Popup blockerad",
-            description: "Tillåt popup-fönster för att fortsätta till betalning",
-            variant: "destructive"
-          });
+
+        const isMobileViewport = typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches;
+
+        if (isMobileViewport) {
+          window.location.assign(data.url);
           return;
         }
-        
+
+        const stripeWindow = window.open(data.url, '_blank', 'noopener,noreferrer');
+
+        if (!stripeWindow) {
+          window.location.assign(data.url);
+          return;
+        }
+
         toast({
           title: "Omdirigerar till betalning",
           description: "Stripe Checkout öppnas i en ny flik",
         });
-
-        clearCart();
       } else {
         throw new Error('Ingen checkout-URL mottogs');
       }
@@ -133,7 +140,7 @@ export const Cart = () => {
           <SheetHeader className="flex-shrink-0">
             <SheetTitle>Varukorg</SheetTitle>
           </SheetHeader>
-          
+
           <div className="flex-1 flex flex-col overflow-hidden min-h-0">
             {state.items.length === 0 ? (
               <div className="flex-1 flex items-center justify-center">
@@ -146,7 +153,7 @@ export const Cart = () => {
               <>
                 <div className="flex-1 overflow-y-auto py-6">
                   <div className="space-y-4 px-1">
-                  {state.items.map((item) => (
+                    {state.items.map((item) => (
                       <div key={item.id} className="flex items-center space-x-4 border-b pb-4">
                         {item.image && (
                           <img
@@ -189,7 +196,7 @@ export const Cart = () => {
                     ))}
                   </div>
                 </div>
-                
+
                 <div className="border-t pt-4 pb-2 flex-shrink-0 bg-background">
                   <div className="space-y-2 mb-4">
                     <div className="flex justify-between items-center text-sm">
@@ -207,17 +214,22 @@ export const Cart = () => {
                     </div>
                   </div>
 
-                <Button
-                    className="w-full" 
+                  <Button
+                    className="w-full"
                     size="lg"
                     onClick={handleCheckout}
-                    disabled={isProcessing || state.items.length === 0}
+                    disabled={isProcessing || state.items.length === 0 || !isReady}
                     variant="food"
                   >
                     {isProcessing ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                         Bearbetar...
+                      </>
+                    ) : !isReady ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Laddar konto...
                       </>
                     ) : user ? (
                       <>
