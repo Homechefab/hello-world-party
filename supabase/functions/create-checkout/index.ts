@@ -8,7 +8,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -17,7 +16,6 @@ serve(async (req) => {
     const body = await req.json();
     const { priceId, quantity, dishName, items, totalAmount, successUrl, cancelUrl, deliveryAddress, specialInstructions } = body;
 
-    // Validate redirect URLs against allowed origins
     const ALLOWED_ORIGINS = [
       req.headers.get("origin"),
       'https://homechef.nu',
@@ -29,7 +27,9 @@ serve(async (req) => {
       try {
         const parsed = new URL(url);
         return ALLOWED_ORIGINS.some(o => parsed.origin === o);
-      } catch { return false; }
+      } catch {
+        return false;
+      }
     }
 
     if (successUrl && !isTrustedUrl(successUrl)) {
@@ -47,75 +47,72 @@ serve(async (req) => {
 
     console.log("Creating checkout session:", body);
 
-    // Initialize Stripe
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", {
       apiVersion: "2025-08-27.basil",
     });
 
-    // Create Supabase client with anon key for user auth
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
 
-    // Create Supabase client with service role for price validation
     const supabaseService = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Try to get authenticated user (optional for checkout)
-    let customerId: string | undefined;
-    let userEmail: string | undefined;
-    let authenticatedUserId: string | undefined;
-
     const authHeader = req.headers.get("Authorization");
-    if (authHeader) {
-      try {
-        const token = authHeader.replace("Bearer ", "");
-        const { data } = await supabaseClient.auth.getUser(token);
-        if (data.user) {
-          authenticatedUserId = data.user.id;
-          userEmail = data.user.email;
-          
-          // Check if customer exists
-          const customers = await stripe.customers.list({ 
-            email: userEmail, 
-            limit: 1 
-          });
-          
-          if (customers.data.length > 0) {
-            customerId = customers.data[0].id;
-          }
-        }
-      } catch (error) {
-        console.log("User not authenticated, proceeding as guest:", error);
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
+    }
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: authData, error: authError } = await supabaseClient.auth.getUser(token);
+    if (authError || !authData.user) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
+      );
+    }
+
+    const authenticatedUserId = authData.user.id;
+    const userEmail = authData.user.email;
+
+    let customerId: string | undefined;
+    if (userEmail) {
+      const customers = await stripe.customers.list({
+        email: userEmail,
+        limit: 1,
+      });
+
+      if (customers.data.length > 0) {
+        customerId = customers.data[0].id;
       }
     }
 
-    // Prepare line items with SERVER-SIDE PRICE VALIDATION
     let lineItems;
-    let validatedTotalAmount = 0;
-    // Collect dish info for order creation after payment
+    let subtotalInOre = 0;
+    let totalAmountInOre = 0;
     const orderItems: Array<{ dishId: string; chefId: string; quantity: number; unitPrice: number; name: string }> = [];
 
     if (items && Array.isArray(items) && items.length > 0) {
-      // Cart checkout with multiple items - VALIDATE EACH PRICE
       const validatedItems = [];
-      
+
       for (const item of items) {
         if (!item.dishId) {
           console.error("Missing dishId in cart item:", item);
           throw new Error("Missing dishId in cart item - price validation required");
         }
-        
-        // Fetch actual price from database
+
         const { data: dish, error: dishError } = await supabaseService
           .from("dishes")
           .select("price, name, id, available, chef_id")
           .eq("id", item.dishId)
           .single();
-        
+
         if (dishError || !dish) {
           console.error("Invalid dish:", item.dishId, dishError);
           throw new Error(`Invalid dish: ${item.dishId}`);
@@ -126,7 +123,6 @@ serve(async (req) => {
           throw new Error(`Dish not available: ${dish.name}`);
         }
 
-        // SERVER-SIDE: Check chef operating hours
         const { data: opHours } = await supabaseService
           .from("chef_operating_hours")
           .select("day_of_week, is_open, open_time, close_time")
@@ -152,12 +148,11 @@ serve(async (req) => {
             throw new Error(`Kocken tar inte emot beställningar just nu (${dish.name})`);
           }
         }
-        
-        // Use SERVER price, not client price (price is in SEK, convert to öre)
+
         const serverPriceInOre = Math.round(dish.price * 100);
         const itemTotal = serverPriceInOre * (item.quantity || 1);
-        validatedTotalAmount += itemTotal;
-        
+        subtotalInOre += itemTotal;
+
         orderItems.push({
           dishId: dish.id,
           chefId: dish.chef_id,
@@ -165,9 +160,9 @@ serve(async (req) => {
           unitPrice: dish.price,
           name: dish.name,
         });
-        
+
         console.log(`Validated dish ${dish.name}: server price ${serverPriceInOre} öre, quantity ${item.quantity}`);
-        
+
         validatedItems.push({
           price_data: {
             currency: 'sek',
@@ -179,10 +174,26 @@ serve(async (req) => {
           quantity: item.quantity || 1,
         });
       }
-      
-      lineItems = validatedItems;
-      console.log(`Total validated amount: ${validatedTotalAmount} öre`);
-      
+
+      const serviceFeeInOre = Math.round(subtotalInOre * 0.06);
+      totalAmountInOre = subtotalInOre + serviceFeeInOre;
+
+      lineItems = [
+        ...validatedItems,
+        {
+          price_data: {
+            currency: 'sek',
+            product_data: {
+              name: 'Serviceavgift (6%)',
+              description: 'Homechef serviceavgift',
+            },
+            unit_amount: serviceFeeInOre,
+          },
+          quantity: 1,
+        },
+      ];
+
+      console.log(`Total validated amount including service fee: ${totalAmountInOre} öre`);
     } else if (priceId) {
       lineItems = [
         {
@@ -190,11 +201,11 @@ serve(async (req) => {
           quantity: quantity || 1,
         },
       ];
+      totalAmountInOre = typeof totalAmount === 'number' ? Math.round(totalAmount * 100) : 0;
     } else {
       throw new Error("No items or priceId provided");
     }
 
-    // Create checkout session with order items in metadata
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : userEmail,
@@ -203,19 +214,18 @@ serve(async (req) => {
       success_url: successUrl || `${req.headers.get("origin")}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: cancelUrl || `${req.headers.get("origin")}/payment-canceled`,
       metadata: {
-        userId: authenticatedUserId || '',
+        userId: authenticatedUserId,
         dish_name: dishName || 'Multiple items',
         customer_service_fee_percentage: "6",
         seller_commission_percentage: "19",
-        total_amount: validatedTotalAmount > 0 ? String(validatedTotalAmount) : (totalAmount || ''),
-        // Store order info for order creation after payment
+        total_amount: totalAmountInOre > 0 ? String(totalAmountInOre) : (totalAmount || ''),
         order_items: JSON.stringify(orderItems),
         delivery_address: deliveryAddress || 'Upphämtning',
         special_instructions: specialInstructions || '',
       },
       payment_intent_data: {
         metadata: {
-          userId: authenticatedUserId || '',
+          userId: authenticatedUserId,
           dish_name: dishName || 'Multiple items',
           customer_service_fee_percentage: "6",
           seller_commission_percentage: "19",
@@ -226,9 +236,9 @@ serve(async (req) => {
     console.log("Checkout session created:", session.id);
 
     return new Response(
-      JSON.stringify({ 
+      JSON.stringify({
         url: session.url,
-        sessionId: session.id 
+        sessionId: session.id,
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -238,8 +248,8 @@ serve(async (req) => {
   } catch (error) {
     console.error("Error creating checkout session:", error);
     return new Response(
-      JSON.stringify({ 
-        error: error instanceof Error ? error.message : "Failed to create checkout session" 
+      JSON.stringify({
+        error: error instanceof Error ? error.message : "Failed to create checkout session"
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },

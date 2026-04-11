@@ -7,6 +7,7 @@ export interface AuthContextType {
     id?: string;
   } | null;
   signOut: () => Promise<void>;
+  isReady: boolean;
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -15,20 +16,34 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
+const mapSessionUser = (session: Awaited<ReturnType<typeof supabase.auth.getSession>>['data']['session']) => {
+  return session?.user ? { email: session.user.email ?? '', id: session.user.id } : null;
+};
+
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<AuthContextType['user']>(null);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    // Set up auth listener FIRST
+    let isMounted = true;
+    let sessionResolved = false;
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      const u = session?.user ? { email: session.user.email ?? '', id: session.user.id } : null;
-      setUser(u);
-      
-      // Log sign in events
+      if (!sessionResolved && event === 'INITIAL_SESSION') {
+        return;
+      }
+
+      if (!isMounted) {
+        return;
+      }
+
+      setUser(mapSessionUser(session));
+      setIsReady(true);
+
       if (event === 'SIGNED_IN' && session?.user) {
         setTimeout(() => {
-          supabase.rpc('log_user_login', {
-            p_user_agent: navigator.userAgent
+          void supabase.rpc('log_user_login', {
+            p_user_agent: navigator.userAgent,
           }).then(({ error }) => {
             if (error) console.error('Failed to log login:', error);
           });
@@ -36,13 +51,26 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     });
 
-    // Then check existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      const u = session?.user ? { email: session.user.email ?? '', id: session.user.id } : null;
-      setUser(u);
-    });
+    void supabase.auth.getSession()
+      .then(({ data: { session } }) => {
+        if (!isMounted) {
+          return;
+        }
+
+        sessionResolved = true;
+        setUser(mapSessionUser(session));
+        setIsReady(true);
+      })
+      .catch((error) => {
+        console.error('Failed to restore auth session:', error);
+        if (isMounted) {
+          sessionResolved = true;
+          setIsReady(true);
+        }
+      });
 
     return () => {
+      isMounted = false;
       subscription.unsubscribe();
     };
   }, []);
@@ -50,10 +78,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signOut = async () => {
     await supabase.auth.signOut();
     setUser(null);
+    setIsReady(true);
   };
 
   return (
-    <AuthContext.Provider value={{ user, signOut }}>
+    <AuthContext.Provider value={{ user, signOut, isReady }}>
       {children}
     </AuthContext.Provider>
   );

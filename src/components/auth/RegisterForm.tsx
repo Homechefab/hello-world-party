@@ -11,9 +11,10 @@ import { signInWithSocial } from "@/lib/socialAuth";
 
 interface RegisterFormProps {
   onToggleMode: () => void;
+  onSuccess?: () => void;
 }
 
-export const RegisterForm = ({ onToggleMode }: RegisterFormProps) => {
+export const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -44,7 +45,12 @@ export const RegisterForm = ({ onToggleMode }: RegisterFormProps) => {
           title: "Registrering lyckades!",
           description: "Välkommen till Homechef!",
         });
-        navigate('/');
+
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          navigate('/');
+        }
       } else {
         toast({
           title: "Registrering lyckades!",
@@ -122,7 +128,7 @@ export const RegisterForm = ({ onToggleMode }: RegisterFormProps) => {
             {loading ? "Registrerar..." : "Skapa konto"}
           </Button>
         </form>
-        
+
         <div className="my-6">
           <Separator />
           <div className="relative">
@@ -162,7 +168,7 @@ export const RegisterForm = ({ onToggleMode }: RegisterFormProps) => {
             </svg>
             Fortsätt med Google
           </Button>
-          
+
           <Button
             type="button"
             variant="outline"
@@ -175,7 +181,7 @@ export const RegisterForm = ({ onToggleMode }: RegisterFormProps) => {
             Fortsätt med Facebook
           </Button>
         </div>
-        
+
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
             Har du redan ett konto?{" "}
