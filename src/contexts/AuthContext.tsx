@@ -46,10 +46,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     });
 
     // Fallback: if onAuthStateChange doesn't fire quickly, resolve from getSession
+    let resolved = false;
+    const origSetReady = setIsReady;
+    const markReady = () => { resolved = true; };
+    
     const timeout = setTimeout(() => {
-      if (isMounted && !isReady) {
+      if (isMounted && !resolved) {
         supabase.auth.getSession().then(({ data: { session } }) => {
-          if (isMounted) {
+          if (isMounted && !resolved) {
             setUser(mapSessionUser(session));
             setIsReady(true);
           }
