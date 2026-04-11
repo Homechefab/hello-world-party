@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useEffect, useState } from 'react';
+import { createContext, ReactNode, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface AuthContextType {
@@ -23,16 +23,27 @@ const mapSessionUser = (session: Awaited<ReturnType<typeof supabase.auth.getSess
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<AuthContextType['user']>(null);
   const [isReady, setIsReady] = useState(false);
+  const readyRef = useRef(false);
+
+  const markReady = (session: Parameters<typeof mapSessionUser>[0]) => {
+    if (readyRef.current) return;
+    readyRef.current = true;
+    setUser(mapSessionUser(session));
+    setIsReady(true);
+  };
 
   useEffect(() => {
     let isMounted = true;
 
-    // Set up listener FIRST — handles all auth events including INITIAL_SESSION
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!isMounted) return;
 
+      // Always update user on auth changes (login/logout)
       setUser(mapSessionUser(session));
-      setIsReady(true);
+      if (!readyRef.current) {
+        readyRef.current = true;
+        setIsReady(true);
+      }
 
       if (event === 'SIGNED_IN' && session?.user) {
         setTimeout(() => {
@@ -45,17 +56,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     });
 
-    // Fallback: if onAuthStateChange doesn't fire quickly, resolve from getSession
-    let resolved = false;
-    const origSetReady = setIsReady;
-    const markReady = () => { resolved = true; };
-    
+    // Fallback if onAuthStateChange doesn't fire quickly
     const timeout = setTimeout(() => {
-      if (isMounted && !resolved) {
+      if (isMounted && !readyRef.current) {
         supabase.auth.getSession().then(({ data: { session } }) => {
-          if (isMounted && !resolved) {
-            setUser(mapSessionUser(session));
-            setIsReady(true);
+          if (isMounted && !readyRef.current) {
+            markReady(session);
           }
         });
       }
