@@ -14,6 +14,7 @@ const PreviewWrapper = ({ children, mockRole }: PreviewWrapperProps) => {
   const mockAuthContext: AuthContextType = {
     user: mockRole ? { email: 'test@example.com', id: 'test-id' } : null,
     signOut: () => Promise.resolve(),
+    isReady: true,
   };
 
   const mockRoleContext: RoleContextType = {

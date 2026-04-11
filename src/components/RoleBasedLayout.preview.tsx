@@ -20,6 +20,7 @@ const PreviewWrapper = ({
   const mockAuthContext: AuthContextType = {
     user: isAuthenticated ? { email: 'test@example.com', id: 'test-id' } : null,
     signOut: () => Promise.resolve(),
+    isReady: true,
   };
 
   const mockRoleContext: RoleContextType = {
