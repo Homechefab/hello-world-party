@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useEffect, useState } from 'react';
+import { createContext, ReactNode, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export interface AuthContextType {
@@ -23,22 +23,27 @@ const mapSessionUser = (session: Awaited<ReturnType<typeof supabase.auth.getSess
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<AuthContextType['user']>(null);
   const [isReady, setIsReady] = useState(false);
+  const readyRef = useRef(false);
+
+  const markReady = (session: Parameters<typeof mapSessionUser>[0]) => {
+    if (readyRef.current) return;
+    readyRef.current = true;
+    setUser(mapSessionUser(session));
+    setIsReady(true);
+  };
 
   useEffect(() => {
     let isMounted = true;
-    let sessionResolved = false;
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (!sessionResolved && event === 'INITIAL_SESSION') {
-        return;
-      }
+      if (!isMounted) return;
 
-      if (!isMounted) {
-        return;
-      }
-
+      // Always update user on auth changes (login/logout)
       setUser(mapSessionUser(session));
-      setIsReady(true);
+      if (!readyRef.current) {
+        readyRef.current = true;
+        setIsReady(true);
+      }
 
       if (event === 'SIGNED_IN' && session?.user) {
         setTimeout(() => {
@@ -51,26 +56,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     });
 
-    void supabase.auth.getSession()
-      .then(({ data: { session } }) => {
-        if (!isMounted) {
-          return;
-        }
-
-        sessionResolved = true;
-        setUser(mapSessionUser(session));
-        setIsReady(true);
-      })
-      .catch((error) => {
-        console.error('Failed to restore auth session:', error);
-        if (isMounted) {
-          sessionResolved = true;
-          setIsReady(true);
-        }
-      });
+    // Fallback if onAuthStateChange doesn't fire quickly
+    const timeout = setTimeout(() => {
+      if (isMounted && !readyRef.current) {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+          if (isMounted && !readyRef.current) {
+            markReady(session);
+          }
+        });
+      }
+    }, 500);
 
     return () => {
       isMounted = false;
+      clearTimeout(timeout);
       subscription.unsubscribe();
     };
   }, []);
