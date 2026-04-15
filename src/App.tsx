@@ -98,6 +98,7 @@ import Webshop from "./pages/Webshop";
 
 const queryClient = new QueryClient();
 
+const App = () => {
   const isMobileApp = typeof (window as any)?.Capacitor !== 'undefined' || 
     /android|iphone|ipad|ipod/i.test(navigator.userAgent);
   
