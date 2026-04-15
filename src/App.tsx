@@ -1,3 +1,4 @@
+import { useState, useCallback } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -5,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Routes, Route } from "react-router-dom";
 import useEdgeSwipeBack from "@/hooks/useEdgeSwipeBack";
 import ScrollToTop from "@/components/ScrollToTop";
+import SplashScreen from "@/components/SplashScreen";
 
 import { RoleBasedLayout } from "@/components/RoleBasedLayout";
 import { PublicLayout } from "@/components/PublicLayout";
@@ -97,9 +99,25 @@ import Webshop from "./pages/Webshop";
 const queryClient = new QueryClient();
 
 const App = () => {
-  // enable left-edge right-swipe to go back on mobile webviews
+  const isMobileApp = typeof (window as any)?.Capacitor !== 'undefined' || 
+    /android|iphone|ipad|ipod/i.test(navigator.userAgent);
+  
+  const [showSplash, setShowSplash] = useState(() => {
+    const shown = sessionStorage.getItem('homechef_splash_shown');
+    return !shown && isMobileApp;
+  });
+
+  const handleSplashComplete = useCallback(() => {
+    sessionStorage.setItem('homechef_splash_shown', 'true');
+    setShowSplash(false);
+  }, []);
+
   useEdgeSwipeBack();
-  // auto-adjust is handled by PublicLayout/RoleBasedLayout
+
+  if (showSplash) {
+    return <SplashScreen onComplete={handleSplashComplete} duration={3000} />;
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
