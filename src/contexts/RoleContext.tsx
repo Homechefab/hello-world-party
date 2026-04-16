@@ -108,8 +108,8 @@ export function RoleProvider({ children }: { children: ReactNode }) {
           approved = restaurantData?.approved ?? false;
         }
         
-        // Admin and customer roles are always "approved"
-        if (primary === 'admin' || primary === 'customer') {
+        // Admin, ekonomi and customer roles are always "approved"
+        if (primary === 'admin' || primary === 'customer' || primary === 'ekonomi') {
           approved = true;
         }
         
