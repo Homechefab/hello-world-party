@@ -68,6 +68,7 @@ import PricingTerms from "./pages/kitchen-partner/PricingTerms";
 import PartnerSupport from "./pages/kitchen-partner/PartnerSupport";
 import DeliveryPartnerOnboarding from "./pages/delivery-partner/DeliveryPartnerOnboarding";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
+import EkonomiDashboard from "./pages/ekonomi/EkonomiDashboard";
 import RestaurantPartnership from "./pages/restaurant/RestaurantPartnership";
 import RestaurantDashboard from "./pages/restaurant/RestaurantDashboard";
 import RestaurantApplicationForm from "./pages/restaurant/RestaurantApplicationForm";
@@ -221,6 +222,7 @@ const App = () => {
             {/* Other protected routes */}
             <Route path="/delivery-partner/onboarding" element={<PublicLayout><DeliveryPartnerOnboarding /></PublicLayout>} />
             <Route path="/admin/dashboard" element={<RoleBasedLayout><AdminDashboard /></RoleBasedLayout>} />
+            <Route path="/ekonomi/dashboard" element={<RoleBasedLayout><EkonomiDashboard /></RoleBasedLayout>} />
             <Route path="/profile" element={<RoleBasedLayout><Profile /></RoleBasedLayout>} />
             <Route path="/my-orders" element={<RoleBasedLayout><MyOrders /></RoleBasedLayout>} />
             <Route path="/order-tracking/:orderId" element={<RoleBasedLayout><OrderTracking /></RoleBasedLayout>} />

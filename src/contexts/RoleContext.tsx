@@ -72,7 +72,7 @@ export function RoleProvider({ children }: { children: ReactNode }) {
           : (profile?.role ? [profile.role as UserRole] : ['customer']);
 
         // Determine primary role by priority
-        const priority: UserRole[] = ['admin', 'chef', 'kitchen_partner', 'restaurant', 'customer'];
+        const priority: UserRole[] = ['admin', 'ekonomi', 'chef', 'kitchen_partner', 'restaurant', 'customer'];
         const primary = priority.find(r => combinedRoles.includes(r)) ?? 'customer';
 
         // Check approval status based on primary role
@@ -108,8 +108,8 @@ export function RoleProvider({ children }: { children: ReactNode }) {
           approved = restaurantData?.approved ?? false;
         }
         
-        // Admin and customer roles are always "approved"
-        if (primary === 'admin' || primary === 'customer') {
+        // Admin, ekonomi and customer roles are always "approved"
+        if (primary === 'admin' || primary === 'customer' || primary === 'ekonomi') {
           approved = true;
         }
         
