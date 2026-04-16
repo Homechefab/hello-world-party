@@ -1,178 +1,88 @@
-# 🔐 Test Account Credentials
+# 🔐 Test Account Setup
+
+> ⚠️ **SECURITY NOTICE:** Plain-text credentials have been **removed** from this document. Test account passwords are now generated locally and never committed to version control.
 
 ## Quick Setup
 
-To create all test accounts, run:
+To create test accounts locally, run:
 
 ```bash
 npm run create-test-accounts
 ```
 
-**Important:** You need to add your Supabase Service Role Key to `.env` first:
+The script generates strong random passwords and writes them to `.test-credentials.local` (which is git-ignored). **Never commit this file.**
+
+**Required environment variables** (in your local `.env`, not committed):
 
 ```env
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key-here
+VITE_SUPABASE_URL=your-project-url
 ```
 
 Get your service role key from: [Supabase Dashboard](https://supabase.com/dashboard) → Settings → API → service_role key
 
 ---
 
-## 📋 Test Account Login Details
+## 📋 Test Account Roles
 
-### 👤 Customer Account
-```
-Email:    customer@test.homechef.se
-Password: Test123!
-Role:     Customer
-```
-**Can do:**
-- Browse available dishes
-- Place orders
-- Track order status
-- Leave reviews for completed orders
-- Manage profile and preferences
+The script provisions the following accounts (emails only — passwords are generated at runtime):
+
+| Role | Email | Capabilities |
+|------|-------|--------------|
+| 👤 Customer | `customer@test.homechef.se` | Browse, order, review |
+| 👨‍🍳 Chef | `chef@test.homechef.se` | Manage menu, accept orders (pre-approved kitchen + 3 sample dishes) |
+| 🏢 Kitchen Partner | `kitchen@test.homechef.se` | Manage commercial kitchen ("Professional Kitchen AB") |
+| 🍽️ Restaurant | `restaurant@test.homechef.se` | Restaurant menu and bulk orders ("Test Restaurant") |
+| 🛡️ Admin | `admin@test.homechef.se` | Full platform access |
 
 ---
 
-### 👨‍🍳 Chef Account
-```
-Email:    chef@test.homechef.se
-Password: Test123!
-Role:     Chef
-```
-**Can do:**
-- Manage personal dishes menu
-- View and accept orders
-- Update order preparation status
-- View customer reviews
-- Access chef dashboard
+## ⚠️ Production Safety
 
-**Includes:**
-- ✅ Pre-approved kitchen
-- 📦 3 sample dishes:
-  - Swedish Meatballs (149 kr)
-  - Pasta Carbonara (139 kr)
-  - Apple Pie (89 kr)
+**CRITICAL:**
+
+- ❌ **NEVER** run `npm run create-test-accounts` against the production Supabase project.
+- ❌ **NEVER** commit `.test-credentials.local` or any file containing real passwords.
+- ✅ **ALWAYS** point the script at a local/staging Supabase instance.
+- ✅ **VERIFY** the configured `VITE_SUPABASE_URL` before running.
+
+If you suspect test accounts were ever provisioned in production:
+
+1. Open [Supabase Auth → Users](https://supabase.com/dashboard/project/_/auth/users).
+2. Search for `@test.homechef.se`.
+3. Delete any matching accounts immediately.
+4. Rotate the service-role key.
 
 ---
 
-### 🏢 Kitchen Partner Account
-```
-Email:    kitchen@test.homechef.se
-Password: Test123!
-Role:     Kitchen Partner
-```
-**Can do:**
-- Manage commercial kitchen space
-- Approve/reject chef applications
-- Set kitchen availability
-- Manage kitchen equipment listings
-- Track kitchen usage
+## 🧪 Common Testing Flows
 
-**Includes:**
-- ✅ Pre-approved commercial kitchen
-- Business: "Professional Kitchen AB"
+### Customer Order Flow
+1. Login as Customer → browse dishes → place order.
+2. Login as Chef → accept and update order status.
+3. Switch back to Customer → verify status updates.
 
----
+### Chef Onboarding
+1. Sign up as a new chef → submit application.
+2. Login as Admin → approve the application.
+3. Login as the new chef → add dishes and set availability.
 
-### 🍽️ Restaurant Account
-```
-Email:    restaurant@test.homechef.se
-Password: Test123!
-Role:     Restaurant
-```
-**Can do:**
-- Manage restaurant menu
-- Process bulk orders
-- Restaurant-specific features
-- Business management tools
-
-**Includes:**
-- ✅ Pre-approved business
-- Business: "Test Restaurant"
-
----
-
-### 🛡️ Admin Account
-```
-Email:    admin@test.homechef.se
-Password: Test123!
-Role:     Admin
-```
-**Can do:**
-- Full platform access
-- User management
-- System configuration
-- View all orders and transactions
-- Moderate content and reviews
-- Manage platform settings
-
----
-
-## ⚠️ Security Warning
-
-**CRITICAL:** These are test accounts with publicly known passwords!
-
-- ❌ **DO NOT** use in production
-- ❌ **NEVER** store real payment information
-- ❌ **DELETE** before launching to production
-- ✅ **ONLY** use for development and testing
-
----
-
-## 🧪 Testing Scenarios
-
-### Test a Customer Order Flow
-1. Login as **Customer** (customer@test.homechef.se)
-2. Browse dishes created by the Chef account
-3. Add items to cart and place an order
-4. Logout and login as **Chef** (chef@test.homechef.se)
-5. Accept and update the order status
-6. Switch back to **Customer** and view order updates
-
-### Test Chef Onboarding
-1. Create a new chef account via signup
-2. Login as **Admin** (admin@test.homechef.se)
-3. Review and approve the chef application
-4. Switch to the new chef account
-5. Add dishes and set availability
-
-### Test Kitchen Partner Flow
-1. Login as **Kitchen Partner** (kitchen@test.homechef.se)
-2. View chef applications for kitchen space
-3. Approve/reject applications
-4. Manage kitchen availability
+### Kitchen Partner Flow
+1. Login as Kitchen Partner → review chef applications.
+2. Approve/reject applications and manage availability.
 
 ---
 
 ## 🔧 Troubleshooting
 
-### Script fails with "Missing environment variables"
-- Add `SUPABASE_SERVICE_ROLE_KEY` to your `.env` file
-- Make sure `VITE_SUPABASE_URL` is also present
-
-### "User already exists" warnings
-- The script skips existing users automatically
-- To recreate: Delete from Supabase Dashboard → Authentication → Users
-
-### Can't login with test accounts
-- Make sure the script ran successfully
-- Check Supabase Dashboard → Authentication → Users to verify accounts exist
-- Confirm email addresses are verified (should auto-confirm)
-
-### Missing dishes for chef account
-- Re-run the script: `npm run create-test-accounts`
-- Check Supabase Dashboard → Table Editor → dishes
+- **"Missing environment variables"** → ensure `.env` contains `SUPABASE_SERVICE_ROLE_KEY` and `VITE_SUPABASE_URL`.
+- **"User already exists"** → script skips existing users; delete via Supabase Dashboard → Authentication → Users to recreate.
+- **Can't login** → check `.test-credentials.local` for the generated password and verify the user exists in the Supabase dashboard.
 
 ---
 
-## 📚 Additional Resources
+## 📚 Resources
 
 - [Supabase Dashboard](https://supabase.com/dashboard)
 - [Setup Instructions](scripts/README.md)
 - [Project Documentation](README.md)
-
----
-
-**Last Updated:** November 12, 2025
