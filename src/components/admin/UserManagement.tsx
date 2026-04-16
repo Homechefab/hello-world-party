@@ -26,7 +26,8 @@ const roleLabels: Record<UserRole, string> = {
   restaurant: 'Restaurang',
   business: 'Företagare',
   admin: 'Admin',
-  webshop: 'Webbshop'
+  webshop: 'Webbshop',
+  ekonomi: 'Ekonomi'
 };
 
 // Admin-rollen hanteras enbart via databasen och ska inte kunna tilldelas via UI

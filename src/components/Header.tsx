@@ -37,7 +37,8 @@ const Header = () => {
     restaurant: 'Restaurang',
     business: 'Företagare',
     admin: 'Administratör',
-    webshop: 'Webbshop'
+    webshop: 'Webbshop',
+    ekonomi: 'Ekonomi'
   };
 
   const handleSearch = (e?: FormEvent<HTMLFormElement>) => {
@@ -60,6 +61,7 @@ const Header = () => {
       restaurant: '/restaurant/partnership',
       business: '/business/services',
       webshop: '/webshop',
+      ekonomi: '/ekonomi/dashboard',
     };
 
     navigate(targetByRole[newRole] || '/');
