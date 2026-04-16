@@ -75,10 +75,25 @@ serve(async (req) => {
     if (!isAnonymousToken && bearerToken) {
       const { data: userData, error: userError } = await supabase.auth.getUser(bearerToken);
       if (userError || !userData?.user) {
-        console.error("Auth fallback to guest:", userError?.message);
+        console.error("Auth verification failed:", userError?.message);
       } else {
         userId = userData.user.id;
       }
+    }
+
+    // Mandatory auth guard: deny anonymous/unauthenticated callers to prevent
+    // abuse of the platform's ElevenLabs API key and quota.
+    if (!userId) {
+      return new Response(
+        JSON.stringify({
+          error: "Authentication required",
+          message: "Du måste vara inloggad för att använda röstassistenten.",
+        }),
+        {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
     }
 
     // --- Secrets ---
