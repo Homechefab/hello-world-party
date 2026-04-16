@@ -382,7 +382,7 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
                         Ansökt: {new Date(application.appliedDate).toLocaleDateString('sv-SE')}
                       </p>
                       <p className="text-muted-foreground">
-                        Dokument: {Object.keys(application.documents).length} st
+                        Dokument: {Array.isArray(application.documents.selfControlPlan) ? application.documents.selfControlPlan.length : 0} st
                       </p>
                     </div>
                   </div>
