@@ -13,6 +13,7 @@ import { CommissionReports } from '@/components/admin/CommissionReports';
 import { PaymentOverview } from '@/components/admin/PaymentOverview';
 import { ReviewAccountManager } from '@/components/admin/ReviewAccountManager';
 import { EarlyAccessSignups } from '@/components/admin/EarlyAccessSignups';
+import { EkonomiDashboard } from '@/pages/ekonomi/EkonomiDashboard';
 
 import { OnboardingMaterials } from '@/components/admin/OnboardingMaterials';
 import { ChefOnboardingGuide } from '@/components/admin/ChefOnboardingGuide';
@@ -234,6 +235,9 @@ export const AdminDashboard = () => {
             <TabsTrigger value="settings" className="whitespace-nowrap text-xs px-3 py-1.5">
               Inställningar
             </TabsTrigger>
+            <TabsTrigger value="ekonomi" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Ekonomi
+            </TabsTrigger>
           </TabsList>
         </div>
 
@@ -340,6 +344,10 @@ export const AdminDashboard = () => {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="ekonomi">
+          <EkonomiDashboard />
         </TabsContent>
       </Tabs>
 
