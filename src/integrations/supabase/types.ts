@@ -1006,6 +1006,7 @@ export type Database = {
       payment_transactions: {
         Row: {
           chef_earnings: number
+          chef_id: string | null
           created_at: string
           currency: string
           customer_email: string
@@ -1024,6 +1025,7 @@ export type Database = {
         }
         Insert: {
           chef_earnings: number
+          chef_id?: string | null
           created_at?: string
           currency?: string
           customer_email: string
@@ -1042,6 +1044,7 @@ export type Database = {
         }
         Update: {
           chef_earnings?: number
+          chef_id?: string | null
           created_at?: string
           currency?: string
           customer_email?: string
@@ -1058,7 +1061,22 @@ export type Database = {
           updated_at?: string
           user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "payment_transactions_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
+            referencedRelation: "chefs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_transactions_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
+            referencedRelation: "public_chef_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       points_transactions: {
         Row: {

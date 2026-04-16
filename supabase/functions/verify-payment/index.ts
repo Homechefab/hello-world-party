@@ -107,24 +107,43 @@ serve(async (req) => {
     const chefEarnings = basePrice - sellerCommission;
     const dishName = items.data[0]?.description || session.metadata?.dishName || "Okänd rätt";
     
+    // Extract chef_id from order_items metadata if available
+    let transactionChefId: string | undefined;
+    if (session.metadata?.order_items) {
+      try {
+        const orderItemsData = JSON.parse(session.metadata.order_items);
+        if (orderItemsData.length > 0 && orderItemsData[0].chefId) {
+          transactionChefId = orderItemsData[0].chefId;
+        }
+      } catch {
+        // Ignore parse errors
+      }
+    }
+    
     try {
+      const insertData: Record<string, unknown> = {
+        stripe_session_id: session.id,
+        stripe_payment_intent_id: paymentIntentId,
+        stripe_charge_id: chargeId,
+        customer_email: session.customer_details?.email || "unknown@email.com",
+        user_id: user.id,
+        dish_name: dishName,
+        quantity: items.data[0]?.quantity || 1,
+        total_amount: totalAmount,
+        platform_fee: platformFee,
+        chef_earnings: chefEarnings,
+        currency: (session.currency || "sek").toUpperCase(),
+        payment_status: session.payment_status || "unknown",
+        receipt_url: receiptUrl,
+      };
+      
+      if (transactionChefId) {
+        insertData.chef_id = transactionChefId;
+      }
+      
       const { error: dbError } = await supabaseClient
         .from("payment_transactions")
-        .upsert({
-          stripe_session_id: session.id,
-          stripe_payment_intent_id: paymentIntentId,
-          stripe_charge_id: chargeId,
-          customer_email: session.customer_details?.email || "unknown@email.com",
-          user_id: user.id,
-          dish_name: dishName,
-          quantity: items.data[0]?.quantity || 1,
-          total_amount: totalAmount,
-          platform_fee: platformFee,
-          chef_earnings: chefEarnings,
-          currency: (session.currency || "sek").toUpperCase(),
-          payment_status: session.payment_status || "unknown",
-          receipt_url: receiptUrl,
-        }, {
+        .upsert(insertData, {
           onConflict: "stripe_session_id"
         });
       
