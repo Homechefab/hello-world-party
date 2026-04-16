@@ -46,7 +46,6 @@ export const RoleBasedLayout = ({ children }: RoleBasedLayoutProps) => {
     const dashboardConfig: Record<string, { path: string; requiredRole: string; pendingPage: string }> = {
       chef: { path: '/chef/dashboard', requiredRole: 'chef', pendingPage: '/chef/application-pending' },
       admin: { path: '/admin/dashboard', requiredRole: 'admin', pendingPage: '/' },
-      ekonomi: { path: '/ekonomi/dashboard', requiredRole: 'ekonomi', pendingPage: '/' },
       kitchen_partner: { path: '/kitchen-partner/dashboard', requiredRole: 'kitchen_partner', pendingPage: '/kitchen-partner/application-pending' },
       restaurant: { path: '/restaurant/dashboard', requiredRole: 'restaurant', pendingPage: '/restaurant/application-pending' }
     };
