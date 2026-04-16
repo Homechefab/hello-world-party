@@ -173,12 +173,13 @@ const Header = () => {
           )}
         </div>
 
-  {/* Mobile Hamburger Menu - Larger */}
-  <div className="md:hidden mr-2">
+  {/* Mobile Header Actions - Cart + Hamburger */}
+  <div className="md:hidden flex items-center gap-1 mr-2">
+          <Cart />
           <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-16 w-16">
-                <Menu className="w-9 h-9" />
+              <Button variant="ghost" size="icon" className="h-12 w-12">
+                <Menu className="w-7 h-7" />
               </Button>
             </SheetTrigger>
             <SheetContent 
@@ -306,9 +307,6 @@ const Header = () => {
                   )}
                   
                   <div className="flex gap-2">
-                    <div className="flex-1">
-                      <Cart />
-                    </div>
                     <div className="flex-1">
                       <UserMenu />
                     </div>
