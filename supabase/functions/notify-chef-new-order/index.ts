@@ -152,11 +152,7 @@ serve(async (req) => {
           toPhone = '+46' + toPhone;
         }
 
-        const itemCount = (order.order_items || []).reduce(
-          (sum: number, item: any) => sum + (item.quantity || 0), 0
-        );
-
-        const smsBody = `Homechef: Ny bestallning #${orderId} (${itemCount} st, ${order.total_amount} kr). Se: homechef.nu/chef/dashboard`;
+        const smsBody = `Ny bestallning #${orderId}`;
 
         try {
           const basicAuth = btoa(`${ELKS_API_USERNAME}:${ELKS_API_PASSWORD}`);
