@@ -152,11 +152,11 @@ serve(async (req) => {
           toPhone = '+46' + toPhone;
         }
 
-        const itemNames = (order.order_items || [])
-          .map((item: any) => `${item.quantity}x ${item.dishes?.name || 'Okänd'}`)
-          .join(', ');
+        const itemCount = (order.order_items || []).reduce(
+          (sum: number, item: any) => sum + (item.quantity || 0), 0
+        );
 
-        const smsBody = `Ny bestallning #${orderId}!\n${itemNames}\nTotalt: ${order.total_amount} kr\n${specialInstructions ? 'Meddelande: ' + order.special_instructions + '\n' : ''}Visa: https://hello-world-party.lovable.app/chef/dashboard?tab=orders`;
+        const smsBody = `Homechef: Ny bestallning #${orderId} (${itemCount} st, ${order.total_amount} kr). Se: homechef.nu/chef/dashboard`;
 
         try {
           const basicAuth = btoa(`${ELKS_API_USERNAME}:${ELKS_API_PASSWORD}`);
