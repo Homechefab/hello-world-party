@@ -137,15 +137,13 @@ serve(async (req) => {
       emailSent = true;
     }
 
-    // Send SMS via Twilio gateway (if chef has phone)
+    // Send SMS via 46elks (if chef has phone)
     let smsSent = false;
     if (chef.phone) {
-      const GATEWAY_URL = 'https://connector-gateway.lovable.dev/twilio';
-      const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-      const TWILIO_API_KEY = Deno.env.get('TWILIO_API_KEY');
-      const TWILIO_FROM_NUMBER = Deno.env.get('TWILIO_FROM_NUMBER');
+      const ELKS_API_USERNAME = Deno.env.get('ELKS_API_USERNAME');
+      const ELKS_API_PASSWORD = Deno.env.get('ELKS_API_PASSWORD');
 
-      if (LOVABLE_API_KEY && TWILIO_API_KEY && TWILIO_FROM_NUMBER) {
+      if (ELKS_API_USERNAME && ELKS_API_PASSWORD) {
         // Format phone: ensure E.164 format for Swedish numbers
         let toPhone = chef.phone.replace(/[\s\-()]/g, '');
         if (toPhone.startsWith('0')) {
@@ -158,35 +156,35 @@ serve(async (req) => {
           .map((item: any) => `${item.quantity}x ${item.dishes?.name || 'Okänd'}`)
           .join(', ');
 
-        const smsBody = `🆕 Ny beställning #${orderId}!\n${itemNames}\nTotalt: ${order.total_amount} kr\n${specialInstructions ? 'Meddelande: ' + order.special_instructions + '\n' : ''}Visa: https://hello-world-party.lovable.app/chef/dashboard?tab=orders`;
+        const smsBody = `Ny bestallning #${orderId}!\n${itemNames}\nTotalt: ${order.total_amount} kr\n${specialInstructions ? 'Meddelande: ' + order.special_instructions + '\n' : ''}Visa: https://hello-world-party.lovable.app/chef/dashboard?tab=orders`;
 
         try {
-          const smsResponse = await fetch(`${GATEWAY_URL}/Messages.json`, {
+          const basicAuth = btoa(`${ELKS_API_USERNAME}:${ELKS_API_PASSWORD}`);
+          const smsResponse = await fetch('https://api.46elks.com/a1/sms', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-              'X-Connection-Api-Key': TWILIO_API_KEY,
+              'Authorization': `Basic ${basicAuth}`,
               'Content-Type': 'application/x-www-form-urlencoded',
             },
             body: new URLSearchParams({
-              To: toPhone,
-              From: TWILIO_FROM_NUMBER,
-              Body: smsBody,
+              from: 'Homechef',
+              to: toPhone,
+              message: smsBody,
             }),
           });
 
           const smsResult = await smsResponse.json();
           if (!smsResponse.ok) {
-            console.error('Twilio SMS error:', JSON.stringify(smsResult));
+            console.error('46elks SMS error:', JSON.stringify(smsResult));
           } else {
-            console.log('SMS sent to chef:', toPhone, 'SID:', smsResult.sid);
+            console.log('SMS sent to chef:', toPhone, 'ID:', smsResult.id);
             smsSent = true;
           }
         } catch (smsError) {
           console.error('SMS sending failed:', smsError);
         }
       } else {
-        console.log('Twilio not fully configured, skipping SMS.');
+        console.log('46elks not configured, skipping SMS.');
       }
     }
 
