@@ -170,7 +170,6 @@ async function handleCheckoutSession(
     currency: (session.currency || "sek").toUpperCase(),
     payment_status: session.payment_status || "unknown",
     receipt_url: receiptUrl,
-    is_provision_processed: true,
   };
 
   if (transactionChefId) insertData.chef_id = transactionChefId;
@@ -253,7 +252,6 @@ async function handlePaymentIntent(
     currency: (paymentIntent.currency || "sek").toUpperCase(),
     payment_status: "paid",
     receipt_url: receiptUrl,
-    is_provision_processed: true,
   };
 
   const { error } = await supabase
