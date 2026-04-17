@@ -76,6 +76,8 @@ import RestaurantApplicationPending from "./pages/restaurant/ApplicationPending"
 import NotFound from "./pages/NotFound";
 import NotificationSignup from "./pages/NotificationSignup";
 import Auth from "./pages/Auth";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import SettingsPage from "./pages/settings/Settings";
 import DeliveryAddresses from "./pages/settings/DeliveryAddresses";
 import PaymentMethods from "./pages/settings/PaymentMethods";
@@ -151,6 +153,8 @@ const App = () => {
             <Route path="/restaurant/partnership" element={<PublicLayout><RestaurantPartnership /></PublicLayout>} />
             <Route path="/restaurant/application" element={<PublicLayout><RestaurantApplication /></PublicLayout>} />
             <Route path="/auth" element={<PublicLayout><Auth /></PublicLayout>} />
+            <Route path="/forgot-password" element={<PublicLayout><ForgotPassword /></PublicLayout>} />
+            <Route path="/reset-password" element={<PublicLayout><ResetPassword /></PublicLayout>} />
             <Route path="/notification-signup" element={<PublicLayout><NotificationSignup /></PublicLayout>} />
             <Route path="/chef/application" element={<PublicLayout><ChefApplication /></PublicLayout>} />
             <Route path="/chef/safety-rules" element={<PublicLayout><KitchenRequirements /></PublicLayout>} />
