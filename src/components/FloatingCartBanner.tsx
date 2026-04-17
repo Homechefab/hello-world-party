@@ -187,7 +187,14 @@ export const FloatingCartBanner = () => {
         </SheetContent>
       </Sheet>
 
-      <AuthDialog open={showAuth} onOpenChange={setShowAuth} />
+      <AuthDialog
+        open={showAuth}
+        onOpenChange={setShowAuth}
+        onForgotPasswordNavigate={() => {
+          setShowAuth(false);
+          setIsOpen(false);
+        }}
+      />
     </>
   );
 };

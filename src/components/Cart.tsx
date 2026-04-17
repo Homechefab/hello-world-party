@@ -15,6 +15,7 @@ export const Cart = () => {
   const { state, updateQuantity, removeItem } = useCart();
   const { user, isReady } = useAuth();
   const { requireVerified } = useRequireEmailVerified();
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
@@ -129,7 +130,7 @@ export const Cart = () => {
 
   return (
     <>
-      <Sheet>
+      <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
         <SheetTrigger asChild>
           <Button variant="outline" size="sm" className="relative">
             <ShoppingBag className="w-4 h-4" />
@@ -251,7 +252,14 @@ export const Cart = () => {
         </SheetContent>
       </Sheet>
 
-      <AuthDialog open={showAuth} onOpenChange={setShowAuth} />
+      <AuthDialog
+        open={showAuth}
+        onOpenChange={setShowAuth}
+        onForgotPasswordNavigate={() => {
+          setShowAuth(false);
+          setIsCartOpen(false);
+        }}
+      />
     </>
   );
 };

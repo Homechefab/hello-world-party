@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useVisitorTracking } from '@/hooks/useVisitorTracking';
 import LiveChat from './LiveChat';
 import Header from './Header';
@@ -11,8 +12,11 @@ interface PublicLayoutProps {
 }
 
 export const PublicLayout = ({ children }: PublicLayoutProps) => {
+  const location = useLocation();
   useAutoSafeArea();
   useVisitorTracking();
+
+  const hideFloatingCart = ['/auth', '/forgot-password', '/reset-password'].includes(location.pathname);
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
@@ -22,8 +26,7 @@ export const PublicLayout = ({ children }: PublicLayoutProps) => {
         {children}
       </main>
 
-      {/* Floating cart banner for mobile */}
-      <FloatingCartBanner />
+      {!hideFloatingCart && <FloatingCartBanner />}
 
       {/* Live Chat Widget with Voice Assistant */}
       <LiveChat />

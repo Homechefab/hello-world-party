@@ -205,7 +205,11 @@ export const StripeCheckout: React.FC<StripeCheckoutProps> = ({
         </CardContent>
       </Card>
 
-      <AuthDialog open={showAuth} onOpenChange={setShowAuth} />
+      <AuthDialog
+        open={showAuth}
+        onOpenChange={setShowAuth}
+        onForgotPasswordNavigate={() => setShowAuth(false)}
+      />
     </>
   );
 };
