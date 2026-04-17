@@ -107,7 +107,6 @@ const ForgotPassword = () => {
           </Card>
         </div>
       </div>
-    </div>
   );
 };
 
