@@ -124,7 +124,6 @@ const ResetPassword = () => {
           </Card>
         </div>
       </div>
-    </div>
   );
 };
 
