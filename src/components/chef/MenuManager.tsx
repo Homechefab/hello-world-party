@@ -455,8 +455,9 @@ const MenuManager = ({ chefId: overrideChefId }: MenuManagerProps = {}) => {
                 </Button>
                 <Button
                   onClick={handleSaveDish}
-                  disabled={loading}
+                  disabled={loading || !isVerified}
                   className="flex-1 bg-gradient-primary text-white hover:opacity-90"
+                  title={!isVerified ? 'Verifiera din e-post för att publicera rätter' : undefined}
                 >
                   {loading ? (
                     "Sparar..."
