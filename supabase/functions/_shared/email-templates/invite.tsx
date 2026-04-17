@@ -20,27 +20,32 @@ interface InviteEmailProps {
   confirmationUrl: string
 }
 
-export const InviteEmail = ({ siteUrl, confirmationUrl }: InviteEmailProps) => (
-  <Html lang="sv" dir="ltr">
+export const InviteEmail = ({
+  siteName,
+  siteUrl,
+  confirmationUrl,
+}: InviteEmailProps) => (
+  <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Du har bjudits in till Homechef</Preview>
+    <Preview>You've been invited to join {siteName}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Du är inbjuden!</Heading>
+        <Heading style={h1}>You've been invited</Heading>
         <Text style={text}>
-          Du har bjudits in att gå med i{' '}
+          You've been invited to join{' '}
           <Link href={siteUrl} style={link}>
-            <strong>Homechef</strong>
+            <strong>{siteName}</strong>
           </Link>
-          . Klicka på knappen nedan för att acceptera inbjudan och skapa ditt konto.
+          . Click the button below to accept the invitation and create your
+          account.
         </Text>
         <Button style={button} href={confirmationUrl}>
-          Acceptera inbjudan
+          Accept Invitation
         </Button>
         <Text style={footer}>
-          Om du inte väntade dig denna inbjudan kan du ignorera mejlet.
+          If you weren't expecting this invitation, you can safely ignore this
+          email.
         </Text>
-        <Text style={signature}>Med vänliga hälsningar,<br />Homechef-teamet</Text>
       </Container>
     </Body>
   </Html>
@@ -49,29 +54,26 @@ export const InviteEmail = ({ siteUrl, confirmationUrl }: InviteEmailProps) => (
 export default InviteEmail
 
 const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '24px 28px', maxWidth: '560px' }
+const container = { padding: '20px 25px' }
 const h1 = {
   fontSize: '22px',
   fontWeight: 'bold' as const,
-  color: '#1f1410',
+  color: '#000000',
   margin: '0 0 20px',
 }
 const text = {
-  fontSize: '15px',
+  fontSize: '14px',
   color: '#55575d',
-  lineHeight: '1.6',
-  margin: '0 0 24px',
+  lineHeight: '1.5',
+  margin: '0 0 25px',
 }
-const link = { color: '#f97316', textDecoration: 'underline' }
+const link = { color: 'inherit', textDecoration: 'underline' }
 const button = {
-  backgroundColor: '#f97316',
+  backgroundColor: '#000000',
   color: '#ffffff',
-  fontSize: '15px',
-  fontWeight: 'bold' as const,
+  fontSize: '14px',
   borderRadius: '8px',
-  padding: '14px 24px',
+  padding: '12px 20px',
   textDecoration: 'none',
-  display: 'inline-block',
 }
-const footer = { fontSize: '12px', color: '#999999', margin: '32px 0 16px' }
-const signature = { fontSize: '13px', color: '#55575d', margin: '8px 0 0' }
+const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }

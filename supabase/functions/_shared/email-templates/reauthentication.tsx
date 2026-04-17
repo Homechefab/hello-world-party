@@ -17,18 +17,18 @@ interface ReauthenticationEmailProps {
 }
 
 export const ReauthenticationEmail = ({ token }: ReauthenticationEmailProps) => (
-  <Html lang="sv" dir="ltr">
+  <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Din verifieringskod från Homechef</Preview>
+    <Preview>Your verification code</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Bekräfta din identitet</Heading>
-        <Text style={text}>Använd koden nedan för att bekräfta din identitet:</Text>
+        <Heading style={h1}>Confirm reauthentication</Heading>
+        <Text style={text}>Use the code below to confirm your identity:</Text>
         <Text style={codeStyle}>{token}</Text>
         <Text style={footer}>
-          Koden är giltig under en kort stund. Om du inte begärde detta kan du ignorera mejlet.
+          This code will expire shortly. If you didn't request this, you can
+          safely ignore this email.
         </Text>
-        <Text style={signature}>Med vänliga hälsningar,<br />Homechef-teamet</Text>
       </Container>
     </Body>
   </Html>
@@ -37,26 +37,24 @@ export const ReauthenticationEmail = ({ token }: ReauthenticationEmailProps) => 
 export default ReauthenticationEmail
 
 const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '24px 28px', maxWidth: '560px' }
+const container = { padding: '20px 25px' }
 const h1 = {
   fontSize: '22px',
   fontWeight: 'bold' as const,
-  color: '#1f1410',
+  color: '#000000',
   margin: '0 0 20px',
 }
 const text = {
-  fontSize: '15px',
+  fontSize: '14px',
   color: '#55575d',
-  lineHeight: '1.6',
-  margin: '0 0 20px',
+  lineHeight: '1.5',
+  margin: '0 0 25px',
 }
 const codeStyle = {
   fontFamily: 'Courier, monospace',
-  fontSize: '28px',
+  fontSize: '22px',
   fontWeight: 'bold' as const,
-  color: '#f97316',
-  letterSpacing: '4px',
+  color: '#000000',
   margin: '0 0 30px',
 }
-const footer = { fontSize: '12px', color: '#999999', margin: '32px 0 16px' }
-const signature = { fontSize: '13px', color: '#55575d', margin: '8px 0 0' }
+const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }

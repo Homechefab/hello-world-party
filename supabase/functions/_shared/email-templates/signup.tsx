@@ -22,37 +22,37 @@ interface SignupEmailProps {
 }
 
 export const SignupEmail = ({
+  siteName,
   siteUrl,
   recipient,
   confirmationUrl,
 }: SignupEmailProps) => (
-  <Html lang="sv" dir="ltr">
+  <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Bekräfta din e-post hos Homechef</Preview>
+    <Preview>Confirm your email for {siteName}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Välkommen till Homechef!</Heading>
+        <Heading style={h1}>Confirm your email</Heading>
         <Text style={text}>
-          Tack för att du registrerade dig hos{' '}
+          Thanks for signing up for{' '}
           <Link href={siteUrl} style={link}>
-            <strong>Homechef</strong>
+            <strong>{siteName}</strong>
           </Link>
-          .
+          !
         </Text>
         <Text style={text}>
-          Bekräfta din e-postadress (
+          Please confirm your email address (
           <Link href={`mailto:${recipient}`} style={link}>
             {recipient}
           </Link>
-          ) genom att klicka på knappen nedan:
+          ) by clicking the button below:
         </Text>
         <Button style={button} href={confirmationUrl}>
-          Bekräfta e-post
+          Verify Email
         </Button>
         <Text style={footer}>
-          Om du inte skapade ett konto kan du ignorera detta mejl.
+          If you didn't create an account, you can safely ignore this email.
         </Text>
-        <Text style={signature}>Med vänliga hälsningar,<br />Homechef-teamet</Text>
       </Container>
     </Body>
   </Html>
@@ -61,29 +61,26 @@ export const SignupEmail = ({
 export default SignupEmail
 
 const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '24px 28px', maxWidth: '560px' }
+const container = { padding: '20px 25px' }
 const h1 = {
   fontSize: '22px',
   fontWeight: 'bold' as const,
-  color: '#1f1410',
+  color: '#000000',
   margin: '0 0 20px',
 }
 const text = {
-  fontSize: '15px',
+  fontSize: '14px',
   color: '#55575d',
-  lineHeight: '1.6',
-  margin: '0 0 20px',
+  lineHeight: '1.5',
+  margin: '0 0 25px',
 }
-const link = { color: '#f97316', textDecoration: 'underline' }
+const link = { color: 'inherit', textDecoration: 'underline' }
 const button = {
-  backgroundColor: '#f97316',
+  backgroundColor: '#000000',
   color: '#ffffff',
-  fontSize: '15px',
-  fontWeight: 'bold' as const,
+  fontSize: '14px',
   borderRadius: '8px',
-  padding: '14px 24px',
+  padding: '12px 20px',
   textDecoration: 'none',
-  display: 'inline-block',
 }
-const footer = { fontSize: '12px', color: '#999999', margin: '32px 0 16px' }
-const signature = { fontSize: '13px', color: '#55575d', margin: '8px 0 0' }
+const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }

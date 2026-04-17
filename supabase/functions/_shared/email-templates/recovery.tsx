@@ -19,26 +19,26 @@ interface RecoveryEmailProps {
 }
 
 export const RecoveryEmail = ({
+  siteName,
   confirmationUrl,
 }: RecoveryEmailProps) => (
-  <Html lang="sv" dir="ltr">
+  <Html lang="en" dir="ltr">
     <Head />
-    <Preview>Återställ ditt lösenord på Homechef</Preview>
+    <Preview>Reset your password for {siteName}</Preview>
     <Body style={main}>
       <Container style={container}>
-        <Heading style={h1}>Återställ ditt lösenord</Heading>
+        <Heading style={h1}>Reset your password</Heading>
         <Text style={text}>
-          Vi har tagit emot en begäran om att återställa ditt lösenord på Homechef.
-          Klicka på knappen nedan för att välja ett nytt lösenord.
+          We received a request to reset your password for {siteName}. Click
+          the button below to choose a new password.
         </Text>
         <Button style={button} href={confirmationUrl}>
-          Återställ lösenord
+          Reset Password
         </Button>
         <Text style={footer}>
-          Om du inte begärde en återställning kan du ignorera detta mejl —
-          ditt lösenord förblir oförändrat.
+          If you didn't request a password reset, you can safely ignore this
+          email. Your password will not be changed.
         </Text>
-        <Text style={signature}>Med vänliga hälsningar,<br />Homechef-teamet</Text>
       </Container>
     </Body>
   </Html>
@@ -47,28 +47,25 @@ export const RecoveryEmail = ({
 export default RecoveryEmail
 
 const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '24px 28px', maxWidth: '560px' }
+const container = { padding: '20px 25px' }
 const h1 = {
   fontSize: '22px',
   fontWeight: 'bold' as const,
-  color: '#1f1410',
+  color: '#000000',
   margin: '0 0 20px',
 }
 const text = {
-  fontSize: '15px',
+  fontSize: '14px',
   color: '#55575d',
-  lineHeight: '1.6',
-  margin: '0 0 24px',
+  lineHeight: '1.5',
+  margin: '0 0 25px',
 }
 const button = {
-  backgroundColor: '#f97316',
+  backgroundColor: '#000000',
   color: '#ffffff',
-  fontSize: '15px',
-  fontWeight: 'bold' as const,
+  fontSize: '14px',
   borderRadius: '8px',
-  padding: '14px 24px',
+  padding: '12px 20px',
   textDecoration: 'none',
-  display: 'inline-block',
 }
-const footer = { fontSize: '12px', color: '#999999', margin: '32px 0 16px' }
-const signature = { fontSize: '13px', color: '#55575d', margin: '8px 0 0' }
+const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
