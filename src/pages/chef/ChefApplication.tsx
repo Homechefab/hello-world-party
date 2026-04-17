@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { DocumentUpload } from "@/components/DocumentUpload";
 import { useRole } from "@/hooks/useRole";
+import { useAuth } from "@/hooks/useAuth";
+import { useRequireEmailVerified } from "@/hooks/useRequireEmailVerified";
 
 
 
@@ -43,6 +45,8 @@ const ChefApplication = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { role, isChef, isApproved, loading: roleLoading } = useRole();
+  const { user: authUser } = useAuth();
+  const { isVerified, requireVerified } = useRequireEmailVerified();
 
   // Only redirect approved chefs who are actively viewing as chef
   // This allows customers and unauthenticated users to access the application
@@ -81,6 +85,7 @@ const ChefApplication = () => {
   const handleNext = async () => {
     // När man går från steg 2 till 3, skapa chef-ansökan
     if (currentStep === 2) {
+      if (authUser && !requireVerified('skicka in din kockansökan')) return;
       try {
         if (!formData.contactEmail) {
           toast({
@@ -650,8 +655,9 @@ const ChefApplication = () => {
                 </Button>
                 <Button 
                   onClick={handleNext}
-                  disabled={!isStepValid()}
+                  disabled={!isStepValid() || (!!authUser && !isVerified)}
                   className="min-w-[120px]"
+                  title={!!authUser && !isVerified ? 'Verifiera din e-post för att skicka in ansökan' : undefined}
                 >
                   {currentStep === 4 ? 'Skicka ansökan' : 'Nästa'}
                 </Button>
