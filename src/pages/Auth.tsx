@@ -71,6 +71,23 @@ const Auth = () => {
 
         if (error) throw error;
 
+        // Detect "user already exists": Supabase returns success with an empty
+        // identities array when an account with this email already exists.
+        const alreadyRegistered =
+          authData.user &&
+          Array.isArray(authData.user.identities) &&
+          authData.user.identities.length === 0;
+
+        if (alreadyRegistered) {
+          toast({
+            title: "Kontot finns redan",
+            description: "Den här e-postadressen är redan registrerad. Logga in eller återställ lösenordet.",
+          });
+          setIsSignUp(false);
+          setPassword('');
+          return;
+        }
+
         // Update role if non-customer, but don't block on failure
         if (authData.user && selectedRole !== 'customer') {
           try {
@@ -287,7 +304,18 @@ const Auth = () => {
                 </div>
                 
                 <div>
-                  <Label htmlFor="password">Lösenord</Label>
+                  <div className="flex items-center justify-between mb-1">
+                    <Label htmlFor="password">Lösenord</Label>
+                    {!isSignUp && (
+                      <button
+                        type="button"
+                        onClick={() => navigate('/forgot-password')}
+                        className="text-xs text-primary hover:underline"
+                      >
+                        Glömt lösenord?
+                      </button>
+                    )}
+                  </div>
                   <Input
                     id="password"
                     type="password"
