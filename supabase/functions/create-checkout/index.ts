@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { calculatePaymentBreakdown } from "../_shared/payment-breakdown.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -18,15 +19,15 @@ serve(async (req) => {
 
     const ALLOWED_ORIGINS = [
       req.headers.get("origin"),
-      'https://homechef.nu',
-      'https://www.homechef.nu',
-      'https://hello-world-party.lovable.app',
+      "https://homechef.nu",
+      "https://www.homechef.nu",
+      "https://hello-world-party.lovable.app",
     ].filter(Boolean);
 
     function isTrustedUrl(url: string): boolean {
       try {
         const parsed = new URL(url);
-        return ALLOWED_ORIGINS.some(o => parsed.origin === o);
+        return ALLOWED_ORIGINS.some((origin) => parsed.origin === origin);
       } catch {
         return false;
       }
@@ -38,6 +39,7 @@ serve(async (req) => {
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 }
       );
     }
+
     if (cancelUrl && !isTrustedUrl(cancelUrl)) {
       return new Response(
         JSON.stringify({ error: "Invalid cancel redirect URL" }),
@@ -62,9 +64,9 @@ serve(async (req) => {
     );
 
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith('Bearer ')) {
+    if (!authHeader?.startsWith("Bearer ")) {
       return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
+        JSON.stringify({ error: "Unauthorized" }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
       );
     }
@@ -73,7 +75,7 @@ serve(async (req) => {
     const { data: authData, error: authError } = await supabaseClient.auth.getUser(token);
     if (authError || !authData.user) {
       return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
+        JSON.stringify({ error: "Unauthorized" }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 401 }
       );
     }
@@ -83,11 +85,7 @@ serve(async (req) => {
 
     let customerId: string | undefined;
     if (userEmail) {
-      const customers = await stripe.customers.list({
-        email: userEmail,
-        limit: 1,
-      });
-
+      const customers = await stripe.customers.list({ email: userEmail, limit: 1 });
       if (customers.data.length > 0) {
         customerId = customers.data[0].id;
       }
@@ -144,34 +142,34 @@ serve(async (req) => {
               chefOpen = true;
             }
           }
+
           if (!chefOpen) {
             throw new Error(`Kocken tar inte emot beställningar just nu (${dish.name})`);
           }
         }
 
+        const itemQuantity = item.quantity || 1;
         const serverPriceInOre = Math.round(dish.price * 100);
-        const itemTotal = serverPriceInOre * (item.quantity || 1);
+        const itemTotal = serverPriceInOre * itemQuantity;
         subtotalInOre += itemTotal;
 
         orderItems.push({
           dishId: dish.id,
           chefId: dish.chef_id,
-          quantity: item.quantity || 1,
+          quantity: itemQuantity,
           unitPrice: dish.price,
           name: dish.name,
         });
 
-        console.log(`Validated dish ${dish.name}: server price ${serverPriceInOre} öre, quantity ${item.quantity}`);
+        console.log(`Validated dish ${dish.name}: server price ${serverPriceInOre} öre, quantity ${itemQuantity}`);
 
         validatedItems.push({
           price_data: {
-            currency: 'sek',
-            product_data: {
-              name: dish.name,
-            },
+            currency: "sek",
+            product_data: { name: dish.name },
             unit_amount: serverPriceInOre,
           },
-          quantity: item.quantity || 1,
+          quantity: itemQuantity,
         });
       }
 
@@ -182,10 +180,10 @@ serve(async (req) => {
         ...validatedItems,
         {
           price_data: {
-            currency: 'sek',
+            currency: "sek",
             product_data: {
-              name: 'Serviceavgift (6%)',
-              description: 'Homechef serviceavgift',
+              name: "Serviceavgift (6%)",
+              description: "Homechef serviceavgift",
             },
             unit_amount: serviceFeeInOre,
           },
@@ -195,16 +193,18 @@ serve(async (req) => {
 
       console.log(`Total validated amount including service fee: ${totalAmountInOre} öre`);
     } else if (priceId) {
-      lineItems = [
-        {
-          price: priceId,
-          quantity: quantity || 1,
-        },
-      ];
-      totalAmountInOre = typeof totalAmount === 'number' ? Math.round(totalAmount * 100) : 0;
+      lineItems = [{ price: priceId, quantity: quantity || 1 }];
+      totalAmountInOre = typeof totalAmount === "number" ? Math.round(totalAmount * 100) : 0;
     } else {
       throw new Error("No items or priceId provided");
     }
+
+    const normalizedTotalAmount = totalAmountInOre > 0 ? totalAmountInOre / 100 : Number(totalAmount || 0);
+    const paymentBreakdown = calculatePaymentBreakdown(normalizedTotalAmount);
+    const chefIds = [...new Set(orderItems.map((item) => item.chefId))];
+    const transactionChefId = chefIds.length === 1 ? chefIds[0] : undefined;
+    const quantityTotal = orderItems.reduce((sum, item) => sum + item.quantity, 0) || (quantity || 1);
+    const transactionDishName = dishName || (orderItems.length === 1 ? orderItems[0].name : "Flera varor");
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -215,31 +215,53 @@ serve(async (req) => {
       cancel_url: cancelUrl || `${req.headers.get("origin")}/payment-canceled`,
       metadata: {
         userId: authenticatedUserId,
-        dish_name: dishName || 'Multiple items',
+        dish_name: transactionDishName,
         customer_service_fee_percentage: "6",
         seller_commission_percentage: "19",
-        total_amount: totalAmountInOre > 0 ? String(totalAmountInOre) : (totalAmount || ''),
+        total_amount: totalAmountInOre > 0 ? String(totalAmountInOre) : String(normalizedTotalAmount),
         order_items: JSON.stringify(orderItems),
-        delivery_address: deliveryAddress || 'Upphämtning',
-        special_instructions: specialInstructions || '',
+        delivery_address: deliveryAddress || "Upphämtning",
+        special_instructions: specialInstructions || "",
       },
       payment_intent_data: {
         metadata: {
           userId: authenticatedUserId,
-          dish_name: dishName || 'Multiple items',
+          dish_name: transactionDishName,
           customer_service_fee_percentage: "6",
           seller_commission_percentage: "19",
         },
       },
     });
 
+    const pendingTransaction: Record<string, string | number> = {
+      stripe_session_id: session.id,
+      customer_email: userEmail || "unknown@email.com",
+      user_id: authenticatedUserId,
+      dish_name: transactionDishName,
+      quantity: quantityTotal,
+      total_amount: paymentBreakdown.totalAmount,
+      platform_fee: paymentBreakdown.platformFee,
+      chef_earnings: paymentBreakdown.chefEarnings,
+      currency: "SEK",
+      payment_status: "pending",
+    };
+
+    if (transactionChefId) {
+      pendingTransaction.chef_id = transactionChefId;
+    }
+
+    const { error: transactionError } = await supabaseService
+      .from("payment_transactions")
+      .upsert(pendingTransaction, { onConflict: "stripe_session_id" });
+
+    if (transactionError) {
+      console.error("Failed to persist pending transaction:", transactionError);
+    }
+
     console.log("Checkout session created:", session.id);
 
     return new Response(
-      JSON.stringify({
-        url: session.url,
-        sessionId: session.id,
-      }),
+      JSON.stringify({ url: session.url, sessionId: session.id }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,
@@ -249,7 +271,7 @@ serve(async (req) => {
     console.error("Error creating checkout session:", error);
     return new Response(
       JSON.stringify({
-        error: error instanceof Error ? error.message : "Failed to create checkout session"
+        error: error instanceof Error ? error.message : "Failed to create checkout session",
       }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
