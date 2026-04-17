@@ -93,6 +93,8 @@ project_id = "rkucenozpmaixfphpiub"
     verify_jwt = false
   [functions.swish-payment]
     verify_jwt = false
+  [functions.stripe-webhook]
+    verify_jwt = false
   [functions.verify-payment]
     verify_jwt = false
 
