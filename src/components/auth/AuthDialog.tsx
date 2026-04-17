@@ -6,9 +6,10 @@ import { RegisterForm } from "./RegisterForm";
 interface AuthDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onForgotPasswordNavigate?: () => void;
 }
 
-export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
+export const AuthDialog = ({ open, onOpenChange, onForgotPasswordNavigate }: AuthDialogProps) => {
   const [isLogin, setIsLogin] = useState(true);
 
   const handleSuccess = () => {
@@ -30,7 +31,10 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
           <LoginForm
             onToggleMode={() => setIsLogin(false)}
             onSuccess={handleSuccess}
-            onForgotPassword={() => onOpenChange(false)}
+            onForgotPassword={() => {
+              onOpenChange(false);
+              onForgotPasswordNavigate?.();
+            }}
           />
         ) : (
           <RegisterForm onToggleMode={() => setIsLogin(true)} onSuccess={handleSuccess} />
