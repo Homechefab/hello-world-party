@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ChefHat, CheckCircle2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import Header from '@/components/Header';
+
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -60,10 +60,8 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Header />
-      <div className="container mx-auto px-4 py-16">
-        <div className="max-w-md mx-auto">
+    <div className="container mx-auto px-4 py-16">
+      <div className="max-w-md mx-auto">
           <Card>
             <CardHeader className="text-center">
               <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
