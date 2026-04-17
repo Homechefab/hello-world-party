@@ -6,7 +6,7 @@ import type {
 } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 1000000
+const TOAST_REMOVE_DELAY = 4000
 
 type ToasterToast = ToastProps & {
   id: string
@@ -139,6 +139,8 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
+const TOAST_AUTO_DISMISS_MS = 4000
+
 function toast({ ...props }: Toast) {
   const id = genId()
 
@@ -160,6 +162,11 @@ function toast({ ...props }: Toast) {
       },
     },
   })
+
+  // Auto-dismiss after a few seconds so toasts don't stick around forever
+  setTimeout(() => {
+    dismiss()
+  }, TOAST_AUTO_DISMISS_MS)
 
   return {
     id: id,
