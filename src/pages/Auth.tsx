@@ -34,7 +34,9 @@ const Auth = () => {
 
   useEffect(() => {
     if (user) {
-      navigate('/');
+      const returnPath = sessionStorage.getItem('post_auth_return') || '/dashboard';
+      sessionStorage.removeItem('post_auth_return');
+      navigate(returnPath, { replace: true });
     }
   }, [user, navigate]);
 
