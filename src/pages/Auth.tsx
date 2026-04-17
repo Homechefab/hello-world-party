@@ -304,7 +304,18 @@ const Auth = () => {
                 </div>
                 
                 <div>
-                  <Label htmlFor="password">Lösenord</Label>
+                  <div className="flex items-center justify-between mb-1">
+                    <Label htmlFor="password">Lösenord</Label>
+                    {!isSignUp && (
+                      <button
+                        type="button"
+                        onClick={() => navigate('/forgot-password')}
+                        className="text-xs text-primary hover:underline"
+                      >
+                        Glömt lösenord?
+                      </button>
+                    )}
+                  </div>
                   <Input
                     id="password"
                     type="password"
