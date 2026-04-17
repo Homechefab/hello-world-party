@@ -27,7 +27,11 @@ export const AuthDialog = ({ open, onOpenChange }: AuthDialogProps) => {
         </DialogHeader>
 
         {isLogin ? (
-          <LoginForm onToggleMode={() => setIsLogin(false)} onSuccess={handleSuccess} />
+          <LoginForm
+            onToggleMode={() => setIsLogin(false)}
+            onSuccess={handleSuccess}
+            onForgotPassword={() => onOpenChange(false)}
+          />
         ) : (
           <RegisterForm onToggleMode={() => setIsLogin(true)} onSuccess={handleSuccess} />
         )}
