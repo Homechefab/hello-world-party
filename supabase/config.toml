@@ -1,140 +1,115 @@
 project_id = "rkucenozpmaixfphpiub"
 
 [api]
-enabled = true
-port = 54321
-schemas = ["public", "graphql_public"]
-extra_search_path = ["public", "extensions"]
-max_rows = 1000
-
-[db]
-port = 54322
-major_version = 15
-
-[db.pooler]
-enabled = false
-port = 54329
-pool_mode = "transaction"
-default_pool_size = 20
-max_client_conn = 100
-
-[realtime]
-enabled = true
-ip_version = "IPv4"
-
-[studio]
-enabled = true
-port = 54324
-api_url = "http://127.0.0.1:54321"
-openai_api_key = "env(OPENAI_API_KEY)"
-
-[inbucket]
-enabled = true
-smtp_port = 54327
-
-[storage]
-enabled = true
-file_size_limit = "50MiB"
+  enabled = true
+  extra_search_path = ["public", "extensions"]
+  max_rows = 1000
+  port = 54321
+  schemas = ["public", "graphql_public"]
 
 [auth]
-enabled = true
-site_url = "http://127.0.0.1:3000"
-additional_redirect_urls = ["https://127.0.0.1:3000"]
-jwt_expiry = 3600
-enable_signup = true
+  additional_redirect_urls = ["https://127.0.0.1:3000"]
+  enable_signup = true
+  enabled = true
+  jwt_expiry = 3600
+  site_url = "http://127.0.0.1:3000"
+  [auth.email]
+    enable_confirmations = false
+    enable_signup = true
+  [auth.external]
+    [auth.external.facebook]
+      client_id = "env(FACEBOOK_CLIENT_ID)"
+      enabled = true
+      secret = "env(FACEBOOK_CLIENT_SECRET)"
+    [auth.external.google]
+      client_id = "env(GOOGLE_CLIENT_ID)"
+      enabled = true
+      secret = "env(GOOGLE_CLIENT_SECRET)"
 
-[auth.email]
-enable_signup = true
-enable_confirmations = false
-
-[auth.external.google]
-enabled = true
-client_id = "env(GOOGLE_CLIENT_ID)"
-secret = "env(GOOGLE_CLIENT_SECRET)"
-
-[auth.external.facebook]
-enabled = true
-client_id = "env(FACEBOOK_CLIENT_ID)"
-secret = "env(FACEBOOK_CLIENT_SECRET)"
+[db]
+  major_version = 15
+  port = 54322
+  [db.pooler]
+    default_pool_size = 20
+    enabled = false
+    max_client_conn = 100
+    pool_mode = "transaction"
+    port = 54329
 
 [edge_runtime]
-enabled = true
-policy = "oneshot"
+  enabled = true
+  policy = "oneshot"
 
-[functions.chat-ai]
-verify_jwt = false
+[functions]
+  [functions.approve-chef-create-account]
+    verify_jwt = true
+  [functions.approve-restaurant-create-account]
+    verify_jwt = true
+  [functions.auth-email-hook]
+    verify_jwt = false
+  [functions.chat-ai]
+    verify_jwt = false
+  [functions.create-checkout]
+    verify_jwt = false
+  [functions.create-document-submission-public]
+    verify_jwt = false
+  [functions.create-review-account]
+    verify_jwt = false
+  [functions.delete-account]
+    verify_jwt = false
+  [functions.document-analyzer]
+    verify_jwt = true
+  [functions.generate-commission-report]
+    verify_jwt = false
+  [functions.generate-customer-receipt]
+    verify_jwt = false
+  [functions.klarna-payment]
+    verify_jwt = true
+  [functions.municipality-search]
+    verify_jwt = false
+  [functions.notify-admin-application]
+    verify_jwt = true
+  [functions.notify-admin-business-application]
+    verify_jwt = false
+  [functions.notify-admin-kitchen-partner]
+    verify_jwt = false
+  [functions.notify-chef-new-order]
+    verify_jwt = false
+  [functions.phone-ai-token]
+    verify_jwt = false
+  [functions.reset-chef-password]
+    verify_jwt = true
+  [functions.send-application-notification]
+    verify_jwt = false
+  [functions.send-business-confirmation]
+    verify_jwt = false
+  [functions.send-business-decision]
+    verify_jwt = false
+  [functions.send-onboarding-email]
+    verify_jwt = false
+  [functions.submit-chef-application]
+    verify_jwt = false
+  [functions.swish-callback]
+    verify_jwt = false
+  [functions.swish-payment]
+    verify_jwt = false
+  [functions.verify-payment]
+    verify_jwt = false
 
-[functions.klarna-payment]
-verify_jwt = true
+[inbucket]
+  enabled = true
+  smtp_port = 54327
 
-[functions.document-analyzer]
-verify_jwt = true
+[realtime]
+  enabled = true
+  ip_version = "IPv4"
 
-[functions.create-checkout]
-verify_jwt = false
+[storage]
+  enabled = true
+  file_size_limit = "50MiB"
 
-[functions.verify-payment]
-verify_jwt = false
-
-[functions.notify-admin-kitchen-partner]
-verify_jwt = false
-
-[functions.reset-chef-password]
-verify_jwt = true
-
-[functions.approve-chef-create-account]
-verify_jwt = true
-
-[functions.phone-ai-token]
-verify_jwt = false
-
-[functions.swish-payment]
-verify_jwt = false
-
-[functions.swish-callback]
-verify_jwt = false
-
-[functions.approve-restaurant-create-account]
-verify_jwt = true
-
-[functions.notify-admin-application]
-verify_jwt = true
-
-[functions.send-application-notification]
-verify_jwt = false
-
-[functions.submit-chef-application]
-verify_jwt = false
-
-[functions.create-document-submission-public]
-verify_jwt = false
-
-[functions.send-business-confirmation]
-verify_jwt = false
-
-[functions.notify-admin-business-application]
-verify_jwt = false
-
-[functions.send-business-decision]
-verify_jwt = false
-
-[functions.send-onboarding-email]
-verify_jwt = false
-
-[functions.municipality-search]
-verify_jwt = false
-
-[functions.generate-customer-receipt]
-verify_jwt = false
-
-[functions.generate-commission-report]
-verify_jwt = false
-
-[functions.notify-chef-new-order]
-verify_jwt = false
-
-[functions.create-review-account]
-verify_jwt = false
-
-[functions.delete-account]
-verify_jwt = false
+[studio]
+  api_url = "http://127.0.0.1:54321"
+  enabled = true
+  openai_api_key = "env(OPENAI_API_KEY)"
+  port = 54324
