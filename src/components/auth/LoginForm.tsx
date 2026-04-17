@@ -12,9 +12,10 @@ import { signInWithSocial } from "@/lib/socialAuth";
 interface LoginFormProps {
   onToggleMode: () => void;
   onSuccess?: () => void;
+  onForgotPassword?: () => void;
 }
 
-export const LoginForm = ({ onToggleMode, onSuccess }: LoginFormProps) => {
+export const LoginForm = ({ onToggleMode, onSuccess, onForgotPassword }: LoginFormProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -92,7 +93,10 @@ export const LoginForm = ({ onToggleMode, onSuccess }: LoginFormProps) => {
               <Label htmlFor="password">Lösenord</Label>
               <button
                 type="button"
-                onClick={() => navigate('/forgot-password')}
+                onClick={() => {
+                  onForgotPassword?.();
+                  navigate('/forgot-password');
+                }}
                 className="text-xs text-primary hover:underline"
               >
                 Glömt lösenord?
