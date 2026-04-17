@@ -98,10 +98,12 @@ const Auth = () => {
 
         if (hasSession) {
           toast({
-            title: "Konto skapat!",
-            description: "Välkommen till Homechef! Vi har skickat en verifieringslänk till din e-post.",
+            title: "Välkommen till Homechef! 🎉",
+            description: "Ditt konto är skapat. Vi har skickat en verifieringslänk till din e-post.",
           });
-          navigate('/');
+          const returnPath = sessionStorage.getItem('post_auth_return') || '/dashboard';
+          sessionStorage.removeItem('post_auth_return');
+          navigate(returnPath, { replace: true });
         } else {
           toast({
             title: "Konto skapat!",

@@ -51,13 +51,15 @@ export const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => 
 
       if (hasSession) {
         toast({
-          title: "Registrering lyckades!",
-          description: "Välkommen till Homechef! Vi har skickat en verifieringslänk till din e-post.",
+          title: "Välkommen till Homechef! 🎉",
+          description: "Ditt konto är skapat. Vi har skickat en verifieringslänk till din e-post.",
         });
         if (onSuccess) {
           onSuccess();
         } else {
-          navigate('/');
+          const returnPath = sessionStorage.getItem('post_auth_return') || '/dashboard';
+          sessionStorage.removeItem('post_auth_return');
+          navigate(returnPath, { replace: true });
         }
       } else {
         toast({
