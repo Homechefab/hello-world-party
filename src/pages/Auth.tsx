@@ -44,8 +44,11 @@ const Auth = () => {
 
     try {
       if (isSignUp) {
-        const redirectUrl = `${window.location.origin}/`;
-        
+        // Save current location so user returns here after clicking the
+        // verification link (handled by emailRedirectTo).
+        const returnTo = sessionStorage.getItem('post_auth_return') || '/dashboard';
+        const redirectUrl = `${window.location.origin}${returnTo}`;
+
         // Add timeout to prevent infinite loading
         const signUpPromise = supabase.auth.signUp({
           email,
@@ -57,11 +60,11 @@ const Auth = () => {
             }
           }
         });
-        
-        const timeoutPromise = new Promise<never>((_, reject) => 
+
+        const timeoutPromise = new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error('Registreringen tog för lång tid. Försök igen.')), 15000)
         );
-        
+
         const { data: authData, error } = await Promise.race([signUpPromise, timeoutPromise]);
 
         if (error) throw error;
@@ -70,7 +73,7 @@ const Auth = () => {
         if (authData.user && selectedRole !== 'customer') {
           try {
             await new Promise(resolve => setTimeout(resolve, 500));
-            
+
             await supabase
               .from('profiles')
               .update({ role: selectedRole })
@@ -85,16 +88,24 @@ const Auth = () => {
           }
         }
 
-        if (authData.session) {
+        // Auto-login UX: if Supabase didn't return a session (email confirmation required),
+        // try password sign-in immediately so the user gets instant access.
+        let hasSession = !!authData.session;
+        if (!hasSession) {
+          const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+          hasSession = !signInError;
+        }
+
+        if (hasSession) {
           toast({
             title: "Konto skapat!",
-            description: "Välkommen till Homechef!",
+            description: "Välkommen till Homechef! Vi har skickat en verifieringslänk till din e-post.",
           });
           navigate('/');
         } else {
           toast({
             title: "Konto skapat!",
-            description: "Kontrollera din e-post för att verifiera ditt konto.",
+            description: "Kontrollera din e-post för att verifiera ditt konto innan du loggar in.",
           });
         }
       } else {

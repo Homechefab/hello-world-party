@@ -1,12 +1,15 @@
 import { createContext, ReactNode, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 
 export interface AuthContextType {
   user: {
     email: string;
     id?: string;
+    emailConfirmed: boolean;
   } | null;
   signOut: () => Promise<void>;
+  resendVerificationEmail: () => Promise<{ error: Error | null }>;
   isReady: boolean;
 }
 
@@ -16,19 +19,29 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-const mapSessionUser = (session: Awaited<ReturnType<typeof supabase.auth.getSession>>['data']['session']) => {
-  return session?.user ? { email: session.user.email ?? '', id: session.user.id } : null;
+const mapSessionUser = (
+  session: Awaited<ReturnType<typeof supabase.auth.getSession>>['data']['session']
+) => {
+  if (!session?.user) return null;
+  return {
+    email: session.user.email ?? '',
+    id: session.user.id,
+    emailConfirmed: Boolean(session.user.email_confirmed_at ?? session.user.confirmed_at),
+  };
 };
 
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<AuthContextType['user']>(null);
   const [isReady, setIsReady] = useState(false);
   const readyRef = useRef(false);
+  const wasUnverifiedRef = useRef(false);
 
   const markReady = (session: Parameters<typeof mapSessionUser>[0]) => {
     if (readyRef.current) return;
     readyRef.current = true;
-    setUser(mapSessionUser(session));
+    const mapped = mapSessionUser(session);
+    setUser(mapped);
+    wasUnverifiedRef.current = mapped ? !mapped.emailConfirmed : false;
     setIsReady(true);
   };
 
@@ -38,11 +51,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (!isMounted) return;
 
-      // Always update user on auth changes (login/logout)
-      setUser(mapSessionUser(session));
+      const mapped = mapSessionUser(session);
+      setUser(mapped);
+
       if (!readyRef.current) {
         readyRef.current = true;
         setIsReady(true);
+      }
+
+      // Detect verification: was unverified, now verified
+      if (mapped?.emailConfirmed && wasUnverifiedRef.current) {
+        wasUnverifiedRef.current = false;
+        toast.success('E-post verifierad!', {
+          description: 'Tack! Du har nu full åtkomst till alla funktioner.',
+        });
+      } else if (mapped) {
+        wasUnverifiedRef.current = !mapped.emailConfirmed;
       }
 
       if (event === 'SIGNED_IN' && session?.user) {
@@ -80,8 +104,22 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setIsReady(true);
   };
 
+  const resendVerificationEmail = async () => {
+    if (!user?.email) {
+      return { error: new Error('Ingen e-postadress hittades') };
+    }
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: user.email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/`,
+      },
+    });
+    return { error: error ? new Error(error.message) : null };
+  };
+
   return (
-    <AuthContext.Provider value={{ user, signOut, isReady }}>
+    <AuthContext.Provider value={{ user, signOut, resendVerificationEmail, isReady }}>
       {children}
     </AuthContext.Provider>
   );

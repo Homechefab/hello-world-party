@@ -12,8 +12,9 @@ interface PreviewWrapperProps {
 // Mock providers for preview
 const PreviewWrapper = ({ children, mockRole }: PreviewWrapperProps) => {
   const mockAuthContext: AuthContextType = {
-    user: mockRole ? { email: 'test@example.com', id: 'test-id' } : null,
+    user: mockRole ? { email: 'test@example.com', id: 'test-id', emailConfirmed: true } : null,
     signOut: () => Promise.resolve(),
+    resendVerificationEmail: () => Promise.resolve({ error: null }),
     isReady: true,
   };
 

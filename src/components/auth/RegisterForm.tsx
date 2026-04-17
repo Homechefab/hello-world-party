@@ -27,11 +27,12 @@ export const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => 
     setLoading(true);
 
     try {
+      const returnTo = sessionStorage.getItem('post_auth_return') || '/';
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/`,
+          emailRedirectTo: `${window.location.origin}${returnTo}`,
           data: {
             full_name: fullName,
           },
@@ -40,12 +41,19 @@ export const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => 
 
       if (error) throw error;
 
-      if (data.session) {
+      // Auto-login UX: if Supabase didn't return a session, try password sign-in
+      // immediately so the user gets instant access while verifying via email.
+      let hasSession = !!data.session;
+      if (!hasSession) {
+        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+        hasSession = !signInError;
+      }
+
+      if (hasSession) {
         toast({
           title: "Registrering lyckades!",
-          description: "Välkommen till Homechef!",
+          description: "Välkommen till Homechef! Vi har skickat en verifieringslänk till din e-post.",
         });
-
         if (onSuccess) {
           onSuccess();
         } else {

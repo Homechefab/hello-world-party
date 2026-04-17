@@ -17,6 +17,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { useRequireEmailVerified } from "@/hooks/useRequireEmailVerified";
 import DishTemplates from "./DishTemplates";
 import DishCardManage from "@/components/shared/DishCardManage";
 import { DishScheduleManager } from "./DishScheduleManager";
@@ -50,6 +51,7 @@ const MenuManager = ({ chefId: overrideChefId }: MenuManagerProps = {}) => {
   
   const { toast } = useToast();
   const { user } = useAuth();
+  const { isVerified, requireVerified } = useRequireEmailVerified();
 
   const fetchMyDishes = useCallback(async () => {
     if (!overrideChefId && !user?.id) return;
@@ -103,6 +105,7 @@ const MenuManager = ({ chefId: overrideChefId }: MenuManagerProps = {}) => {
 
   const handleSaveDish = async () => {
     if (!editingDish) return;
+    if (!requireVerified('publicera maträtter')) return;
 
     setLoading(true);
     try {
@@ -452,8 +455,9 @@ const MenuManager = ({ chefId: overrideChefId }: MenuManagerProps = {}) => {
                 </Button>
                 <Button
                   onClick={handleSaveDish}
-                  disabled={loading}
+                  disabled={loading || !isVerified}
                   className="flex-1 bg-gradient-primary text-white hover:opacity-90"
+                  title={!isVerified ? 'Verifiera din e-post för att publicera rätter' : undefined}
                 >
                   {loading ? (
                     "Sparar..."
