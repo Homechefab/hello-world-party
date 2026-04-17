@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import { calculatePaymentBreakdown } from "../_shared/payment-breakdown.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,7 +14,6 @@ serve(async (req) => {
   }
 
   try {
-    // Require authentication before exposing any payment data
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -26,8 +26,13 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
+
     const token = authHeader.replace("Bearer ", "");
-    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser(token);
+    const {
+      data: { user },
+      error: authError,
+    } = await supabaseAuth.auth.getUser(token);
+
     if (authError || !user) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -51,15 +56,20 @@ serve(async (req) => {
       expand: ["payment_intent", "customer"],
     });
 
-    // Verify the session belongs to the authenticated user
     if (session.metadata?.userId && session.metadata.userId !== user.id) {
       return new Response(JSON.stringify({ error: "Forbidden" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 403,
       });
     }
+
     if (!session.metadata?.userId && session.customer_details?.email) {
-      const { data: profile } = await supabaseAuth.from('profiles').select('email').eq('id', user.id).single();
+      const { data: profile } = await supabaseAuth
+        .from("profiles")
+        .select("email")
+        .eq("id", user.id)
+        .single();
+
       if (profile && profile.email !== session.customer_details.email) {
         return new Response(JSON.stringify({ error: "Forbidden" }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -67,6 +77,7 @@ serve(async (req) => {
         });
       }
     }
+
     if (!session.metadata?.userId && !session.customer_details?.email) {
       return new Response(JSON.stringify({ error: "Forbidden" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -80,46 +91,49 @@ serve(async (req) => {
 
     if (session.payment_intent && typeof session.payment_intent !== "string") {
       paymentIntentId = session.payment_intent.id;
-      const latest = (session.payment_intent.latest_charge as string) || undefined;
-      if (latest) {
-        const charge = await stripe.charges.retrieve(latest);
+      const latestChargeId = typeof session.payment_intent.latest_charge === "string"
+        ? session.payment_intent.latest_charge
+        : undefined;
+
+      if (latestChargeId) {
+        const charge = await stripe.charges.retrieve(latestChargeId);
         chargeId = charge.id;
         receiptUrl = charge.receipt_url || undefined;
       }
     }
 
-    // Get line items (for display)
     const items = await stripe.checkout.sessions.listLineItems(sessionId, { limit: 10 });
-    
-    // Save transaction to database with commission breakdown
+
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
-    
+
     const totalAmount = (session.amount_total || 0) / 100;
-    const serviceFeeRate = 0.06;
-    const sellerCommissionRate = 0.19;
-    const basePrice = totalAmount / (1 + serviceFeeRate);
-    const serviceFee = totalAmount - basePrice;
-    const sellerCommission = basePrice * sellerCommissionRate;
-    const platformFee = serviceFee + sellerCommission;
-    const chefEarnings = basePrice - sellerCommission;
-    const dishName = items.data[0]?.description || session.metadata?.dishName || "Okänd rätt";
-    
-    // Extract chef_id from order_items metadata if available
+    const paymentBreakdown = calculatePaymentBreakdown(totalAmount);
+    const dishName = items.data[0]?.description || session.metadata?.dishName || session.metadata?.dish_name || "Okänd rätt";
+
     let transactionChefId: string | undefined;
+    let quantityTotal = items.data[0]?.quantity || 1;
+
     if (session.metadata?.order_items) {
       try {
-        const orderItemsData = JSON.parse(session.metadata.order_items);
-        if (orderItemsData.length > 0 && orderItemsData[0].chefId) {
-          transactionChefId = orderItemsData[0].chefId;
+        const orderItemsData = JSON.parse(session.metadata.order_items) as Array<{ chefId?: string; quantity?: number }>;
+        const chefIds = [...new Set(orderItemsData.map((item) => item.chefId).filter(Boolean))];
+
+        if (chefIds.length === 1 && chefIds[0]) {
+          transactionChefId = chefIds[0];
+        }
+
+        const derivedQuantity = orderItemsData.reduce((sum, item) => sum + (item.quantity || 0), 0);
+        if (derivedQuantity > 0) {
+          quantityTotal = derivedQuantity;
         }
       } catch {
-        // Ignore parse errors
+        // ignore malformed metadata
       }
     }
-    
+
     try {
       const insertData: Record<string, unknown> = {
         stripe_session_id: session.id,
@@ -128,25 +142,23 @@ serve(async (req) => {
         customer_email: session.customer_details?.email || "unknown@email.com",
         user_id: user.id,
         dish_name: dishName,
-        quantity: items.data[0]?.quantity || 1,
-        total_amount: totalAmount,
-        platform_fee: platformFee,
-        chef_earnings: chefEarnings,
+        quantity: quantityTotal,
+        total_amount: paymentBreakdown.totalAmount,
+        platform_fee: paymentBreakdown.platformFee,
+        chef_earnings: paymentBreakdown.chefEarnings,
         currency: (session.currency || "sek").toUpperCase(),
         payment_status: session.payment_status || "unknown",
         receipt_url: receiptUrl,
       };
-      
+
       if (transactionChefId) {
         insertData.chef_id = transactionChefId;
       }
-      
+
       const { error: dbError } = await supabaseClient
         .from("payment_transactions")
-        .upsert(insertData, {
-          onConflict: "stripe_session_id"
-        });
-      
+        .upsert(insertData, { onConflict: "stripe_session_id" });
+
       if (dbError) {
         console.error("Error saving transaction:", dbError);
       } else {
@@ -156,25 +168,29 @@ serve(async (req) => {
       console.error("Error saving to database:", error);
     }
 
-    // CREATE ORDER in orders table after successful payment
     let createdOrderId: string | undefined;
-    if (session.payment_status === 'paid' && session.metadata?.order_items) {
+    if (session.payment_status === "paid" && session.metadata?.order_items) {
       try {
-        const orderItemsData = JSON.parse(session.metadata.order_items);
+        const orderItemsData = JSON.parse(session.metadata.order_items) as Array<{
+          chefId: string;
+          dishId: string;
+          quantity: number;
+          unitPrice: number;
+        }>;
+
         if (orderItemsData.length > 0) {
-          // Group items by chef (one order per chef)
           const itemsByChef: Record<string, Array<{ dishId: string; quantity: number; unitPrice: number }>> = {};
+
           for (const item of orderItemsData) {
-            if (!itemsByChef[item.chefId]) itemsByChef[item.chefId] = [];
+            if (!itemsByChef[item.chefId]) {
+              itemsByChef[item.chefId] = [];
+            }
             itemsByChef[item.chefId].push(item);
           }
 
           for (const [chefId, chefItems] of Object.entries(itemsByChef)) {
-            const orderTotal = chefItems.reduce(
-              (sum, it) => sum + it.unitPrice * it.quantity, 0
-            );
+            const orderTotal = chefItems.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 
-            // Idempotency: check if order already exists for this stripe session
             const { data: existingOrder } = await supabaseClient
               .from("orders")
               .select("id")
@@ -184,23 +200,21 @@ serve(async (req) => {
               .limit(1);
 
             if (existingOrder && existingOrder.length > 0) {
-              console.log("Order already exists, skipping:", existingOrder[0].id);
               createdOrderId = existingOrder[0].id;
               continue;
             }
 
-            // Create the order
             const { data: newOrder, error: orderError } = await supabaseClient
               .from("orders")
               .insert({
                 customer_id: user.id,
                 chef_id: chefId,
                 total_amount: orderTotal,
-                delivery_address: session.metadata?.delivery_address || 'Upphämtning',
+                delivery_address: session.metadata?.delivery_address || "Upphämtning",
                 special_instructions: session.metadata?.special_instructions || null,
-                status: 'pending',
+                status: "pending",
               })
-              .select('id')
+              .select("id")
               .single();
 
             if (orderError) {
@@ -209,33 +223,24 @@ serve(async (req) => {
             }
 
             createdOrderId = newOrder.id;
-            console.log("Order created:", newOrder.id);
 
-            // Create order items
-            const orderItemInserts = chefItems.map((it) => ({
+            const orderItemInserts = chefItems.map((item) => ({
               order_id: newOrder.id,
-              dish_id: it.dishId,
-              quantity: it.quantity,
-              unit_price: it.unitPrice,
-              total_price: it.unitPrice * it.quantity,
+              dish_id: item.dishId,
+              quantity: item.quantity,
+              unit_price: item.unitPrice,
+              total_price: item.unitPrice * item.quantity,
             }));
 
-            const { error: itemsError } = await supabaseClient
-              .from("order_items")
-              .insert(orderItemInserts);
-
+            const { error: itemsError } = await supabaseClient.from("order_items").insert(orderItemInserts);
             if (itemsError) {
               console.error("Error creating order items:", itemsError);
-            } else {
-              console.log("Order items created for order:", newOrder.id);
             }
 
-            // Notify chef about the new order (email + SMS)
             try {
-              await supabaseClient.functions.invoke('notify-chef-new-order', {
+              await supabaseClient.functions.invoke("notify-chef-new-order", {
                 body: { order_id: newOrder.id },
               });
-              console.log("Chef notification sent for order:", newOrder.id);
             } catch (notifyError) {
               console.error("Failed to notify chef:", notifyError);
             }
@@ -259,18 +264,18 @@ serve(async (req) => {
         receipt_url: receiptUrl,
         metadata: session.metadata,
         order_id: createdOrderId,
-        line_items: items.data.map((i: any) => ({
-          description: i.description,
-          quantity: i.quantity,
-          amount_subtotal: i.amount_subtotal,
-          amount_total: i.amount_total,
-          currency: i.currency,
+        line_items: items.data.map((item) => ({
+          description: item.description,
+          quantity: item.quantity,
+          amount_subtotal: item.amount_subtotal,
+          amount_total: item.amount_total,
+          currency: item.currency,
         })),
         commission_report: {
-          total_amount: totalAmount,
-          platform_fee: platformFee,
-          chef_earnings: chefEarnings,
-        }
+          total_amount: paymentBreakdown.totalAmount,
+          platform_fee: paymentBreakdown.platformFee,
+          chef_earnings: paymentBreakdown.chefEarnings,
+        },
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
