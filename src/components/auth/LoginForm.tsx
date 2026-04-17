@@ -88,7 +88,16 @@ export const LoginForm = ({ onToggleMode, onSuccess }: LoginFormProps) => {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Lösenord</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password">Lösenord</Label>
+              <button
+                type="button"
+                onClick={() => navigate('/forgot-password')}
+                className="text-xs text-primary hover:underline"
+              >
+                Glömt lösenord?
+              </button>
+            </div>
             <Input
               id="password"
               type="password"
