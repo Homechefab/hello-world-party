@@ -122,6 +122,14 @@ const DishPage = () => {
   };
 
   const handleOrder = () => {
+    if (!chefIsOpen) {
+      toast({
+        title: "Kocken är stängd",
+        description: nextOpenInfo ? `Öppnar igen: ${nextOpenInfo}` : "Beställningar är inte möjliga just nu.",
+        variant: "destructive",
+      });
+      return;
+    }
     if (!selectedTime) {
       toast({
         title: "Välj hämtningstid",
