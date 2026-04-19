@@ -64,6 +64,7 @@ export const ChefDashboard = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   useChefOrderNotifications();
+  const { playOrderSound } = useOrderSound();
 
   const stats = {
     totalSales: 15750,
