@@ -381,15 +381,15 @@ export const ChefDashboard = () => {
               <div className="space-y-6">
                 <div className="grid gap-4 md:grid-cols-3">
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">23</div>
+                    <div className="text-2xl font-bold text-primary">–</div>
                     <p className="text-sm text-muted-foreground">Beställningar denna vecka</p>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">3,450 kr</div>
+                    <div className="text-2xl font-bold text-primary">–</div>
                     <p className="text-sm text-muted-foreground">Intäkter denna vecka</p>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-primary">150 kr</div>
+                    <div className="text-2xl font-bold text-primary">–</div>
                     <p className="text-sm text-muted-foreground">Genomsnittlig beställning</p>
                   </div>
                 </div>
