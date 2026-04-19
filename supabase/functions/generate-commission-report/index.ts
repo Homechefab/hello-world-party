@@ -22,6 +22,16 @@ serve(async (req) => {
   }
 
   try {
+    const requestBody = await req.json().catch(() => null);
+    const sessionId = typeof requestBody?.sessionId === 'string' ? requestBody.sessionId.trim() : '';
+
+    if (!sessionId) {
+      return new Response(JSON.stringify({ error: 'sessionId is required' }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
+    }
+
     // Verify authentication
     const authHeader = req.headers.get('Authorization');
     if (!authHeader?.startsWith('Bearer ')) {
