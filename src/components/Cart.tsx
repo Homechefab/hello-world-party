@@ -137,7 +137,7 @@ export const Cart = () => {
         .eq('id', user.id)
         .maybeSingle();
 
-      const phone = profile?.phone?.trim();
+      const phone = (profile?.phone || "").trim();
       if (!phone) {
         setExistingPhone("");
         setShowPhonePrompt(true);
@@ -165,7 +165,7 @@ export const Cart = () => {
       console.error('Failed to save phone on profile:', err);
     }
 
-    await proceedToCheckout(phone);
+    await proceedToCheckout(phone || "");
   };
 
 
@@ -300,6 +300,13 @@ export const Cart = () => {
           setShowAuth(false);
           setIsCartOpen(false);
         }}
+      />
+
+      <PhonePromptDialog
+        open={showPhonePrompt}
+        onOpenChange={setShowPhonePrompt}
+        defaultValue={existingPhone}
+        onConfirm={handlePhoneConfirmed}
       />
     </>
   );
