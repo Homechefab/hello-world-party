@@ -41,31 +41,24 @@ export const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => 
 
       if (error) throw error;
 
-      // Auto-login UX: if Supabase didn't return a session, try password sign-in
-      // immediately so the user gets instant access while verifying via email.
+      // No email verification required — log the user in immediately if no session was returned.
       let hasSession = !!data.session;
       if (!hasSession) {
         const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
         hasSession = !signInError;
       }
 
-      if (hasSession) {
-        toast({
-          title: "Välkommen till Homechef! 🎉",
-          description: "Ditt konto är skapat. Vi har skickat en verifieringslänk till din e-post.",
-        });
-        if (onSuccess) {
-          onSuccess();
-        } else {
-          const returnPath = sessionStorage.getItem('post_auth_return') || '/dashboard';
-          sessionStorage.removeItem('post_auth_return');
-          navigate(returnPath, { replace: true });
-        }
+      toast({
+        title: "Välkommen till Homechef! 🎉",
+        description: "Ditt konto är skapat och du är inloggad.",
+      });
+
+      if (onSuccess) {
+        onSuccess();
       } else {
-        toast({
-          title: "Registrering lyckades!",
-          description: "Kolla din e-post för att bekräfta ditt konto.",
-        });
+        const returnPath = sessionStorage.getItem('post_auth_return') || '/dashboard';
+        sessionStorage.removeItem('post_auth_return');
+        navigate(returnPath, { replace: true });
       }
     } catch (error: unknown) {
       toast({

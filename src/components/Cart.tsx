@@ -9,12 +9,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { isChefCurrentlyOpen } from "@/hooks/useChefAvailability";
-import { useRequireEmailVerified } from "@/hooks/useRequireEmailVerified";
 
 export const Cart = () => {
   const { state, updateQuantity, removeItem } = useCart();
   const { user, isReady } = useAuth();
-  const { requireVerified } = useRequireEmailVerified();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -34,7 +32,6 @@ export const Cart = () => {
       return;
     }
 
-    if (!requireVerified('slutföra ett köp')) return;
 
     if (state.items.length === 0) {
       toast({
