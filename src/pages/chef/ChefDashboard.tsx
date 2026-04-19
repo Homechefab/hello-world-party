@@ -232,8 +232,8 @@ export const ChefDashboard = () => {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalSales.toLocaleString('sv-SE')} kr</div>
-            <p className="text-xs text-muted-foreground">+12% från förra månaden</p>
+            <div className="text-2xl font-bold">–</div>
+            <p className="text-xs text-muted-foreground">Ingen data ännu</p>
           </CardContent>
         </Card>
 
@@ -243,8 +243,8 @@ export const ChefDashboard = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.ordersThisWeek}</div>
-            <p className="text-xs text-muted-foreground">Denna vecka</p>
+            <div className="text-2xl font-bold">–</div>
+            <p className="text-xs text-muted-foreground">Ingen data ännu</p>
           </CardContent>
         </Card>
 
@@ -254,8 +254,8 @@ export const ChefDashboard = () => {
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.averageRating}/5</div>
-            <p className="text-xs text-muted-foreground">Genomsnittligt betyg</p>
+            <div className="text-2xl font-bold">–</div>
+            <p className="text-xs text-muted-foreground">Inga recensioner ännu</p>
           </CardContent>
         </Card>
 
