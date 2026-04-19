@@ -26,6 +26,9 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useChefOrderNotifications } from '@/hooks/useChefOrderNotifications';
+import { useOrderSound } from '@/hooks/useOrderSound';
+import { Button } from '@/components/ui/button';
+import { Volume2 } from 'lucide-react';
 
 // Chef Dashboard Component
 export const ChefDashboard = () => {
@@ -61,6 +64,7 @@ export const ChefDashboard = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   useChefOrderNotifications();
+  const { playOrderSound } = useOrderSound();
 
   const stats = {
     totalSales: 15750,
@@ -197,11 +201,22 @@ export const ChefDashboard = () => {
         />
       )}
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard</h1>
-        <p className="text-muted-foreground">
-          {isAdmin ? 'Administratörsvy – Visa och hantera kockens dashboard' : 'Hantera din hemlagade mat verksamhet'}
-        </p>
+      <div className="mb-8 flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Dashboard</h1>
+          <p className="text-muted-foreground">
+            {isAdmin ? 'Administratörsvy – Visa och hantera kockens dashboard' : 'Hantera din hemlagade mat verksamhet'}
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={playOrderSound}
+          className="gap-2"
+        >
+          <Volume2 className="h-4 w-4" />
+          Förhandslyssna notisljud
+        </Button>
       </div>
 
       {/* Admin without a chef selected */}
