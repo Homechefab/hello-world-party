@@ -76,7 +76,14 @@ serve(async (req) => {
       .eq("id", user.id)
       .single();
 
-    if (!profile || profile.email !== transaction.customer_email) {
+    const { data: isAdmin } = await supabaseClient.rpc("has_role", {
+      _user_id: user.id,
+      _role: "admin",
+    });
+
+    const isOwner = profile?.email === transaction.customer_email;
+
+    if (!isAdmin && !isOwner) {
       return new Response(JSON.stringify({ error: 'Access denied' }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 403,

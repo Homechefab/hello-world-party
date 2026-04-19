@@ -135,6 +135,38 @@ export const PaymentOverview = () => {
     return format(new Date(dateString), "d MMM yyyy HH:mm", { locale: sv });
   };
 
+  const openCustomerReceipt = async (sessionId: string) => {
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) return;
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(`${supabaseUrl}/functions/v1/generate-customer-receipt`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+          'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({ sessionId }),
+      });
+
+      if (!response.ok) {
+        console.error('Receipt error:', await response.text());
+        return;
+      }
+
+      const html = await response.text();
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    } catch (error) {
+      console.error('Failed to open receipt:', error);
+    }
+  };
+
   const formatPhoneNumber = (phone: string) => {
     if (phone.startsWith("46")) {
       return `0${phone.slice(2)}`;
@@ -277,18 +309,14 @@ export const PaymentOverview = () => {
                           </TableCell>
                           <TableCell>{getStatusBadge(payment.payment_status)}</TableCell>
                           <TableCell>
-                            {payment.receipt_url ? (
-                              <a
-                                href={payment.receipt_url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 text-primary hover:underline"
-                              >
-                                Visa <ExternalLink className="h-3 w-3" />
-                              </a>
-                            ) : (
-                              <span className="text-muted-foreground">-</span>
-                            )}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => openCustomerReceipt(payment.stripe_session_id)}
+                              className="inline-flex items-center gap-1 text-primary hover:underline h-auto p-0"
+                            >
+                              Visa <ExternalLink className="h-3 w-3" />
+                            </Button>
                           </TableCell>
                         </TableRow>
                       ))}
