@@ -17,6 +17,8 @@ import { useCart } from "@/contexts/CartContext";
 import ShareButtons from "@/components/ShareButtons";
 import SEOHead from "@/components/SEOHead";
 import { supabase } from "@/integrations/supabase/client";
+import { useChefAvailability } from "@/hooks/useChefAvailability";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface DishRecord {
   id: string;
