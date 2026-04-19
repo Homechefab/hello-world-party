@@ -57,6 +57,7 @@ const DishPage = () => {
   const [specialRequests, setSpecialRequests] = useState("");
   const [showPayment, setShowPayment] = useState(false);
   const [showOrderConfirmation, setShowOrderConfirmation] = useState(false);
+  const { isOpen: chefIsOpen, nextOpenInfo } = useChefAvailability(dish?.chef_id);
 
   useEffect(() => {
     const load = async () => {
