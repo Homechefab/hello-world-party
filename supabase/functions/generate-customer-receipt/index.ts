@@ -209,27 +209,6 @@ serve(async (req) => {
           <span>${totalAmount.toFixed(2)} kr</span>
         </div>
       </div>
-      <div class="section">
-        <div class="commission-box">
-          <div class="title">📊 Avgiftsfördelning (Hybridmodell)</div>
-          <div class="crow">
-            <span>Serviceavgift från kund (6%)</span>
-            <span class="platform-fee"><strong>+${serviceFee.toFixed(2)} SEK</strong></span>
-          </div>
-          <div class="crow">
-            <span>Provision från säljare (19%)</span>
-            <span class="platform-fee"><strong>+${sellerCommission.toFixed(2)} SEK</strong></span>
-          </div>
-          <div class="crow border-top">
-            <span><strong>💰 Totalt till Homechef (inkl. moms)</strong></span>
-            <span><strong>${totalToHomechef.toFixed(2)} SEK</strong></span>
-          </div>
-          <div class="crow border-top">
-            <span><strong>🍳 Utbetalning till säljare (81%)</strong></span>
-            <span class="chef-earnings"><strong>${sellerEarnings.toFixed(2)} SEK</strong></span>
-          </div>
-        </div>
-      </div>
     </div>
     <div class="footer">
       <p><strong>Homechef AB</strong></p>
