@@ -1800,6 +1800,25 @@ export type Database = {
       }
       is_chef_approved: { Args: { _chef_id: string }; Returns: boolean }
       log_user_login: { Args: { p_user_agent?: string }; Returns: undefined }
+      order_original_matches_chef_editable_fields: {
+        Args: {
+          p_chef_id: string
+          p_customer_id: string
+          p_delivery_address: string
+          p_order_id: string
+          p_total_amount: number
+        }
+        Returns: boolean
+      }
+      order_original_matches_customer_editable_fields: {
+        Args: {
+          p_chef_id: string
+          p_customer_id: string
+          p_order_id: string
+          p_total_amount: number
+        }
+        Returns: boolean
+      }
       process_referral_signup: {
         Args: { p_new_user_id: string; p_referral_code: string }
         Returns: Json
