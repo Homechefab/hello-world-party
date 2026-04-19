@@ -162,11 +162,7 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
 
       if (error) throw error;
 
-      setOrders(orders.map(order => 
-        order.id === orderId ? { ...order, status: newStatus } : order
-      ));
-
-      // Trigger SMS to customer when marking as ready
+      // Trigger SMS to customer when marking as ready, then auto-complete the order
       if (newStatus === 'ready') {
         try {
           const { data: smsResult, error: smsError } = await supabase.functions.invoke('notify-customer-ready', {
@@ -180,11 +176,29 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
         } catch (smsErr) {
           console.error('Error sending customer-ready SMS:', smsErr);
         }
+
+        // Auto-mark as completed so the order leaves the active list
+        const { error: completeError } = await supabase
+          .from('orders')
+          .update({ status: 'completed' })
+          .eq('id', orderId);
+
+        if (completeError) {
+          console.error('Failed to auto-complete order:', completeError);
+        } else {
+          newStatus = 'completed';
+        }
       }
+
+      setOrders(orders.map(order =>
+        order.id === orderId ? { ...order, status: newStatus } : order
+      ));
 
       toast({
         title: "Status uppdaterad",
-        description: `Beställning har markerats som ${getStatusText(newStatus)}`
+        description: newStatus === 'completed'
+          ? 'Kunden har meddelats och beställningen är slutförd'
+          : `Beställning har markerats som ${getStatusText(newStatus)}`
       });
 
     } catch (error) {
