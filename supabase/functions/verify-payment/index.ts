@@ -188,6 +188,26 @@ serve(async (req) => {
             itemsByChef[item.chefId].push(item);
           }
 
+          // Persist phone on profile if we have one and it's missing
+          const phoneFromMeta = session.metadata?.customer_phone;
+          if (phoneFromMeta) {
+            try {
+              const { data: existingProfile } = await supabaseClient
+                .from("profiles")
+                .select("phone")
+                .eq("id", user.id)
+                .maybeSingle();
+              if (existingProfile && !existingProfile.phone) {
+                await supabaseClient
+                  .from("profiles")
+                  .update({ phone: phoneFromMeta })
+                  .eq("id", user.id);
+              }
+            } catch (profileErr) {
+              console.error("Failed to backfill profile phone:", profileErr);
+            }
+          }
+
           for (const [chefId, chefItems] of Object.entries(itemsByChef)) {
             const orderTotal = chefItems.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 
