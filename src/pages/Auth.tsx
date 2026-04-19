@@ -107,28 +107,20 @@ const Auth = () => {
           }
         }
 
-        // Auto-login UX: if Supabase didn't return a session (email confirmation required),
-        // try password sign-in immediately so the user gets instant access.
+        // No email verification required — log the user in immediately if Supabase didn't return a session.
         let hasSession = !!authData.session;
         if (!hasSession) {
           const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
           hasSession = !signInError;
         }
 
-        if (hasSession) {
-          toast({
-            title: "Välkommen till Homechef! 🎉",
-            description: "Ditt konto är skapat. Vi har skickat en verifieringslänk till din e-post.",
-          });
-          const returnPath = sessionStorage.getItem('post_auth_return') || '/dashboard';
-          sessionStorage.removeItem('post_auth_return');
-          navigate(returnPath, { replace: true });
-        } else {
-          toast({
-            title: "Konto skapat!",
-            description: "Kontrollera din e-post för att verifiera ditt konto innan du loggar in.",
-          });
-        }
+        toast({
+          title: "Välkommen till Homechef! 🎉",
+          description: "Ditt konto är skapat och du är inloggad.",
+        });
+        const returnPath = sessionStorage.getItem('post_auth_return') || '/dashboard';
+        sessionStorage.removeItem('post_auth_return');
+        navigate(returnPath, { replace: true });
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
