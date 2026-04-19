@@ -9,7 +9,9 @@ export const EmailVerificationBanner = () => {
   const [dismissed, setDismissed] = useState(false);
   const [sending, setSending] = useState(false);
 
+  // E-postverifiering är inte obligatorisk — banderollen är avstängd.
   if (!user || user.emailConfirmed || dismissed) return null;
+  return null;
 
   const handleResend = async () => {
     setSending(true);
