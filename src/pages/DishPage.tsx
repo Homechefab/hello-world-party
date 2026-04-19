@@ -17,6 +17,8 @@ import { useCart } from "@/contexts/CartContext";
 import ShareButtons from "@/components/ShareButtons";
 import SEOHead from "@/components/SEOHead";
 import { supabase } from "@/integrations/supabase/client";
+import { useChefAvailability } from "@/hooks/useChefAvailability";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface DishRecord {
   id: string;
@@ -55,6 +57,7 @@ const DishPage = () => {
   const [specialRequests, setSpecialRequests] = useState("");
   const [showPayment, setShowPayment] = useState(false);
   const [showOrderConfirmation, setShowOrderConfirmation] = useState(false);
+  const { isOpen: chefIsOpen, nextOpenInfo } = useChefAvailability(dish?.chef_id);
 
   useEffect(() => {
     const load = async () => {
@@ -119,6 +122,14 @@ const DishPage = () => {
   };
 
   const handleOrder = () => {
+    if (!chefIsOpen) {
+      toast({
+        title: "Kocken är stängd",
+        description: nextOpenInfo ? `Öppnar igen: ${nextOpenInfo}` : "Beställningar är inte möjliga just nu.",
+        variant: "destructive",
+      });
+      return;
+    }
     if (!selectedTime) {
       toast({
         title: "Välj hämtningstid",
@@ -331,21 +342,30 @@ const DishPage = () => {
                     />
                   </div>
 
+                  {!chefIsOpen && (
+                    <Alert variant="destructive">
+                      <AlertDescription>
+                        Kocken är stängd just nu och tar inte emot beställningar.
+                        {nextOpenInfo ? ` Öppnar igen: ${nextOpenInfo}.` : ""}
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
                   <div className="space-y-3 pt-4 border-t">
                     <div className="flex justify-between items-center">
                       <span>Totalt ({quantity} portioner)</span>
                       <span className="text-xl font-bold">{dish.price * quantity} kr</span>
                     </div>
 
-                    <Button className="w-full" variant="outline" size="lg" onClick={handleAddToCart}>
+                    <Button className="w-full" variant="outline" size="lg" onClick={handleAddToCart} disabled={!chefIsOpen}>
                       <ShoppingCart className="w-4 h-4 mr-2" />
                       Lägg i varukorg
                     </Button>
 
                     <Dialog open={showPayment} onOpenChange={setShowPayment}>
                       <DialogTrigger asChild>
-                        <Button className="w-full" variant="food" size="lg" onClick={handleOrder}>
-                          Lägg beställning
+                        <Button className="w-full" variant="food" size="lg" onClick={handleOrder} disabled={!chefIsOpen}>
+                          {chefIsOpen ? "Lägg beställning" : "Stängt"}
                         </Button>
                       </DialogTrigger>
                       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
