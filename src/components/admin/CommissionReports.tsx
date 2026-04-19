@@ -52,6 +52,42 @@ export const CommissionReports = () => {
     }
   };
 
+  const openCustomerReceipt = async (sessionId: string) => {
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error('Du måste vara inloggad');
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(`${supabaseUrl}/functions/v1/generate-customer-receipt`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+          'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({ sessionId }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || `HTTP ${response.status}`);
+      }
+
+      const html = await response.text();
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    } catch (error) {
+      toast({
+        title: 'Kunde inte öppna kvitto',
+        description: error instanceof Error ? error.message : 'Okänt fel',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const generateReport = async (sessionId: string) => {
     try {
       // Använd fetch direkt eftersom edge function returnerar HTML (inte JSON)
