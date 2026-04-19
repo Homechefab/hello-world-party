@@ -7,6 +7,8 @@ export function useChefOrderNotifications() {
   const { user } = useAuth();
   const chefIdRef = useRef<string | null>(null);
 
+  const { playOrderSound } = useOrderSound();
+
   // Request notification permission
   useEffect(() => {
     if (!user?.id) return;
