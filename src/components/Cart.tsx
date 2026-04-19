@@ -5,6 +5,7 @@ import { ShoppingBag, Plus, Minus, Trash2, CreditCard, Loader2 } from "lucide-re
 import { useCart } from "@/contexts/CartContext";
 import { useState } from "react";
 import { AuthDialog } from "@/components/auth/AuthDialog";
+import { PhonePromptDialog } from "@/components/PhonePromptDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -15,6 +16,8 @@ export const Cart = () => {
   const { user, isReady } = useAuth();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [showPhonePrompt, setShowPhonePrompt] = useState(false);
+  const [existingPhone, setExistingPhone] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
 
