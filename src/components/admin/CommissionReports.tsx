@@ -204,19 +204,19 @@ export const CommissionReports = () => {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex gap-2 justify-end">
-                          {transaction.receipt_url && (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => window.open(transaction.receipt_url!, '_blank')}
-                            >
-                              <ReceiptText className="w-4 h-4" />
-                            </Button>
-                          )}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => openCustomerReceipt(transaction.stripe_session_id)}
+                            title="Kundkvitto"
+                          >
+                            <ReceiptText className="w-4 h-4" />
+                          </Button>
                           <Button
                             size="sm"
                             variant="ghost"
                             onClick={() => generateReport(transaction.stripe_session_id)}
+                            title="Provisionsunderlag"
                           >
                             <FileText className="w-4 h-4" />
                           </Button>

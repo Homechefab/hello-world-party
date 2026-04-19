@@ -277,18 +277,14 @@ export const PaymentOverview = () => {
                           </TableCell>
                           <TableCell>{getStatusBadge(payment.payment_status)}</TableCell>
                           <TableCell>
-                            {payment.receipt_url ? (
-                              <a
-                                href={payment.receipt_url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 text-primary hover:underline"
-                              >
-                                Visa <ExternalLink className="h-3 w-3" />
-                              </a>
-                            ) : (
-                              <span className="text-muted-foreground">-</span>
-                            )}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => openCustomerReceipt(payment.stripe_session_id)}
+                              className="inline-flex items-center gap-1 text-primary hover:underline h-auto p-0"
+                            >
+                              Visa <ExternalLink className="h-3 w-3" />
+                            </Button>
                           </TableCell>
                         </TableRow>
                       ))}
