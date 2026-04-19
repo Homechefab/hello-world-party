@@ -149,7 +149,7 @@ const PaymentSuccess = () => {
             Betalning genomförd
           </CardTitle>
           <CardDescription>
-            Tack! Din betalning har slutförts. Nedan finns sammanfattning och kvitto.
+            Tack! Din betalning har slutförts. En orderbekräftelse med kvitto har skickats till din e-post.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
