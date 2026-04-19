@@ -26,6 +26,9 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useChefOrderNotifications } from '@/hooks/useChefOrderNotifications';
+import { useOrderSound } from '@/hooks/useOrderSound';
+import { Button } from '@/components/ui/button';
+import { Volume2 } from 'lucide-react';
 
 // Chef Dashboard Component
 export const ChefDashboard = () => {
