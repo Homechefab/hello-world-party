@@ -467,11 +467,44 @@ serve(async (req) => {
           <span>${basePriceExclVat.toFixed(2)} ${transaction.currency}</span>
         </div>
         <div class="summary-row">
-          <span>↳ Moms (12%)</span>
+          <span>↳ Moms livsmedel (12%)</span>
           <span>${vatAmount.toFixed(2)} ${transaction.currency}</span>
         </div>
+        <div class="summary-row" style="border-top: 1px solid #e1e4e8; padding-top: 12px; margin-top: 8px;">
+          <span>Serviceavgift (6% på varubelopp)</span>
+          <span>${serviceFee.toFixed(2)} ${transaction.currency}</span>
+        </div>
+        <div class="summary-row">
+          <span>↳ Serviceavgift exkl. moms</span>
+          <span>${serviceFeeExclVat.toFixed(2)} ${transaction.currency}</span>
+        </div>
+        <div class="summary-row">
+          <span>↳ Moms tjänst (25%)</span>
+          <span>${serviceFeeVat.toFixed(2)} ${transaction.currency}</span>
+        </div>
       </div>
-      
+
+      <!-- VAT Summary for accounting -->
+      <div class="section">
+        <div class="section-title">Momsspecifikation (för bokföring)</div>
+        <div class="info-row">
+          <span class="info-label">Moms 12% (livsmedel – säljarens del)</span>
+          <span class="info-value">${vatAmount.toFixed(2)} ${transaction.currency}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Moms 25% på serviceavgift (Homechef)</span>
+          <span class="info-value">${serviceFeeVat.toFixed(2)} ${transaction.currency}</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Moms 25% på provision (Homechef)</span>
+          <span class="info-value">${commissionVat.toFixed(2)} ${transaction.currency}</span>
+        </div>
+        <div class="info-row" style="border-top: 2px solid #e1e4e8; padding-top: 12px; margin-top: 8px;">
+          <span class="info-label"><strong>Total moms i transaktionen</strong></span>
+          <span class="info-value"><strong>${(vatAmount + serviceFeeVat + commissionVat).toFixed(2)} ${transaction.currency}</strong></span>
+        </div>
+      </div>
+
       <!-- Commission Breakdown -->
       <div class="commission-box">
         <div class="commission-title">📊 Avgiftsfördelning (Hybridmodell)</div>
