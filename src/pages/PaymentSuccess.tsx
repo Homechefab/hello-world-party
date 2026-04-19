@@ -149,7 +149,7 @@ const PaymentSuccess = () => {
             Betalning genomförd
           </CardTitle>
           <CardDescription>
-            Tack! Din betalning har slutförts. Nedan finns sammanfattning och kvitto.
+            Tack! Din betalning har slutförts. En orderbekräftelse med kvitto har skickats till din e-post.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -180,6 +180,10 @@ const PaymentSuccess = () => {
             </div>
           ) : (
             <>
+              <div className="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                ✓ Orderbekräftelse och kvitto har skickats till{" "}
+                <span className="font-medium">{result?.customer_email || "din e-post"}</span>.
+              </div>
               <div className="grid gap-2 text-sm">
                 <div className="flex justify-between">
                   <span>Varupris:</span>

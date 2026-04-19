@@ -184,6 +184,20 @@ async function handleCheckoutSession(
   }
 
   logStep("Transaction saved from checkout session", { sessionId: session.id, totalAmount });
+
+  // Skicka kvitto/orderbekräftelse till kund (best effort)
+  try {
+    const { error: mailError } = await supabase.functions.invoke("send-customer-receipt", {
+      body: { sessionId: session.id },
+    });
+    if (mailError) {
+      logStep("Failed to send customer receipt email", { error: mailError.message });
+    } else {
+      logStep("Customer receipt email triggered", { sessionId: session.id });
+    }
+  } catch (err) {
+    logStep("Receipt email exception", { error: String(err) });
+  }
 }
 
 async function handlePaymentIntent(
@@ -264,4 +278,18 @@ async function handlePaymentIntent(
   }
 
   logStep("Transaction saved from payment intent (fallback)", { piId: paymentIntent.id, totalAmount });
+
+  try {
+    const sid = `pi_${paymentIntent.id}`;
+    const { error: mailError } = await supabase.functions.invoke("send-customer-receipt", {
+      body: { sessionId: sid },
+    });
+    if (mailError) {
+      logStep("Failed to send customer receipt email (PI)", { error: mailError.message });
+    } else {
+      logStep("Customer receipt email triggered (PI)", { sid });
+    }
+  } catch (err) {
+    logStep("Receipt email exception (PI)", { error: String(err) });
+  }
 }
