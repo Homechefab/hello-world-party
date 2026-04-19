@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { supabase } from "@/integrations/supabase/client";
-import { Smartphone, Wallet, RefreshCw } from "lucide-react";
+import { Smartphone, Wallet, RefreshCw, CreditCard, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import { sv } from "date-fns/locale";
@@ -33,10 +33,26 @@ interface KlarnaPayment {
   created_at: string;
 }
 
+interface StripePayment {
+  id: string;
+  customer_email: string;
+  dish_name: string;
+  quantity: number;
+  total_amount: number;
+  platform_fee: number;
+  chef_earnings: number;
+  currency: string;
+  payment_status: string;
+  receipt_url: string | null;
+  stripe_session_id: string;
+  created_at: string;
+}
+
 const getStatusBadge = (status: string) => {
   const statusMap: Record<string, { variant: "default" | "secondary" | "destructive" | "outline"; label: string }> = {
     CREATED: { variant: "secondary", label: "Skapad" },
     PAID: { variant: "default", label: "Betald" },
+    paid: { variant: "default", label: "Betald" },
     DECLINED: { variant: "destructive", label: "Nekad" },
     ERROR: { variant: "destructive", label: "Fel" },
     CANCELLED: { variant: "outline", label: "Avbruten" },
@@ -44,6 +60,9 @@ const getStatusBadge = (status: string) => {
     checkout_complete: { variant: "default", label: "Slutförd" },
     authorized: { variant: "default", label: "Auktoriserad" },
     captured: { variant: "default", label: "Betald" },
+    pending: { variant: "secondary", label: "Pågående" },
+    refunded: { variant: "outline", label: "Återbetald" },
+    failed: { variant: "destructive", label: "Misslyckad" },
   };
 
   const config = statusMap[status] || { variant: "outline" as const, label: status };
@@ -53,13 +72,14 @@ const getStatusBadge = (status: string) => {
 export const PaymentOverview = () => {
   const [swishPayments, setSwishPayments] = useState<SwishPayment[]>([]);
   const [klarnaPayments, setKlarnaPayments] = useState<KlarnaPayment[]>([]);
+  const [stripePayments, setStripePayments] = useState<StripePayment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [totals, setTotals] = useState({ swish: 0, klarna: 0 });
+  const [totals, setTotals] = useState({ swish: 0, klarna: 0, stripe: 0 });
 
   const fetchPayments = async () => {
     setLoading(true);
     try {
-      const [swishResult, klarnaResult] = await Promise.all([
+      const [swishResult, klarnaResult, stripeResult] = await Promise.all([
         supabase
           .from("swish_payments")
           .select("*")
@@ -67,6 +87,11 @@ export const PaymentOverview = () => {
           .limit(100),
         supabase
           .from("klarna_payments")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(100),
+        supabase
+          .from("payment_transactions")
           .select("*")
           .order("created_at", { ascending: false })
           .limit(100),
@@ -86,6 +111,14 @@ export const PaymentOverview = () => {
           .filter((p) => p.status === "captured" || p.status === "checkout_complete")
           .reduce((sum, p) => sum + Number(p.amount) / 100, 0);
         setTotals((prev) => ({ ...prev, klarna: klarnaTotal }));
+      }
+
+      if (stripeResult.data) {
+        setStripePayments(stripeResult.data);
+        const stripeTotal = stripeResult.data
+          .filter((p) => p.payment_status === "paid")
+          .reduce((sum, p) => sum + Number(p.total_amount), 0);
+        setTotals((prev) => ({ ...prev, stripe: stripeTotal }));
       }
     } catch (error) {
       console.error("Fel vid hämtning av betalningar:", error);
@@ -123,12 +156,27 @@ export const PaymentOverview = () => {
     );
   }
 
+  const stripePaidCount = stripePayments.filter((p) => p.payment_status === "paid").length;
+
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Swish-betalningar</CardTitle>
+            <CardTitle className="text-sm font-medium">Stripe (kort)</CardTitle>
+            <CreditCard className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{totals.stripe.toFixed(2)} kr</div>
+            <p className="text-xs text-muted-foreground">
+              {stripePaidCount} genomförda betalningar
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Swish</CardTitle>
             <Smartphone className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -141,7 +189,7 @@ export const PaymentOverview = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Klarna-betalningar</CardTitle>
+            <CardTitle className="text-sm font-medium">Klarna</CardTitle>
             <Wallet className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -158,7 +206,7 @@ export const PaymentOverview = () => {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Betalningsöversikt</CardTitle>
-              <CardDescription>Alla Swish- och Klarna-betalningar</CardDescription>
+              <CardDescription>Alla betalningar via Stripe, Swish och Klarna</CardDescription>
             </div>
             <Button variant="outline" size="sm" onClick={fetchPayments}>
               <RefreshCw className="h-4 w-4 mr-2" />
@@ -167,8 +215,12 @@ export const PaymentOverview = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="swish">
+          <Tabs defaultValue="stripe">
             <TabsList>
+              <TabsTrigger value="stripe" className="flex items-center gap-2">
+                <CreditCard className="h-4 w-4" />
+                Stripe ({stripePayments.length})
+              </TabsTrigger>
               <TabsTrigger value="swish" className="flex items-center gap-2">
                 <Smartphone className="h-4 w-4" />
                 Swish ({swishPayments.length})
@@ -178,6 +230,73 @@ export const PaymentOverview = () => {
                 Klarna ({klarnaPayments.length})
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="stripe" className="mt-4">
+              {stripePayments.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">
+                  Inga Stripe-betalningar ännu
+                </p>
+              ) : (
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Datum</TableHead>
+                        <TableHead>Kund</TableHead>
+                        <TableHead>Rätt</TableHead>
+                        <TableHead className="text-right">Totalt</TableHead>
+                        <TableHead className="text-right">Avgift</TableHead>
+                        <TableHead className="text-right">Kockens andel</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Kvitto</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {stripePayments.map((payment) => (
+                        <TableRow key={payment.id}>
+                          <TableCell className="whitespace-nowrap">
+                            {formatDate(payment.created_at)}
+                          </TableCell>
+                          <TableCell className="max-w-[180px] truncate">
+                            {payment.customer_email}
+                          </TableCell>
+                          <TableCell className="max-w-[180px] truncate">
+                            {payment.dish_name}
+                            {payment.quantity > 1 && (
+                              <span className="text-muted-foreground"> × {payment.quantity}</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-right font-medium">
+                            {Number(payment.total_amount).toFixed(2)} kr
+                          </TableCell>
+                          <TableCell className="text-right text-muted-foreground">
+                            {Number(payment.platform_fee).toFixed(2)} kr
+                          </TableCell>
+                          <TableCell className="text-right">
+                            {Number(payment.chef_earnings).toFixed(2)} kr
+                          </TableCell>
+                          <TableCell>{getStatusBadge(payment.payment_status)}</TableCell>
+                          <TableCell>
+                            {payment.receipt_url ? (
+                              <a
+                                href={payment.receipt_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-primary hover:underline"
+                              >
+                                Visa <ExternalLink className="h-3 w-3" />
+                              </a>
+                            ) : (
+                              <span className="text-muted-foreground">-</span>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </TabsContent>
 
             <TabsContent value="swish" className="mt-4">
               {swishPayments.length === 0 ? (
