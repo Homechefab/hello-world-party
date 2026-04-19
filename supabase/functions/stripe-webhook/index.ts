@@ -278,4 +278,18 @@ async function handlePaymentIntent(
   }
 
   logStep("Transaction saved from payment intent (fallback)", { piId: paymentIntent.id, totalAmount });
+
+  try {
+    const sid = `pi_${paymentIntent.id}`;
+    const { error: mailError } = await supabase.functions.invoke("send-customer-receipt", {
+      body: { sessionId: sid },
+    });
+    if (mailError) {
+      logStep("Failed to send customer receipt email (PI)", { error: mailError.message });
+    } else {
+      logStep("Customer receipt email triggered (PI)", { sid });
+    }
+  } catch (err) {
+    logStep("Receipt email exception (PI)", { error: String(err) });
+  }
 }
