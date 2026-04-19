@@ -15,7 +15,17 @@ serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { priceId, quantity, dishName, items, totalAmount, successUrl, cancelUrl, deliveryAddress, specialInstructions } = body;
+    const { priceId, quantity, dishName, items, totalAmount, successUrl, cancelUrl, deliveryAddress, specialInstructions, customerPhone } = body;
+
+    // Light validation for the phone, since it ends up in DB and SMS
+    let normalizedPhone: string | undefined;
+    if (typeof customerPhone === "string") {
+      const cleaned = customerPhone.replace(/[\s\-()]/g, "").trim();
+      const digits = cleaned.replace(/\D/g, "");
+      if (cleaned.length >= 6 && cleaned.length <= 30 && digits.length >= 8 && digits.length <= 15) {
+        normalizedPhone = cleaned;
+      }
+    }
 
     const ALLOWED_ORIGINS = [
       req.headers.get("origin"),
@@ -222,6 +232,7 @@ serve(async (req) => {
         order_items: JSON.stringify(orderItems),
         delivery_address: deliveryAddress || "Upphämtning",
         special_instructions: specialInstructions || "",
+        ...(normalizedPhone ? { customer_phone: normalizedPhone } : {}),
       },
       payment_intent_data: {
         metadata: {

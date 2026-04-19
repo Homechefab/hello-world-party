@@ -166,6 +166,22 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
         order.id === orderId ? { ...order, status: newStatus } : order
       ));
 
+      // Trigger SMS to customer when marking as ready
+      if (newStatus === 'ready') {
+        try {
+          const { data: smsResult, error: smsError } = await supabase.functions.invoke('notify-customer-ready', {
+            body: { order_id: orderId },
+          });
+          if (smsError) {
+            console.error('Failed to invoke notify-customer-ready:', smsError);
+          } else if (smsResult && smsResult.success === false) {
+            console.warn('Customer SMS not sent:', smsResult.reason);
+          }
+        } catch (smsErr) {
+          console.error('Error sending customer-ready SMS:', smsErr);
+        }
+      }
+
       toast({
         title: "Status uppdaterad",
         description: `Beställning har markerats som ${getStatusText(newStatus)}`

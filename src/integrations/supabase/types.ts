@@ -909,6 +909,7 @@ export type Database = {
           chef_id: string
           created_at: string
           customer_id: string
+          customer_phone: string | null
           delivery_address: string
           delivery_time: string | null
           estimated_ready_at: string | null
@@ -924,6 +925,7 @@ export type Database = {
           chef_id: string
           created_at?: string
           customer_id: string
+          customer_phone?: string | null
           delivery_address: string
           delivery_time?: string | null
           estimated_ready_at?: string | null
@@ -939,6 +941,7 @@ export type Database = {
           chef_id?: string
           created_at?: string
           customer_id?: string
+          customer_phone?: string | null
           delivery_address?: string
           delivery_time?: string | null
           estimated_ready_at?: string | null

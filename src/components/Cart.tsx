@@ -5,6 +5,7 @@ import { ShoppingBag, Plus, Minus, Trash2, CreditCard, Loader2 } from "lucide-re
 import { useCart } from "@/contexts/CartContext";
 import { useState } from "react";
 import { AuthDialog } from "@/components/auth/AuthDialog";
+import { PhonePromptDialog } from "@/components/PhonePromptDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -15,33 +16,12 @@ export const Cart = () => {
   const { user, isReady } = useAuth();
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
+  const [showPhonePrompt, setShowPhonePrompt] = useState(false);
+  const [existingPhone, setExistingPhone] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState(false);
   const { toast } = useToast();
 
-  const handleCheckout = async () => {
-    if (!isReady) {
-      toast({
-        title: "Laddar konto",
-        description: "Vänta ett ögonblick och försök igen.",
-      });
-      return;
-    }
-
-    if (!user) {
-      setShowAuth(true);
-      return;
-    }
-
-
-    if (state.items.length === 0) {
-      toast({
-        title: "Tom varukorg",
-        description: "Lägg till varor innan du går till betalning",
-        variant: "destructive"
-      });
-      return;
-    }
-
+  const proceedToCheckout = async (customerPhone: string) => {
     setIsProcessing(true);
 
     try {
@@ -75,6 +55,7 @@ export const Cart = () => {
           totalAmount: state.total,
           deliveryAddress: 'Upphämtning',
           specialInstructions: '',
+          customerPhone,
         }
       });
 
@@ -124,6 +105,69 @@ export const Cart = () => {
       setIsProcessing(false);
     }
   };
+
+  const handleCheckout = async () => {
+    if (!isReady) {
+      toast({
+        title: "Laddar konto",
+        description: "Vänta ett ögonblick och försök igen.",
+      });
+      return;
+    }
+
+    if (!user) {
+      setShowAuth(true);
+      return;
+    }
+
+    if (state.items.length === 0) {
+      toast({
+        title: "Tom varukorg",
+        description: "Lägg till varor innan du går till betalning",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check if customer has phone on profile
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('phone')
+        .eq('id', user.id as string)
+        .maybeSingle();
+
+      const phone: string = (profile?.phone ?? "").trim();
+      if (!phone) {
+        setExistingPhone("");
+        setShowPhonePrompt(true);
+        return;
+      }
+      await proceedToCheckout(phone);
+    } catch (err) {
+      console.error('Error fetching profile phone:', err);
+      setExistingPhone("");
+      setShowPhonePrompt(true);
+    }
+  };
+
+  const handlePhoneConfirmed = async (phone: string) => {
+    setShowPhonePrompt(false);
+    if (!user) return;
+
+    // Persist on profile so we don't have to ask again
+    try {
+      await supabase
+        .from('profiles')
+        .update({ phone })
+        .eq('id', user.id as string);
+    } catch (err) {
+      console.error('Failed to save phone on profile:', err);
+    }
+
+    await proceedToCheckout(phone || "");
+  };
+
 
   return (
     <>
@@ -256,6 +300,13 @@ export const Cart = () => {
           setShowAuth(false);
           setIsCartOpen(false);
         }}
+      />
+
+      <PhonePromptDialog
+        open={showPhonePrompt}
+        onOpenChange={setShowPhonePrompt}
+        defaultValue={existingPhone}
+        onConfirm={handlePhoneConfirmed}
       />
     </>
   );
