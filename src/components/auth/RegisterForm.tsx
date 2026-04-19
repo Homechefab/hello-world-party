@@ -18,12 +18,26 @@ export const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Phone validation
+    const cleanedPhone = phone.replace(/[\s\-()]/g, "").trim();
+    const digitsOnly = cleanedPhone.replace(/\D/g, "");
+    if (digitsOnly.length < 8 || digitsOnly.length > 15 || !/^(\+|0)/.test(cleanedPhone)) {
+      toast({
+        title: "Ogiltigt telefonnummer",
+        description: "Ange ett giltigt mobilnummer (t.ex. 070 123 45 67 eller +46701234567).",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -35,6 +49,7 @@ export const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => 
           emailRedirectTo: `${window.location.origin}${returnTo}`,
           data: {
             full_name: fullName,
+            phone: cleanedPhone,
           },
         },
       });
@@ -46,6 +61,17 @@ export const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => 
       if (!hasSession) {
         const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
         hasSession = !signInError;
+      }
+
+      // Persist phone on profile (handle_new_user trigger doesn't read this from metadata)
+      if (data.user?.id || hasSession) {
+        const { data: { user: currentUser } } = await supabase.auth.getUser();
+        if (currentUser?.id) {
+          await supabase
+            .from('profiles')
+            .update({ phone: cleanedPhone })
+            .eq('id', currentUser.id);
+        }
       }
 
       toast({
@@ -114,6 +140,21 @@ export const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => 
               onChange={(e) => setEmail(e.target.value)}
               required
             />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="phone">Mobilnummer *</Label>
+            <Input
+              id="phone"
+              type="tel"
+              autoComplete="tel"
+              placeholder="t.ex. 070 123 45 67"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+            />
+            <p className="text-xs text-muted-foreground">
+              Används för SMS-avisering när din mat är klar för upphämtning.
+            </p>
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Lösenord</Label>
