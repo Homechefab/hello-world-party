@@ -3,17 +3,18 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
 };
 
 function escapeHtml(str: string): string {
-  if (!str) return '';
+  if (!str) return "";
   return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 serve(async (req) => {
@@ -23,37 +24,49 @@ serve(async (req) => {
 
   try {
     const requestBody = await req.json().catch(() => null);
-    const sessionId = typeof requestBody?.sessionId === 'string' ? requestBody.sessionId.trim() : '';
+    const sessionId = typeof requestBody?.sessionId === "string"
+      ? requestBody.sessionId.trim()
+      : "";
 
     if (!sessionId) {
-      return new Response(JSON.stringify({ error: 'sessionId is required' }), {
+      return new Response(JSON.stringify({ error: "sessionId is required" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
       });
     }
 
     // Verify authentication
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader?.startsWith('Bearer ')) {
-      return new Response(JSON.stringify({ error: 'Unauthorized - missing bearer token' }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(
+        JSON.stringify({ error: "Unauthorized - missing bearer token" }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 401,
+        },
+      );
     }
 
     const supabaseAuth = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
     );
 
-    const token = authHeader.replace('Bearer ', '');
-    const { data: claimsData, error: claimsError } = await supabaseAuth.auth.getClaims(token);
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsError } = await supabaseAuth.auth
+      .getClaims(token);
     if (claimsError || !claimsData?.claims) {
-      console.error('[COMMISSION-REPORT] Auth error:', claimsError?.message);
-      return new Response(JSON.stringify({ error: 'Unauthorized - invalid token', detail: claimsError?.message }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
-      });
+      console.error("[COMMISSION-REPORT] Auth error:", claimsError?.message);
+      return new Response(
+        JSON.stringify({
+          error: "Unauthorized - invalid token",
+          detail: claimsError?.message,
+        }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 401,
+        },
+      );
     }
 
     const userId = claimsData.claims.sub;
@@ -61,13 +74,21 @@ serve(async (req) => {
     // Use service role to check admin and bypass RLS
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
 
-    const { data: isAdmin, error: roleError } = await supabaseClient.rpc('has_role', { _user_id: userId, _role: 'admin' });
+    const { data: isAdmin, error: roleError } = await supabaseClient.rpc(
+      "has_role",
+      { _user_id: userId, _role: "admin" },
+    );
     if (roleError || !isAdmin) {
-      console.error('[COMMISSION-REPORT] Admin check failed:', roleError?.message, 'isAdmin:', isAdmin);
-      return new Response(JSON.stringify({ error: 'Admin access required' }), {
+      console.error(
+        "[COMMISSION-REPORT] Admin check failed:",
+        roleError?.message,
+        "isAdmin:",
+        isAdmin,
+      );
+      return new Response(JSON.stringify({ error: "Admin access required" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 403,
       });
@@ -86,7 +107,7 @@ serve(async (req) => {
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
           status: 404,
-        }
+        },
       );
     }
 
@@ -95,29 +116,29 @@ serve(async (req) => {
     const totalAmount = transaction.total_amount;
     const basePrice = totalAmount / 1.06;
     const serviceFee = totalAmount - basePrice;
-    
+
     // VAT beräkning på baspris (12% för mat i Sverige)
     const vatRate = 0.12;
     const basePriceExclVat = basePrice / (1 + vatRate);
     const vatAmount = basePrice - basePriceExclVat;
-    
+
     // Provision från säljare (19% av baspriset)
     const sellerCommission = basePrice * 0.19;
     const sellerEarnings = basePrice * 0.81;
     const totalToHomechef = serviceFee + sellerCommission;
-    
+
     // Homechefs moms (25% på tjänster)
     const homechefVatRate = 0.25;
     const homechefIncomeExclVat = totalToHomechef / (1 + homechefVatRate);
     const homechefVatAmount = totalToHomechef - homechefIncomeExclVat;
     const homechefNetIncome = homechefIncomeExclVat;
-    
+
     // Uppdelning av moms per intäktskälla
     const serviceFeeExclVat = serviceFee / (1 + homechefVatRate);
     const serviceFeeVat = serviceFee - serviceFeeExclVat;
     const commissionExclVat = sellerCommission / (1 + homechefVatRate);
     const commissionVat = sellerCommission - commissionExclVat;
-    
+
     const serviceFeePercentage = 6;
     const sellerCommissionPercentage = 19;
 
@@ -129,7 +150,7 @@ serve(async (req) => {
       sellerEarnings,
       totalToHomechef,
       homechefVatAmount,
-      homechefNetIncome
+      homechefNetIncome,
     });
 
     // Generate HTML that looks like a professional receipt
@@ -386,22 +407,30 @@ serve(async (req) => {
         </div>
         <div class="info-row">
           <span class="info-label">Datum</span>
-          <span class="info-value">${new Date(transaction.created_at).toLocaleDateString('sv-SE', { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          })}</span>
+          <span class="info-value">${
+      new Date(transaction.created_at).toLocaleDateString("sv-SE", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    }</span>
         </div>
         <div class="info-row">
           <span class="info-label">Kund</span>
-          <span class="info-value">${escapeHtml(transaction.customer_email)}</span>
+          <span class="info-value">${
+      escapeHtml(transaction.customer_email)
+    }</span>
         </div>
         <div class="info-row">
           <span class="info-label">Status</span>
           <span class="info-value">
-            <span class="status-badge">${transaction.payment_status === 'paid' ? 'Betald' : escapeHtml(transaction.payment_status)}</span>
+            <span class="status-badge">${
+      transaction.payment_status === "paid"
+        ? "Betald"
+        : escapeHtml(transaction.payment_status)
+    }</span>
           </span>
         </div>
       </div>
@@ -414,7 +443,9 @@ serve(async (req) => {
             <div class="item-name">${escapeHtml(transaction.dish_name)}</div>
             <div class="item-quantity">Antal: ${transaction.quantity} st</div>
           </div>
-        <div class="item-price">${basePrice.toFixed(2)} ${transaction.currency}</div>
+        <div class="item-price">${
+      basePrice.toFixed(2)
+    } ${transaction.currency}</div>
         </div>
       </div>
       
@@ -423,7 +454,9 @@ serve(async (req) => {
         <div class="section-title">Ekonomisk sammanfattning</div>
         <div class="summary-row">
           <span>Kundens totala betalning</span>
-          <span><strong>${totalAmount.toFixed(2)} ${transaction.currency}</strong></span>
+          <span><strong>${
+      totalAmount.toFixed(2)
+    } ${transaction.currency}</strong></span>
         </div>
         <div class="summary-row" style="border-top: 1px solid #e1e4e8; padding-top: 12px; margin-top: 8px;">
           <span>Varubelopp (exkl. serviceavgift)</span>
@@ -444,19 +477,27 @@ serve(async (req) => {
         <div class="commission-title">📊 Avgiftsfördelning (Hybridmodell)</div>
         <div class="commission-row">
           <span class="label">Serviceavgift från kund (${serviceFeePercentage}%)</span>
-          <span class="value platform-fee">+${serviceFee.toFixed(2)} ${transaction.currency}</span>
+          <span class="value platform-fee">+${
+      serviceFee.toFixed(2)
+    } ${transaction.currency}</span>
         </div>
         <div class="commission-row">
           <span class="label">Provision från säljare (${sellerCommissionPercentage}%)</span>
-          <span class="value platform-fee">+${sellerCommission.toFixed(2)} ${transaction.currency}</span>
+          <span class="value platform-fee">+${
+      sellerCommission.toFixed(2)
+    } ${transaction.currency}</span>
         </div>
         <div class="commission-row" style="border-top: 2px solid #F59E0B; padding-top: 12px; margin-top: 8px;">
           <span class="label"><strong>💰 Totalt till Homechef (inkl. moms)</strong></span>
-          <span class="value platform-fee"><strong>${totalToHomechef.toFixed(2)} ${transaction.currency}</strong></span>
+          <span class="value platform-fee"><strong>${
+      totalToHomechef.toFixed(2)
+    } ${transaction.currency}</strong></span>
         </div>
         <div class="commission-row" style="border-top: 1px solid #F59E0B; padding-top: 12px; margin-top: 8px;">
           <span class="label"><strong>🍳 Utbetalning till säljare (81%)</strong></span>
-          <span class="value chef-earnings"><strong>${sellerEarnings.toFixed(2)} ${transaction.currency}</strong></span>
+          <span class="value chef-earnings"><strong>${
+      sellerEarnings.toFixed(2)
+    } ${transaction.currency}</strong></span>
         </div>
       </div>
       
@@ -467,16 +508,24 @@ serve(async (req) => {
           <div class="payment-icon">💳</div>
           <div>
             <div style="font-weight: 600; color: #1a1a1a;">Stripe Checkout</div>
-            <div style="font-size: 12px; color: #6b7280;">Session: ${transaction.stripe_session_id.slice(0, 20)}...</div>
+            <div style="font-size: 12px; color: #6b7280;">Session: ${
+      transaction.stripe_session_id.slice(0, 20)
+    }...</div>
           </div>
         </div>
-        ${transaction.receipt_url ? `
+        ${
+      transaction.receipt_url
+        ? `
         <div style="margin-top: 12px;">
-          <a href="${escapeHtml(transaction.receipt_url)}" style="color: #EA580C; text-decoration: none; font-size: 13px; font-weight: 500;">
+          <a href="${
+          escapeHtml(transaction.receipt_url)
+        }" style="color: #EA580C; text-decoration: none; font-size: 13px; font-weight: 500;">
             → Visa kundkvitto i Stripe
           </a>
         </div>
-        ` : ''}
+        `
+        : ""
+    }
       </div>
       
       <!-- Accounting Info -->
@@ -484,11 +533,15 @@ serve(async (req) => {
         <div class="section-title">Bokföringsinformation</div>
         <div class="info-row">
           <span class="info-label">Payment Intent ID</span>
-          <span class="info-value" style="font-family: monospace; font-size: 12px;">${transaction.stripe_payment_intent_id || 'N/A'}</span>
+          <span class="info-value" style="font-family: monospace; font-size: 12px;">${
+      transaction.stripe_payment_intent_id || "N/A"
+    }</span>
         </div>
         <div class="info-row">
           <span class="info-label">Charge ID</span>
-          <span class="info-value" style="font-family: monospace; font-size: 12px;">${transaction.stripe_charge_id || 'N/A'}</span>
+          <span class="info-value" style="font-family: monospace; font-size: 12px;">${
+      transaction.stripe_charge_id || "N/A"
+    }</span>
         </div>
       </div>
     </div>
@@ -496,7 +549,7 @@ serve(async (req) => {
     <div class="footer">
       <p><strong>Homechef AB</strong></p>
       <p>Detta provisionsunderlag är automatiskt genererat och utgör underlag för bokföring</p>
-      <p>Genererat: ${new Date().toLocaleString('sv-SE')}</p>
+      <p>Genererat: ${new Date().toLocaleString("sv-SE")}</p>
     </div>
   </div>
 </body>
@@ -504,9 +557,9 @@ serve(async (req) => {
     `;
 
     return new Response(htmlReport, {
-      headers: { 
-        ...corsHeaders, 
-        "Content-Type": "text/html; charset=utf-8"
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "text/html; charset=utf-8",
       },
     });
   } catch (error) {
