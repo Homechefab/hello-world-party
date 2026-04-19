@@ -137,7 +137,7 @@ export const Cart = () => {
         .eq('id', user.id)
         .maybeSingle();
 
-      const phone = (profile?.phone || "").trim();
+      const phone: string = (profile?.phone ?? "").trim();
       if (!phone) {
         setExistingPhone("");
         setShowPhonePrompt(true);
