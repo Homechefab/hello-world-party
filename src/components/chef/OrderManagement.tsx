@@ -132,8 +132,9 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
     return Math.max(totalPrepTime, 15);
   };
 
-  const updateOrderStatus = async (orderId: string, newStatus: Order['status']) => {
+  const updateOrderStatus = async (orderId: string, requestedStatus: Order['status']) => {
     try {
+      let newStatus: Order['status'] = requestedStatus;
       const updateData: Record<string, unknown> = { status: newStatus };
 
       // When starting preparation, set estimated_ready_at and preparation_started_at
