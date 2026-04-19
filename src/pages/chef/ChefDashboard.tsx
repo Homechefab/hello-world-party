@@ -26,9 +26,14 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useChefOrderNotifications } from '@/hooks/useChefOrderNotifications';
-import { useOrderSound } from '@/hooks/useOrderSound';
+import {
+  useOrderSound,
+  getStoredOrderSoundVolume,
+  ORDER_SOUND_VOLUME_KEY,
+} from '@/hooks/useOrderSound';
 import { Button } from '@/components/ui/button';
-import { Volume2 } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
+import { Volume2, VolumeX } from 'lucide-react';
 
 // Chef Dashboard Component
 export const ChefDashboard = () => {
@@ -65,6 +70,17 @@ export const ChefDashboard = () => {
   const { toast } = useToast();
   useChefOrderNotifications();
   const { playOrderSound } = useOrderSound();
+  const [soundVolume, setSoundVolume] = useState<number>(() => getStoredOrderSoundVolume());
+
+  const handleVolumeChange = useCallback((values: number[]) => {
+    const v = Math.min(1, Math.max(0, (values[0] ?? 0) / 100));
+    setSoundVolume(v);
+    try {
+      localStorage.setItem(ORDER_SOUND_VOLUME_KEY, String(v));
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const stats = {
     totalSales: 15750,
@@ -208,15 +224,36 @@ export const ChefDashboard = () => {
             {isAdmin ? 'Administratörsvy – Visa och hantera kockens dashboard' : 'Hantera din hemlagade mat verksamhet'}
           </p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={playOrderSound}
-          className="gap-2"
-        >
-          <Volume2 className="h-4 w-4" />
-          Förhandslyssna notisljud
-        </Button>
+        <div className="flex flex-col gap-2 rounded-lg border border-border bg-card p-3 min-w-[260px]">
+          <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+            {soundVolume === 0 ? (
+              <VolumeX className="h-4 w-4 text-muted-foreground" />
+            ) : (
+              <Volume2 className="h-4 w-4 text-muted-foreground" />
+            )}
+            <span>Notisvolym</span>
+            <span className="ml-auto text-xs text-muted-foreground tabular-nums">
+              {Math.round(soundVolume * 100)}%
+            </span>
+          </div>
+          <Slider
+            value={[Math.round(soundVolume * 100)]}
+            onValueChange={handleVolumeChange}
+            min={0}
+            max={100}
+            step={5}
+            aria-label="Notisvolym"
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => playOrderSound(soundVolume)}
+            className="gap-2 self-end"
+          >
+            <Volume2 className="h-4 w-4" />
+            Förhandslyssna
+          </Button>
+        </div>
       </div>
 
       {/* Admin without a chef selected */}
