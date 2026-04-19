@@ -25,48 +25,43 @@ serve(async (req) => {
     // Verify authentication
     const authHeader = req.headers.get('Authorization');
     if (!authHeader?.startsWith('Bearer ')) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      return new Response(JSON.stringify({ error: 'Unauthorized - missing bearer token' }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 401,
       });
     }
 
-    const supabaseAnon = createClient(
+    const supabaseAuth = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: authHeader } } }
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
 
     const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabaseAnon.auth.getUser(token);
-    if (authError || !user) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+    const { data: claimsData, error: claimsError } = await supabaseAuth.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      console.error('[COMMISSION-REPORT] Auth error:', claimsError?.message);
+      return new Response(JSON.stringify({ error: 'Unauthorized - invalid token', detail: claimsError?.message }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 401,
       });
     }
 
-    // Verify user is admin for commission reports
-    const { data: isAdmin } = await supabaseAnon.rpc('has_role', { _user_id: user.id, _role: 'admin' });
-    if (!isAdmin) {
+    const userId = claimsData.claims.sub;
+
+    // Use service role to check admin and bypass RLS
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    const { data: isAdmin, error: roleError } = await supabaseClient.rpc('has_role', { _user_id: userId, _role: 'admin' });
+    if (roleError || !isAdmin) {
+      console.error('[COMMISSION-REPORT] Admin check failed:', roleError?.message, 'isAdmin:', isAdmin);
       return new Response(JSON.stringify({ error: 'Admin access required' }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 403,
       });
     }
-
-    const { sessionId } = await req.json();
-    if (!sessionId) {
-      return new Response(JSON.stringify({ error: "sessionId är obligatoriskt" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 400,
-      });
-    }
-
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
 
     // Fetch transaction from database
     const { data: transaction, error: dbError } = await supabaseClient
