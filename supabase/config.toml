@@ -89,8 +89,6 @@ project_id = "rkucenozpmaixfphpiub"
     verify_jwt = false
   [functions.send-customer-receipt]
     verify_jwt = false
-  [functions.test-receipt-flow]
-    verify_jwt = true
   [functions.submit-chef-application]
     verify_jwt = false
   [functions.swish-callback]
