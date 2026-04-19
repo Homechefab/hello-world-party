@@ -204,6 +204,8 @@ serve(async (req) => {
               continue;
             }
 
+            const customerPhoneFromMeta = session.metadata?.customer_phone || null;
+
             const { data: newOrder, error: orderError } = await supabaseClient
               .from("orders")
               .insert({
@@ -213,6 +215,7 @@ serve(async (req) => {
                 delivery_address: session.metadata?.delivery_address || "Upphämtning",
                 special_instructions: session.metadata?.special_instructions || null,
                 status: "pending",
+                customer_phone: customerPhoneFromMeta,
               })
               .select("id")
               .single();
