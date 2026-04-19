@@ -17,7 +17,7 @@ import { EkonomiDashboard } from '@/pages/ekonomi/EkonomiDashboard';
 
 import { OnboardingMaterials } from '@/components/admin/OnboardingMaterials';
 import { ChefOnboardingGuide } from '@/components/admin/ChefOnboardingGuide';
-import { ReceiptFlowTester } from '@/components/admin/ReceiptFlowTester';
+
 import Visitors from '@/pages/admin/Visitors';
 import { supabase } from '@/integrations/supabase/client';
 import { 
@@ -239,9 +239,6 @@ export const AdminDashboard = () => {
             <TabsTrigger value="ekonomi" className="whitespace-nowrap text-xs px-3 py-1.5">
               Ekonomi
             </TabsTrigger>
-            <TabsTrigger value="tests" className="whitespace-nowrap text-xs px-3 py-1.5">
-              Tester
-            </TabsTrigger>
           </TabsList>
         </div>
 
@@ -354,9 +351,6 @@ export const AdminDashboard = () => {
           <EkonomiDashboard />
         </TabsContent>
 
-        <TabsContent value="tests">
-          <ReceiptFlowTester />
-        </TabsContent>
       </Tabs>
 
     </div>
