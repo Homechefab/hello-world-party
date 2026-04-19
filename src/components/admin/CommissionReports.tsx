@@ -54,13 +54,31 @@ export const CommissionReports = () => {
 
   const generateReport = async (sessionId: string) => {
     try {
-      const { data, error } = await supabase.functions.invoke('generate-commission-report', {
-        body: { sessionId }
+      // Använd fetch direkt eftersom edge function returnerar HTML (inte JSON)
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error('Du måste vara inloggad');
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const response = await fetch(`${supabaseUrl}/functions/v1/generate-commission-report`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+          'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+        },
+        body: JSON.stringify({ sessionId }),
       });
-      if (error) throw error;
-      
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || `HTTP ${response.status}`);
+      }
+
+      const html = await response.text();
+
       // Open HTML report in new window for printing as PDF
-      const blob = new Blob([data], { type: 'text/html' });
+      const blob = new Blob([html], { type: 'text/html' });
       const url = URL.createObjectURL(blob);
       const printWindow = window.open(url, '_blank');
       
