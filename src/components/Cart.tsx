@@ -32,7 +32,6 @@ export const Cart = () => {
       return;
     }
 
-    if (!requireVerified('slutföra ett köp')) return;
 
     if (state.items.length === 0) {
       toast({
