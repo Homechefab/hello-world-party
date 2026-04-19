@@ -134,7 +134,7 @@ export const Cart = () => {
       const { data: profile } = await supabase
         .from('profiles')
         .select('phone')
-        .eq('id', user.id)
+        .eq('id', user.id as string)
         .maybeSingle();
 
       const phone: string = (profile?.phone ?? "").trim();
@@ -160,7 +160,7 @@ export const Cart = () => {
       await supabase
         .from('profiles')
         .update({ phone })
-        .eq('id', user.id);
+        .eq('id', user.id as string);
     } catch (err) {
       console.error('Failed to save phone on profile:', err);
     }
