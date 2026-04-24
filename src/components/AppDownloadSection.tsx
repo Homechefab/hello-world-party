@@ -1,5 +1,5 @@
-const APP_STORE_URL = "https://apps.apple.com/se/app/homechef/id6753142886";
-const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=app.lovable.211e56d1e9f5433c89dc4ce2d7998096";
+const APP_STORE_URL = "https://apps.apple.com/se/app/homechef/id6760361598";
+const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=se.homechef.nu&hl=sv";
 
 const AppStoreBadge = () => (
   <svg viewBox="0 0 180 60" className="h-14 w-auto" xmlns="http://www.w3.org/2000/svg" aria-label="Hämta i App Store">
