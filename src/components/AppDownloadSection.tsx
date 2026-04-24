@@ -1,5 +1,3 @@
-import { QRCodeSVG } from "qrcode.react";
-
 const APP_STORE_URL = "https://apps.apple.com/se/app/homechef/id6753142886";
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=app.lovable.211e56d1e9f5433c89dc4ce2d7998096";
 
@@ -56,40 +54,27 @@ const AppDownloadSection = () => {
             Ladda ner Homechef-appen
           </h2>
           <p className="text-muted-foreground text-sm md:text-base">
-            Skanna QR-koden eller tryck på en knapp för att ladda ner
+            Tillgänglig för iPhone och Android
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {/* Apple App Store */}
-          <div className="flex flex-col items-center gap-4 p-5 rounded-xl border border-border bg-background">
-            <div className="bg-white p-3 rounded-lg">
-              <QRCodeSVG value={APP_STORE_URL} size={130} level="M" />
-            </div>
-            <a
-              href={APP_STORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:opacity-80 transition-opacity"
-            >
-              <AppStoreBadge />
-            </a>
-          </div>
-
-          {/* Google Play */}
-          <div className="flex flex-col items-center gap-4 p-5 rounded-xl border border-border bg-background">
-            <div className="bg-white p-3 rounded-lg">
-              <QRCodeSVG value={PLAY_STORE_URL} size={130} level="M" />
-            </div>
-            <a
-              href={PLAY_STORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:opacity-80 transition-opacity"
-            >
-              <GooglePlayBadge />
-            </a>
-          </div>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a
+            href={APP_STORE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:opacity-80 transition-opacity"
+          >
+            <AppStoreBadge />
+          </a>
+          <a
+            href={PLAY_STORE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:opacity-80 transition-opacity"
+          >
+            <GooglePlayBadge />
+          </a>
         </div>
       </div>
     </section>
