@@ -11,6 +11,7 @@ import SEOHead from "@/components/SEOHead";
 
 import { ActiveOrdersBanner } from "@/components/order/ActiveOrdersBanner";
 import { useOrderNotifications } from "@/hooks/useOrderNotifications";
+import AppDownloadSection from "@/components/AppDownloadSection";
 
 const Index = () => {
   const { role } = useRole();
@@ -27,6 +28,7 @@ const Index = () => {
       
       <div className="min-h-screen bg-background overflow-x-hidden">
         <Hero />
+        <AppDownloadSection />
         <ActiveOrdersBanner />
         <RoleBasedServices />
         {role !== 'chef' && (
