@@ -81,20 +81,9 @@ serve(async (req) => {
       }
     }
 
-    // Mandatory auth guard: deny anonymous/unauthenticated callers to prevent
-    // abuse of the platform's ElevenLabs API key and quota.
-    if (!userId) {
-      return new Response(
-        JSON.stringify({
-          error: "Authentication required",
-          message: "Du måste vara inloggad för att använda röstassistenten.",
-        }),
-        {
-          status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        }
-      );
-    }
+    // Allow both authenticated users and guests to use the voice assistant.
+    // Guest access is logged for monitoring purposes.
+    console.log("Voice assistant access", { authenticated: !!userId, userId: userId ?? "guest" });
 
     // --- Secrets ---
     const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
