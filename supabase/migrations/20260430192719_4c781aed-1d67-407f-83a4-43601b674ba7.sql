@@ -1,0 +1,1 @@
+GRANT SELECT ON public.public_chef_profiles TO anon, authenticated;
