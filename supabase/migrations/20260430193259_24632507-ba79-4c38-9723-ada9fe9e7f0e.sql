@@ -1,0 +1,1 @@
+DELETE FROM public.chefs WHERE id = '12fab19c-5ca6-42a3-a6f8-83213b07042c';
