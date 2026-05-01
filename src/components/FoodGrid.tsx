@@ -46,7 +46,7 @@ const FoodGrid = () => {
             .eq('available', true)
             .limit(8),
           supabase
-            .from('public_chef_profiles')
+            .from('chef_public_profiles')
             .select('id, business_name, full_name, city, profile_image_url, specialties')
             .limit(8),
         ]);
