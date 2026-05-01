@@ -7,6 +7,7 @@ import { Routes, Route } from "react-router-dom";
 import useEdgeSwipeBack from "@/hooks/useEdgeSwipeBack";
 import ScrollToTop from "@/components/ScrollToTop";
 import SplashScreen from "@/components/SplashScreen";
+import MetaPixel from "@/components/MetaPixel";
 
 import { RoleBasedLayout } from "@/components/RoleBasedLayout";
 import { PublicLayout } from "@/components/PublicLayout";
@@ -101,7 +102,7 @@ import Webshop from "./pages/Webshop";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const isMobileApp = typeof (window as any)?.Capacitor !== 'undefined' || 
+  const isMobileApp = (typeof window !== 'undefined' && 'Capacitor' in window) || 
     /android|iphone|ipad|ipod/i.test(navigator.userAgent);
   
   const [showSplash, setShowSplash] = useState(() => {
@@ -123,6 +124,7 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <MetaPixel />
         <ScrollToTop />
         <Routes>
 
