@@ -131,6 +131,54 @@ export type Database = {
           },
         ]
       }
+      chef_public_profiles: {
+        Row: {
+          bio: string | null
+          business_name: string | null
+          city: string | null
+          created_at: string | null
+          facebook_url: string | null
+          full_name: string | null
+          id: string
+          instagram_url: string | null
+          profile_image_url: string | null
+          snapchat_url: string | null
+          specialties: string | null
+          tiktok_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          bio?: string | null
+          business_name?: string | null
+          city?: string | null
+          created_at?: string | null
+          facebook_url?: string | null
+          full_name?: string | null
+          id: string
+          instagram_url?: string | null
+          profile_image_url?: string | null
+          snapchat_url?: string | null
+          specialties?: string | null
+          tiktok_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          bio?: string | null
+          business_name?: string | null
+          city?: string | null
+          created_at?: string | null
+          facebook_url?: string | null
+          full_name?: string | null
+          id?: string
+          instagram_url?: string | null
+          profile_image_url?: string | null
+          snapchat_url?: string | null
+          specialties?: string | null
+          tiktok_url?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       chef_videos: {
         Row: {
           chef_id: string
