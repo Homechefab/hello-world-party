@@ -14,22 +14,28 @@ type QueuedMetaPixelFunction = ((...args: MetaPixelCall) => void) & {
   version: string;
 };
 
+declare global {
+  interface Window {
+    fbq?: QueuedMetaPixelFunction;
+    _fbq?: QueuedMetaPixelFunction;
+    __homechefMetaPixelInitialized?: boolean;
+    __homechefMetaPixelLastPath?: string;
+  }
+}
+
 const createQueuedFbq = (): QueuedMetaPixelFunction => {
-  const queuedFbq = Object.assign(
-    function queuedFbq(...args: MetaPixelCall): void {
+  const queuedFbq = ((...args: MetaPixelCall): void => {
       if (queuedFbq.callMethod) {
         queuedFbq.callMethod(...args);
         return;
       }
 
       queuedFbq.queue.push(args);
-    },
-    {
-      queue: [] as MetaPixelCall[],
-      loaded: true,
-      version: "2.0",
-    },
-  );
+    }) as QueuedMetaPixelFunction;
+
+  queuedFbq.queue = [];
+  queuedFbq.loaded = true;
+  queuedFbq.version = "2.0";
 
   queuedFbq.push = queuedFbq;
   return queuedFbq;
