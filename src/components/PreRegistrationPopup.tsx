@@ -63,14 +63,20 @@ const PreRegistrationPopup = () => {
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
-      <DialogContent className="sm:max-w-md p-0 overflow-hidden border-0 rounded-2xl shadow-2xl [&>button]:hidden">
+      <DialogContent
+        className="sm:max-w-md p-0 overflow-hidden border-0 rounded-2xl shadow-2xl [&>button]:hidden"
+        onPointerDownOutside={() => handleClose()}
+        onEscapeKeyDown={() => handleClose()}
+        onInteractOutside={() => handleClose()}
+      >
         {/* Close button */}
         <button
+          type="button"
           onClick={handleClose}
           aria-label="Stäng"
-          className="absolute right-3 top-3 z-20 rounded-full bg-white/90 hover:bg-white p-1.5 text-foreground shadow-md transition-colors"
+          className="absolute right-3 top-3 z-50 rounded-full bg-white hover:bg-white/95 p-2 text-foreground shadow-lg ring-1 ring-black/10 transition-all hover:scale-105"
         >
-          <X className="w-4 h-4" />
+          <X className="w-5 h-5" strokeWidth={2.5} />
         </button>
 
         {!submitted ? (
