@@ -102,7 +102,7 @@ import Webshop from "./pages/Webshop";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const isMobileApp = typeof (window as any)?.Capacitor !== 'undefined' || 
+  const isMobileApp = (typeof window !== 'undefined' && 'Capacitor' in window) || 
     /android|iphone|ipad|ipod/i.test(navigator.userAgent);
   
   const [showSplash, setShowSplash] = useState(() => {
