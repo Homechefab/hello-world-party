@@ -22,7 +22,11 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Följ Homechef på Facebook"
-                className="w-8 h-8 bg-white rounded-lg flex items-center justify-center hover:bg-primary hover:text-white transition-colors shadow-soft"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open("https://www.facebook.com/profile.php?id=61589177665989", "_blank", "noopener,noreferrer");
+                }}
+                className="w-8 h-8 bg-white rounded-lg flex items-center justify-center hover:bg-primary hover:text-white transition-colors shadow-soft cursor-pointer"
               >
                 <Facebook className="w-4 h-4" />
               </a>
@@ -31,7 +35,11 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Följ Homechef på Instagram"
-                className="w-8 h-8 bg-white rounded-lg flex items-center justify-center hover:bg-primary hover:text-white transition-colors shadow-soft"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open("https://www.instagram.com/homechef.nu/", "_blank", "noopener,noreferrer");
+                }}
+                className="w-8 h-8 bg-white rounded-lg flex items-center justify-center hover:bg-primary hover:text-white transition-colors shadow-soft cursor-pointer"
               >
                 <Instagram className="w-4 h-4" />
               </a>
