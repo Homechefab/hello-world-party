@@ -80,7 +80,7 @@ const DishPage = () => {
       setDish(dishData as DishRecord);
 
       const { data: chefData } = await supabase
-        .from("public_chef_profiles")
+        .from("chef_public_profiles")
         .select("id, business_name, full_name, bio, city, profile_image_url")
         .eq("id", dishData.chef_id)
         .maybeSingle();

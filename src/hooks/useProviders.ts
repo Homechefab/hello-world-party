@@ -25,7 +25,7 @@ export const useProviders = (filters?: {
       // Fetch approved chefs from public view
       // We need chefs table for offers_delivery, join via id
       let chefsQuery = supabase
-        .from("public_chef_profiles")
+        .from("chef_public_profiles")
         .select(`
           id,
           business_name,

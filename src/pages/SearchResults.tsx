@@ -172,7 +172,7 @@ const SearchResults = () => {
       try {
         // Search for chefs with available dishes (using public view to avoid exposing sensitive data)
         const { data: chefsData, error } = await supabase
-          .from('public_chef_profiles')
+          .from('chef_public_profiles')
           .select(`
             id,
             business_name,

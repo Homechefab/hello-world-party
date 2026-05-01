@@ -141,7 +141,7 @@ const ChefProfile = () => {
 
       try {
         const { data: chefData, error: chefError } = await supabase
-          .from('public_chef_profiles')
+          .from('chef_public_profiles')
           .select(`
             id,
             business_name,

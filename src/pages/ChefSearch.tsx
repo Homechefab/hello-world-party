@@ -52,7 +52,7 @@ const ChefSearch = () => {
   const loadChefs = async () => {
     try {
       const { data, error } = await supabase
-        .from("public_chef_profiles")
+        .from("chef_public_profiles")
         .select("id, business_name, full_name, city, specialties, profile_image_url");
 
       if (error) throw error;
