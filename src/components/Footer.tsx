@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from "lucide-react";
+import { Facebook, Instagram, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
@@ -18,7 +18,7 @@ const Footer = () => {
             </p>
             <div className="flex gap-2">
               <a
-                href="https://facebook.com/homechef.nu"
+                href="https://www.facebook.com/profile.php?id=61589177665989"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Följ Homechef på Facebook"
@@ -27,22 +27,13 @@ const Footer = () => {
                 <Facebook className="w-4 h-4" />
               </a>
               <a
-                href="https://instagram.com/homechef.nu"
+                href="https://www.instagram.com/homechef.nu/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Följ Homechef på Instagram"
                 className="w-8 h-8 bg-white rounded-lg flex items-center justify-center hover:bg-primary hover:text-white transition-colors shadow-soft"
               >
                 <Instagram className="w-4 h-4" />
-              </a>
-              <a
-                href="https://linkedin.com/company/homechef-nu"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Följ Homechef på LinkedIn"
-                className="w-8 h-8 bg-white rounded-lg flex items-center justify-center hover:bg-primary hover:text-white transition-colors shadow-soft"
-              >
-                <Linkedin className="w-4 h-4" />
               </a>
             </div>
           </div>
