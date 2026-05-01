@@ -38,42 +38,42 @@ const FoodGrid = () => {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const { data: dishData, error: dishError } = await supabase
-          .from('dishes')
-          .select(`
-            id, name, description, price, image_url, chef_id,
-            public_chef_profiles!inner(business_name)
-          `)
-          .eq('available', true)
-          .limit(8);
+        // Fetch dishes and chefs in parallel (no FK join — view has no FK relation)
+        const [dishRes, chefRes] = await Promise.all([
+          supabase
+            .from('dishes')
+            .select('id, name, description, price, image_url, chef_id')
+            .eq('available', true)
+            .limit(8),
+          supabase
+            .from('public_chef_profiles')
+            .select('id, business_name, full_name, city, profile_image_url, specialties')
+            .limit(8),
+        ]);
 
-        if (dishError) throw dishError;
+        if (dishRes.error) console.error('Dish fetch error:', dishRes.error);
+        if (chefRes.error) console.error('Chef fetch error:', chefRes.error);
 
-        const formattedDishes = (dishData || []).map(dish => ({
+        const chefList = (chefRes.data || []).filter(
+          (c) => c.id !== null && !c.business_name?.toLowerCase().includes('review')
+        ) as ChefProfile[];
+
+        const chefNameMap = new Map(chefList.map((c) => [c.id, c.business_name]));
+
+        const formattedDishes = (dishRes.data || []).map((dish) => ({
           id: dish.id,
           name: dish.name,
           description: dish.description,
           price: dish.price,
           image_url: dish.image_url,
           chef_id: dish.chef_id,
-          chef_name: (dish.public_chef_profiles as { business_name: string } | null)?.business_name || null
+          chef_name: chefNameMap.get(dish.chef_id) || null,
         }));
 
         setDishes(formattedDishes);
 
         if (formattedDishes.length === 0) {
-          const { data: chefData, error: chefError } = await supabase
-            .from('public_chef_profiles')
-            .select('id, business_name, full_name, city, profile_image_url, specialties')
-            .limit(8);
-
-          if (chefError) throw chefError;
-
-          const realChefs = (chefData || []).filter(
-            (c) => c.id !== null && !c.business_name?.toLowerCase().includes('review')
-          ) as ChefProfile[];
-
-          setChefs(realChefs);
+          setChefs(chefList);
         }
       } catch (error) {
         console.error('Error fetching content:', error);
