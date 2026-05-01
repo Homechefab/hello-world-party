@@ -19,7 +19,6 @@ import {
   
   MessageCircle
 } from "lucide-react";
-import Header from "@/components/Header";
 import { DocumentUpload } from "@/components/DocumentUpload";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -189,7 +188,6 @@ const SellerGuide = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
       
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">

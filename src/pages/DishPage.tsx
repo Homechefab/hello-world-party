@@ -7,7 +7,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Clock, MapPin, Minus, Plus, ArrowLeft, ShoppingCart, Loader2 } from "lucide-react";
 import { useParams, Link } from "react-router-dom";
-import Header from "@/components/Header";
 import ReviewSection from "@/components/ReviewSection";
 import PaymentSelector from "@/components/PaymentSelector";
 import { OrderConfirmation } from "@/components/order/OrderConfirmation";
@@ -144,7 +143,6 @@ const DishPage = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
         <div className="container mx-auto px-4 py-16 flex items-center justify-center">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
@@ -155,7 +153,6 @@ const DishPage = () => {
   if (!dish) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
         <div className="container mx-auto px-4 py-16 text-center space-y-4">
           <h1 className="text-2xl font-bold">Rätten kunde inte hittas</h1>
           <p className="text-muted-foreground">Den här rätten finns inte längre eller är inte tillgänglig.</p>
@@ -185,7 +182,6 @@ const DishPage = () => {
       />
 
       <div className="min-h-screen bg-background">
-        <Header />
 
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-6">

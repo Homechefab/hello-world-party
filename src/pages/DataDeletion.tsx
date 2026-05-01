@@ -1,4 +1,3 @@
-import Header from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Trash2, Mail, AlertCircle } from 'lucide-react';
@@ -6,7 +5,6 @@ import { Trash2, Mail, AlertCircle } from 'lucide-react';
 const DataDeletion = () => {
   return (
     <div className="min-h-screen bg-background">
-      <Header />
       
       <div className="container mx-auto px-4 py-16">
         <Card className="max-w-4xl mx-auto">
