@@ -63,11 +63,12 @@ const PreRegistrationPopup = () => {
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
-      <DialogContent className="sm:max-w-lg p-0 overflow-hidden border-0 rounded-2xl shadow-2xl [&>button]:hidden">
+      <DialogContent className="sm:max-w-md p-0 overflow-hidden border-0 rounded-2xl shadow-2xl [&>button]:hidden">
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="absolute right-3 top-3 z-10 rounded-full bg-background/80 backdrop-blur-sm p-1.5 text-muted-foreground hover:text-foreground transition-colors"
+          aria-label="Stäng"
+          className="absolute right-3 top-3 z-20 rounded-full bg-white/90 hover:bg-white p-1.5 text-foreground shadow-md transition-colors"
         >
           <X className="w-4 h-4" />
         </button>
@@ -75,17 +76,13 @@ const PreRegistrationPopup = () => {
         {!submitted ? (
           <div className="flex flex-col">
             {/* Hero section */}
-            <div className="relative bg-gradient-to-br from-primary via-primary/90 to-accent px-6 py-8 text-center">
+            <div className="relative bg-gradient-to-br from-primary via-primary/90 to-accent px-6 py-6 text-center">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.15),transparent_50%)]" />
               <div className="relative">
-                <div className="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1 text-xs font-medium text-white mb-4">
-                  <Sparkles className="w-3 h-3" />
-                  Snart lansering
+                <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-3">
+                  <ChefHat className="w-7 h-7 text-white" />
                 </div>
-                <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <ChefHat className="w-8 h-8 text-white" />
-                </div>
-                <h2 className="text-2xl font-bold text-white mb-2">
+                <h2 className="text-xl font-bold text-white mb-2">
                   Bli först med Homechef!
                 </h2>
                 <p className="text-white/85 text-sm max-w-xs mx-auto">
