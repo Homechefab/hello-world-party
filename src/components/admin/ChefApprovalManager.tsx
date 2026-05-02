@@ -51,7 +51,7 @@ interface ChefApprovalManagerProps {
 
 export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManagerProps) => {
   const { toast } = useToast();
-  const { isAdmin, loading: roleLoading } = useRole();
+  const { isAdmin: _isAdmin, loading: roleLoading } = useRole();
   const [selectedApplication, setSelectedApplication] = useState<ChefApplication | null>(null);
   const [reviewNotes, setReviewNotes] = useState('');
   const [rejectionReason, setRejectionReason] = useState('');
