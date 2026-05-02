@@ -249,7 +249,7 @@ const handler = async (req: Request): Promise<Response> => {
               <h1>🎉 Tack för din ansökan!</h1>
             </div>
             <div class="content">
-              <p>Hej <strong>${applicant_name}</strong>,</p>
+              <p>Hej <strong>${safe.applicant_name}</strong>,</p>
               
               <p>${roleContent.intro}</p>
               
@@ -257,15 +257,15 @@ const handler = async (req: Request): Promise<Response> => {
                 <h3 style="margin-top: 0; color: #F97316;">Din ansökan</h3>
                 <div class="info-row">
                   <span class="info-label">${roleContent.nameLabel}:</span>
-                  <span class="info-value">${business_name}</span>
+                  <span class="info-value">${safe.business_name}</span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">Ansökningstyp:</span>
-                  <span class="info-value">${typeLabel}</span>
+                  <span class="info-value">${safe.typeLabel}</span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">Kontaktperson:</span>
-                  <span class="info-value">${applicant_name}</span>
+                  <span class="info-value">${safe.applicant_name}</span>
                 </div>
               </div>
               
