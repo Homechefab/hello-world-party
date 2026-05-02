@@ -26,6 +26,28 @@ serve(async (req) => {
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+
+    // ---- Auth: require valid JWT (user or service_role) ----
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader?.startsWith('Bearer ')) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const token = authHeader.replace('Bearer ', '');
+    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const { data: claimsData, error: claimsError } = await supabaseAuth.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    const callerRole = claimsData.claims.role as string | undefined;
+    const callerUserId = claimsData.claims.sub as string | undefined;
+    const isServiceRole = callerRole === 'service_role';
 
     // Use service role for all data fetching
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -47,7 +69,7 @@ serve(async (req) => {
     // Get chef's email and phone
     const { data: chef, error: chefError } = await supabase
       .from('chefs')
-      .select('contact_email, full_name, business_name, phone')
+      .select('contact_email, full_name, business_name, phone, user_id')
       .eq('id', order.chef_id)
       .single();
 
