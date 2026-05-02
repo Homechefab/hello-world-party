@@ -46,7 +46,25 @@ const handler = async (req: Request): Promise<Response> => {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } });
     }
 
+    const callerUserId = claimsData.claims.sub as string | undefined;
     const data: BusinessNotificationRequest = await req.json();
+
+    // Verify caller actually owns a matching pending application
+    const supabaseSvc = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    );
+    const { data: matching } = await supabaseSvc
+      .from('business_partners')
+      .select('id')
+      .eq('user_id', callerUserId)
+      .eq('business_name', data.businessName)
+      .limit(1);
+    if (!matching || matching.length === 0) {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), {
+        status: 403, headers: { "Content-Type": "application/json", ...corsHeaders }
+      });
+    }
 
     console.log(`Notifying admin about new business application: ${data.businessName}`);
 
@@ -62,10 +80,25 @@ const handler = async (req: Request): Promise<Response> => {
 
     const businessTypeLabel = businessTypeLabels[data.businessType] || data.businessType;
 
+    const escapeHtml = (str: string): string =>
+      String(str ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+
+    const safe = {
+      businessName: escapeHtml(data.businessName),
+      organizationNumber: escapeHtml(data.organizationNumber),
+      businessTypeLabel: escapeHtml(businessTypeLabel),
+      city: escapeHtml(data.city),
+      contactName: escapeHtml(data.contactName),
+      contactEmail: escapeHtml(data.contactEmail),
+      contactPhone: escapeHtml(data.contactPhone),
+    };
+
     const emailResponse = await resend.emails.send({
       from: "Homechef <info@homechef.nu>",
       to: ["info@homechef.nu"],
-      subject: `🏢 Ny företagsansökan: ${data.businessName}`,
+      subject: `🏢 Ny företagsansökan: ${safe.businessName}`,
       html: `
         <!DOCTYPE html>
         <html>
@@ -101,19 +134,19 @@ const handler = async (req: Request): Promise<Response> => {
                 <h3 style="margin-top: 0; color: #F97316;">Företagsinformation</h3>
                 <div class="info-row">
                   <span class="info-label">Företagsnamn:</span>
-                  <span class="info-value"><strong>${data.businessName}</strong></span>
+                  <span class="info-value"><strong>${safe.businessName}</strong></span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">Org.nummer:</span>
-                  <span class="info-value">${data.organizationNumber}</span>
+                  <span class="info-value">${safe.organizationNumber}</span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">Verksamhetstyp:</span>
-                  <span class="info-value">${businessTypeLabel}</span>
+                  <span class="info-value">${safe.businessTypeLabel}</span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">Ort:</span>
-                  <span class="info-value">${data.city}</span>
+                  <span class="info-value">${safe.city}</span>
                 </div>
               </div>
               
@@ -121,15 +154,15 @@ const handler = async (req: Request): Promise<Response> => {
                 <h3 style="margin-top: 0; color: #F97316;">Kontaktuppgifter</h3>
                 <div class="info-row">
                   <span class="info-label">Kontaktperson:</span>
-                  <span class="info-value">${data.contactName}</span>
+                  <span class="info-value">${safe.contactName}</span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">E-post:</span>
-                  <span class="info-value"><a href="mailto:${data.contactEmail}">${data.contactEmail}</a></span>
+                  <span class="info-value"><a href="mailto:${safe.contactEmail}">${safe.contactEmail}</a></span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">Telefon:</span>
-                  <span class="info-value">${data.contactPhone}</span>
+                  <span class="info-value">${safe.contactPhone}</span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">Dokument:</span>
