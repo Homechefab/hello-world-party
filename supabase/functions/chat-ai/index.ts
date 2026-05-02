@@ -130,8 +130,13 @@ async function sendEscalationEmail(userMessage: string, aiResponse: string, user
     return;
   }
 
+  const escapeHtml = (str: string): string =>
+    String(str ?? '')
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+
   const recentMessages = conversationHistory.slice(-6).map(m => 
-    `<p style="margin:4px 0;"><strong>${m.role === 'user' ? '👤 Kund' : '🤖 Emma'}:</strong> ${m.content}</p>`
+    `<p style="margin:4px 0;"><strong>${m.role === 'user' ? '👤 Kund' : '🤖 Emma'}:</strong> ${escapeHtml(m.content)}</p>`
   ).join('');
 
   const roleLabels: Record<string, string> = {
@@ -142,6 +147,10 @@ async function sendEscalationEmail(userMessage: string, aiResponse: string, user
     admin: 'Admin'
   };
 
+  const safeEmail = userInfo?.email ? escapeHtml(userInfo.email) : '';
+  const safePhone = userInfo?.phone ? escapeHtml(userInfo.phone) : '';
+  const safeName = userInfo?.name ? escapeHtml(userInfo.name) : '';
+
   const html = `
     <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
       <div style="background:linear-gradient(135deg,#f97316,#ea580c);padding:20px;border-radius:12px 12px 0 0;">
@@ -149,11 +158,11 @@ async function sendEscalationEmail(userMessage: string, aiResponse: string, user
       </div>
       <div style="background:#fff;padding:20px;border:1px solid #e5e7eb;border-top:none;border-radius:0 0 12px 12px;">
         <div style="background:#fef3c7;padding:12px;border-radius:8px;margin-bottom:16px;">
-          <strong>Roll:</strong> ${roleLabels[userRole] || userRole}<br/>
+          <strong>Roll:</strong> ${escapeHtml(roleLabels[userRole] || userRole)}<br/>
           <strong>Tid:</strong> ${new Date().toLocaleString('sv-SE', { timeZone: 'Europe/Stockholm' })}
-          ${userInfo?.email ? `<br/><strong>E-post:</strong> <a href="mailto:${userInfo.email}">${userInfo.email}</a>` : ''}
-          ${userInfo?.phone ? `<br/><strong>Telefon:</strong> <a href="tel:${userInfo.phone}">${userInfo.phone}</a>` : ''}
-          ${userInfo?.name ? `<br/><strong>Namn:</strong> ${userInfo.name}` : ''}
+          ${safeEmail ? `<br/><strong>E-post:</strong> <a href="mailto:${safeEmail}">${safeEmail}</a>` : ''}
+          ${safePhone ? `<br/><strong>Telefon:</strong> <a href="tel:${safePhone}">${safePhone}</a>` : ''}
+          ${safeName ? `<br/><strong>Namn:</strong> ${safeName}` : ''}
           ${!userInfo?.email && !userInfo?.phone ? '<br/><em style="color:#9ca3af;">Ej inloggad – ingen kontaktinfo tillgänglig</em>' : ''}
         </div>
         <h3 style="margin:12px 0 8px;">Senaste konversationen:</h3>
