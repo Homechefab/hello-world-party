@@ -51,6 +51,7 @@ interface ChefApprovalManagerProps {
 
 export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManagerProps) => {
   const { toast } = useToast();
+  const { isAdmin, loading: roleLoading } = useRole();
   const [selectedApplication, setSelectedApplication] = useState<ChefApplication | null>(null);
   const [reviewNotes, setReviewNotes] = useState('');
   const [rejectionReason, setRejectionReason] = useState('');
@@ -78,12 +79,16 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
       const { data: chefs, error } = await query.order('created_at', { ascending: false });
 
       if (error) {
+        console.error('[ChefApprovalManager] fetch error:', error);
         toast({
           title: "Fel vid hämtning av ansökningar",
+          description: error.message,
           variant: "destructive"
         });
         return;
       }
+
+      console.log('[ChefApprovalManager] fetched chefs:', chefs?.length, 'showArchived=', showArchived);
 
       // Hämta profiler separat för alla chef user_ids
       const userIds = (chefs?.map(chef => chef.user_id).filter((id): id is string => id !== null)) || [];
