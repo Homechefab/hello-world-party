@@ -126,10 +126,26 @@ const handler = async (req: Request): Promise<Response> => {
     const typeLabel = typeLabels[type] || type;
     const roleContent = getRoleContent(type, typeLabel);
 
+    const escapeHtml = (str: string): string =>
+      String(str ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+
+    const safe = {
+      applicant_name: escapeHtml(applicant_name),
+      applicant_email: escapeHtml(applicant_email),
+      business_name: escapeHtml(business_name),
+      phone: phone ? escapeHtml(phone) : '',
+      address: address ? escapeHtml(address) : '',
+      city: city ? escapeHtml(city) : '',
+      application_id: application_id ? escapeHtml(application_id) : '',
+      typeLabel: escapeHtml(typeLabel),
+    };
+
     const stepsHtml = roleContent.steps.map((step, i) => `
       <div class="step">
         <div class="step-number">${i + 1}</div>
-        <div class="step-text"><strong>${step.title}</strong> - ${step.desc}</div>
+        <div class="step-text"><strong>${escapeHtml(step.title)}</strong> - ${escapeHtml(step.desc)}</div>
       </div>
     `).join('');
 
