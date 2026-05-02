@@ -45,6 +45,8 @@ const handler = async (req: Request): Promise<Response> => {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401, headers: { "Content-Type": "application/json", ...corsHeaders } });
     }
 
+    const callerUserId = claimsData.claims.sub as string | undefined;
+
     const { 
       businessName, 
       contactPerson, 
@@ -56,12 +58,44 @@ const handler = async (req: Request): Promise<Response> => {
       applicationId 
     }: NotificationRequest = await req.json();
 
+    // Verify caller owns the kitchen partner application
+    const supabaseSvc = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    );
+    const { data: matching } = await supabaseSvc
+      .from('kitchen_partners')
+      .select('id')
+      .eq('id', applicationId)
+      .eq('user_id', callerUserId)
+      .limit(1);
+    if (!matching || matching.length === 0) {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), {
+        status: 403, headers: { "Content-Type": "application/json", ...corsHeaders }
+      });
+    }
+
     console.log("Sending admin notification for kitchen partner application:", applicationId);
+
+    const escapeHtml = (str: string): string =>
+      String(str ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+
+    const safe = {
+      businessName: escapeHtml(businessName),
+      contactPerson: escapeHtml(contactPerson),
+      email: escapeHtml(email),
+      phone: escapeHtml(phone),
+      address: escapeHtml(address),
+      municipality: escapeHtml(municipality),
+      hourlyRate: escapeHtml(String(hourlyRate)),
+    };
 
     const emailResponse = await resend.emails.send({
       from: "Homechef <info@homechef.nu>",
       to: ["info@homechef.nu"],
-      subject: `Ny Kökspartner-ansökan: ${businessName}`,
+      subject: `Ny Kökspartner-ansökan: ${safe.businessName}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h1 style="color: #ff6b35;">Ny Kökspartner-ansökan!</h1>
@@ -69,13 +103,13 @@ const handler = async (req: Request): Promise<Response> => {
           
           <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
             <h2 style="color: #333; margin-top: 0;">Företagsinformation</h2>
-            <p><strong>Företagsnamn:</strong> ${businessName}</p>
-            <p><strong>Kontaktperson:</strong> ${contactPerson}</p>
-            <p><strong>E-post:</strong> ${email}</p>
-            <p><strong>Telefon:</strong> ${phone}</p>
-            <p><strong>Adress:</strong> ${address}</p>
-            <p><strong>Kommun:</strong> ${municipality}</p>
-            <p><strong>Timpris:</strong> ${hourlyRate} kr/timme</p>
+            <p><strong>Företagsnamn:</strong> ${safe.businessName}</p>
+            <p><strong>Kontaktperson:</strong> ${safe.contactPerson}</p>
+            <p><strong>E-post:</strong> ${safe.email}</p>
+            <p><strong>Telefon:</strong> ${safe.phone}</p>
+            <p><strong>Adress:</strong> ${safe.address}</p>
+            <p><strong>Kommun:</strong> ${safe.municipality}</p>
+            <p><strong>Timpris:</strong> ${safe.hourlyRate} kr/timme</p>
           </div>
 
           <div style="margin: 30px 0;">

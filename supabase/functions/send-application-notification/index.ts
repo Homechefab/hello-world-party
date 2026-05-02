@@ -126,10 +126,26 @@ const handler = async (req: Request): Promise<Response> => {
     const typeLabel = typeLabels[type] || type;
     const roleContent = getRoleContent(type, typeLabel);
 
+    const escapeHtml = (str: string): string =>
+      String(str ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+
+    const safe = {
+      applicant_name: escapeHtml(applicant_name),
+      applicant_email: escapeHtml(applicant_email),
+      business_name: escapeHtml(business_name),
+      phone: phone ? escapeHtml(phone) : '',
+      address: address ? escapeHtml(address) : '',
+      city: city ? escapeHtml(city) : '',
+      application_id: application_id ? escapeHtml(application_id) : '',
+      typeLabel: escapeHtml(typeLabel),
+    };
+
     const stepsHtml = roleContent.steps.map((step, i) => `
       <div class="step">
         <div class="step-number">${i + 1}</div>
-        <div class="step-text"><strong>${step.title}</strong> - ${step.desc}</div>
+        <div class="step-text"><strong>${escapeHtml(step.title)}</strong> - ${escapeHtml(step.desc)}</div>
       </div>
     `).join('');
 
@@ -167,22 +183,22 @@ const handler = async (req: Request): Promise<Response> => {
               <p>En ny <strong>${typeLabel.toLowerCase()}-ansökan</strong> har kommit in och väntar på granskning.</p>
               
               <div class="info-box">
-                <span class="badge">${typeLabel}</span>
+                <span class="badge">${safe.typeLabel}</span>
                 <div class="info-row">
                   <span class="label">Sökande:</span>
-                  <span class="value">${applicant_name}</span>
+                  <span class="value">${safe.applicant_name}</span>
                 </div>
                 <div class="info-row">
                   <span class="label">E-post:</span>
-                  <span class="value">${applicant_email}</span>
+                  <span class="value">${safe.applicant_email}</span>
                 </div>
                 <div class="info-row">
                   <span class="label">Företag:</span>
-                  <span class="value">${business_name}</span>
+                  <span class="value">${safe.business_name}</span>
                 </div>
-                ${phone ? `<div class="info-row"><span class="label">Telefon:</span><span class="value">${phone}</span></div>` : ''}
-                ${address ? `<div class="info-row"><span class="label">Adress:</span><span class="value">${address}${city ? `, ${city}` : ''}</span></div>` : ''}
-                ${application_id ? `<div class="info-row"><span class="label">Ansöknings-ID:</span><span class="value" style="font-family: monospace; font-size: 12px;">${application_id}</span></div>` : ''}
+                ${safe.phone ? `<div class="info-row"><span class="label">Telefon:</span><span class="value">${safe.phone}</span></div>` : ''}
+                ${safe.address ? `<div class="info-row"><span class="label">Adress:</span><span class="value">${safe.address}${safe.city ? `, ${safe.city}` : ''}</span></div>` : ''}
+                ${safe.application_id ? `<div class="info-row"><span class="label">Ansöknings-ID:</span><span class="value" style="font-family: monospace; font-size: 12px;">${safe.application_id}</span></div>` : ''}
               </div>
 
               <p>Logga in på adminpanelen för att granska ansökan:</p>
@@ -233,7 +249,7 @@ const handler = async (req: Request): Promise<Response> => {
               <h1>🎉 Tack för din ansökan!</h1>
             </div>
             <div class="content">
-              <p>Hej <strong>${applicant_name}</strong>,</p>
+              <p>Hej <strong>${safe.applicant_name}</strong>,</p>
               
               <p>${roleContent.intro}</p>
               
@@ -241,15 +257,15 @@ const handler = async (req: Request): Promise<Response> => {
                 <h3 style="margin-top: 0; color: #F97316;">Din ansökan</h3>
                 <div class="info-row">
                   <span class="info-label">${roleContent.nameLabel}:</span>
-                  <span class="info-value">${business_name}</span>
+                  <span class="info-value">${safe.business_name}</span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">Ansökningstyp:</span>
-                  <span class="info-value">${typeLabel}</span>
+                  <span class="info-value">${safe.typeLabel}</span>
                 </div>
                 <div class="info-row">
                   <span class="info-label">Kontaktperson:</span>
-                  <span class="info-value">${applicant_name}</span>
+                  <span class="info-value">${safe.applicant_name}</span>
                 </div>
               </div>
               
