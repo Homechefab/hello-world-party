@@ -119,6 +119,13 @@ export type Database = {
             foreignKeyName: "chef_operating_hours_chef_id_fkey"
             columns: ["chef_id"]
             isOneToOne: false
+            referencedRelation: "chef_customer_contact"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chef_operating_hours_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
             referencedRelation: "chefs"
             referencedColumns: ["id"]
           },
@@ -208,6 +215,13 @@ export type Database = {
           video_url?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "chef_videos_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
+            referencedRelation: "chef_customer_contact"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "chef_videos_chef_id_fkey"
             columns: ["chef_id"]
@@ -513,6 +527,13 @@ export type Database = {
             foreignKeyName: "dishes_chef_id_fkey"
             columns: ["chef_id"]
             isOneToOne: false
+            referencedRelation: "chef_customer_contact"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dishes_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
             referencedRelation: "chefs"
             referencedColumns: ["id"]
           },
@@ -575,6 +596,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "document_submissions_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
+            referencedRelation: "chef_customer_contact"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "document_submissions_chef_id_fkey"
             columns: ["chef_id"]
@@ -1006,6 +1034,13 @@ export type Database = {
             foreignKeyName: "orders_chef_id_fkey"
             columns: ["chef_id"]
             isOneToOne: false
+            referencedRelation: "chef_customer_contact"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
             referencedRelation: "chefs"
             referencedColumns: ["id"]
           },
@@ -1113,6 +1148,13 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "payment_transactions_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
+            referencedRelation: "chef_customer_contact"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "payment_transactions_chef_id_fkey"
             columns: ["chef_id"]
@@ -1373,6 +1415,13 @@ export type Database = {
           rating?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "reviews_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: false
+            referencedRelation: "chef_customer_contact"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "reviews_chef_id_fkey"
             columns: ["chef_id"]
@@ -1664,6 +1713,36 @@ export type Database = {
       }
     }
     Views: {
+      chef_customer_contact: {
+        Row: {
+          business_name: string | null
+          city: string | null
+          contact_email: string | null
+          full_name: string | null
+          id: string | null
+          phone: string | null
+          profile_image_url: string | null
+        }
+        Insert: {
+          business_name?: string | null
+          city?: string | null
+          contact_email?: string | null
+          full_name?: string | null
+          id?: string | null
+          phone?: string | null
+          profile_image_url?: string | null
+        }
+        Update: {
+          business_name?: string | null
+          city?: string | null
+          contact_email?: string | null
+          full_name?: string | null
+          id?: string | null
+          phone?: string | null
+          profile_image_url?: string | null
+        }
+        Relationships: []
+      }
       klarna_payments_safe: {
         Row: {
           amount: number | null
