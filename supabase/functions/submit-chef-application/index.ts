@@ -69,30 +69,13 @@ serve(async (req) => {
       throw existingError;
     }
 
-    const blockingApplication = (existingApplications ?? []).find((application) =>
-      ["under_review", "approved"].includes(application.application_status ?? "")
-    );
-
-    if (blockingApplication) {
+    // Block if there is ANY existing application for this email — never delete
+    // pre-existing applications (would allow attackers to wipe legitimate ones).
+    if ((existingApplications ?? []).length > 0) {
       return json({
         success: false,
-        message: "Det finns redan en inskickad eller godkänd ansökan för denna e-postadress.",
+        message: "Det finns redan en ansökan för denna e-postadress. Kontakta support om du behöver hjälp.",
       });
-    }
-
-    const resettableApplicationIds = (existingApplications ?? [])
-      .filter((application) => ["pending", "rejected"].includes(application.application_status ?? ""))
-      .map((application) => application.id);
-
-    if (resettableApplicationIds.length > 0) {
-      const { error: deleteError } = await supabase
-        .from("chefs")
-        .delete()
-        .in("id", resettableApplicationIds);
-
-      if (deleteError) {
-        throw deleteError;
-      }
     }
 
     const chefId = crypto.randomUUID();
