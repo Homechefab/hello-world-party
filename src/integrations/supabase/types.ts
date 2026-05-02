@@ -1847,6 +1847,7 @@ export type Database = {
         Returns: boolean
       }
       is_chef_approved: { Args: { _chef_id: string }; Returns: boolean }
+      is_customer_of_chef: { Args: { _chef_id: string }; Returns: boolean }
       log_user_login: { Args: { p_user_agent?: string }; Returns: undefined }
       order_original_matches_chef_editable_fields: {
         Args: {
