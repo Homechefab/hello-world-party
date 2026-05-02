@@ -42,6 +42,24 @@ serve(async (req) => {
       return json({ success: false, message: "Ogiltig dokumentdata." });
     }
 
+    // Restrict documentUrl to the project's Supabase storage domain to prevent
+    // attackers from polluting the admin queue with arbitrary external URLs.
+    const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
+    let allowedHost = "";
+    try {
+      allowedHost = new URL(supabaseUrl).host;
+    } catch {
+      allowedHost = "";
+    }
+    try {
+      const docHost = new URL(documentUrl).host;
+      if (!allowedHost || docHost !== allowedHost) {
+        return json({ success: false, message: "Ogiltig dokumentlänk." });
+      }
+    } catch {
+      return json({ success: false, message: "Ogiltig dokumentlänk." });
+    }
+
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
