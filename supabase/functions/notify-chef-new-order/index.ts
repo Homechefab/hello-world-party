@@ -81,6 +81,13 @@ serve(async (req) => {
       );
     }
 
+    // Authorization: must be service_role OR the chef who owns the order
+    if (!isServiceRole && chef.user_id !== callerUserId) {
+      return new Response(JSON.stringify({ error: 'Forbidden' }), {
+        status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     // Build items list (XSS-safe)
     const itemsList = (order.order_items || [])
       .map((item: any) => {
