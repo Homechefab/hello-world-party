@@ -167,8 +167,9 @@ export const ChefApprovalManager = ({ showArchived = false }: ChefApprovalManage
   }, [toast, showArchived]);
 
   useEffect(() => {
+    if (roleLoading) return;
     fetchApplications();
-  }, [fetchApplications]);
+  }, [fetchApplications, roleLoading]);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
