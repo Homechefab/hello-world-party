@@ -183,22 +183,22 @@ const handler = async (req: Request): Promise<Response> => {
               <p>En ny <strong>${typeLabel.toLowerCase()}-ansökan</strong> har kommit in och väntar på granskning.</p>
               
               <div class="info-box">
-                <span class="badge">${typeLabel}</span>
+                <span class="badge">${safe.typeLabel}</span>
                 <div class="info-row">
                   <span class="label">Sökande:</span>
-                  <span class="value">${applicant_name}</span>
+                  <span class="value">${safe.applicant_name}</span>
                 </div>
                 <div class="info-row">
                   <span class="label">E-post:</span>
-                  <span class="value">${applicant_email}</span>
+                  <span class="value">${safe.applicant_email}</span>
                 </div>
                 <div class="info-row">
                   <span class="label">Företag:</span>
-                  <span class="value">${business_name}</span>
+                  <span class="value">${safe.business_name}</span>
                 </div>
-                ${phone ? `<div class="info-row"><span class="label">Telefon:</span><span class="value">${phone}</span></div>` : ''}
-                ${address ? `<div class="info-row"><span class="label">Adress:</span><span class="value">${address}${city ? `, ${city}` : ''}</span></div>` : ''}
-                ${application_id ? `<div class="info-row"><span class="label">Ansöknings-ID:</span><span class="value" style="font-family: monospace; font-size: 12px;">${application_id}</span></div>` : ''}
+                ${safe.phone ? `<div class="info-row"><span class="label">Telefon:</span><span class="value">${safe.phone}</span></div>` : ''}
+                ${safe.address ? `<div class="info-row"><span class="label">Adress:</span><span class="value">${safe.address}${safe.city ? `, ${safe.city}` : ''}</span></div>` : ''}
+                ${safe.application_id ? `<div class="info-row"><span class="label">Ansöknings-ID:</span><span class="value" style="font-family: monospace; font-size: 12px;">${safe.application_id}</span></div>` : ''}
               </div>
 
               <p>Logga in på adminpanelen för att granska ansökan:</p>
