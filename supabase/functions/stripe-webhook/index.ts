@@ -186,6 +186,14 @@ async function handleCheckoutSession(
 
   logStep("Transaction saved from checkout session", { sessionId: session.id, totalAmount });
 
+  // Create order(s) + notify chef (idempotent — safe even if /payment-success also runs)
+  try {
+    const { createdOrderIds } = await createOrdersFromSession(supabase, session);
+    logStep("Order creation flow completed", { sessionId: session.id, orderIds: createdOrderIds });
+  } catch (err) {
+    logStep("Order creation from webhook failed", { error: String(err) });
+  }
+
   // Skicka kvitto/orderbekräftelse till kund (best effort)
   try {
     const { error: mailError } = await supabase.functions.invoke("send-customer-receipt", {
