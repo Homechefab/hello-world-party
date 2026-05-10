@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { calculatePaymentBreakdown } from "../_shared/payment-breakdown.ts";
+import { createOrdersFromSession } from "../_shared/create-order-from-session.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -184,6 +185,14 @@ async function handleCheckoutSession(
   }
 
   logStep("Transaction saved from checkout session", { sessionId: session.id, totalAmount });
+
+  // Create order(s) + notify chef (idempotent — safe even if /payment-success also runs)
+  try {
+    const { createdOrderIds } = await createOrdersFromSession(supabase, session);
+    logStep("Order creation flow completed", { sessionId: session.id, orderIds: createdOrderIds });
+  } catch (err) {
+    logStep("Order creation from webhook failed", { error: String(err) });
+  }
 
   // Skicka kvitto/orderbekräftelse till kund (best effort)
   try {
