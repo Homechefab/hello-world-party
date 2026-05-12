@@ -169,109 +169,12 @@ serve(async (req) => {
     }
 
     let createdOrderId: string | undefined;
-    if (session.payment_status === "paid" && session.metadata?.order_items) {
-      try {
-        const orderItemsData = JSON.parse(session.metadata.order_items) as Array<{
-          chefId: string;
-          dishId: string;
-          quantity: number;
-          unitPrice: number;
-        }>;
-
-        if (orderItemsData.length > 0) {
-          const itemsByChef: Record<string, Array<{ dishId: string; quantity: number; unitPrice: number }>> = {};
-
-          for (const item of orderItemsData) {
-            if (!itemsByChef[item.chefId]) {
-              itemsByChef[item.chefId] = [];
-            }
-            itemsByChef[item.chefId].push(item);
-          }
-
-          // Persist phone on profile if we have one and it's missing
-          const phoneFromMeta = session.metadata?.customer_phone;
-          if (phoneFromMeta) {
-            try {
-              const { data: existingProfile } = await supabaseClient
-                .from("profiles")
-                .select("phone")
-                .eq("id", user.id)
-                .maybeSingle();
-              if (existingProfile && !existingProfile.phone) {
-                await supabaseClient
-                  .from("profiles")
-                  .update({ phone: phoneFromMeta })
-                  .eq("id", user.id);
-              }
-            } catch (profileErr) {
-              console.error("Failed to backfill profile phone:", profileErr);
-            }
-          }
-
-          for (const [chefId, chefItems] of Object.entries(itemsByChef)) {
-            const orderTotal = chefItems.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
-
-            const { data: existingOrder } = await supabaseClient
-              .from("orders")
-              .select("id")
-              .eq("customer_id", user.id)
-              .eq("chef_id", chefId)
-              .gte("created_at", new Date(Date.now() - 120000).toISOString())
-              .limit(1);
-
-            if (existingOrder && existingOrder.length > 0) {
-              createdOrderId = existingOrder[0].id;
-              continue;
-            }
-
-            const customerPhoneFromMeta = session.metadata?.customer_phone || null;
-
-            const { data: newOrder, error: orderError } = await supabaseClient
-              .from("orders")
-              .insert({
-                customer_id: user.id,
-                chef_id: chefId,
-                total_amount: orderTotal,
-                delivery_address: session.metadata?.delivery_address || "Upphämtning",
-                special_instructions: session.metadata?.special_instructions || null,
-                status: "pending",
-                customer_phone: customerPhoneFromMeta,
-              })
-              .select("id")
-              .single();
-
-            if (orderError) {
-              console.error("Error creating order:", orderError);
-              continue;
-            }
-
-            createdOrderId = newOrder.id;
-
-            const orderItemInserts = chefItems.map((item) => ({
-              order_id: newOrder.id,
-              dish_id: item.dishId,
-              quantity: item.quantity,
-              unit_price: item.unitPrice,
-              total_price: item.unitPrice * item.quantity,
-            }));
-
-            const { error: itemsError } = await supabaseClient.from("order_items").insert(orderItemInserts);
-            if (itemsError) {
-              console.error("Error creating order items:", itemsError);
-            }
-
-            try {
-              await supabaseClient.functions.invoke("notify-chef-new-order", {
-                body: { order_id: newOrder.id },
-              });
-            } catch (notifyError) {
-              console.error("Failed to notify chef:", notifyError);
-            }
-          }
-        }
-      } catch (orderCreationError) {
-        console.error("Error in order creation flow:", orderCreationError);
-      }
+    try {
+      const { createOrdersFromSession } = await import("../_shared/create-order-from-session.ts");
+      const { createdOrderIds } = await createOrdersFromSession(supabaseClient, session);
+      createdOrderId = createdOrderIds[0];
+    } catch (orderCreationError) {
+      console.error("Error in order creation flow:", orderCreationError);
     }
 
     return new Response(

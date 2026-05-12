@@ -88,23 +88,39 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
 
       if (error) throw error;
 
+      // Fetch customer profiles in a second query (no FK on orders.customer_id)
+      const customerIds = Array.from(new Set((data || []).map((o: any) => o.customer_id).filter(Boolean)));
+      const profilesById: Record<string, { full_name?: string | null; phone?: string | null; email?: string | null }> = {};
+      if (customerIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, full_name, phone, email')
+          .in('id', customerIds);
+        for (const p of profiles || []) {
+          profilesById[p.id as string] = p as any;
+        }
+      }
+
       // Transform data to match interface
-      const transformedOrders = data?.map(order => ({
-        id: order.id,
-        status: order.status as Order['status'],
-        created_at: order.created_at,
-        pickup_time: order.delivery_time,
-        total_amount: order.total_amount,
-        customer_name: 'Kund', // Customer name not stored in orders table
-        customer_phone: '', // Phone not stored in orders table
-        pickup_instructions: order.special_instructions,
+      const transformedOrders = data?.map(order => {
+        const profile = profilesById[order.customer_id as string];
+        return {
+          id: order.id,
+          status: order.status as Order['status'],
+          created_at: order.created_at,
+          pickup_time: order.delivery_time,
+          total_amount: order.total_amount,
+          customer_name: profile?.full_name || profile?.email || 'Kund',
+          customer_phone: order.customer_phone || profile?.phone || '',
+          pickup_instructions: order.special_instructions,
         dishes: (order.order_items || []).map((item: any) => ({
           title: item.dishes?.name || 'Okänd rätt',
           quantity: item.quantity,
           price: item.unit_price,
           preparation_time: item.dishes?.preparation_time || 30
         }))
-      })) || [];
+        };
+      }) || [];
 
       setOrders(transformedOrders);
     } catch (error) {

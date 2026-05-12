@@ -994,6 +994,7 @@ export type Database = {
           preparation_started_at: string | null
           special_instructions: string | null
           status: string
+          stripe_session_id: string | null
           total_amount: number
           updated_at: string
         }
@@ -1010,6 +1011,7 @@ export type Database = {
           preparation_started_at?: string | null
           special_instructions?: string | null
           status?: string
+          stripe_session_id?: string | null
           total_amount: number
           updated_at?: string
         }
@@ -1026,6 +1028,7 @@ export type Database = {
           preparation_started_at?: string | null
           special_instructions?: string | null
           status?: string
+          stripe_session_id?: string | null
           total_amount?: number
           updated_at?: string
         }

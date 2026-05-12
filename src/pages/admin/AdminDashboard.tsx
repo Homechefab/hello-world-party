@@ -17,6 +17,7 @@ import { EkonomiDashboard } from '@/pages/ekonomi/EkonomiDashboard';
 
 import { OnboardingMaterials } from '@/components/admin/OnboardingMaterials';
 import { ChefOnboardingGuide } from '@/components/admin/ChefOnboardingGuide';
+import { AdminAllOrders } from '@/components/admin/AdminAllOrders';
 
 import Visitors from '@/pages/admin/Visitors';
 import { supabase } from '@/integrations/supabase/client';
@@ -191,6 +192,9 @@ export const AdminDashboard = () => {
       <Tabs defaultValue={defaultTab} className="space-y-6">
         <div className="overflow-x-auto -mx-4 px-4 pb-2">
           <TabsList className="inline-flex w-max gap-1 h-auto p-1 flex-nowrap">
+            <TabsTrigger value="orders" className="whitespace-nowrap text-xs px-3 py-1.5">
+              Beställningar
+            </TabsTrigger>
             <TabsTrigger value="chefs" className="whitespace-nowrap text-xs px-3 py-1.5">
               Kock-ansökningar
             </TabsTrigger>
@@ -241,6 +245,10 @@ export const AdminDashboard = () => {
             </TabsTrigger>
           </TabsList>
         </div>
+
+        <TabsContent value="orders">
+          <AdminAllOrders />
+        </TabsContent>
 
         <TabsContent value="chefs">
           <ChefApprovalManager showArchived={false} />

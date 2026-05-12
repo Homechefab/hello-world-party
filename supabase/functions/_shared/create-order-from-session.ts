@@ -71,18 +71,17 @@ export async function createOrdersFromSession(
   for (const [chefId, chefItems] of Object.entries(itemsByChef)) {
     const orderTotal = chefItems.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0);
 
-    // Idempotency: skip if an order for this customer/chef was created very recently
-    const { data: existingOrder } = await supabaseService
+    // Strong idempotency: lookup by (stripe_session_id, chef_id)
+    const { data: bySession } = await supabaseService
       .from("orders")
       .select("id")
-      .eq("customer_id", userId)
+      .eq("stripe_session_id", session.id)
       .eq("chef_id", chefId)
-      .gte("created_at", new Date(Date.now() - 10 * 60 * 1000).toISOString())
       .limit(1);
 
-    if (existingOrder && existingOrder.length > 0) {
-      createdOrderIds.push(existingOrder[0].id as string);
-      console.log("[create-order] Order already exists, skipping", { chefId, existing: existingOrder[0].id });
+    if (bySession && bySession.length > 0) {
+      createdOrderIds.push(bySession[0].id as string);
+      console.log("[create-order] Order already exists for session, skipping", { chefId, existing: bySession[0].id });
       continue;
     }
 
@@ -96,11 +95,23 @@ export async function createOrdersFromSession(
         special_instructions: session.metadata?.special_instructions || null,
         status: "pending",
         customer_phone: phoneFromMeta || null,
+        stripe_session_id: session.id,
       })
       .select("id")
       .single();
 
     if (orderError || !newOrder) {
+      // Race: another concurrent invocation may have created it. Re-query.
+      const { data: raceOrder } = await supabaseService
+        .from("orders")
+        .select("id")
+        .eq("stripe_session_id", session.id)
+        .eq("chef_id", chefId)
+        .limit(1);
+      if (raceOrder && raceOrder.length > 0) {
+        createdOrderIds.push(raceOrder[0].id as string);
+        continue;
+      }
       console.error("[create-order] Error creating order", orderError);
       continue;
     }
