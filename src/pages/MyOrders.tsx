@@ -17,6 +17,10 @@ import { useOrderNotifications } from "@/hooks/useOrderNotifications";
 interface Order {
   id: string;
   chef_name: string;
+  chef_address?: string | null;
+  chef_postal_code?: string | null;
+  chef_city?: string | null;
+  chef_phone?: string | null;
   dish_name: string;
   dish_image: string;
   total_amount: number;
@@ -69,7 +73,11 @@ const MyOrders = () => {
           preparation_started_at,
           chefs (
             business_name,
-            full_name
+            full_name,
+            address,
+            postal_code,
+            city,
+            phone
           )
         `)
         .eq('customer_id', user.id)
@@ -103,6 +111,10 @@ const MyOrders = () => {
           return {
             id: order.id,
             chef_name: order.chefs?.business_name || order.chefs?.full_name || 'Okänd kock',
+            chef_address: order.chefs?.address || null,
+            chef_postal_code: order.chefs?.postal_code || null,
+            chef_city: order.chefs?.city || null,
+            chef_phone: order.chefs?.phone || null,
             dish_name: firstItem?.dishes?.name || 'Beställning',
             dish_image: firstItem?.dishes?.image_url || '/placeholder.svg',
             total_amount: order.total_amount,
@@ -351,6 +363,18 @@ const MyOrders = () => {
                           </div>
                         ))}
                       </div>
+
+                      {order.chef_address && ['pending','confirmed','preparing','ready'].includes(order.status) && (
+                        <div className="rounded-md bg-primary/5 border border-primary/20 p-3 text-sm">
+                          <div className="font-medium flex items-center gap-1"><MapPin className="w-4 h-4" /> Upphämtning hos {order.chef_name}</div>
+                          <div className="text-muted-foreground">
+                            {order.chef_address}{(order.chef_postal_code || order.chef_city) ? `, ${order.chef_postal_code ?? ''} ${order.chef_city ?? ''}`.trim() : ''}
+                          </div>
+                          {order.chef_phone && (
+                            <div className="text-muted-foreground text-xs">Tel kock: {order.chef_phone}</div>
+                          )}
+                        </div>
+                      )}
 
                       {/* Delivery Info */}
                       <div className="flex flex-col sm:flex-row gap-4 text-sm text-muted-foreground">
