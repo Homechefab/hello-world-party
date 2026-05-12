@@ -83,6 +83,27 @@ const PaymentSuccess = () => {
             // ignore storage cleanup errors
           }
         }
+
+        // Fetch the chef's pickup address for the order created from this session
+        if (data?.order_id) {
+          try {
+            const { data: orderRow } = await supabase
+              .from('orders')
+              .select('chef_id')
+              .eq('id', data.order_id)
+              .maybeSingle();
+            if (orderRow?.chef_id) {
+              const { data: chefRow } = await supabase
+                .from('chefs')
+                .select('business_name, full_name, address, postal_code, city, phone')
+                .eq('id', orderRow.chef_id)
+                .maybeSingle();
+              if (chefRow) setChefPickup(chefRow);
+            }
+          } catch (chefErr) {
+            console.error('Failed to load chef pickup info', chefErr);
+          }
+        }
       } catch (err) {
         console.error("verify-payment error", err);
         toast({ title: "Kunde inte hämta kvitto", description: err instanceof Error ? err.message : "Okänt fel", variant: "destructive" });
@@ -213,6 +234,22 @@ const PaymentSuccess = () => {
                   <span className="font-medium">{result?.customer_email || '—'}</span>
                 </div>
               </div>
+
+              {chefPickup && (chefPickup.address || chefPickup.business_name) && (
+                <div className="rounded-md border border-primary/20 bg-primary/5 p-4 space-y-1">
+                  <h3 className="font-medium text-base flex items-center gap-2">📍 Upphämtningsadress</h3>
+                  {chefPickup.business_name && (
+                    <p className="text-sm font-medium">{chefPickup.business_name}{chefPickup.full_name ? ` (${chefPickup.full_name})` : ''}</p>
+                  )}
+                  {chefPickup.address && (
+                    <p className="text-sm">{chefPickup.address}{chefPickup.postal_code || chefPickup.city ? `, ${chefPickup.postal_code ?? ''} ${chefPickup.city ?? ''}`.trim() : ''}</p>
+                  )}
+                  {chefPickup.phone && (
+                    <p className="text-sm text-muted-foreground">Tel: {chefPickup.phone}</p>
+                  )}
+                  <p className="text-xs text-muted-foreground pt-1">Du får ett SMS när maten är klar att hämtas.</p>
+                </div>
+              )}
 
               <div className="flex gap-3 pt-4 flex-wrap">
                 <Button
