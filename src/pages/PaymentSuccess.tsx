@@ -41,6 +41,7 @@ const PaymentSuccess = () => {
     };
     receipt_url?: string;
     line_items?: PaymentLineItem[];
+    order_id?: string;
   };
 
   const [result, setResult] = useState<PaymentResult | null>(null);
