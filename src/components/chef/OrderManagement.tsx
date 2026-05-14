@@ -168,10 +168,12 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
 
   const updateOrderStatus = async (orderId: string, requestedStatus: Order['status']) => {
     try {
-      let newStatus: Order['status'] = requestedStatus;
+      // Treat "ready" click as "complete the order now": notify customer (best-effort,
+      // non-blocking) and immediately mark as completed so the order leaves the active list.
+      const isReadyClick = requestedStatus === 'ready';
+      const newStatus: Order['status'] = isReadyClick ? 'completed' : requestedStatus;
       const updateData: Record<string, unknown> = { status: newStatus };
 
-      // When starting preparation, set estimated_ready_at and preparation_started_at
       if (newStatus === 'preparing') {
         const minutes = estimatedMinutes[orderId] || getDefaultMinutes(orders.find(o => o.id === orderId)!);
         const now = new Date();
@@ -179,14 +181,12 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
         updateData.estimated_ready_at = new Date(now.getTime() + minutes * 60000).toISOString();
       }
 
-      // When confirming, set a rough estimated_ready_at
       if (newStatus === 'confirmed') {
         const minutes = estimatedMinutes[orderId] || getDefaultMinutes(orders.find(o => o.id === orderId)!);
         updateData.estimated_ready_at = new Date(Date.now() + minutes * 60000).toISOString();
       }
 
-      // When marking as ready, include pickup instructions
-      if (newStatus === 'ready' && pickupInstructions[orderId]) {
+      if (isReadyClick && pickupInstructions[orderId]) {
         updateData.pickup_instructions = pickupInstructions[orderId];
       }
 
@@ -197,32 +197,15 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
 
       if (error) throw error;
 
-      // Trigger SMS to customer when marking as ready, then auto-complete the order
-      if (newStatus === 'ready') {
-        try {
-          const { data: smsResult, error: smsError } = await supabase.functions.invoke('notify-customer-ready', {
-            body: { order_id: orderId },
-          });
-          if (smsError) {
-            console.error('Failed to invoke notify-customer-ready:', smsError);
-          } else if (smsResult && smsResult.success === false) {
-            console.warn('Customer SMS not sent:', smsResult.reason);
-          }
-        } catch (smsErr) {
-          console.error('Error sending customer-ready SMS:', smsErr);
-        }
-
-        // Auto-mark as completed so the order leaves the active list
-        const { error: completeError } = await supabase
-          .from('orders')
-          .update({ status: 'completed' })
-          .eq('id', orderId);
-
-        if (completeError) {
-          console.error('Failed to auto-complete order:', completeError);
-        } else {
-          newStatus = 'completed';
-        }
+      // Fire-and-forget SMS notification — never blocks completion
+      if (isReadyClick) {
+        supabase.functions
+          .invoke('notify-customer-ready', { body: { order_id: orderId } })
+          .then(({ data, error: smsError }) => {
+            if (smsError) console.error('notify-customer-ready failed:', smsError);
+            else if (data && data.success === false) console.warn('Customer SMS not sent:', data.reason);
+          })
+          .catch((err) => console.error('notify-customer-ready threw:', err));
       }
 
       setOrders(orders.map(order =>
@@ -232,7 +215,7 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
       toast({
         title: "Status uppdaterad",
         description: newStatus === 'completed'
-          ? 'Kunden har meddelats och beställningen är slutförd'
+          ? 'Beställningen är slutförd. Kunden meddelas via SMS.'
           : `Beställning har markerats som ${getStatusText(newStatus)}`
       });
 
@@ -446,7 +429,7 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
                             Börja förbereda
                           </Button>
                         )}
-                        {order.status === 'preparing' && (
+                        {(order.status === 'preparing' || order.status === 'ready') && (
                           <div className="w-full space-y-3">
                             <div className="space-y-2">
                               <Label htmlFor={`pickup-${order.id}`} className="text-sm font-medium flex items-center gap-1">
@@ -456,7 +439,7 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
                               <Textarea
                                 id={`pickup-${order.id}`}
                                 placeholder="T.ex. Hämtas på Storgatan 5, port 3B. Ring på klockan 'Nilsson'. Stå vid porten så kommer jag ut."
-                                value={pickupInstructions[order.id] || ''}
+                                value={pickupInstructions[order.id] ?? order.pickup_instructions ?? ''}
                                 onChange={(e) => setPickupInstructions(prev => ({ ...prev, [order.id]: e.target.value }))}
                                 rows={2}
                                 className="text-sm"
@@ -467,18 +450,9 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
                               className="flex-1 w-full"
                             >
                               <Package className="w-4 h-4 mr-2" />
-                              Markera som klar
+                              Klar för upphämtning
                             </Button>
                           </div>
-                        )}
-                        {order.status === 'ready' && (
-                          <Button
-                            onClick={() => updateOrderStatus(order.id, 'completed')}
-                            className="flex-1"
-                          >
-                            <CheckCircle className="w-4 h-4 mr-2" />
-                            Slutför beställning
-                          </Button>
                         )}
                         </div>
                       </div>
