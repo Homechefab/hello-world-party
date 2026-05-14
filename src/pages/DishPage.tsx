@@ -80,12 +80,12 @@ const DishPage = () => {
 
       const { data: chefData } = await supabase
         .from("chef_public_profiles")
-        .select("id, business_name, full_name, bio, city, profile_image_url")
+        .select("id, business_name, full_name, bio, city, address, postal_code, profile_image_url")
         .eq("id", dishData.chef_id)
         .maybeSingle();
 
       if (chefData) {
-        setChef({ ...(chefData as ChefRecord), address: null, postal_code: null });
+        setChef(chefData as ChefRecord);
       }
       setLoading(false);
     };
@@ -411,6 +411,7 @@ const DishPage = () => {
         totalPrice={dish.price * quantity}
         sellerName={cookName}
         deliveryMethod="pickup"
+        pickupAddress={[chef?.address, chef?.postal_code, chef?.city].filter(Boolean).join(', ') || null}
       />
     </>
   );

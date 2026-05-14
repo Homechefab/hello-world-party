@@ -45,7 +45,7 @@ const PaymentSuccess = () => {
   };
 
   const [result, setResult] = useState<PaymentResult | null>(null);
-  const [chefPickup, setChefPickup] = useState<{ business_name?: string | null; full_name?: string | null; address?: string | null; postal_code?: string | null; city?: string | null; phone?: string | null } | null>(null);
+  const [chefPickup, setChefPickup] = useState<{ business_name?: string | null; full_name?: string | null; address?: string | null; postal_code?: string | null; city?: string | null } | null>(null);
   const { toast } = useToast();
   const { user, isReady } = useAuth();
   const { clearCart } = useCart();
@@ -95,8 +95,8 @@ const PaymentSuccess = () => {
               .maybeSingle();
             if (orderRow?.chef_id) {
               const { data: chefRow } = await supabase
-                .from('chefs')
-                .select('business_name, full_name, address, postal_code, city, phone')
+                .from('chef_public_profiles')
+                .select('business_name, full_name, address, postal_code, city')
                 .eq('id', orderRow.chef_id)
                 .maybeSingle();
               if (chefRow) setChefPickup(chefRow);
@@ -244,9 +244,6 @@ const PaymentSuccess = () => {
                   )}
                   {chefPickup.address && (
                     <p className="text-sm">{chefPickup.address}{chefPickup.postal_code || chefPickup.city ? `, ${chefPickup.postal_code ?? ''} ${chefPickup.city ?? ''}`.trim() : ''}</p>
-                  )}
-                  {chefPickup.phone && (
-                    <p className="text-sm text-muted-foreground">Tel: {chefPickup.phone}</p>
                   )}
                   <p className="text-xs text-muted-foreground pt-1">Du får ett SMS när maten är klar att hämtas.</p>
                 </div>
