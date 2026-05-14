@@ -91,23 +91,63 @@ export function useOrderSound() {
 
       if (volume <= 0) return;
 
-      const play = (freq: number, start: number, dur: number, peak = 0.18) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.frequency.value = freq;
-        osc.type = 'sine';
-        const t0 = ctx.currentTime + start;
+      // "Ka-ching" cash register style: two bell strikes with metallic harmonics.
+      const now = ctx.currentTime;
+
+      const bellStrike = (start: number, baseFreq: number, peak = 0.22, dur = 1.2) => {
+        // Bell = fundamental + inharmonic partials, fast attack, exp decay
+        const partials = [
+          { mult: 1.0, gain: 1.0 },
+          { mult: 2.01, gain: 0.6 },
+          { mult: 3.02, gain: 0.4 },
+          { mult: 4.21, gain: 0.25 },
+          { mult: 5.43, gain: 0.15 },
+        ];
+        const t0 = now + start;
         const scaledPeak = Math.max(0.0002, peak * volume);
-        gain.gain.setValueAtTime(0.0001, t0);
-        gain.gain.exponentialRampToValueAtTime(scaledPeak, t0 + 0.04);
-        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
-        osc.start(t0);
-        osc.stop(t0 + dur + 0.02);
+        partials.forEach((p) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = baseFreq * p.mult;
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          const partPeak = Math.max(0.0002, scaledPeak * p.gain);
+          gain.gain.setValueAtTime(0.0001, t0);
+          gain.gain.exponentialRampToValueAtTime(partPeak, t0 + 0.005);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+          osc.start(t0);
+          osc.stop(t0 + dur + 0.02);
+        });
+
+        // Short noise burst for the metallic "ting" attack
+        try {
+          const noiseDur = 0.05;
+          const buffer = ctx.createBuffer(1, Math.floor(ctx.sampleRate * noiseDur), ctx.sampleRate);
+          const data = buffer.getChannelData(0);
+          for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.6;
+          const src = ctx.createBufferSource();
+          src.buffer = buffer;
+          const hp = ctx.createBiquadFilter();
+          hp.type = 'highpass';
+          hp.frequency.value = 4000;
+          const ng = ctx.createGain();
+          const noisePeak = Math.max(0.0002, scaledPeak * 0.4);
+          ng.gain.setValueAtTime(noisePeak, t0);
+          ng.gain.exponentialRampToValueAtTime(0.0001, t0 + noiseDur);
+          src.connect(hp);
+          hp.connect(ng);
+          ng.connect(ctx.destination);
+          src.start(t0);
+          src.stop(t0 + noiseDur + 0.02);
+        } catch {
+          // ignore
+        }
       };
-      play(1046.5, 0, 0.55);
-      play(1318.5, 0.18, 0.7);
+
+      // "Ka" – higher bright strike, then "ching" – slightly lower, longer ring
+      bellStrike(0, 1760, 0.22, 0.6);
+      bellStrike(0.12, 1318.5, 0.26, 1.4);
     } catch {
       // AudioContext not available
     }
