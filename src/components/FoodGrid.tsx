@@ -111,9 +111,19 @@ const FoodGrid = () => {
     });
   };
 
+  const SPECIALTY_LABEL_MAP: Record<string, string> = {
+    'sälj din mat': 'Köp min mat',
+    'sälj färdiglagade matlådor': 'Köp färdiglagade matlådor',
+  };
+
   const getSpecialtiesList = (specialties: string | null): string[] => {
     if (!specialties) return [];
-    return specialties.split(',').map(s => s.trim()).filter(Boolean).slice(0, 3);
+    return specialties
+      .split(/[,|]/)
+      .map(s => s.trim())
+      .filter(Boolean)
+      .map(s => SPECIALTY_LABEL_MAP[s.toLowerCase()] ?? s)
+      .slice(0, 3);
   };
 
   return (
