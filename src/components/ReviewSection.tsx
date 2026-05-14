@@ -108,21 +108,22 @@ const ReviewSection = ({ chefId, averageRating, totalReviews, reviews: propRevie
       return;
     }
 
-    // Find a delivered order from this chef to attach the review to
+    // Find any non-cancelled order from this chef to attach the review to
     const { data: orderData, error: orderError } = await supabase
       .from('orders')
       .select('id')
       .eq('customer_id', user.id)
       .eq('chef_id', chefId)
-      .eq('status', 'delivered')
+      .in('status', ['confirmed', 'preparing', 'ready', 'completed', 'delivered'])
+      .order('created_at', { ascending: false })
       .limit(1)
       .maybeSingle();
 
     if (orderError || !orderData) {
-      toast({ 
-        title: "Ingen levererad beställning", 
-        description: "Du kan bara recensera en kock efter en levererad beställning.",
-        variant: "destructive" 
+      toast({
+        title: "Ingen beställning hittades",
+        description: "Du kan bara recensera en kock du har beställt från.",
+        variant: "destructive"
       });
       return;
     }
