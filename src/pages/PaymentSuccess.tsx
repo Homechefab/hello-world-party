@@ -95,8 +95,8 @@ const PaymentSuccess = () => {
               .maybeSingle();
             if (orderRow?.chef_id) {
               const { data: chefRow } = await supabase
-                .from('chefs')
-                .select('business_name, full_name, address, postal_code, city, phone')
+                .from('chef_public_profiles')
+                .select('business_name, full_name, address, postal_code, city')
                 .eq('id', orderRow.chef_id)
                 .maybeSingle();
               if (chefRow) setChefPickup(chefRow);
