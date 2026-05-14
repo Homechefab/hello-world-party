@@ -429,7 +429,7 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
                             Börja förbereda
                           </Button>
                         )}
-                        {order.status === 'preparing' && (
+                        {(order.status === 'preparing' || order.status === 'ready') && (
                           <div className="w-full space-y-3">
                             <div className="space-y-2">
                               <Label htmlFor={`pickup-${order.id}`} className="text-sm font-medium flex items-center gap-1">
@@ -439,7 +439,7 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
                               <Textarea
                                 id={`pickup-${order.id}`}
                                 placeholder="T.ex. Hämtas på Storgatan 5, port 3B. Ring på klockan 'Nilsson'. Stå vid porten så kommer jag ut."
-                                value={pickupInstructions[order.id] || ''}
+                                value={pickupInstructions[order.id] ?? order.pickup_instructions ?? ''}
                                 onChange={(e) => setPickupInstructions(prev => ({ ...prev, [order.id]: e.target.value }))}
                                 rows={2}
                                 className="text-sm"
@@ -450,7 +450,7 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
                               className="flex-1 w-full"
                             >
                               <Package className="w-4 h-4 mr-2" />
-                              Markera som klar
+                              Klar för upphämtning
                             </Button>
                           </div>
                         )}
