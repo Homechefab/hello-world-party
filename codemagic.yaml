@@ -8,7 +8,7 @@ workflows:
         - homechef_keystore          # Configure in Codemagic → Code signing → Android keystores
       groups:
         - app_credentials            # Must contain: CM_KEYSTORE, CM_KEYSTORE_PASSWORD, CM_KEY_ALIAS, CM_KEY_PASSWORD
-      node: 20.18.0
+      node: 22.13.0
     scripts:
       - name: Install pnpm
         script: npm install -g pnpm@latest
@@ -68,7 +68,7 @@ workflows:
         APP_STORE_CONNECT_KEY_IDENTIFIER: KRJH78VBH8
       groups:
         - app_credentials
-      node: 20.18.0
+      node: 22.13.0
       xcode: 26
       cocoapods: default
     scripts:
