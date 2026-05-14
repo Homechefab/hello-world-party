@@ -66,6 +66,10 @@ export const ChefDashboard = () => {
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [pendingOrderCount, setPendingOrderCount] = useState(0);
+  const [totalSales, setTotalSales] = useState(0);
+  const [completedOrderCount, setCompletedOrderCount] = useState(0);
+  const [averageRating, setAverageRating] = useState<number | null>(null);
+  const [reviewCount, setReviewCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   useChefOrderNotifications();
@@ -83,9 +87,10 @@ export const ChefDashboard = () => {
   }, []);
 
   const stats = {
-    totalSales: 15750,
-    ordersThisWeek: 23,
-    averageRating: 4.8,
+    totalSales,
+    completedOrders: completedOrderCount,
+    averageRating,
+    reviewCount,
     totalDishes: dishes.length
   };
 
@@ -182,6 +187,38 @@ export const ChefDashboard = () => {
         console.error('Error counting active orders:', countError);
       } else {
         setPendingOrderCount(activeCount ?? 0);
+      }
+
+      // Total sales + completed order count (lifetime)
+      const { data: completedData, error: completedErr } = await supabase
+        .from('orders')
+        .select('total_amount')
+        .eq('chef_id', chefId)
+        .in('status', ['completed', 'delivered']);
+
+      if (completedErr) {
+        console.error('Error loading completed orders:', completedErr);
+      } else {
+        const sum = (completedData || []).reduce((acc, o) => acc + Number(o.total_amount || 0), 0);
+        setTotalSales(sum);
+        setCompletedOrderCount((completedData || []).length);
+      }
+
+      // Average rating from reviews
+      const { data: reviewsData, error: reviewsErr } = await supabase
+        .from('reviews')
+        .select('rating')
+        .eq('chef_id', chefId);
+
+      if (reviewsErr) {
+        console.error('Error loading reviews:', reviewsErr);
+      } else if (reviewsData && reviewsData.length > 0) {
+        const avg = reviewsData.reduce((a, r) => a + Number(r.rating || 0), 0) / reviewsData.length;
+        setAverageRating(avg);
+        setReviewCount(reviewsData.length);
+      } else {
+        setAverageRating(null);
+        setReviewCount(0);
       }
 
     } catch (error) {
@@ -293,8 +330,12 @@ export const ChefDashboard = () => {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">–</div>
-            <p className="text-xs text-muted-foreground">Ingen data ännu</p>
+            <div className="text-2xl font-bold">
+              {stats.totalSales > 0 ? `${stats.totalSales.toLocaleString('sv-SE')} kr` : '–'}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {stats.totalSales > 0 ? 'Slutförda beställningar' : 'Ingen data ännu'}
+            </p>
           </CardContent>
         </Card>
 
@@ -304,8 +345,12 @@ export const ChefDashboard = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">–</div>
-            <p className="text-xs text-muted-foreground">Ingen data ännu</p>
+            <div className="text-2xl font-bold">
+              {stats.completedOrders > 0 ? stats.completedOrders : '–'}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {stats.completedOrders > 0 ? 'Slutförda totalt' : 'Ingen data ännu'}
+            </p>
           </CardContent>
         </Card>
 
@@ -315,8 +360,12 @@ export const ChefDashboard = () => {
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">–</div>
-            <p className="text-xs text-muted-foreground">Inga recensioner ännu</p>
+            <div className="text-2xl font-bold">
+              {stats.averageRating !== null ? stats.averageRating.toFixed(1) : '–'}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {stats.reviewCount > 0 ? `${stats.reviewCount} recension${stats.reviewCount === 1 ? '' : 'er'}` : 'Inga recensioner ännu'}
+            </p>
           </CardContent>
         </Card>
 
