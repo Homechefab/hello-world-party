@@ -31,26 +31,45 @@ serve(async (req) => {
     // ---- Auth: require valid JWT (user or service_role) ----
     const authHeader = req.headers.get('Authorization');
     if (!authHeader?.startsWith('Bearer ')) {
+      console.log('Missing Authorization header');
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
     const token = authHeader.replace('Bearer ', '');
-    const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
-      global: { headers: { Authorization: authHeader } },
-    });
-    const { data: claimsData, error: claimsError } = await supabaseAuth.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
+
+    let callerRole: string | undefined;
+    let callerUserId: string | undefined;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+      callerRole = payload.role;
+      callerUserId = payload.sub;
+    } catch (e) {
+      console.error('JWT decode failed:', e);
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    const callerRole = claimsData.claims.role as string | undefined;
-    const callerUserId = claimsData.claims.sub as string | undefined;
     const isServiceRole = callerRole === 'service_role';
+
+    // For non-service callers, validate token signature via Supabase auth
+    if (!isServiceRole) {
+      const supabaseAuth = createClient(supabaseUrl, supabaseAnonKey, {
+        global: { headers: { Authorization: authHeader } },
+      });
+      const { data: userData, error: userErr } = await supabaseAuth.auth.getUser(token);
+      if (userErr || !userData?.user) {
+        console.error('User auth failed:', userErr);
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      callerUserId = userData.user.id;
+    }
 
     // Use service role for all data fetching
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
 
     const { order_id } = await req.json();
     if (!order_id) throw new Error('order_id is required');
