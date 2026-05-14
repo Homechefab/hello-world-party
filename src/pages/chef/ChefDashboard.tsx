@@ -330,8 +330,12 @@ export const ChefDashboard = () => {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">–</div>
-            <p className="text-xs text-muted-foreground">Ingen data ännu</p>
+            <div className="text-2xl font-bold">
+              {stats.totalSales > 0 ? `${stats.totalSales.toLocaleString('sv-SE')} kr` : '–'}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {stats.totalSales > 0 ? 'Slutförda beställningar' : 'Ingen data ännu'}
+            </p>
           </CardContent>
         </Card>
 
@@ -341,8 +345,12 @@ export const ChefDashboard = () => {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">–</div>
-            <p className="text-xs text-muted-foreground">Ingen data ännu</p>
+            <div className="text-2xl font-bold">
+              {stats.completedOrders > 0 ? stats.completedOrders : '–'}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {stats.completedOrders > 0 ? 'Slutförda totalt' : 'Ingen data ännu'}
+            </p>
           </CardContent>
         </Card>
 
@@ -352,8 +360,12 @@ export const ChefDashboard = () => {
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">–</div>
-            <p className="text-xs text-muted-foreground">Inga recensioner ännu</p>
+            <div className="text-2xl font-bold">
+              {stats.averageRating !== null ? stats.averageRating.toFixed(1) : '–'}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {stats.reviewCount > 0 ? `${stats.reviewCount} recension${stats.reviewCount === 1 ? '' : 'er'}` : 'Inga recensioner ännu'}
+            </p>
           </CardContent>
         </Card>
 
