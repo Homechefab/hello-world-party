@@ -147,11 +147,12 @@ export const ChefDashboard = () => {
         setDishes(transformedDishes);
       }
 
-      // Fetch latest 10 orders for the "Senaste Beställningar"-list
+      // Fetch latest 10 ACTIVE orders (exclude completed/delivered/cancelled) for "Senaste Beställningar"
       const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
         .select('*, order_items(dish_id, quantity, dishes(name, price))')
         .eq('chef_id', chefId)
+        .in('status', ['pending', 'confirmed', 'preparing', 'ready'])
         .order('created_at', { ascending: false })
         .limit(10);
 
