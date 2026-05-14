@@ -85,6 +85,9 @@ export async function createOrdersFromSession(
       continue;
     }
 
+    // Atomic insert protected by unique index on (stripe_session_id, chef_id).
+    // If another concurrent invocation already inserted the row, the unique
+    // constraint will reject this insert and we recover by re-reading.
     const { data: newOrder, error: orderError } = await supabaseService
       .from("orders")
       .insert({
@@ -100,8 +103,11 @@ export async function createOrdersFromSession(
       .select("id")
       .single();
 
+    let orderId: string | null = newOrder?.id as string | null;
+    let createdNow = !!newOrder && !orderError;
+
     if (orderError || !newOrder) {
-      // Race: another concurrent invocation may have created it. Re-query.
+      // Likely unique-violation race — re-query the winning row.
       const { data: raceOrder } = await supabaseService
         .from("orders")
         .select("id")
@@ -109,17 +115,23 @@ export async function createOrdersFromSession(
         .eq("chef_id", chefId)
         .limit(1);
       if (raceOrder && raceOrder.length > 0) {
-        createdOrderIds.push(raceOrder[0].id as string);
+        orderId = raceOrder[0].id as string;
+        createdNow = false;
+        console.log("[create-order] Race detected — using existing order", { chefId, orderId });
+      } else {
+        console.error("[create-order] Error creating order", orderError);
         continue;
       }
-      console.error("[create-order] Error creating order", orderError);
-      continue;
     }
 
-    createdOrderIds.push(newOrder.id as string);
+    if (!orderId) continue;
+    createdOrderIds.push(orderId);
+
+    // Only insert items + notify when WE created the order, to avoid duplicate items/SMS.
+    if (!createdNow) continue;
 
     const itemInserts = chefItems.map((i) => ({
-      order_id: newOrder.id,
+      order_id: orderId,
       dish_id: i.dishId,
       quantity: i.quantity,
       unit_price: i.unitPrice,
@@ -131,9 +143,9 @@ export async function createOrdersFromSession(
 
     try {
       await supabaseService.functions.invoke("notify-chef-new-order", {
-        body: { order_id: newOrder.id },
+        body: { order_id: orderId },
       });
-      console.log("[create-order] Chef notification triggered", { orderId: newOrder.id });
+      console.log("[create-order] Chef notification triggered", { orderId });
     } catch (notifyError) {
       console.error("[create-order] Failed to notify chef", notifyError);
     }
