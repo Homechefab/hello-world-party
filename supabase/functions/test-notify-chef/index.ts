@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.1?target=deno";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -12,11 +11,17 @@ serve(async (req) => {
     const { order_id } = await req.json();
     const url = Deno.env.get('SUPABASE_URL')!;
     const key = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
-    const supabase = createClient(url, key);
-    const { data, error } = await supabase.functions.invoke('notify-chef-new-order', {
-      body: { order_id },
+    const resp = await fetch(`${url}/functions/v1/notify-chef-new-order`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${key}`,
+        'Content-Type': 'application/json',
+        'apikey': key,
+      },
+      body: JSON.stringify({ order_id }),
     });
-    return new Response(JSON.stringify({ data, error: error?.message ?? null }), {
+    const text = await resp.text();
+    return new Response(JSON.stringify({ status: resp.status, body: text }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (e) {
