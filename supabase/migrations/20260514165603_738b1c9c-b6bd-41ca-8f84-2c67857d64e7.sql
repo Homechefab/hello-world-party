@@ -1,0 +1,2 @@
+UPDATE public.chefs SET city = TRIM(city), updated_at = now() WHERE city IS NOT NULL AND city <> TRIM(city);
+UPDATE public.chef_public_profiles SET city = TRIM(city), updated_at = now() WHERE city IS NOT NULL AND city <> TRIM(city);
