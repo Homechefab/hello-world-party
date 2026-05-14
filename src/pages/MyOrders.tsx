@@ -145,7 +145,7 @@ const MyOrders = () => {
       .select('order_id')
       .eq('customer_id', user.id);
     if (data) {
-      setReviewedOrderIds(new Set(data.map(r => r.order_id)));
+      setReviewedOrderIds(new Set(data.map(r => r.order_id).filter((id): id is string => !!id)));
     }
   }, [user]);
 
