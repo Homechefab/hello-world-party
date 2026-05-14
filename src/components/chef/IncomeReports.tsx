@@ -127,13 +127,13 @@ const IncomeReports = ({ chefId: overrideChefId }: IncomeReportsProps = {}) => {
     } finally {
       setLoading(false);
     }
-  }, [user, selectedPeriod, toast]);
+  }, [user, selectedPeriod, toast, overrideChefId]);
 
   useEffect(() => {
-    if (user) {
+    if (user || overrideChefId) {
       fetchIncomeData();
     }
-  }, [user, fetchIncomeData]);
+  }, [user, overrideChefId, fetchIncomeData]);
 
   const processIncomeData = (orders: unknown[]): IncomeData => {
     const typedOrders = orders as Array<{ total_amount?: string | number; created_at: string; order_items?: unknown[] }>;
