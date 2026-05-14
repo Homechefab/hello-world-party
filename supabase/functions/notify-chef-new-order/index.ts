@@ -217,9 +217,11 @@ serve(async (req) => {
             }),
           });
 
-          const smsResult = await smsResponse.json();
+          const rawText = await smsResponse.text();
+          let smsResult: any = {};
+          try { smsResult = JSON.parse(rawText); } catch { smsResult = { raw: rawText }; }
           if (!smsResponse.ok) {
-            console.error('46elks SMS error:', JSON.stringify(smsResult));
+            console.error('46elks SMS error:', smsResponse.status, rawText);
           } else {
             console.log('SMS sent to chef:', toPhone, 'ID:', smsResult.id);
             smsSent = true;
