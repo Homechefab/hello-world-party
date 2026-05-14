@@ -140,6 +140,7 @@ export type Database = {
       }
       chef_public_profiles: {
         Row: {
+          address: string | null
           bio: string | null
           business_name: string | null
           city: string | null
@@ -148,6 +149,7 @@ export type Database = {
           full_name: string | null
           id: string
           instagram_url: string | null
+          postal_code: string | null
           profile_image_url: string | null
           snapchat_url: string | null
           specialties: string | null
@@ -155,6 +157,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          address?: string | null
           bio?: string | null
           business_name?: string | null
           city?: string | null
@@ -163,6 +166,7 @@ export type Database = {
           full_name?: string | null
           id: string
           instagram_url?: string | null
+          postal_code?: string | null
           profile_image_url?: string | null
           snapchat_url?: string | null
           specialties?: string | null
@@ -170,6 +174,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          address?: string | null
           bio?: string | null
           business_name?: string | null
           city?: string | null
@@ -178,6 +183,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           instagram_url?: string | null
+          postal_code?: string | null
           profile_image_url?: string | null
           snapchat_url?: string | null
           specialties?: string | null
