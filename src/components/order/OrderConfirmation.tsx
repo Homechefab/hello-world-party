@@ -11,6 +11,7 @@ interface OrderConfirmationProps {
   totalPrice: number;
   sellerName: string;
   deliveryMethod?: 'pickup' | 'delivery';
+  pickupAddress?: string | null;
 }
 
 export const OrderConfirmation = ({
@@ -21,6 +22,7 @@ export const OrderConfirmation = ({
   totalPrice,
   sellerName,
   deliveryMethod = 'pickup',
+  pickupAddress,
 }: OrderConfirmationProps) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -46,18 +48,14 @@ export const OrderConfirmation = ({
               <span className="text-muted-foreground">{dishName} × {quantity}</span>
               <span className="font-semibold">{totalPrice} kr</span>
             </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              {deliveryMethod === 'pickup' ? (
-                <>
-                  <MapPin className="w-4 h-4 flex-shrink-0" />
-                  <span>Upphämtning hos kocken</span>
-                </>
-              ) : (
-                <>
-                  <MapPin className="w-4 h-4 flex-shrink-0" />
-                  <span>Hemleverans</span>
-                </>
-              )}
+            <div className="flex items-start gap-2 text-muted-foreground">
+              <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              <div className="flex flex-col">
+                <span>{deliveryMethod === 'pickup' ? 'Upphämtning hos kocken' : 'Hemleverans'}</span>
+                {deliveryMethod === 'pickup' && pickupAddress && (
+                  <span className="text-foreground font-medium">{pickupAddress}</span>
+                )}
+              </div>
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
               <Clock className="w-4 h-4 flex-shrink-0" />
