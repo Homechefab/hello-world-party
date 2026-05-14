@@ -1396,7 +1396,7 @@ export type Database = {
           created_at: string
           customer_id: string
           id: string
-          order_id: string
+          order_id: string | null
           rating: number
         }
         Insert: {
@@ -1405,7 +1405,7 @@ export type Database = {
           created_at?: string
           customer_id: string
           id?: string
-          order_id: string
+          order_id?: string | null
           rating: number
         }
         Update: {
@@ -1414,7 +1414,7 @@ export type Database = {
           created_at?: string
           customer_id?: string
           id?: string
-          order_id?: string
+          order_id?: string | null
           rating?: number
         }
         Relationships: [

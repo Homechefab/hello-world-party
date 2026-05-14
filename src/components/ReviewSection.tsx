@@ -108,28 +108,7 @@ const ReviewSection = ({ chefId, averageRating, totalReviews, reviews: propRevie
       return;
     }
 
-    // Find any non-cancelled order from this chef to attach the review to
-    const { data: orderData, error: orderError } = await supabase
-      .from('orders')
-      .select('id')
-      .eq('customer_id', user.id)
-      .eq('chef_id', chefId)
-      .in('status', ['confirmed', 'preparing', 'ready', 'completed', 'delivered'])
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    if (orderError || !orderData) {
-      toast({
-        title: "Ingen beställning hittades",
-        description: "Du kan bara recensera en kock du har beställt från.",
-        variant: "destructive"
-      });
-      return;
-    }
-
     const { error } = await supabase.from('reviews').insert({
-      order_id: orderData.id,
       customer_id: user.id,
       chef_id: chefId,
       rating: newReview.rating,
