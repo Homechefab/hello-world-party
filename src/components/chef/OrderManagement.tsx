@@ -454,15 +454,6 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
                             </Button>
                           </div>
                         )}
-                        {order.status === 'ready' && (
-                          <Button
-                            onClick={() => updateOrderStatus(order.id, 'completed')}
-                            className="flex-1"
-                          >
-                            <CheckCircle className="w-4 h-4 mr-2" />
-                            Slutför beställning
-                          </Button>
-                        )}
                         </div>
                       </div>
                     )}
