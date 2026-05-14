@@ -87,9 +87,10 @@ export const ChefDashboard = () => {
   }, []);
 
   const stats = {
-    totalSales: 15750,
-    ordersThisWeek: 23,
-    averageRating: 4.8,
+    totalSales,
+    completedOrders: completedOrderCount,
+    averageRating,
+    reviewCount,
     totalDishes: dishes.length
   };
 
