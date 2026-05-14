@@ -140,6 +140,23 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
     loadOrders();
   }, [loadOrders]);
 
+  // Realtime: refresh order list whenever orders change
+  useEffect(() => {
+    const channel = supabase
+      .channel('order-management-orders')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => {
+        loadOrders();
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'order_items' }, () => {
+        loadOrders();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [loadOrders]);
+
   const [estimatedMinutes, setEstimatedMinutes] = useState<Record<string, number>>({});
   const [pickupInstructions, setPickupInstructions] = useState<Record<string, string>>({});
 
