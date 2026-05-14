@@ -88,16 +88,17 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
 
       if (error) throw error;
 
-      // Fetch customer profiles in a second query (no FK on orders.customer_id)
+      // Fetch customer profiles via secure RPC (chefs cannot SELECT profiles directly).
       const customerIds = Array.from(new Set((data || []).map((o: any) => o.customer_id).filter(Boolean)));
       const profilesById: Record<string, { full_name?: string | null; phone?: string | null; email?: string | null }> = {};
       if (customerIds.length > 0) {
-        const { data: profiles } = await supabase
-          .from('profiles')
-          .select('id, full_name, phone, email')
-          .in('id', customerIds);
-        for (const p of profiles || []) {
-          profilesById[p.id as string] = p as any;
+        const { data: profiles, error: profilesError } = await supabase
+          .rpc('get_customer_contacts_for_chef', { _customer_ids: customerIds as string[] });
+        if (profilesError) {
+          console.error('Error loading customer contacts:', profilesError);
+        }
+        for (const p of (profiles as any[]) || []) {
+          profilesById[p.id as string] = p;
         }
       }
 

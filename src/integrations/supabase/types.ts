@@ -1908,6 +1908,15 @@ export type Database = {
       }
       complete_referral: { Args: { p_user_id: string }; Returns: Json }
       generate_referral_code: { Args: { p_user_id: string }; Returns: string }
+      get_customer_contacts_for_chef: {
+        Args: { _customer_ids: string[] }
+        Returns: {
+          email: string
+          full_name: string
+          id: string
+          phone: string
+        }[]
+      }
       get_or_create_referral_code: {
         Args: { p_user_id: string }
         Returns: {
