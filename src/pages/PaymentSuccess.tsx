@@ -45,7 +45,7 @@ const PaymentSuccess = () => {
   };
 
   const [result, setResult] = useState<PaymentResult | null>(null);
-  const [chefPickup, setChefPickup] = useState<{ business_name?: string | null; full_name?: string | null; address?: string | null; postal_code?: string | null; city?: string | null; phone?: string | null } | null>(null);
+  const [chefPickup, setChefPickup] = useState<{ business_name?: string | null; full_name?: string | null; address?: string | null; postal_code?: string | null; city?: string | null } | null>(null);
   const { toast } = useToast();
   const { user, isReady } = useAuth();
   const { clearCart } = useCart();
