@@ -411,6 +411,7 @@ const DishPage = () => {
         totalPrice={dish.price * quantity}
         sellerName={cookName}
         deliveryMethod="pickup"
+        pickupAddress={[chef?.address, chef?.postal_code, chef?.city].filter(Boolean).join(', ') || null}
       />
     </>
   );
