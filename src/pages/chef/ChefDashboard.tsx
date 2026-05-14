@@ -66,6 +66,10 @@ export const ChefDashboard = () => {
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [pendingOrderCount, setPendingOrderCount] = useState(0);
+  const [totalSales, setTotalSales] = useState(0);
+  const [completedOrderCount, setCompletedOrderCount] = useState(0);
+  const [averageRating, setAverageRating] = useState<number | null>(null);
+  const [reviewCount, setReviewCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   useChefOrderNotifications();
