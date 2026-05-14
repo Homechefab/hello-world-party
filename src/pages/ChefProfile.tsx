@@ -172,7 +172,7 @@ const ChefProfile = () => {
           business_name: chefData.business_name || '',
           user_id: '',
           full_name: profileFullName,
-          address: chefData.city || '',
+          address: [chefData.address, chefData.postal_code, chefData.city].filter(Boolean).join(', '),
           profile_image_url: chefData.profile_image_url,
           tiktok_url: chefData.tiktok_url,
           facebook_url: chefData.facebook_url,
