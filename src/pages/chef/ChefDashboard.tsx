@@ -189,6 +189,38 @@ export const ChefDashboard = () => {
         setPendingOrderCount(activeCount ?? 0);
       }
 
+      // Total sales + completed order count (lifetime)
+      const { data: completedData, error: completedErr } = await supabase
+        .from('orders')
+        .select('total_amount')
+        .eq('chef_id', chefId)
+        .in('status', ['completed', 'delivered']);
+
+      if (completedErr) {
+        console.error('Error loading completed orders:', completedErr);
+      } else {
+        const sum = (completedData || []).reduce((acc, o) => acc + Number(o.total_amount || 0), 0);
+        setTotalSales(sum);
+        setCompletedOrderCount((completedData || []).length);
+      }
+
+      // Average rating from reviews
+      const { data: reviewsData, error: reviewsErr } = await supabase
+        .from('reviews')
+        .select('rating')
+        .eq('chef_id', chefId);
+
+      if (reviewsErr) {
+        console.error('Error loading reviews:', reviewsErr);
+      } else if (reviewsData && reviewsData.length > 0) {
+        const avg = reviewsData.reduce((a, r) => a + Number(r.rating || 0), 0) / reviewsData.length;
+        setAverageRating(avg);
+        setReviewCount(reviewsData.length);
+      } else {
+        setAverageRating(null);
+        setReviewCount(0);
+      }
+
     } catch (error) {
       console.error('Error loading chef data:', error);
       toast({
