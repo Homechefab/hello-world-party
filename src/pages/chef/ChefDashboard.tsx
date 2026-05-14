@@ -147,7 +147,7 @@ export const ChefDashboard = () => {
         setDishes(transformedDishes);
       }
 
-      // Fetch real orders for this chef
+      // Fetch latest 10 orders for the "Senaste Beställningar"-list
       const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
         .select('*, order_items(dish_id, quantity, dishes(name, price))')
@@ -158,7 +158,6 @@ export const ChefDashboard = () => {
       if (ordersError) {
         console.error('Error loading orders:', ordersError);
       } else {
-        // Transform orders to match expected format
         const transformedOrders = (ordersData || []).map(order => ({
           id: order.id,
           status: order.status,
@@ -168,11 +167,20 @@ export const ChefDashboard = () => {
           dishes: order.order_items?.[0]?.dishes || { name: 'Okänd rätt', price: 0 }
         }));
         setOrders(transformedOrders);
-        
-        // Count active/pending orders
-        const activeStatuses = ['pending', 'confirmed', 'preparing', 'ready'];
-        const activeCount = transformedOrders.filter(o => activeStatuses.includes(o.status)).length;
-        setPendingOrderCount(activeCount);
+      }
+
+      // Accurate pending count over ALL orders (not just last 10)
+      const activeStatuses = ['pending', 'confirmed', 'preparing', 'ready'];
+      const { count: activeCount, error: countError } = await supabase
+        .from('orders')
+        .select('id', { count: 'exact', head: true })
+        .eq('chef_id', chefId)
+        .in('status', activeStatuses);
+
+      if (countError) {
+        console.error('Error counting active orders:', countError);
+      } else {
+        setPendingOrderCount(activeCount ?? 0);
       }
 
     } catch (error) {
