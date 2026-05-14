@@ -152,7 +152,9 @@ const ChefProfile = () => {
             instagram_url,
             snapchat_url,
             bio,
-            city
+            city,
+            address,
+            postal_code
           `)
           .eq('id', chefId)
           .maybeSingle();
