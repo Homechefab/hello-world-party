@@ -25,7 +25,6 @@ const OrderTracking = () => {
         .from('orders')
         .select(`
           *,
-          chefs (business_name, full_name, phone),
           order_items (
             quantity,
             unit_price,
@@ -37,6 +36,24 @@ const OrderTracking = () => {
         .maybeSingle();
 
       if (error) throw error;
+
+      // Fetch chef contact details via secure RPC (only if customer ordered from chef)
+      if (data?.chef_id) {
+        const { data: chefContacts } = await supabase
+          .rpc('get_chef_contacts_for_customer', { _chef_ids: [data.chef_id] });
+        const chef = (chefContacts || [])[0];
+        if (chef) {
+          (data as Record<string, unknown>).chefs = {
+            business_name: chef.business_name,
+            full_name: chef.full_name,
+            phone: chef.phone,
+            address: chef.address,
+            postal_code: chef.postal_code,
+            city: chef.city,
+          };
+        }
+      }
+
       setOrder(data);
     } catch (error) {
       console.error('Error fetching order:', error);
