@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Package, Star, MapPin, Building2, ChefHat, Clock, Calendar, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useProviders } from "@/hooks/useProviders";
+import { relabelSpecialtyForCustomer } from "@/lib/specialty-labels";
 
 const PickupPage = () => {
   const [locationQuery, setLocationQuery] = useState("");
@@ -138,7 +139,7 @@ const PickupPage = () => {
                       <div className="flex flex-wrap gap-2 mb-4">
                         {provider.specialties.slice(0, 3).map((specialty) => (
                           <Badge key={specialty} variant="outline" className="text-xs">
-                            {specialty}
+                            {relabelSpecialtyForCustomer(specialty)}
                           </Badge>
                         ))}
                       </div>

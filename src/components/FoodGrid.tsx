@@ -113,7 +113,7 @@ const FoodGrid = () => {
 
   const SPECIALTY_LABEL_MAP: Record<string, string> = {
     'sälj din mat': 'Köp min mat',
-    'sälj färdiglagade matlådor': 'Köp färdiglagade matlådor',
+    'sälj färdiglagade matlådor': 'Köp färdiglagade maträtter',
   };
 
   const getSpecialtiesList = (specialties: string | null): string[] => {
