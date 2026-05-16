@@ -122,11 +122,11 @@ const MyOrders = () => {
 
           return {
             id: order.id,
-            chef_name: order.chefs?.business_name || order.chefs?.full_name || 'Okänd kock',
-            chef_address: order.chefs?.address || null,
-            chef_postal_code: order.chefs?.postal_code || null,
-            chef_city: order.chefs?.city || null,
-            chef_phone: order.chefs?.phone || null,
+            chef_name: chef?.business_name || chef?.full_name || 'Okänd kock',
+            chef_address: chef?.address || null,
+            chef_postal_code: chef?.postal_code || null,
+            chef_city: chef?.city || null,
+            chef_phone: chef?.phone || null,
             dish_name: firstItem?.dishes?.name || 'Beställning',
             dish_image: firstItem?.dishes?.image_url || '/placeholder.svg',
             total_amount: order.total_amount,
