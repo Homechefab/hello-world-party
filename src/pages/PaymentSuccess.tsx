@@ -243,6 +243,9 @@ const PaymentSuccess = () => {
                   {chefPickup.address && (
                     <p className="text-sm">{chefPickup.address}{chefPickup.postal_code || chefPickup.city ? `, ${chefPickup.postal_code ?? ''} ${chefPickup.city ?? ''}`.trim() : ''}</p>
                   )}
+                  {chefPickup.phone && (
+                    <p className="text-sm">📞 <a href={`tel:${chefPickup.phone}`} className="font-medium underline">{chefPickup.phone}</a></p>
+                  )}
                   <p className="text-xs text-muted-foreground pt-1">Du får ett SMS när maten är klar att hämtas.</p>
                 </div>
               )}
