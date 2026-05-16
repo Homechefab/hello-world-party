@@ -59,35 +59,47 @@ const MyOrders = () => {
     }
 
     try {
-      // Fetch orders with chef info
+      // Fetch orders
       const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
         .select(`
           id,
+          chef_id,
           total_amount,
           status,
           delivery_address,
           delivery_time,
           created_at,
           estimated_ready_at,
-          preparation_started_at,
-          chefs (
-            business_name,
-            full_name,
-            address,
-            postal_code,
-            city,
-            phone
-          )
+          preparation_started_at
         `)
         .eq('customer_id', user.id)
         .order('created_at', { ascending: false });
 
       if (ordersError) throw ordersError;
 
+      // Fetch chef contacts via secure RPC (only chefs the customer has ordered from)
+      const chefIds = [...new Set((ordersData || []).map(o => o.chef_id).filter(Boolean))] as string[];
+      const chefsById: Record<string, { business_name: string | null; full_name: string | null; phone: string | null; address: string | null; postal_code: string | null; city: string | null }> = {};
+      if (chefIds.length > 0) {
+        const { data: chefContacts } = await supabase
+          .rpc('get_chef_contacts_for_customer', { _chef_ids: chefIds });
+        (chefContacts || []).forEach((c) => {
+          chefsById[c.id] = {
+            business_name: c.business_name,
+            full_name: c.full_name,
+            phone: c.phone,
+            address: c.address,
+            postal_code: c.postal_code,
+            city: c.city,
+          };
+        });
+      }
+
       // Fetch order items for each order
       const ordersWithItems = await Promise.all(
         (ordersData || []).map(async (order) => {
+          const chef = chefsById[order.chef_id];
           const { data: items } = await supabase
             .from('order_items')
             .select(`
@@ -110,11 +122,11 @@ const MyOrders = () => {
 
           return {
             id: order.id,
-            chef_name: order.chefs?.business_name || order.chefs?.full_name || 'Okänd kock',
-            chef_address: order.chefs?.address || null,
-            chef_postal_code: order.chefs?.postal_code || null,
-            chef_city: order.chefs?.city || null,
-            chef_phone: order.chefs?.phone || null,
+            chef_name: chef?.business_name || chef?.full_name || 'Okänd kock',
+            chef_address: chef?.address || null,
+            chef_postal_code: chef?.postal_code || null,
+            chef_city: chef?.city || null,
+            chef_phone: chef?.phone || null,
             dish_name: firstItem?.dishes?.name || 'Beställning',
             dish_image: firstItem?.dishes?.image_url || '/placeholder.svg',
             total_amount: order.total_amount,

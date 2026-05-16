@@ -1914,6 +1914,18 @@ export type Database = {
       }
       complete_referral: { Args: { p_user_id: string }; Returns: Json }
       generate_referral_code: { Args: { p_user_id: string }; Returns: string }
+      get_chef_contacts_for_customer: {
+        Args: { _chef_ids: string[] }
+        Returns: {
+          address: string
+          business_name: string
+          city: string
+          full_name: string
+          id: string
+          phone: string
+          postal_code: string
+        }[]
+      }
       get_customer_contacts_for_chef: {
         Args: { _customer_ids: string[] }
         Returns: {
