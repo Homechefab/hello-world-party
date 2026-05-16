@@ -94,11 +94,9 @@ const PaymentSuccess = () => {
               .eq('id', data.order_id)
               .maybeSingle();
             if (orderRow?.chef_id) {
-              const { data: chefRow } = await supabase
-                .from('chef_public_profiles')
-                .select('business_name, full_name, address, postal_code, city')
-                .eq('id', orderRow.chef_id)
-                .maybeSingle();
+              const { data: chefRows } = await supabase
+                .rpc('get_chef_contacts_for_customer', { _chef_ids: [orderRow.chef_id] });
+              const chefRow = chefRows?.[0];
               if (chefRow) setChefPickup(chefRow);
             }
           } catch (chefErr) {
