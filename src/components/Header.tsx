@@ -33,7 +33,10 @@ const Header = () => {
   const showBack = location.pathname !== '/' && location.pathname !== '';
 
   const handleBack = () => {
-    if (window.history.length > 1) {
+    // location.key === 'default' means this is the first entry in the SPA history
+    // (e.g. user opened a deep link directly). In that case go to home instead of
+    // calling navigate(-1) which would leave the app.
+    if (location.key && location.key !== 'default') {
       navigate(-1);
     } else {
       navigate('/');
