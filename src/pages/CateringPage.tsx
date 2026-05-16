@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Package, Star, MapPin, Building2, ChefHat, Calendar, Loader2, Users, Clock, Utensils } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useProviders } from "@/hooks/useProviders";
+import { relabelSpecialtyForCustomer } from "@/lib/specialty-labels";
 
 const CateringPage = () => {
   const [locationQuery, setLocationQuery] = useState("");
