@@ -41,38 +41,25 @@ export const RegisterForm = ({ onToggleMode, onSuccess }: RegisterFormProps) => 
     setLoading(true);
 
     try {
-      const returnTo = sessionStorage.getItem('post_auth_return') || '/';
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: `${window.location.origin}${returnTo}`,
-          data: {
+      // Create the customer account via edge function so the email is auto-confirmed.
+      const { data: signupResult, error: signupErr } = await supabase.functions.invoke(
+        'signup-customer',
+        {
+          body: {
+            email,
+            password,
             full_name: fullName,
             phone: cleanedPhone,
           },
         },
-      });
+      );
 
-      if (error) throw error;
+      if (signupErr) throw signupErr;
+      if (signupResult?.error) throw new Error(signupResult.error);
 
-      // No email verification required — log the user in immediately if no session was returned.
-      let hasSession = !!data.session;
-      if (!hasSession) {
-        const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
-        hasSession = !signInError;
-      }
-
-      // Persist phone on profile (handle_new_user trigger doesn't read this from metadata)
-      if (data.user?.id || hasSession) {
-        const { data: { user: currentUser } } = await supabase.auth.getUser();
-        if (currentUser?.id) {
-          await supabase
-            .from('profiles')
-            .update({ phone: cleanedPhone })
-            .eq('id', currentUser.id);
-        }
-      }
+      // Sign the user in immediately — no verification email required.
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInError) throw signInError;
 
       toast({
         title: "Välkommen till Homechef! 🎉",
