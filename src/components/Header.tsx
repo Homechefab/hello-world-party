@@ -29,6 +29,16 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { isChef, isAdmin, role, switchRole } = useRole();
   const navigate = useNavigate();
+  const location = useLocation();
+  const showBack = location.pathname !== '/' && location.pathname !== '';
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/');
+    }
+  };
 
   const roleLabels: Record<UserRole, string> = {
     customer: 'Kund',
