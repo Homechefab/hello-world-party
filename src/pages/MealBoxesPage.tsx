@@ -135,7 +135,7 @@ const MealBoxesPage = () => {
                       <div className="flex flex-wrap gap-2 mb-4">
                         {provider.specialties.slice(0, 3).map((specialty) => (
                           <Badge key={specialty} variant="outline" className="text-xs">
-                            {specialty}
+                            {relabelSpecialtyForCustomer(specialty)}
                           </Badge>
                         ))}
                       </div>
