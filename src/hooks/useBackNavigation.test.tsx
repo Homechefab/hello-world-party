@@ -145,36 +145,45 @@ describe('useBackNavigation', () => {
     expect(screen.getByTestId('path')).toHaveTextContent('/');
   });
 
-  it('multi-step in-app navigation: back goes one step at a time', async () => {
+  it('multi-step in-app navigation: back goes one step at a time', () => {
+    // Use explicit user-driven nav (links) instead of chained mount effects
+    // so we control exactly when each navigation happens.
+    function LinkProbe({ to }: { to: string }) {
+      const navigate = useNavigate();
+      const { showBack, goBack } = useBackNavigation('/');
+      const location = useLocation();
+      return (
+        <div>
+          <span data-testid="path">{location.pathname}</span>
+          <span data-testid="show-back">{showBack ? 'yes' : 'no'}</span>
+          <button data-testid="go" onClick={() => navigate(to)}>go</button>
+          <button data-testid="back-btn" onClick={goBack}>back</button>
+        </div>
+      );
+    }
+
     render(
       <MemoryRouter initialEntries={['/']}>
         <Routes>
-          <Route
-            path="/"
-            element={<><BackProbe /><NavigateOnMount to="/about" /></>}
-          />
-          <Route
-            path="/about"
-            element={<><BackProbe /><NavigateOnMount to="/chef/123" /></>}
-          />
-          <Route path="/chef/:id" element={<BackProbe />} />
+          <Route path="/" element={<LinkProbe to="/about" />} />
+          <Route path="/about" element={<LinkProbe to="/chef/123" />} />
+          <Route path="/chef/:id" element={<LinkProbe to="/" />} />
         </Routes>
       </MemoryRouter>,
     );
 
-    // Two chained mount-time navigations need to settle.
-    await waitFor(() =>
-      expect(screen.getByTestId('path')).toHaveTextContent('/chef/123'),
-    );
-
-    act(() => {
-      screen.getByTestId('back-btn').click();
-    });
+    // / -> /about -> /chef/123
+    act(() => { screen.getByTestId('go').click(); });
     expect(screen.getByTestId('path')).toHaveTextContent('/about');
 
-    act(() => {
-      screen.getByTestId('back-btn').click();
-    });
+    act(() => { screen.getByTestId('go').click(); });
+    expect(screen.getByTestId('path')).toHaveTextContent('/chef/123');
+
+    // back: /chef/123 -> /about -> /
+    act(() => { screen.getByTestId('back-btn').click(); });
+    expect(screen.getByTestId('path')).toHaveTextContent('/about');
+
+    act(() => { screen.getByTestId('back-btn').click(); });
     expect(screen.getByTestId('path')).toHaveTextContent('/');
     expect(screen.getByTestId('show-back')).toHaveTextContent('no');
   });
