@@ -218,6 +218,18 @@ const OrderTracking = () => {
               <span>Upphämtning: {new Date(order.delivery_time).toLocaleString('sv-SE')}</span>
             </div>
           )}
+          {(order.chefs?.address || order.chefs?.city) && (
+            <div className="flex items-start gap-2">
+              <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
+              <span>
+                Upphämtning hos {order.chefs?.business_name || order.chefs?.full_name || 'kocken'}:{' '}
+                {order.chefs?.address}
+                {order.chefs?.postal_code || order.chefs?.city
+                  ? `, ${order.chefs?.postal_code ?? ''} ${order.chefs?.city ?? ''}`.trim()
+                  : ''}
+              </span>
+            </div>
+          )}
           {order.chefs?.phone && (
             <div className="flex items-center gap-2">
               <Phone className="w-4 h-4 text-muted-foreground" />
