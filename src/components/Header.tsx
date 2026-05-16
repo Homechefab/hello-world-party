@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { ComponentType, SVGProps, FormEvent } from "react";
-import { Search, Menu, Home, UtensilsCrossed, Info, Phone, Users } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Search, Menu, Home, UtensilsCrossed, Info, Phone, Users, ChevronLeft } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useRole } from "@/hooks/useRole";
 import type { UserRole } from "@/types/user";
 import { Cart } from "@/components/Cart";
@@ -29,6 +29,16 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { isChef, isAdmin, role, switchRole } = useRole();
   const navigate = useNavigate();
+  const location = useLocation();
+  const showBack = location.pathname !== '/' && location.pathname !== '';
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/');
+    }
+  };
 
   const roleLabels: Record<UserRole, string> = {
     customer: 'Kund',
@@ -97,13 +107,26 @@ const Header = () => {
           paddingBottom: '1.25rem'
         }}
       >
+        {/* Mobile back button - shown on every non-home route */}
+        {showBack && (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleBack}
+            aria-label="Tillbaka"
+            className="md:hidden h-11 w-11 -ml-2 mr-1"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </Button>
+        )}
+
         {/* Logo - Simple text */}
         <Link to="/" className="flex items-center ml-4 md:ml-8">
           <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary tracking-tight">
             Homechef
           </span>
         </Link>
-        
+
   {/* Desktop Search - hidden on mobile */}
   <div className="hidden lg:flex items-center gap-4 flex-1 max-w-md mx-6 lg:mx-8">
           <form onSubmit={handleSearch} className="relative flex-1">
