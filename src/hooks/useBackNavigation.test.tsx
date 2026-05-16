@@ -145,7 +145,7 @@ describe('useBackNavigation', () => {
     expect(screen.getByTestId('path')).toHaveTextContent('/');
   });
 
-  it('multi-step in-app navigation: back goes one step at a time', () => {
+  it('multi-step in-app navigation: back goes one step at a time', async () => {
     render(
       <MemoryRouter initialEntries={['/']}>
         <Routes>
@@ -162,7 +162,10 @@ describe('useBackNavigation', () => {
       </MemoryRouter>,
     );
 
-    expect(screen.getByTestId('path')).toHaveTextContent('/chef/123');
+    // Two chained mount-time navigations need to settle.
+    await waitFor(() =>
+      expect(screen.getByTestId('path')).toHaveTextContent('/chef/123'),
+    );
 
     act(() => {
       screen.getByTestId('back-btn').click();
