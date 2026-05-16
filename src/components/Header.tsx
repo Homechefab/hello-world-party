@@ -1,7 +1,8 @@
 import { useState } from "react";
 import type { ComponentType, SVGProps, FormEvent } from "react";
 import { Search, Menu, Home, UtensilsCrossed, Info, Phone, Users, ChevronLeft } from "lucide-react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useBackNavigation } from "@/hooks/useBackNavigation";
 import { useRole } from "@/hooks/useRole";
 import type { UserRole } from "@/types/user";
 import { Cart } from "@/components/Cart";
@@ -29,19 +30,7 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { isChef, isAdmin, role, switchRole } = useRole();
   const navigate = useNavigate();
-  const location = useLocation();
-  const showBack = location.pathname !== '/' && location.pathname !== '';
-
-  const handleBack = () => {
-    // location.key === 'default' means this is the first entry in the SPA history
-    // (e.g. user opened a deep link directly). In that case go to home instead of
-    // calling navigate(-1) which would leave the app.
-    if (location.key && location.key !== 'default') {
-      navigate(-1);
-    } else {
-      navigate('/');
-    }
-  };
+  const { showBack, goBack: handleBack } = useBackNavigation('/');
 
   const roleLabels: Record<UserRole, string> = {
     customer: 'Kund',
