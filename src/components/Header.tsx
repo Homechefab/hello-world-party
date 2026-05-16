@@ -30,19 +30,7 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const { isChef, isAdmin, role, switchRole } = useRole();
   const navigate = useNavigate();
-  const location = useLocation();
-  const showBack = location.pathname !== '/' && location.pathname !== '';
-
-  const handleBack = () => {
-    // location.key === 'default' means this is the first entry in the SPA history
-    // (e.g. user opened a deep link directly). In that case go to home instead of
-    // calling navigate(-1) which would leave the app.
-    if (location.key && location.key !== 'default') {
-      navigate(-1);
-    } else {
-      navigate('/');
-    }
-  };
+  const { showBack, goBack: handleBack } = useBackNavigation('/');
 
   const roleLabels: Record<UserRole, string> = {
     customer: 'Kund',
