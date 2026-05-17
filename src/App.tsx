@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Routes, Route } from "react-router-dom";
 import useEdgeSwipeBack from "@/hooks/useEdgeSwipeBack";
+import useRestorePointerEvents from "@/hooks/useRestorePointerEvents";
 import ScrollToTop from "@/components/ScrollToTop";
 import SplashScreen from "@/components/SplashScreen";
 import MetaPixel from "@/components/MetaPixel";
@@ -116,6 +117,7 @@ const App = () => {
   }, []);
 
   useEdgeSwipeBack();
+  useRestorePointerEvents();
 
   if (showSplash) {
     return <SplashScreen onComplete={handleSplashComplete} duration={3000} />;
