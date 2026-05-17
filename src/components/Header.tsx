@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ComponentType, SVGProps, FormEvent } from "react";
 import { Search, Menu, Home, UtensilsCrossed, Info, Phone, Users, ChevronLeft } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useBackNavigation } from "@/hooks/useBackNavigation";
 import { useRole } from "@/hooks/useRole";
 import type { UserRole } from "@/types/user";
@@ -28,9 +28,41 @@ import {
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { isChef, isAdmin, role, switchRole } = useRole();
+  const { isChef, isAdmin, role, roles, switchRole } = useRole();
   const navigate = useNavigate();
+  const location = useLocation();
   const { showBack, goBack: handleBack } = useBackNavigation('/');
+
+  const restorePageInteractivity = () => {
+    const restore = () => {
+      if (document.body.style.pointerEvents === 'none') {
+        document.body.style.pointerEvents = '';
+      }
+    };
+    requestAnimationFrame(restore);
+    window.setTimeout(restore, 350);
+  };
+
+  useEffect(() => {
+    if (!menuOpen) restorePageInteractivity();
+  }, [menuOpen]);
+
+  useEffect(() => {
+    restorePageInteractivity();
+  }, [location.pathname]);
+
+  const closeMobileMenu = () => {
+    setMenuOpen(false);
+    restorePageInteractivity();
+  };
+
+  const navigateFromMobileMenu = (to: string) => {
+    closeMobileMenu();
+    window.setTimeout(() => {
+      navigate(to);
+      restorePageInteractivity();
+    }, 0);
+  };
 
   const roleLabels: Record<UserRole, string> = {
     customer: 'Kund',
@@ -51,6 +83,11 @@ const Header = () => {
   };
 
   const handleRoleSwitch = (newRole: UserRole) => {
+    if (!roles.includes(newRole)) {
+      toast.error('Du har inte behörighet till den rollen');
+      return;
+    }
+
     switchRole(newRole);
     toast.success(`Bytte till ${roleLabels[newRole]}`);
 
@@ -67,6 +104,7 @@ const Header = () => {
     };
 
     navigate(targetByRole[newRole] || '/');
+    restorePageInteractivity();
   };
 
   // Removed auth requirement - all features available
