@@ -185,8 +185,8 @@ const Header = () => {
               <DropdownMenuLabel>Byt roll</DropdownMenuLabel>
               <DropdownMenuSeparator />
               {(['customer','chef','kitchen_partner','restaurant','business','admin','webshop'] as const).filter(r => {
-                if (r === 'webshop' && !isAdmin) return false;
-                if (r === 'admin' && !isAdmin) return false;
+                if (r === 'webshop' && !roles.includes('admin')) return false;
+                if (r === 'admin' && !roles.includes('admin')) return false;
                 return true;
               }).map((r) => (
                 <DropdownMenuItem
