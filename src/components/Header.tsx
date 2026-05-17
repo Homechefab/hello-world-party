@@ -299,10 +299,9 @@ const Header = () => {
                       key={item.title}
                       className="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-secondary/80 transition-colors w-full text-left"
                       onClick={() => {
-                        // Close menu first
-                        setMenuOpen(false);
-                        
-                        // Wait for sheet animation to complete before navigating
+                        closeMobileMenu();
+
+                        // Wait for sheet cleanup before navigating
                         setTimeout(() => {
                           // Handle navigation
                           if (item.href === "/") {
@@ -334,6 +333,7 @@ const Header = () => {
                           } else {
                             navigate(item.href);
                           }
+                          restorePageInteractivity();
                         }, 300);
                       }}
                     >
@@ -346,19 +346,19 @@ const Header = () => {
                 {/* Action Buttons */}
                 <div className="space-y-3 pt-4 border-t border-border">
                   {isChef && (
-                    <Link to="/chef/application" onClick={() => setMenuOpen(false)}>
+                    <button type="button" className="w-full" onClick={() => navigateFromMobileMenu('/chef/application')}>
                       <Button variant="hero" className="w-full justify-start" size="lg">
                         <UtensilsCrossed className="w-5 h-5 mr-2" />
                         Sälj Din Mat
                       </Button>
-                    </Link>
+                    </button>
                   )}
                   {role === 'admin' && (
-                    <Link to="/admin/dashboard" onClick={() => setMenuOpen(false)}>
+                    <button type="button" className="w-full" onClick={() => navigateFromMobileMenu('/admin/dashboard')}>
                       <Button variant="secondary" className="w-full justify-start" size="lg">
                         Adminpanel
                       </Button>
-                    </Link>
+                    </button>
                   )}
                   
                   <div className="flex gap-2">
