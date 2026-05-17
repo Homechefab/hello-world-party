@@ -28,7 +28,7 @@ import {
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const { isChef, isAdmin, role, roles, switchRole } = useRole();
+  const { isChef, role, roles, switchRole } = useRole();
   const navigate = useNavigate();
   const location = useLocation();
   const { showBack, goBack: handleBack } = useBackNavigation('/');
