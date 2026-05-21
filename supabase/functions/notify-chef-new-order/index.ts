@@ -74,6 +74,28 @@ serve(async (req) => {
     const { order_id } = await req.json();
     if (!order_id) throw new Error('order_id is required');
 
+    // Atomic idempotens-claim: bara EN anropare lyckas markera chef_notified_at,
+    // övriga får 0 rader och hoppar över all utskick (förhindrar dubbla SMS/mejl).
+    const { data: claimed, error: claimError } = await supabase
+      .from('orders')
+      .update({ chef_notified_at: new Date().toISOString() })
+      .eq('id', order_id)
+      .is('chef_notified_at', null)
+      .select('id')
+      .maybeSingle();
+
+    if (claimError) {
+      console.error('Failed to claim notification:', claimError);
+      throw claimError;
+    }
+    if (!claimed) {
+      console.log('Order already notified, skipping duplicate send', { order_id });
+      return new Response(
+        JSON.stringify({ success: true, skipped: 'already_notified' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Fetch order
     const { data: order, error: orderError } = await supabase
       .from('orders')
@@ -185,25 +207,34 @@ serve(async (req) => {
       emailSent = true;
     }
 
-    // Always send a copy to admin
-    try {
-      const adminEmailResponse = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: 'Homechef <info@homechef.nu>',
-          to: ['info@homechef.nu'],
-          subject: `[Admin] Ny beställning #${orderId} - ${chefName} (${order.total_amount} kr)`,
-          html: emailHtml,
-        }),
-      });
-      const adminResult = await adminEmailResponse.json();
-      console.log('Admin email sent:', adminResult);
-    } catch (adminErr) {
-      console.error('Admin email failed:', adminErr);
+    // Always send a copy to admin — men hoppa över om kockens mejl redan ÄR admin
+    // (annars får info@homechef.nu två mejl för samma beställning).
+    const ADMIN_EMAIL = 'info@homechef.nu';
+    const chefEmailIsAdmin =
+      (chef.contact_email || '').trim().toLowerCase() === ADMIN_EMAIL;
+
+    if (!chefEmailIsAdmin) {
+      try {
+        const adminEmailResponse = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: 'Homechef <info@homechef.nu>',
+            to: [ADMIN_EMAIL],
+            subject: `[Admin] Ny beställning #${orderId} - ${chefName} (${order.total_amount} kr)`,
+            html: emailHtml,
+          }),
+        });
+        const adminResult = await adminEmailResponse.json();
+        console.log('Admin email sent:', adminResult);
+      } catch (adminErr) {
+        console.error('Admin email failed:', adminErr);
+      }
+    } else {
+      console.log('Skipping admin copy — chef email is admin email');
     }
 
     // Send SMS via 46elks (if chef has phone)
