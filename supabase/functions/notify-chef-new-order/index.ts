@@ -207,25 +207,34 @@ serve(async (req) => {
       emailSent = true;
     }
 
-    // Always send a copy to admin
-    try {
-      const adminEmailResponse = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${RESEND_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: 'Homechef <info@homechef.nu>',
-          to: ['info@homechef.nu'],
-          subject: `[Admin] Ny beställning #${orderId} - ${chefName} (${order.total_amount} kr)`,
-          html: emailHtml,
-        }),
-      });
-      const adminResult = await adminEmailResponse.json();
-      console.log('Admin email sent:', adminResult);
-    } catch (adminErr) {
-      console.error('Admin email failed:', adminErr);
+    // Always send a copy to admin — men hoppa över om kockens mejl redan ÄR admin
+    // (annars får info@homechef.nu två mejl för samma beställning).
+    const ADMIN_EMAIL = 'info@homechef.nu';
+    const chefEmailIsAdmin =
+      (chef.contact_email || '').trim().toLowerCase() === ADMIN_EMAIL;
+
+    if (!chefEmailIsAdmin) {
+      try {
+        const adminEmailResponse = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${RESEND_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: 'Homechef <info@homechef.nu>',
+            to: [ADMIN_EMAIL],
+            subject: `[Admin] Ny beställning #${orderId} - ${chefName} (${order.total_amount} kr)`,
+            html: emailHtml,
+          }),
+        });
+        const adminResult = await adminEmailResponse.json();
+        console.log('Admin email sent:', adminResult);
+      } catch (adminErr) {
+        console.error('Admin email failed:', adminErr);
+      }
+    } else {
+      console.log('Skipping admin copy — chef email is admin email');
     }
 
     // Send SMS via 46elks (if chef has phone)
