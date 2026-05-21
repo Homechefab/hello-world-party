@@ -74,6 +74,28 @@ serve(async (req) => {
     const { order_id } = await req.json();
     if (!order_id) throw new Error('order_id is required');
 
+    // Atomic idempotens-claim: bara EN anropare lyckas markera chef_notified_at,
+    // övriga får 0 rader och hoppar över all utskick (förhindrar dubbla SMS/mejl).
+    const { data: claimed, error: claimError } = await supabase
+      .from('orders')
+      .update({ chef_notified_at: new Date().toISOString() })
+      .eq('id', order_id)
+      .is('chef_notified_at', null)
+      .select('id')
+      .maybeSingle();
+
+    if (claimError) {
+      console.error('Failed to claim notification:', claimError);
+      throw claimError;
+    }
+    if (!claimed) {
+      console.log('Order already notified, skipping duplicate send', { order_id });
+      return new Response(
+        JSON.stringify({ success: true, skipped: 'already_notified' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Fetch order
     const { data: order, error: orderError } = await supabase
       .from('orders')

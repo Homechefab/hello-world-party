@@ -989,6 +989,7 @@ export type Database = {
       orders: {
         Row: {
           chef_id: string
+          chef_notified_at: string | null
           created_at: string
           customer_id: string
           customer_phone: string | null
@@ -1006,6 +1007,7 @@ export type Database = {
         }
         Insert: {
           chef_id: string
+          chef_notified_at?: string | null
           created_at?: string
           customer_id: string
           customer_phone?: string | null
@@ -1023,6 +1025,7 @@ export type Database = {
         }
         Update: {
           chef_id?: string
+          chef_notified_at?: string | null
           created_at?: string
           customer_id?: string
           customer_phone?: string | null
