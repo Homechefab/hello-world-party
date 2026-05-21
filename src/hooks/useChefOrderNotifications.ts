@@ -70,9 +70,9 @@ export function useChefOrderNotifications() {
           });
         }
 
-        supabase.functions.invoke('notify-chef-new-order', {
-          body: { order_id: payload.new?.id },
-        }).catch(console.error);
+        // SMS/e-post skickas server-side från create-order-from-session
+        // (verify-payment + Stripe webhook). Trigga INTE notify-chef-new-order
+        // härifrån — det skulle ge dubbla SMS/mejl till kocken.
       })
       .subscribe();
 
