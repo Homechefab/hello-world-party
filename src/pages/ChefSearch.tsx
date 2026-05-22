@@ -254,7 +254,7 @@ const ChefSearch = () => {
                           </div>
                           {chef.specialties && (
                             <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-                              {chef.specialties}
+                              {chef.specialties.split(",").map(s => relabelSpecialtyForCustomer(s.trim())).join(", ")}
                             </p>
                           )}
                         </div>
