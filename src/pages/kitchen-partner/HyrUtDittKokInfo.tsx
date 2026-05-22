@@ -1,14 +1,13 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
   DollarSign, 
   Clock, 
   Shield, 
   Users, 
-  CheckCircle,
-  Star
+  CheckCircle
 } from "lucide-react";
 import rentKitchenImage from "@/assets/service-rent-kitchen.jpg";
 import KitchenPartnerFAQ from "@/components/services/KitchenPartnerFAQ";
@@ -145,34 +144,6 @@ const HyrUtDittKokInfo = () => {
                   </div>
                 ))}
               </div>
-            </div>
-            <div className="lg:pl-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Star className="w-5 h-5 text-yellow-500" />
-                    Framgångsexempel
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="font-semibold">Restaurang Svea, Stockholm</h4>
-                      <p className="text-sm text-muted-foreground">Hyrer ut sitt kök vardagar 14-18</p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-2xl font-bold text-primary">8,500 kr</p>
-                        <p className="text-sm text-muted-foreground">Månadsinkomst</p>
-                      </div>
-                      <div>
-                        <p className="text-2xl font-bold text-primary">4.8/5</p>
-                        <p className="text-sm text-muted-foreground">Kockbetyg</p>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>
