@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
+import { relabelSpecialtyForCustomer } from "@/lib/specialty-labels";
 
 interface SearchFilters {
   query: string;
@@ -253,7 +254,7 @@ const ChefSearch = () => {
                           </div>
                           {chef.specialties && (
                             <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
-                              {chef.specialties}
+                              {chef.specialties.split(",").map(s => relabelSpecialtyForCustomer(s.trim())).join(", ")}
                             </p>
                           )}
                         </div>
