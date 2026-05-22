@@ -82,22 +82,8 @@ const UserMenu = () => {
           </DropdownMenuItem>
         )}
         
-        {isChef && (
-          <>
-            <DropdownMenuItem asChild>
-              <Link to="/chef/orders" className="cursor-pointer">
-                <ShoppingBag className="w-4 h-4 mr-2" />
-                Mina beställningar
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/chef/kitchen" className="cursor-pointer">
-                <Settings className="w-4 h-4 mr-2" />
-                Kökshantering
-              </Link>
-            </DropdownMenuItem>
-          </>
-        )}
+        {isChef && null}
+
 
         {isKitchenPartner && (
           <>
