@@ -64,7 +64,7 @@ const Footer = () => {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link to="/chef/application" className="hover:text-primary transition-colors">Bli hemmakock</Link></li>
               <li><Link to="/seller-guide" className="hover:text-primary transition-colors">Säljguide</Link></li>
-              <li><Link to="/sell" className="hover:text-primary transition-colors">Prissättning</Link></li>
+              <li><Link to="/seller-guide#prissättning" className="hover:text-primary transition-colors">Prissättning</Link></li>
               <li><Link to="/chef/kitchen-requirements" className="hover:text-primary transition-colors">Säkerhetsregler</Link></li>
               <li><Link to="/chef/kockforum" className="hover:text-primary transition-colors">Säljarecommunity</Link></li>
               
