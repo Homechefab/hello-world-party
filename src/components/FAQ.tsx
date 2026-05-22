@@ -8,7 +8,7 @@ import {
 const faqItems = [
   {
     question: "Hur fungerar Homechef?",
-    answer: "Homechef är en marknadsplats som kopplar ihop dig med lokala hemkockar. Du söker efter mat i ditt område, beställer direkt från kocken och hämtar maten eller får den levererad. Alla kockar är godkända och följer livsmedelssäkerhetskrav."
+    answer: "Homechef är en marknadsplats som kopplar ihop dig med lokala hemmakockar. Du söker efter mat i ditt område, beställer direkt från kocken och hämtar maten eller får den levererad. Alla kockar är godkända och följer livsmedelssäkerhetskrav."
   },
   {
     question: "Är maten säker att äta?",
@@ -20,7 +20,7 @@ const faqItems = [
   },
   {
     question: "Kan jag bli kock på Homechef?",
-    answer: "Absolut! Om du älskar att laga mat och vill tjäna pengar på din passion kan du ansöka om att bli hemkock. Du behöver ett godkänt kök, registrerat företag och följa våra säkerhetsriktlinjer."
+    answer: "Absolut! Om du älskar att laga mat och vill tjäna pengar på din passion kan du ansöka om att bli hemmakock. Du behöver ett godkänt kök, registrerat företag och följa våra säkerhetsriktlinjer."
   },
   {
     question: "Hur hämtar jag min beställning?",
