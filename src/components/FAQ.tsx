@@ -20,7 +20,7 @@ const faqItems = [
   },
   {
     question: "Kan jag bli kock på Homechef?",
-    answer: "Absolut! Om du älskar att laga mat och vill tjäna pengar på din passion kan du ansöka om att bli hemkock. Du behöver ett godkänt kök, registrerat företag och följa våra säkerhetsriktlinjer."
+    answer: "Absolut! Om du älskar att laga mat och vill tjäna pengar på din passion kan du ansöka om att bli hemmakock. Du behöver ett godkänt kök, registrerat företag och följa våra säkerhetsriktlinjer."
   },
   {
     question: "Hur hämtar jag min beställning?",
