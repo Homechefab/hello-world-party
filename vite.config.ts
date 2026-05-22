@@ -7,8 +7,8 @@ import { componentTagger } from "lovable-tagger";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(({ mode }) => ({
-  // Use absolute root during development, but relative paths for production
-  base: mode === 'development' ? '/' : './',
+  // Always use absolute root so deep routes (e.g. /chef/:id) load assets from /assets/*
+  base: '/',
   plugins: [
     react(),
     mode === 'development' && componentTagger(),
