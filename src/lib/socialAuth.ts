@@ -11,12 +11,16 @@ export const isNativeAuthFlow = () => Capacitor.isNativePlatform();
 export async function signInWithSocial(provider: SocialProvider) {
   const isGoogle = provider === 'google';
 
+  // Behåll ev. sparad returväg (t.ex. OAuth-consent) genom social inloggning.
+  const stored = typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('post_auth_return') : null;
+  const returnPath = stored && stored.startsWith('/') && !stored.startsWith('//') ? stored : '/';
+
   const options: {
     redirectTo: string;
     skipBrowserRedirect?: boolean;
     queryParams?: Record<string, string>;
   } = {
-    redirectTo: isNativeAuthFlow() ? NATIVE_AUTH_CALLBACK_URL : `${window.location.origin}/`,
+    redirectTo: isNativeAuthFlow() ? NATIVE_AUTH_CALLBACK_URL : `${window.location.origin}${returnPath}`,
   };
 
   if (isNativeAuthFlow()) {

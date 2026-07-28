@@ -1,0 +1,177 @@
+{
+  "version": 1,
+  "sdk_version": "0.24.0",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://rkucenozpmaixfphpiub.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "homechef-mcp",
+      "version": "0.1.0",
+      "title": "Homechef"
+    },
+    "tools": [
+      {
+        "name": "search_chefs",
+        "title": "Sök hemmakockar",
+        "description": "Söker godkända hemmakockar på Homechef efter stad, namn eller specialitet.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "city": {
+              "type": "string",
+              "description": "Stad att filtrera på, t.ex. Stockholm."
+            },
+            "query": {
+              "type": "string",
+              "description": "Fritext som matchar kockens namn eller verksamhetsnamn."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 10
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "search_dishes",
+        "title": "Sök maträtter",
+        "description": "Söker tillgängliga maträtter på Homechef efter namn, kategori, pris eller kock.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Fritext som matchar rättens namn eller beskrivning."
+            },
+            "category": {
+              "type": "string",
+              "description": "Kategori, t.ex. husmanskost, vegetariskt."
+            },
+            "chefId": {
+              "type": "string",
+              "description": "Begränsa till en specifik kocks rätter (UUID)."
+            },
+            "maxPrice": {
+              "type": "number",
+              "description": "Högsta pris i kronor."
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 10
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_my_profile",
+        "title": "Hämta min profil",
+        "description": "Hämtar profil och roller för den inloggade Homechef-användaren.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_my_orders",
+        "title": "Lista mina beställningar",
+        "description": "Hämtar de senaste matbeställningarna för den inloggade Homechef-användaren (som kund eller kock).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 10,
+              "description": "Antal beställningar att hämta."
+            },
+            "status": {
+              "type": "string",
+              "description": "Filtrera på status, t.ex. pending, confirmed, delivered."
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "update_order_status",
+        "title": "Uppdatera beställningsstatus",
+        "description": "Uppdaterar status på en beställning. Endast tillåtet för den kock som äger beställningen (RLS avgör).",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "orderId": {
+              "type": "string",
+              "description": "Beställningens UUID."
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "confirmed",
+                "preparing",
+                "ready",
+                "delivered",
+                "cancelled"
+              ],
+              "description": "Ny status för beställningen."
+            }
+          },
+          "required": [
+            "orderId",
+            "status"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

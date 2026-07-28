@@ -76,6 +76,7 @@ import RestaurantApplicationForm from "./pages/restaurant/RestaurantApplicationF
 import RestaurantApplication from "./pages/restaurant/RestaurantApplication";
 import RestaurantApplicationPending from "./pages/restaurant/ApplicationPending";
 import NotFound from "./pages/NotFound";
+import OAuthConsent from "./pages/OAuthConsent";
 import NotificationSignup from "./pages/NotificationSignup";
 import Auth from "./pages/Auth";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -239,6 +240,7 @@ const App = () => {
             <Route path="/settings/preferences" element={<RoleBasedLayout><Preferences /></RoleBasedLayout>} />
 
             {/* Fallback */}
+            <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
             <Route path="*" element={<PublicLayout><NotFound /></PublicLayout>} />
 
         </Routes>
