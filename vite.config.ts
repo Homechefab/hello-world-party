@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { fileURLToPath } from 'url';
 import { componentTagger } from "lovable-tagger";
+import { mcpPlugin } from "@lovable.dev/mcp-js/stacks/supabase/vite";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -11,6 +12,7 @@ export default defineConfig(({ mode }) => ({
   base: '/',
   plugins: [
     react(),
+    mcpPlugin(),
     mode === 'development' && componentTagger(),
   ].filter(Boolean),
   server: {
