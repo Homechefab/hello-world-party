@@ -16,7 +16,11 @@ interface ChefVideo {
   created_at: string;
 }
 
-export const VideoUpload: React.FC = () => {
+interface VideoUploadProps {
+  chefId?: string | null;
+}
+
+export const VideoUpload: React.FC<VideoUploadProps> = ({ chefId: overrideChefId }) => {
   const [videos, setVideos] = useState<ChefVideo[]>([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -28,24 +32,29 @@ export const VideoUpload: React.FC = () => {
 
   const fetchChefAndVideos = useCallback(async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      let resolvedChefId: string | null = overrideChefId ?? null;
 
-      // Get chef id
-      const { data: chefData } = await supabase
-        .from('chefs')
-        .select('id')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      if (!resolvedChefId) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
 
-      if (chefData) {
-        setChefId(chefData.id);
+        const { data: chefData } = await supabase
+          .from('chefs')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        resolvedChefId = chefData?.id ?? null;
+      }
+
+      if (resolvedChefId) {
+        setChefId(resolvedChefId);
 
         // Fetch existing videos
         const { data: videosData, error } = await supabase
           .from('chef_videos')
           .select('*')
-          .eq('chef_id', chefData.id)
+          .eq('chef_id', resolvedChefId)
           .order('created_at', { ascending: false });
 
         if (error) throw error;
@@ -56,7 +65,7 @@ export const VideoUpload: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [overrideChefId]);
 
   useEffect(() => {
     fetchChefAndVideos();

@@ -467,7 +467,7 @@ export const ChefDashboard = () => {
         </TabsContent>
 
         <TabsContent value="videos" className="space-y-6">
-          <VideoUpload />
+          <VideoUpload chefId={adminSelectedChefId} />
         </TabsContent>
 
         <TabsContent value="menu" className="space-y-6">
