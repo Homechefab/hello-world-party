@@ -17,7 +17,7 @@ interface ChefVideo {
 }
 
 interface VideoUploadProps {
-  chefId?: string;
+  chefId?: string | null;
 }
 
 export const VideoUpload: React.FC<VideoUploadProps> = ({ chefId: overrideChefId }) => {
