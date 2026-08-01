@@ -155,7 +155,7 @@ export const VideoUpload: React.FC<VideoUploadProps> = ({ chefId: overrideChefId
       const { data: videoData, error: dbError } = await supabase
         .from('chef_videos')
         .insert({
-          chef_id: chefId,
+          chef_id: activeChefId,
           title,
           description: description || null,
           video_url: publicUrl
