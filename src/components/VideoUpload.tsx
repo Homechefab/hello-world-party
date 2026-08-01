@@ -16,7 +16,11 @@ interface ChefVideo {
   created_at: string;
 }
 
-export const VideoUpload: React.FC = () => {
+interface VideoUploadProps {
+  chefId?: string;
+}
+
+export const VideoUpload: React.FC<VideoUploadProps> = ({ chefId: overrideChefId }) => {
   const [videos, setVideos] = useState<ChefVideo[]>([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
