@@ -99,10 +99,34 @@ export const VideoUpload: React.FC<VideoUploadProps> = ({ chefId: overrideChefId
   };
 
   const handleUploadVideo = async () => {
-    if (!title || !selectedFile || !chefId) {
+    if (!title || !selectedFile) {
       toast({
         title: "Saknad information",
         description: "Titel och videofil krävs",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Resolve chef id if it wasn't loaded yet
+    let activeChefId = chefId ?? overrideChefId ?? null;
+    if (!activeChefId) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: chefData } = await supabase
+          .from('chefs')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        activeChefId = chefData?.id ?? null;
+      }
+      if (activeChefId) setChefId(activeChefId);
+    }
+
+    if (!activeChefId) {
+      toast({
+        title: "Kockprofil saknas",
+        description: "Kunde inte hitta kockprofilen. Ladda om sidan och försök igen.",
         variant: "destructive"
       });
       return;
@@ -113,7 +137,8 @@ export const VideoUpload: React.FC<VideoUploadProps> = ({ chefId: overrideChefId
     try {
       // Upload video to Supabase Storage
       const fileExt = selectedFile.name.split('.').pop();
-      const fileName = `${chefId}/${Date.now()}.${fileExt}`;
+      const fileName = `${activeChefId}/${Date.now()}.${fileExt}`;
+
 
       const { error: uploadError } = await supabase.storage
         .from('chef-videos')
@@ -130,7 +155,7 @@ export const VideoUpload: React.FC<VideoUploadProps> = ({ chefId: overrideChefId
       const { data: videoData, error: dbError } = await supabase
         .from('chef_videos')
         .insert({
-          chef_id: chefId,
+          chef_id: activeChefId,
           title,
           description: description || null,
           video_url: publicUrl
