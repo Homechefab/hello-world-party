@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { isPreorderOnlyChef, PREORDER_LEAD_TIME_HOURS } from "@/lib/preorder";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, Clock, MapPin, ChefHat, Instagram, Facebook, Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -372,6 +373,13 @@ const ChefProfile = () => {
                   <span>30-45 min tillagning</span>
                 </div>
               </div>
+              {isPreorderOnlyChef(chef.id) && (
+                <div className="mt-4 flex justify-center">
+                  <Badge className="bg-white/90 text-foreground text-sm px-3 py-1">
+                    Endast förbeställning – beställ minst {PREORDER_LEAD_TIME_HOURS} timmar i förväg
+                  </Badge>
+                </div>
+              )}
               
               {/* Social Media Links */}
               {(chef.instagram_url || chef.facebook_url || chef.tiktok_url || chef.snapchat_url) && (

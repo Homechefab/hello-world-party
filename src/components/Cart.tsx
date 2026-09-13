@@ -10,6 +10,15 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { isChefCurrentlyOpen } from "@/hooks/useChefAvailability";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  isPreorderOnlyChef,
+  getEarliestPreorderValue,
+  isValidPreorderValue,
+  formatPreorderLabel,
+  PREORDER_LEAD_TIME_HOURS,
+} from "@/lib/preorder";
 
 export const Cart = () => {
   const { state, updateQuantity, removeItem } = useCart();
@@ -19,7 +28,11 @@ export const Cart = () => {
   const [showPhonePrompt, setShowPhonePrompt] = useState(false);
   const [existingPhone, setExistingPhone] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [preorderTime, setPreorderTime] = useState<string>("");
   const { toast } = useToast();
+
+  const preorderChefName = state.items.find(item => isPreorderOnlyChef(item.chefId))?.chefName;
+  const requiresPreorder = !!preorderChefName;
 
   const proceedToCheckout = async (customerPhone: string) => {
     setIsProcessing(true);
@@ -27,6 +40,7 @@ export const Cart = () => {
     try {
       const uniqueChefIds = [...new Set(state.items.map(item => item.chefId))];
       for (const chefId of uniqueChefIds) {
+        if (isPreorderOnlyChef(chefId)) continue;
         const { isOpen, nextOpenInfo } = await isChefCurrentlyOpen(chefId);
         if (!isOpen) {
           const chefName = state.items.find(i => i.chefId === chefId)?.chefName || "Kocken";
@@ -54,7 +68,9 @@ export const Cart = () => {
           items: lineItems,
           totalAmount: state.total,
           deliveryAddress: 'Upphämtning',
-          specialInstructions: '',
+          specialInstructions: requiresPreorder && preorderTime
+            ? `Förbeställning: ${formatPreorderLabel(preorderTime)}`
+            : '',
           customerPhone,
         }
       });
@@ -125,6 +141,15 @@ export const Cart = () => {
         title: "Tom varukorg",
         description: "Lägg till varor innan du går till betalning",
         variant: "destructive"
+      });
+      return;
+    }
+
+    if (requiresPreorder && !isValidPreorderValue(preorderTime)) {
+      toast({
+        title: "Välj tid för förbeställning",
+        description: `${preorderChefName} lagar endast förbeställd mat. Välj en dag och tid minst ${PREORDER_LEAD_TIME_HOURS} timmar fram i tiden.`,
+        variant: "destructive",
       });
       return;
     }
@@ -244,6 +269,23 @@ export const Cart = () => {
                 </div>
 
                 <div className="border-t pt-4 pb-2 flex-shrink-0 bg-background">
+                  {requiresPreorder && (
+                    <div className="mb-4 rounded-lg border border-border bg-muted/40 p-3 space-y-2">
+                      <Label htmlFor="preorder-time" className="text-sm font-medium">
+                        {preorderChefName} lagar endast förbeställd mat
+                      </Label>
+                      <p className="text-xs text-muted-foreground">
+                        Välj när du vill hämta din mat – minst {PREORDER_LEAD_TIME_HOURS} timmar fram i tiden.
+                      </p>
+                      <Input
+                        id="preorder-time"
+                        type="datetime-local"
+                        value={preorderTime}
+                        min={getEarliestPreorderValue()}
+                        onChange={(e) => setPreorderTime(e.target.value)}
+                      />
+                    </div>
+                  )}
                   <div className="space-y-2 mb-4">
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-muted-foreground">Delsumma:</span>
