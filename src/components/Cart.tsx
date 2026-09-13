@@ -145,6 +145,15 @@ export const Cart = () => {
       return;
     }
 
+    if (requiresPreorder && !isValidPreorderValue(preorderTime)) {
+      toast({
+        title: "Välj tid för förbeställning",
+        description: `${preorderChefName} lagar endast förbeställd mat. Välj en dag och tid minst ${PREORDER_LEAD_TIME_HOURS} timmar fram i tiden.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Check if customer has phone on profile
     try {
       const { data: profile } = await supabase
