@@ -68,7 +68,9 @@ export const Cart = () => {
           items: lineItems,
           totalAmount: state.total,
           deliveryAddress: 'Upphämtning',
-          specialInstructions: '',
+          specialInstructions: requiresPreorder && preorderTime
+            ? `Förbeställning: ${formatPreorderLabel(preorderTime)}`
+            : '',
           customerPhone,
         }
       });
