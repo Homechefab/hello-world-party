@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { isPreorderOnlyChef, PREORDER_LEAD_TIME_HOURS } from "@/lib/preorder";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, Clock, MapPin, ChefHat, Instagram, Facebook, Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
