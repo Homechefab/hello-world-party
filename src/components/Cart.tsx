@@ -269,6 +269,23 @@ export const Cart = () => {
                 </div>
 
                 <div className="border-t pt-4 pb-2 flex-shrink-0 bg-background">
+                  {requiresPreorder && (
+                    <div className="mb-4 rounded-lg border border-border bg-muted/40 p-3 space-y-2">
+                      <Label htmlFor="preorder-time" className="text-sm font-medium">
+                        {preorderChefName} lagar endast förbeställd mat
+                      </Label>
+                      <p className="text-xs text-muted-foreground">
+                        Välj när du vill hämta din mat – minst {PREORDER_LEAD_TIME_HOURS} timmar fram i tiden.
+                      </p>
+                      <Input
+                        id="preorder-time"
+                        type="datetime-local"
+                        value={preorderTime}
+                        min={getEarliestPreorderValue()}
+                        onChange={(e) => setPreorderTime(e.target.value)}
+                      />
+                    </div>
+                  )}
                   <div className="space-y-2 mb-4">
                     <div className="flex justify-between items-center text-sm">
                       <span className="text-muted-foreground">Delsumma:</span>
