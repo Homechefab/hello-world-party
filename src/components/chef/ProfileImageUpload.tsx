@@ -52,7 +52,11 @@ export function ProfileImageUpload({ chefId: overrideChefId }: ProfileImageUploa
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || (!overrideChefId && !user?.id)) return;
+    const ownerId = overrideChefId ?? user?.id;
+    if (!file || !ownerId) {
+      toast.error("Kunde inte hitta kockprofilen");
+      return;
+    }
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
@@ -69,7 +73,6 @@ export function ProfileImageUpload({ chefId: overrideChefId }: ProfileImageUploa
     setUploading(true);
 
     try {
-      const ownerId = overrideChefId || user!.id!;
       // Create unique filename
       const fileExt = file.name.split(".").pop();
       const fileName = `${ownerId}/profile.${fileExt}`;
@@ -97,7 +100,7 @@ export function ProfileImageUpload({ chefId: overrideChefId }: ProfileImageUploa
       if (overrideChefId) {
         updateQuery = updateQuery.eq("id", overrideChefId);
       } else {
-        updateQuery = updateQuery.eq("user_id", user!.id!);
+        updateQuery = updateQuery.eq("user_id", ownerId);
       }
       const { error: updateError } = await updateQuery;
 
@@ -105,9 +108,10 @@ export function ProfileImageUpload({ chefId: overrideChefId }: ProfileImageUploa
 
       setImageUrl(urlWithCacheBuster);
       toast.success("Profilbild uppladdad!");
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error uploading image:", error);
-      toast.error("Kunde inte ladda upp bilden");
+      const message = error instanceof Error ? error.message : "Okänt fel";
+      toast.error(`Kunde inte ladda upp bilden: ${message}`);
     } finally {
       setUploading(false);
       if (fileInputRef.current) {
@@ -117,13 +121,13 @@ export function ProfileImageUpload({ chefId: overrideChefId }: ProfileImageUploa
   };
 
   const handleRemoveImage = async () => {
-    if (!overrideChefId && !user?.id) return;
+    const ownerId = overrideChefId ?? user?.id;
+    if (!ownerId) return;
     if (!imageUrl) return;
 
     setUploading(true);
 
     try {
-      const ownerId = overrideChefId || user!.id!;
       // Remove from storage
       const fileName = `${ownerId}/profile.${imageUrl.split(".").pop()?.split("?")[0]}`;
       await supabase.storage.from("chef-profiles").remove([fileName]);
@@ -133,7 +137,7 @@ export function ProfileImageUpload({ chefId: overrideChefId }: ProfileImageUploa
       if (overrideChefId) {
         updateQuery = updateQuery.eq("id", overrideChefId);
       } else {
-        updateQuery = updateQuery.eq("user_id", user!.id!);
+        updateQuery = updateQuery.eq("user_id", ownerId);
       }
       const { error } = await updateQuery;
 
