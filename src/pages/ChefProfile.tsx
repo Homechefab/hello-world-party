@@ -368,11 +368,22 @@ const ChefProfile = () => {
                     <span>{averageRating} ({totalReviews} {totalReviews === 1 ? 'recension' : 'recensioner'})</span>
                   </div>
                 )}
-                <div className="flex items-center">
-                  <Clock className="w-5 h-5 mr-1" />
-                  <span>30-45 min tillagning</span>
-                </div>
+                {chef.business_name !== 'La Flamme' && (
+                  <div className="flex items-center">
+                    <Clock className="w-5 h-5 mr-1" />
+                    <span>30-45 min tillagning</span>
+                  </div>
+                )}
               </div>
+              {chef.business_name === 'La Flamme' && (
+                <div className="mt-4 max-w-2xl mx-auto text-center text-white/90 space-y-2">
+                  <p>La Flamme erbjuder matlådor med hög kvalitet och noggrant utvalda, lokala och närproducerade råvaror.</p>
+                  <p>Försäljning sker onsdag–fredag mellan kl. 17:00–22:00.</p>
+                  <p>Beställning behöver göras minst 24 timmar i förväg. Vid beställning anger du även vilken dag och vilken tid du önskar få maten levererad.</p>
+                  <p>Leverans erbjuds och leveranskostnad tillkommer.</p>
+                  <p>La Flamme – kvalitet du känner på smaken.</p>
+                </div>
+              )}
               {isPreorderOnlyChef(chef.id) && (
                 <div className="mt-4 flex justify-center">
                   <Badge className="bg-white/90 text-foreground text-sm px-3 py-1">
