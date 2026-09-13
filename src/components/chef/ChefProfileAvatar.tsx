@@ -54,7 +54,11 @@ export function ChefProfileAvatar({ size = "md", className = "", chefId: overrid
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || (!overrideChefId && !user?.id)) return;
+    const ownerId = overrideChefId ?? user?.id;
+    if (!file || !ownerId) {
+      toast.error("Kunde inte hitta kockprofilen");
+      return;
+    }
 
     if (!file.type.startsWith("image/")) {
       toast.error("Endast bilder är tillåtna");
@@ -69,7 +73,6 @@ export function ChefProfileAvatar({ size = "md", className = "", chefId: overrid
     setUploading(true);
 
     try {
-      const ownerId = overrideChefId || user!.id!;
       const fileExt = file.name.split(".").pop();
       const fileName = `${ownerId}/profile.${fileExt}`;
 
@@ -91,7 +94,7 @@ export function ChefProfileAvatar({ size = "md", className = "", chefId: overrid
       if (overrideChefId) {
         updateQuery = updateQuery.eq("id", overrideChefId);
       } else {
-        updateQuery = updateQuery.eq("user_id", user!.id!);
+        updateQuery = updateQuery.eq("user_id", ownerId);
       }
       const { error: updateError } = await updateQuery;
 
@@ -99,9 +102,10 @@ export function ChefProfileAvatar({ size = "md", className = "", chefId: overrid
 
       setImageUrl(urlWithCacheBuster);
       toast.success("Profilbild uppladdad!");
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error uploading image:", error);
-      toast.error("Kunde inte ladda upp bilden");
+      const message = error instanceof Error ? error.message : "Okänt fel";
+      toast.error(`Kunde inte ladda upp bilden: ${message}`);
     } finally {
       setUploading(false);
       if (fileInputRef.current) {
