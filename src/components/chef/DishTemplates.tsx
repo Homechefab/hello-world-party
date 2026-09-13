@@ -36,9 +36,10 @@ interface DishTemplate {
 
 interface DishTemplatesProps {
   onDishAdded?: () => void;
+  chefId?: string | null;
 }
 
-const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
+const DishTemplates = ({ onDishAdded, chefId: overrideChefId }: DishTemplatesProps) => {
   const [templates, setTemplates] = useState<DishTemplate[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<DishTemplate | null>(null);
   const [customPrice, setCustomPrice] = useState<string>("");
