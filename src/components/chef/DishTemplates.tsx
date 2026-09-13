@@ -124,26 +124,32 @@ const DishTemplates = ({ onDishAdded, chefId: overrideChefId }: DishTemplatesPro
   };
 
   const handleAddDish = async () => {
-    if (!selectedTemplate || !user?.id) return;
+    if (!selectedTemplate) return;
+    if (!overrideChefId && !user?.id) return;
 
     setLoading(true);
     try {
-      // First get the chef_id for the current user
-      const { data: chefData, error: chefError } = await supabase
-        .from('chefs')
-        .select('id')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      // Resolve chef id: admin override takes precedence
+      let resolvedChefId: string | null = overrideChefId ?? null;
 
-      if (chefError || !chefData) {
-        throw new Error('Chef profile not found');
+      if (!resolvedChefId) {
+        const { data: chefData, error: chefError } = await supabase
+          .from('chefs')
+          .select('id')
+          .eq('user_id', user!.id)
+          .maybeSingle();
+
+        if (chefError || !chefData) {
+          throw new Error('Chef profile not found');
+        }
+        resolvedChefId = chefData.id;
       }
 
       // Upload image if provided
       let imageUrl: string | null = null;
       if (customImage) {
         const fileExt = customImage.name.split('.').pop();
-        const fileName = `${user.id}/${Date.now()}-dish.${fileExt}`;
+        const fileName = `${user!.id}/${Date.now()}-dish.${fileExt}`;
         const { error: uploadError } = await supabase.storage
           .from('chef-profiles')
           .upload(fileName, customImage);
