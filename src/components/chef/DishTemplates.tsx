@@ -170,7 +170,7 @@ const DishTemplates = ({ onDishAdded, chefId: overrideChefId }: DishTemplatesPro
       const { data: dishData, error } = await supabase
         .from('dishes')
         .insert({
-          chef_id: chefData.id,
+          chef_id: resolvedChefId,
           name: dishName,
           description: customDescription,
           category: selectedTemplate.category,
