@@ -88,7 +88,7 @@ const MenuManager = ({ chefId: overrideChefId }: MenuManagerProps = {}) => {
         variant: "destructive",
       });
     }
-  }, [user, toast]);
+  }, [user, toast, overrideChefId]);
 
   useEffect(() => {
     if (activeTab === "my-menu") {
@@ -244,7 +244,7 @@ const MenuManager = ({ chefId: overrideChefId }: MenuManagerProps = {}) => {
         </TabsList>
 
         <TabsContent value="templates" className="mt-6">
-          <DishTemplates onDishAdded={() => {
+          <DishTemplates chefId={overrideChefId} onDishAdded={() => {
             fetchMyDishes();
             setActiveTab("my-menu");
           }} />

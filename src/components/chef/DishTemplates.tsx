@@ -36,9 +36,10 @@ interface DishTemplate {
 
 interface DishTemplatesProps {
   onDishAdded?: () => void;
+  chefId?: string | null;
 }
 
-const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
+const DishTemplates = ({ onDishAdded, chefId: overrideChefId }: DishTemplatesProps) => {
   const [templates, setTemplates] = useState<DishTemplate[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<DishTemplate | null>(null);
   const [customPrice, setCustomPrice] = useState<string>("");
@@ -123,26 +124,32 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
   };
 
   const handleAddDish = async () => {
-    if (!selectedTemplate || !user?.id) return;
+    if (!selectedTemplate) return;
+    if (!overrideChefId && !user?.id) return;
 
     setLoading(true);
     try {
-      // First get the chef_id for the current user
-      const { data: chefData, error: chefError } = await supabase
-        .from('chefs')
-        .select('id')
-        .eq('user_id', user.id)
-        .maybeSingle();
+      // Resolve chef id: admin override takes precedence
+      let resolvedChefId: string | null = overrideChefId ?? null;
 
-      if (chefError || !chefData) {
-        throw new Error('Chef profile not found');
+      if (!resolvedChefId) {
+        const { data: chefData, error: chefError } = await supabase
+          .from('chefs')
+          .select('id')
+          .eq('user_id', user!.id!)
+          .maybeSingle();
+
+        if (chefError || !chefData) {
+          throw new Error('Chef profile not found');
+        }
+        resolvedChefId = chefData.id;
       }
 
       // Upload image if provided
       let imageUrl: string | null = null;
       if (customImage) {
         const fileExt = customImage.name.split('.').pop();
-        const fileName = `${user.id}/${Date.now()}-dish.${fileExt}`;
+        const fileName = `${user!.id}/${Date.now()}-dish.${fileExt}`;
         const { error: uploadError } = await supabase.storage
           .from('chef-profiles')
           .upload(fileName, customImage);
@@ -163,7 +170,7 @@ const DishTemplates = ({ onDishAdded }: DishTemplatesProps) => {
       const { data: dishData, error } = await supabase
         .from('dishes')
         .insert({
-          chef_id: chefData.id,
+          chef_id: resolvedChefId,
           name: dishName,
           description: customDescription,
           category: selectedTemplate.category,
