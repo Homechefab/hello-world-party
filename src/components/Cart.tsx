@@ -10,6 +10,15 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { isChefCurrentlyOpen } from "@/hooks/useChefAvailability";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  isPreorderOnlyChef,
+  getEarliestPreorderValue,
+  isValidPreorderValue,
+  formatPreorderLabel,
+  PREORDER_LEAD_TIME_HOURS,
+} from "@/lib/preorder";
 
 export const Cart = () => {
   const { state, updateQuantity, removeItem } = useCart();
@@ -19,7 +28,11 @@ export const Cart = () => {
   const [showPhonePrompt, setShowPhonePrompt] = useState(false);
   const [existingPhone, setExistingPhone] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [preorderTime, setPreorderTime] = useState<string>("");
   const { toast } = useToast();
+
+  const preorderChefName = state.items.find(item => isPreorderOnlyChef(item.chefId))?.chefName;
+  const requiresPreorder = !!preorderChefName;
 
   const proceedToCheckout = async (customerPhone: string) => {
     setIsProcessing(true);
@@ -27,6 +40,7 @@ export const Cart = () => {
     try {
       const uniqueChefIds = [...new Set(state.items.map(item => item.chefId))];
       for (const chefId of uniqueChefIds) {
+        if (isPreorderOnlyChef(chefId)) continue;
         const { isOpen, nextOpenInfo } = await isChefCurrentlyOpen(chefId);
         if (!isOpen) {
           const chefName = state.items.find(i => i.chefId === chefId)?.chefName || "Kocken";
