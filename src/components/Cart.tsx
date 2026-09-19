@@ -69,7 +69,7 @@ export const Cart = () => {
           totalAmount: state.total,
           deliveryAddress: 'Upphämtning',
           specialInstructions: requiresPreorder && preorderTime
-            ? `Förbeställning: ${formatPreorderLabel(preorderTime)}`
+            ? `Önskad leverans: ${formatPreorderLabel(preorderTime)}`
             : '',
           customerPhone,
         }
@@ -275,8 +275,9 @@ export const Cart = () => {
                         {preorderChefName} lagar endast förbeställd mat
                       </Label>
                       <p className="text-xs text-muted-foreground">
-                        Välj när du vill hämta din mat – minst {PREORDER_LEAD_TIME_HOURS} timmar fram i tiden.
+                        Ange vilken dag och tid du vill ha maten levererad – minst {PREORDER_LEAD_TIME_HOURS} timmar fram i tiden.
                       </p>
+
                       <Input
                         id="preorder-time"
                         type="datetime-local"
