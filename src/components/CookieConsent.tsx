@@ -7,7 +7,7 @@ import {
   setConsent,
   subscribeConsent,
 } from "@/lib/consent";
-import { loadAdPixels } from "@/lib/tracking";
+import { enableAdTracking } from "@/lib/tracking";
 
 const CookieConsent = () => {
   const [visible, setVisible] = useState(false);
@@ -18,25 +18,26 @@ const CookieConsent = () => {
     const init = async () => {
       const stored = getStoredConsent();
       if (stored === "granted") {
-        loadAdPixels();
+        enableAdTracking();
         return;
       }
+      if (stored === "denied") return;
 
       const consentRequired = await isConsentRequiredRegion();
       if (!active) return;
 
       if (!consentRequired) {
-        loadAdPixels();
+        enableAdTracking();
         return;
       }
 
-      if (!stored) setVisible(true);
+      setVisible(true);
     };
 
     void init();
 
     const unsubscribe = subscribeConsent((choice) => {
-      if (choice === "granted") loadAdPixels();
+      if (choice === "granted") enableAdTracking();
       setVisible(false);
     });
 
@@ -53,7 +54,7 @@ const CookieConsent = () => {
       <div className="mx-auto max-w-3xl rounded-xl border bg-card p-4 shadow-lg">
         <p className="text-sm text-muted-foreground">
           Vi använder cookies för att mäta och förbättra vår marknadsföring (Meta och TikTok).
-          Du kan välja själv och ändra dig när du vill.{" "}
+          Du väljer själv och kan ändra dig när du vill.{" "}
           <Link to="/privacy" className="underline">
             Läs mer i integritetspolicyn
           </Link>
