@@ -377,7 +377,7 @@ const ChefProfile = () => {
               </div>
               {chef.business_name === 'La Flamme' && (
                 <div className="mt-4 max-w-2xl mx-auto text-center text-white/90 space-y-2">
-                  <p>Beställ onsdag–fredag 17:00–22:00, minst 24 timmar i förväg. Leverans finns (kostnad tillkommer).</p>
+                  <p>Beställ onsdag–fredag 17:00–22:00, minst 24 timmar i förväg.</p>
                 </div>
               )}
               {isPreorderOnlyChef(chef.id) && (
