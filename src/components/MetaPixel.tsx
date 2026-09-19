@@ -72,8 +72,15 @@ const ensureMetaPixel = (): void => {
 
 const MetaPixel = () => {
   const location = useLocation();
+  const [allowed, setAllowed] = useState(isAdTrackingAllowed());
+
+  useEffect(() => subscribeAdTracking(() => setAllowed(true)), []);
 
   useEffect(() => {
+    if (!allowed) {
+      return;
+    }
+
     ensureMetaPixel();
 
     const currentPath = `${location.pathname}${location.search}`;
@@ -83,7 +90,7 @@ const MetaPixel = () => {
 
     window.fbq("track", "PageView");
     window.__homechefMetaPixelLastPath = currentPath;
-  }, [location.pathname, location.search]);
+  }, [allowed, location.pathname, location.search]);
 
   return null;
 };
