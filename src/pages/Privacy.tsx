@@ -307,8 +307,12 @@ const Privacy = () => {
                 <div>
                   <h3 className="font-semibold text-lg mb-2">Marknadsföringscookies:</h3>
                   <p className="text-muted-foreground text-sm mb-2">
-                    Dessa cookies kan sättas genom vår webbplats av våra annonspartners. 
-                    De kräver ditt samtycke och kan hanteras i cookieinställningarna.
+                    Dessa cookies sätts av våra annonspartners Meta (Facebook/Instagram) och TikTok via deras
+                    mätverktyg (pixlar). De används för att mäta resultatet av våra annonser och för att optimera
+                    och visa relevant annonsering. Uppgifter som besökta sidor, enhets- och webbläsarinformation
+                    samt IP-adress kan då delas med Meta Platforms Ireland Ltd och TikTok Technology Ltd.
+                    Dessa cookies laddas först efter ditt samtycke och du kan när som helst neka eller ändra ditt val
+                    i cookierutan.
                   </p>
                 </div>
               </div>

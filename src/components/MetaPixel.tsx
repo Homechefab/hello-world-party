@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { isAdTrackingAllowed, subscribeAdTracking } from "@/lib/tracking";
 
 const META_PIXEL_ID = "1249461430276628";
 const META_PIXEL_SCRIPT_ID = "homechef-meta-pixel";
@@ -72,8 +73,15 @@ const ensureMetaPixel = (): void => {
 
 const MetaPixel = () => {
   const location = useLocation();
+  const [allowed, setAllowed] = useState(isAdTrackingAllowed());
+
+  useEffect(() => subscribeAdTracking(() => setAllowed(true)), []);
 
   useEffect(() => {
+    if (!allowed) {
+      return;
+    }
+
     ensureMetaPixel();
 
     const currentPath = `${location.pathname}${location.search}`;
@@ -83,7 +91,7 @@ const MetaPixel = () => {
 
     window.fbq("track", "PageView");
     window.__homechefMetaPixelLastPath = currentPath;
-  }, [location.pathname, location.search]);
+  }, [allowed, location.pathname, location.search]);
 
   return null;
 };
