@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 import { calculatePaymentBreakdown } from "../_shared/payment-breakdown.ts";
+import { isPreorderOnlyChef } from "../_shared/preorder.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -131,12 +132,18 @@ serve(async (req) => {
           throw new Error(`Dish not available: ${dish.name}`);
         }
 
-        const { data: opHours } = await supabaseService
-          .from("chef_operating_hours")
-          .select("day_of_week, is_open, open_time, close_time")
-          .eq("chef_id", dish.chef_id);
+        // Förbeställningskockar tar emot beställningar dygnet runt — kunden anger
+        // själv önskad leveransdag/tid (minst 24 h fram) i kassan.
+        const preorderChef = isPreorderOnlyChef(dish.chef_id);
 
-        if (opHours && opHours.length > 0) {
+        const { data: opHours } = preorderChef
+          ? { data: null }
+          : await supabaseService
+              .from("chef_operating_hours")
+              .select("day_of_week, is_open, open_time, close_time")
+              .eq("chef_id", dish.chef_id);
+
+        if (!preorderChef && opHours && opHours.length > 0) {
           const now = new Date();
           const stockholmStr = now.toLocaleString("en-US", { timeZone: "Europe/Stockholm" });
           const stockholmDate = new Date(stockholmStr);
