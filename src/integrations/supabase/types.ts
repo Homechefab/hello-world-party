@@ -138,6 +138,64 @@ export type Database = {
           },
         ]
       }
+      chef_payout_accounts: {
+        Row: {
+          charges_enabled: boolean
+          chef_id: string
+          created_at: string
+          details_submitted: boolean
+          id: string
+          payouts_enabled: boolean
+          requirements_due: string | null
+          stripe_account_id: string
+          updated_at: string
+        }
+        Insert: {
+          charges_enabled?: boolean
+          chef_id: string
+          created_at?: string
+          details_submitted?: boolean
+          id?: string
+          payouts_enabled?: boolean
+          requirements_due?: string | null
+          stripe_account_id: string
+          updated_at?: string
+        }
+        Update: {
+          charges_enabled?: boolean
+          chef_id?: string
+          created_at?: string
+          details_submitted?: boolean
+          id?: string
+          payouts_enabled?: boolean
+          requirements_due?: string | null
+          stripe_account_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chef_payout_accounts_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: true
+            referencedRelation: "chef_customer_contact"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chef_payout_accounts_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: true
+            referencedRelation: "chefs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chef_payout_accounts_chef_id_fkey"
+            columns: ["chef_id"]
+            isOneToOne: true
+            referencedRelation: "public_chef_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chef_public_profiles: {
         Row: {
           address: string | null
@@ -988,6 +1046,7 @@ export type Database = {
       }
       orders: {
         Row: {
+          chef_earnings: number | null
           chef_id: string
           chef_notified_at: string | null
           created_at: string
@@ -997,15 +1056,20 @@ export type Database = {
           delivery_time: string | null
           estimated_ready_at: string | null
           id: string
+          paid_out_at: string | null
+          payout_error: string | null
+          payout_status: string
           pickup_instructions: string | null
           preparation_started_at: string | null
           special_instructions: string | null
           status: string
           stripe_session_id: string | null
+          stripe_transfer_id: string | null
           total_amount: number
           updated_at: string
         }
         Insert: {
+          chef_earnings?: number | null
           chef_id: string
           chef_notified_at?: string | null
           created_at?: string
@@ -1015,15 +1079,20 @@ export type Database = {
           delivery_time?: string | null
           estimated_ready_at?: string | null
           id?: string
+          paid_out_at?: string | null
+          payout_error?: string | null
+          payout_status?: string
           pickup_instructions?: string | null
           preparation_started_at?: string | null
           special_instructions?: string | null
           status?: string
           stripe_session_id?: string | null
+          stripe_transfer_id?: string | null
           total_amount: number
           updated_at?: string
         }
         Update: {
+          chef_earnings?: number | null
           chef_id?: string
           chef_notified_at?: string | null
           created_at?: string
@@ -1033,11 +1102,15 @@ export type Database = {
           delivery_time?: string | null
           estimated_ready_at?: string | null
           id?: string
+          paid_out_at?: string | null
+          payout_error?: string | null
+          payout_status?: string
           pickup_instructions?: string | null
           preparation_started_at?: string | null
           special_instructions?: string | null
           status?: string
           stripe_session_id?: string | null
+          stripe_transfer_id?: string | null
           total_amount?: number
           updated_at?: string
         }

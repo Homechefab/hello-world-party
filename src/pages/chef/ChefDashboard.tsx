@@ -15,6 +15,7 @@ import IncomeReports from '@/components/chef/IncomeReports';
 import { SocialMediaLinks } from '@/components/chef/SocialMediaLinks';
 import { DeliveryToggle } from '@/components/chef/DeliveryToggle';
 import { OperatingHoursManager } from '@/components/chef/OperatingHoursManager';
+import { PayoutAccount } from '@/components/chef/PayoutAccount';
 import { AdminChefSelector } from '@/components/admin/AdminChefSelector';
 import { useRole } from '@/hooks/useRole';
 import { 
@@ -509,6 +510,7 @@ export const ChefDashboard = () => {
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-6">
+          <PayoutAccount chefId={adminSelectedChefId} />
           <OperatingHoursManager chefId={adminSelectedChefId} />
           <DeliveryToggle chefId={adminSelectedChefId} />
         </TabsContent>

@@ -197,6 +197,17 @@ export const OrderManagement = ({ chefId: overrideChefId }: OrderManagementProps
 
       if (error) throw error;
 
+      // Automatisk utbetalning av kockens andel när beställningen slutförs
+      if (newStatus === 'completed') {
+        supabase.functions
+          .invoke('chef-payouts', { body: { action: 'release', orderId } })
+          .then(({ data, error: payoutError }) => {
+            if (payoutError) console.error('chef-payouts release failed:', payoutError);
+            else if (data && data.ok === false) console.warn('Utbetalning ej gjord:', data.reason);
+          })
+          .catch((err) => console.error('chef-payouts threw:', err));
+      }
+
       // Fire-and-forget SMS notification — never blocks completion
       if (isReadyClick) {
         supabase.functions
