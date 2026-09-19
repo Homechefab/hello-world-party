@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { isAdTrackingAllowed, subscribeAdTracking } from "@/lib/tracking";
 
 const META_PIXEL_ID = "1249461430276628";
 const META_PIXEL_SCRIPT_ID = "homechef-meta-pixel";
