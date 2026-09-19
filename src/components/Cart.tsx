@@ -69,7 +69,7 @@ export const Cart = () => {
           totalAmount: state.total,
           deliveryAddress: 'Upphämtning',
           specialInstructions: requiresPreorder && preorderTime
-            ? `Förbeställning: ${formatPreorderLabel(preorderTime)}`
+            ? `Önskad leverans: ${formatPreorderLabel(preorderTime)}`
             : '',
           customerPhone,
         }
