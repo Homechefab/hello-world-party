@@ -246,6 +246,7 @@ const App = () => {
         </Routes>
         <Toaster />
         <Sonner />
+        <CookieConsent />
       </TooltipProvider>
     </QueryClientProvider>
   );
