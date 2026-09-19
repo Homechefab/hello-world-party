@@ -129,6 +129,7 @@ const App = () => {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <MetaPixel />
+        <TikTokPixel />
         <ScrollToTop />
         <Routes>
 
