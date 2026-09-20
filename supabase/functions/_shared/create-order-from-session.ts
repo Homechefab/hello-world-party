@@ -19,7 +19,7 @@ interface OrderItemMeta {
 }
 
 export async function createOrdersFromSession(
-  supabaseService: SupabaseClient,
+  supabaseService: ServiceClient,
   session: SessionLike,
 ): Promise<{ createdOrderIds: string[] }> {
   const createdOrderIds: string[] = [];
