@@ -143,7 +143,7 @@ async function handleCheckoutSession(
   if (dishName === "Okänd rätt") {
     try {
       const items = await stripe.checkout.sessions.listLineItems(session.id, { limit: 10 });
-      const firstNonFee = items.data.find((i) => !/serviceavgift/i.test(i.description || ""));
+      const firstNonFee = items.data.find((i: Stripe.LineItem) => !/serviceavgift/i.test(i.description || ""));
       if (firstNonFee?.description) dishName = firstNonFee.description;
       if (firstNonFee?.quantity) quantityTotal = firstNonFee.quantity;
     } catch (err) {
