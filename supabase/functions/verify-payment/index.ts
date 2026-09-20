@@ -190,7 +190,7 @@ serve(async (req) => {
         receipt_url: receiptUrl,
         metadata: session.metadata,
         order_id: createdOrderId,
-        line_items: items.data.map((item) => ({
+        line_items: items.data.map((item: Stripe.LineItem) => ({
           description: item.description,
           quantity: item.quantity,
           amount_subtotal: item.amount_subtotal,
