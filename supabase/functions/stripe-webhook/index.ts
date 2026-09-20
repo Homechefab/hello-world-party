@@ -212,7 +212,7 @@ async function handleCheckoutSession(
 
 async function handlePaymentIntent(
   stripe: Stripe,
-  supabase: ReturnType<typeof createClient>,
+  supabase: ServiceClient,
   paymentIntent: Stripe.PaymentIntent
 ) {
   logStep("Processing payment intent", { id: paymentIntent.id });
