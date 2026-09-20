@@ -90,7 +90,7 @@ serve(async (req) => {
 
 async function handleCheckoutSession(
   stripe: Stripe,
-  supabase: ReturnType<typeof createClient>,
+  supabase: ServiceClient,
   session: Stripe.Checkout.Session
 ) {
   logStep("Processing checkout session", { sessionId: session.id, paymentStatus: session.payment_status });
