@@ -2,9 +2,7 @@
 // and notify the chef. Idempotent — safe to call multiple times for the same
 // session (e.g. from both verify-payment and the Stripe webhook).
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
-
-type SupabaseClient = ReturnType<typeof createClient>;
+import type { ServiceClient } from "./db-client.ts";
 
 interface SessionLike {
   id: string;
@@ -21,7 +19,7 @@ interface OrderItemMeta {
 }
 
 export async function createOrdersFromSession(
-  supabaseService: SupabaseClient,
+  supabaseService: ServiceClient,
   session: SessionLike,
 ): Promise<{ createdOrderIds: string[] }> {
   const createdOrderIds: string[] = [];

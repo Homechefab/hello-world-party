@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
+import type { ServiceClient } from "../_shared/db-client.ts";
 import { calculatePaymentBreakdown } from "../_shared/payment-breakdown.ts";
 import { createOrdersFromSession } from "../_shared/create-order-from-session.ts";
 
@@ -89,7 +90,7 @@ serve(async (req) => {
 
 async function handleCheckoutSession(
   stripe: Stripe,
-  supabase: ReturnType<typeof createClient>,
+  supabase: ServiceClient,
   session: Stripe.Checkout.Session
 ) {
   logStep("Processing checkout session", { sessionId: session.id, paymentStatus: session.payment_status });
@@ -142,7 +143,7 @@ async function handleCheckoutSession(
   if (dishName === "Okänd rätt") {
     try {
       const items = await stripe.checkout.sessions.listLineItems(session.id, { limit: 10 });
-      const firstNonFee = items.data.find((i) => !/serviceavgift/i.test(i.description || ""));
+      const firstNonFee = items.data.find((i: Stripe.LineItem) => !/serviceavgift/i.test(i.description || ""));
       if (firstNonFee?.description) dishName = firstNonFee.description;
       if (firstNonFee?.quantity) quantityTotal = firstNonFee.quantity;
     } catch (err) {
@@ -211,7 +212,7 @@ async function handleCheckoutSession(
 
 async function handlePaymentIntent(
   stripe: Stripe,
-  supabase: ReturnType<typeof createClient>,
+  supabase: ServiceClient,
   paymentIntent: Stripe.PaymentIntent
 ) {
   logStep("Processing payment intent", { id: paymentIntent.id });
