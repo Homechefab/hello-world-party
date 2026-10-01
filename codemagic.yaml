@@ -66,6 +66,7 @@ workflows:
         bundle_identifier: se.homechef.nu
       vars:
         APP_STORE_CONNECT_KEY_IDENTIFIER: KRJH78VBH8
+        CAP_USE_REMOTE: "false"
       groups:
         - app_credentials
       node: 22.13.0
